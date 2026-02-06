@@ -1,0 +1,64 @@
+# Ignore virtual environments
+**/.venv/
+**/venv/
+**/env/
+**/envs/
+**/.env/
+**/.envs/
+
+# Python Bytecode files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.swp
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Model files
+**/*.ckpt
+**/*.h5
+**/*.pth
+**/*.pt
+**/saved_models/
+**/checkpoints/
+
+# Raw data and outputs
+**/raw_data/
+**/data/
+**/outputs/
+**/logs/
+**/results/
+**/experiments/
+
+# IDE specific files
+.vscode/
+.idea/
+
+# Pytest coverage reports
+.coverage
+*.coveragerc
+
+# Docker-related files
+docker-compose.oerride.yml
+Dockerfile.*
+
+# macOS system files
+.DS_Store
+
+# Windows system files
+Thumbs.db
+
+# Other temporary or hidden files
+*.bak
+*.tmp
+*.swp
+*.swo
+*.log
+
+# other stuff for fun
+
+**/hamba
+**.git

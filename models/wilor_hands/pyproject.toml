@@ -1,0 +1,12 @@
+[project]
+name = "wilor"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "dill>=0.4.0",
+    "natsort>=8.4.0",
+    "smplx>=0.1.28",
+    "torchvision==0.24",
+]

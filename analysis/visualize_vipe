@@ -1,0 +1,169 @@
+import numpy as np
+from pathlib import Path
+from vedo import Plotter, Lines, Sphere
+
+
+# ---- minimal SE3 handling (no vipe import) ----
+# def se3_matrix_to_numpy(mat: np.ndarray) -> np.ndarray:
+#     """
+#     mat: (T, 4, 4)
+#     returns same array, explicit helper for clarity
+#     """
+#     assert mat.ndim == 3 and mat.shape[1:] == (4, 4)
+#     return mat
+
+
+# def load_camera_poses(pose_npz: Path):
+#     data = np.load(pose_npz)
+#     inds = data["inds"]              # (T,)
+#     poses = se3_matrix_to_numpy(data["data"])  # (T, 4, 4)
+#     return inds, poses
+
+
+# def extract_camera_centers_and_dirs(poses: np.ndarray):
+#     """
+#     poses: (T, 4, 4), camera-to-world
+#     """
+#     positions = []
+#     directions = []
+
+#     for Tcw in poses:
+#         R = Tcw[:3, :3]
+#         t = Tcw[:3, 3]
+
+#         # Camera center in world
+#         positions.append(t)
+
+#         # Camera forward direction (ViPE convention: -Z is forward)
+#         forward = -R[:, 2]
+#         directions.append(forward / np.linalg.norm(forward))
+
+#     return np.array(positions), np.array(directions)
+
+
+# # ---- vedo visualization ----
+# def visualize_cameras(positions, directions, stride=1):
+#     plt = vedo.Plotter(bg="white", axes=1)
+
+#     # trajectory line
+#     traj = vedo.Line(positions, c="black", lw=2)
+#     plt.add(traj)
+
+#     # camera centers
+#     pts = vedo.Points(positions, r=6, c="red")
+#     plt.add(pts)
+
+#     # camera direction arrows
+#     arrows = []
+#     for p, d in zip(positions[::stride], directions[::stride]):
+#         arrows.append(
+#             vedo.Arrow(
+#                 start_pt=p,
+#                 end_pt=p + d,
+#                 c="green",
+#                 s=None,
+#                 alpha=0.6,
+#             )
+#         )
+
+#     plt.add(arrows)
+#     plt.show()
+
+
+# # ---- main ----
+# if __name__ == "__main__":
+#     pose_npz = Path("/home/mayank/Documents/Uni/TUD/Thesis Extra/DELFTBLUE /vipe/output/pose/120-2_clip_1.npz")  # adjust if needed
+
+#     inds, poses = load_camera_poses(pose_npz)
+#     positions, directions = extract_camera_centers_and_dirs(poses)
+
+#     visualize_cameras(positions, directions, stride=5)
+
+# -----------------------------
+# Inline pose reader (as requested)
+# -----------------------------
+def read_pose_artifacts(npz_file_path: Path):
+    data = np.load(npz_file_path)
+    inds = data["inds"]
+    poses = data["data"]  # (T, 4, 4) camera-to-world
+    return inds, poses
+
+# -----------------------------
+# Build a camera frustum mesh
+# -----------------------------
+
+def make_camera_frustum(
+    T_wc: np.ndarray,
+    fov_deg: float = 60.0,
+    aspect: float = 4 / 3,
+    scale: float = 0.2,
+    color="red",
+):
+    """
+    Create a camera frustum as a vedo Lines object.
+    T_wc: 4x4 camera-to-world matrix
+    """
+
+    assert T_wc.shape == (4, 4)
+
+    # Camera center in world coords
+    cam_center = T_wc[:3, 3]
+
+    fov = np.deg2rad(fov_deg)
+    h = np.tan(fov / 2)
+    w = h * aspect
+
+    # Frustum corners in CAMERA frame (z forward)
+    corners_cam = np.array([
+        [-w, -h, 1.0],
+        [ w, -h, 1.0],
+        [ w,  h, 1.0],
+        [-w,  h, 1.0],
+    ]) * scale
+
+    # Transform corners to world frame
+    R = T_wc[:3, :3]
+    t = T_wc[:3, 3]
+
+    corners_world = (R @ corners_cam.T).T + t  # shape (4,3)
+
+    # Explicitly ensure shape (3,)
+    cam_center = cam_center.reshape(3)
+    corners_world = [c.reshape(3) for c in corners_world]
+
+    # Build line segments
+    lines = []
+
+    # From camera center to corners
+    for c in corners_world:
+        lines.append([cam_center, c])
+
+    # Around the image plane
+    for i in range(4):
+        lines.append([corners_world[i], corners_world[(i + 1) % 4]])
+
+    return Lines(lines, c=color)
+
+
+# -----------------------------
+# Main visualization
+# -----------------------------
+pose_file = Path("/home/mayank/Documents/Uni/TUD/Thesis Extra/DELFTBLUE /vipe/output/pose/120-2_clip_1.npz")  # adjust if needed
+inds, poses = read_pose_artifacts(pose_file)
+
+plt = Plotter(bg="white")
+
+for T_wc in poses:
+    frustum = make_camera_frustum(
+        T_wc,
+        fov_deg=60,
+        aspect=16 / 9,
+        scale=0.5,
+    )
+    plt += frustum
+
+    # Optional: draw camera center
+    cam_center = T_wc[:3, 3]
+    plt += Sphere(cam_center, r=0.01, c="black")
+
+plt.show()
