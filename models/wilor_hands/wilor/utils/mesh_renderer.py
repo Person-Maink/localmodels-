@@ -4,7 +4,7 @@ if 'PYOPENGL_PLATFORM' not in os.environ:
 import torch
 from torchvision.utils import make_grid
 import numpy as np
-import pyrender
+# import pyrender
 import trimesh
 import cv2
 import torch.nn.functional as F
