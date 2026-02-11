@@ -2,16 +2,17 @@ import torch
 import numpy as np
 import trimesh
 from pytorch3d.structures import Meshes, join_meshes_as_batch
-from pytorch3d.renderer import (
-    MeshRenderer,
-    MeshRasterizer,
-    SoftPhongShader,
-    RasterizationSettings,
-    PerspectiveCameras,
-    PointLights,
-    TexturesVertex
-)
+from pytorch3d.renderer import MeshRenderer,MeshRasterizer,SoftPhongShader,RasterizationSettings,PerspectiveCameras,PointLights,TexturesVertex
 
+# from pytorch3d.renderer import (
+#     MeshRenderer,
+#     MeshRasterizer,
+#     SoftPhongShader,
+#     RasterizationSettings,
+#     PerspectiveCameras,
+#     PointLights,
+#     TexturesVertex
+# )
 def render_rgba_multiple(
     vertices,
     faces, 
