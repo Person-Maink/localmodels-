@@ -9,8 +9,8 @@ from inference import *
 from loader import * 
 from visualize import *
 
-from wilor.utils.renderer import Renderer
-from wilor.utils.renderer import cam_crop_to_full
+# from wilor.utils.renderer import Renderer
+from utils_new import *
 
 LIGHT_PURPLE = (0.25098039, 0.274117647, 0.65882353)
 
@@ -81,12 +81,12 @@ def main(args):
                 focal_length=focal_length,
             )
 
-            cam_view = renderer.render_rgba_multiple(
-                all_verts, cam_t=all_cam_t, render_res=render_res, is_right=all_right, **misc_args
-            )
             # cam_view = renderer.render_rgba_multiple(
-            #     all_verts, cam_t=all_cam_t, render_res=img_size, is_right=all_right, **misc_args
+            #     all_verts, cam_t=all_cam_t, render_res=render_res, is_right=all_right, **misc_args
             # )
+            cam_view = render_rgba_multiple(
+                all_verts, model.mano.faces, cam_t=all_cam_t, render_res=render_res, is_right=all_right, **misc_args
+            )
 
             input_img = img_cv2.astype(np.float32)[:, :, ::-1] / 255.0
             input_img = np.concatenate([input_img, np.ones_like(input_img[:, :, :1])], axis=2)
