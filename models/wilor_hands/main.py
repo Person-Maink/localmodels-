@@ -1,5 +1,5 @@
 import os
-os.environ["PYOPENGL_PLATFORM"] = "osmesa"
+os.environ["PYOPENGL_PLATFORM"] = "egl"
 
 import argparse
 import cv2
