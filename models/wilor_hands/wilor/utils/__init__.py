@@ -1,8 +1,8 @@
 import torch
 from typing import Any
 
-from .renderer import Renderer
-from .mesh_renderer import MeshRenderer
+# from .renderer import Renderer
+# from .mesh_renderer import MeshRenderer
 from .skeleton_renderer import SkeletonRenderer
 from .pose_utils import eval_pose, Evaluator
 

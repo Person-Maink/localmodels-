@@ -74,26 +74,19 @@ def run_wilor_inference(model, model_cfg, detector, dataloader, img_cv2, device=
                 focal_length=float(scaled_focal_length),  # <- store the scaled value actually used
                 img_res=img_res                           # <- store render resolution used in math
             ))
+
+            # if save_mesh and out_folder:
+            #     os.makedirs(out_folder, exist_ok=True)
+            #     # tmesh = renderer.vertices_to_trimesh(verts, cam_t.copy(), LIGHT_PURPLE, is_right=is_right)
+            #     tmesh = vertices_to_trimesh(verts, model.mano.faces, cam_t.copy(), LIGHT_PURPLE)
+
             if save_mesh and out_folder:
                 os.makedirs(out_folder, exist_ok=True)
-                # tmesh = renderer.vertices_to_trimesh(verts, cam_t.copy(), LIGHT_PURPLE, is_right=is_right)
-                tmesh = vertices_to_trimesh(verts, model.mano.faces, cam_t.copy(), LIGHT_PURPLE)
-                tmesh.export(os.path.join(out_folder, f"{img_fn}_{n}_{is_right}.obj"))
+                np.save(os.path.join(out_folder, f"{img_fn}_{n}_{is_right}_verts.npy"),verts)
 
     return all_results
 
 
-def cam_crop_to_full(cam_bbox, box_center, box_size, img_size, focal_length=5000.):
-    # Convert cam_bbox to full image
-    img_w, img_h = img_size[:, 0], img_size[:, 1]
-    cx, cy, b = box_center[:, 0], box_center[:, 1], box_size
-    w_2, h_2 = img_w / 2., img_h / 2.
-    bs = b * cam_bbox[:, 0] + 1e-9
-    tz = 2 * focal_length / bs
-    tx = (2 * (cx - w_2) / bs) + cam_bbox[:, 1]
-    ty = (2 * (cy - h_2) / bs) + cam_bbox[:, 2]
-    full_cam = torch.stack([tx, ty, tz], dim=-1)
-    return full_cam
 
 # def run_wilor_inference(model, model_cfg, detector, dataloader, img_cv2, device="cpu", out_folder=None, img_fn=None, save_mesh=True):
 #     renderer = Renderer(model_cfg, faces=model.mano.faces)

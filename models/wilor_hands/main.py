@@ -64,8 +64,8 @@ def main(args):
 
 
         if args.visualize and results:
-            renderer = Renderer(model_cfg, faces=model.mano.faces)
-            img_size = img_cv2.shape[:2][::-1]  # (W, H)
+            # renderer = Renderer(model_cfg, faces=model.mano.faces)
+            # img_size = img_cv2.shape[:2][::-1]  # (W, H)
 
             all_verts = [r["verts"] for r in results]
             all_cam_t = [r["cam_t"] for r in results]
