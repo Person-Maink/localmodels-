@@ -90,7 +90,7 @@ def render_rgba_multiple(
 
     images = renderer(scene_mesh)
 
-    return images[0, ..., :4].detach().cpu().numpy()
+    return torch.transpose(images[0, ..., :4],0,1).detach().cpu().numpy()
 
 
 def vertices_to_trimesh(
