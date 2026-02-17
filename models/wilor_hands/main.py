@@ -90,6 +90,8 @@ def main(args):
 
             input_img = img_cv2.astype(np.float32)[:, :, ::-1] / 255.0
             input_img = np.concatenate([input_img, np.ones_like(input_img[:, :, :1])], axis=2)
+
+            print(input_img.shape, cam_view.shape)
             overlay = input_img[:, :, :3] * (1 - cam_view[:, :, 3:]) + cam_view[:, :, :3] * cam_view[:, :, 3:]
 
             cv2.imwrite(out_vis, (255 * overlay[:, :, ::-1]).astype(np.uint8))
