@@ -15,7 +15,7 @@ from pytorch3d.renderer import MeshRenderer,MeshRasterizer,SoftPhongShader,Raste
 # )
 def render_rgba_multiple(
     vertices,
-    faces, 
+    faces_in, 
     cam_t,
     rot_axis=[1,0,0],
     rot_angle=0,
@@ -36,7 +36,7 @@ def render_rgba_multiple(
     for vvv, ttt, sss in zip(vertices, cam_t, is_right):
 
         mesh_trimesh = vertices_to_trimesh(
-            vvv, faces, ttt.copy(), mesh_base_color, rot_axis, rot_angle
+            vvv, faces_in, ttt.copy(), mesh_base_color, rot_axis, rot_angle
         )
 
         verts = torch.tensor(mesh_trimesh.vertices, dtype=torch.float32, device=device)
@@ -105,7 +105,8 @@ def vertices_to_trimesh(
 
     mesh = trimesh.Trimesh(
         verts,
-        faces.detach().cpu().numpy().copy(),
+        faces.copy(),
+        # faces.detach().cpu().numpy().copy(),
         vertex_colors=vertex_colors
     )
 
