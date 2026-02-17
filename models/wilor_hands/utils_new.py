@@ -61,8 +61,8 @@ def render_rgba_multiple(
 
     cameras = PerspectiveCameras(
         focal_length=((focal_length, focal_length),),
-        principal_point=((render_res[0]/2, render_res[1]/2),),
-        image_size=((render_res[1], render_res[0]),),
+        principal_point=((int(render_res[0]/2), int(render_res[1]/2)),),
+        image_size=((int(render_res[1]), int(render_res[0])),),
         device=device
     )
 
