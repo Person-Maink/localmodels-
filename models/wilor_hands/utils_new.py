@@ -56,8 +56,10 @@ def render_rgba_multiple(
     scene_mesh = join_meshes_as_batch(mesh_list)
 
     # focal_length = focal_length if focal_length is not None else focal_length
-    if not focal_length: 
+    if focal_length is None: 
         print("FOCAL_LENGTH IS NONE")
+
+    render_res = (int(render_res[0]), int(render_res[1]))
 
     cameras = PerspectiveCameras(
         focal_length=((focal_length, focal_length),),
