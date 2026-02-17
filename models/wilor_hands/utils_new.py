@@ -105,7 +105,7 @@ def vertices_to_trimesh(
 
     mesh = trimesh.Trimesh(
         verts,
-        faces.copy(),
+        faces.detach().cpu().numpy().copy(),
         vertex_colors=vertex_colors
     )
 
