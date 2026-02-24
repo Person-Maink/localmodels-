@@ -82,7 +82,7 @@ def run_wilor_inference(model, model_cfg, detector, dataloader, img_cv2, device=
 
             if save_mesh and out_folder:
                 os.makedirs(out_folder, exist_ok=True)
-                np.save(os.path.join(out_folder, f"{img_fn}_{n}_{is_right}_verts.npy"),verts)
+                np.save(os.path.join(out_folder, f"{img_fn}_{n}_{is_right}_verts.npy"),{"verts": verts, "cam_t":cam_t, "right":is_right})
 
     return all_results
 
