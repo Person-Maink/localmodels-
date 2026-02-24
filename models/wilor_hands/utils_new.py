@@ -1,8 +1,8 @@
 import torch
 import numpy as np
 import trimesh
-from pytorch3d.structures import Meshes, join_meshes_as_batch
-from pytorch3d.renderer import MeshRenderer,MeshRasterizer,SoftPhongShader,RasterizationSettings,PerspectiveCameras,PointLights,TexturesVertex
+from pytorch3d.structures import Meshes, join_meshes_as_scene
+from pytorch3d.renderer import MeshRenderer,MeshRasterizer,SoftPhongShader,RasterizationSettings,PerspectiveCameras,PointLights,TexturesVertex,BlendParams
 
 # from pytorch3d.renderer import (
 #     MeshRenderer,
@@ -31,12 +31,24 @@ def render_rgba_multiple(
     if is_right is None:
         is_right = [1 for _ in range(len(vertices))]
 
-    mesh_list = []
+    if focal_length is None:
+        raise ValueError("focal_length must be provided for render_rgba_multiple")
 
+    render_res = (int(render_res[0]), int(render_res[1]))  # (W, H)
+    width, height = render_res
+
+    if torch.is_tensor(faces_in):
+        faces_right = faces_in.detach().cpu().numpy().copy()
+    else:
+        faces_right = np.asarray(faces_in).copy()
+    faces_left = faces_right[:, [0, 2, 1]]
+
+    mesh_list = []
     for vvv, ttt, sss in zip(vertices, cam_t, is_right):
+        faces_used = faces_right if int(sss) == 1 else faces_left
 
         mesh_trimesh = vertices_to_trimesh(
-            vvv, faces_in, ttt.copy(), mesh_base_color, rot_axis, rot_angle
+            vvv, faces_used, ttt.copy(), mesh_base_color, rot_axis, rot_angle
         )
 
         verts = torch.tensor(mesh_trimesh.vertices, dtype=torch.float32, device=device)
@@ -53,28 +65,24 @@ def render_rgba_multiple(
         mesh = Meshes(verts=verts, faces=faces, textures=textures)
         mesh_list.append(mesh)
 
-    scene_mesh = join_meshes_as_batch(mesh_list)
-
-    # focal_length = focal_length if focal_length is not None else focal_length
-    if focal_length is None: 
-        print("FOCAL_LENGTH IS NONE")
-
-    render_res = (int(render_res[0]), int(render_res[1]))
+    scene_mesh = join_meshes_as_scene(mesh_list)
 
     cameras = PerspectiveCameras(
-        focal_length=((focal_length, focal_length),),
-        principal_point=((int(render_res[0]/2), int(render_res[1]/2)),),
-        image_size=((int(render_res[1]), int(render_res[0])),),
+        focal_length=((float(focal_length), float(focal_length)),),
+        principal_point=((width / 2.0, height / 2.0),),
+        image_size=((height, width),),
+        in_ndc=False,
         device=device
     )
 
     raster_settings = RasterizationSettings(
-        image_size=render_res,
+        image_size=(height, width),
         blur_radius=0.0,
         faces_per_pixel=1,
     )
 
     lights = PointLights(device=device, location=[[0.0, 0.0, -3.0]])
+    blend_params = BlendParams(background_color=scene_bg_color)
 
     renderer = MeshRenderer(
         rasterizer=MeshRasterizer(
@@ -84,12 +92,14 @@ def render_rgba_multiple(
         shader=SoftPhongShader(
             device=device,
             cameras=cameras,
-            lights=lights
+            lights=lights,
+            blend_params=blend_params
         )
     )
 
     images = renderer(scene_mesh)
 
+    # return images[0, ..., :4].detach().cpu().numpy()
     return torch.transpose(images[0, ..., :4],0,1).detach().cpu().numpy()
 
 
