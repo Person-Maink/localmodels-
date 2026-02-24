@@ -26,7 +26,8 @@ np.inf = float("inf")
 # =========================
 FPS = 30.0
 FILTER_ORDER = 3
-HIGHPASS_CUTOFF = 6.0  # Hz (physiological tremor ~8–12 Hz)
+HIGHPASS_CUTOFF = 2.0  # Hz (physiological tremor ~8–12 Hz)
+LOWPASS_CUTOFF = 12.0  # Hz (physiological tremor ~8–12 Hz)
 
 WILOR_ROOT = WILOR_ROOT 
 MEDIAPIPE_CSV = MEDIAPIPE_ROOT 
@@ -36,11 +37,23 @@ HAND_ID = 1   # change to the hand you want
 # =========================
 # FILTER UTILITY
 # =========================
+# def highpass(signal):
+#     nyq = 0.5 * FPS
+#     b, a = butter(FILTER_ORDER, HIGHPASS_CUTOFF / nyq, btype="high")
+#     return filtfilt(b, a, signal, axis=0)
+
 def highpass(signal):
     nyq = 0.5 * FPS
-    b, a = butter(FILTER_ORDER, HIGHPASS_CUTOFF / nyq, btype="high")
-    return filtfilt(b, a, signal, axis=0)
 
+    # High-pass
+    b_high, a_high = butter(FILTER_ORDER, HIGHPASS_CUTOFF / nyq, btype="high")
+    signal = filtfilt(b_high, a_high, signal, axis=0)
+
+    # Low-pass
+    b_low, a_low = butter(FILTER_ORDER, LOWPASS_CUTOFF / nyq, btype="low")
+    signal = filtfilt(b_low, a_low, signal, axis=0)
+
+    return signal
 
 # =========================
 # WILOR PIPELINE
@@ -71,7 +84,7 @@ for folder in frame_folders:
     m = load(selected)
     V = m.points
     J = J_reg @ V
-    m.shift(-J[0])  # wrist center
+    # m.shift(-J[0])  # wrist center
 
     wilor_centroids.append(m.points.mean(axis=0))
 
@@ -152,4 +165,3 @@ plt.show()
 # PRINT SUMMARY
 # =========================
 print(f"Wilor dominant frequency:     {wilor_dom:.2f} Hz")
-print(f"MediaPipe dominant frequency: {mp_dom:.2f} Hz")

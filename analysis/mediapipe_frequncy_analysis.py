@@ -10,7 +10,8 @@ from visualizing_files import *
 
 FPS = 30.0
 FILTER_ORDER = 3
-HIGHPASS_CUTOFF = 6.0  # Hz (physiological tremor ~8–12 Hz)
+HIGHPASS_CUTOFF = 2.0  # Hz (physiological tremor ~8–12 Hz)
+LOWPASS_CUTOFF = 12.0  # Hz (physiological tremor ~8–12 Hz)
 
 MEDIAPIPE_CSV_A = MEDIAPIPE_ROOT          # e.g. original
 MEDIAPIPE_CSV_B = MEDIAPIPE_COMP      # e.g. amplified
@@ -20,10 +21,23 @@ HAND_ID = 1   # change to the hand you want
 # =========================
 # FILTER UTILITY
 # =========================
+# def highpass(signal):
+#     nyq = 0.5 * FPS
+#     b, a = butter(FILTER_ORDER, HIGHPASS_CUTOFF / nyq, btype="high")
+#     return filtfilt(b, a, signal, axis=0)
+
 def highpass(signal):
     nyq = 0.5 * FPS
-    b, a = butter(FILTER_ORDER, HIGHPASS_CUTOFF / nyq, btype="high")
-    return filtfilt(b, a, signal, axis=0)
+
+    # High-pass
+    b_high, a_high = butter(FILTER_ORDER, HIGHPASS_CUTOFF / nyq, btype="high")
+    signal = filtfilt(b_high, a_high, signal, axis=0)
+
+    # Low-pass
+    b_low, a_low = butter(FILTER_ORDER, LOWPASS_CUTOFF / nyq, btype="low")
+    signal = filtfilt(b_low, a_low, signal, axis=0)
+
+    return signal
 
 # =========================
 # MEDIAPIPE PIPELINE

@@ -24,7 +24,8 @@ np.inf = float("inf")
 # CONFIG
 # =========================
 FPS = 30.0
-HIGHPASS_CUTOFF = 8.0
+HIGHPASS_CUTOFF = 2.0
+LOWPASS_CUTOFF = 12.0
 FILTER_ORDER = 3
 
 WILOR_ROOT_A = WILOR_ROOT
@@ -35,10 +36,23 @@ HAND_ID = 1   # change to the hand you want
 # =========================
 # FILTER
 # =========================
+# def highpass(signal):
+#     nyq = 0.5 * FPS
+#     b, a = butter(FILTER_ORDER, HIGHPASS_CUTOFF / nyq, btype="high")
+#     return filtfilt(b, a, signal, axis=0)
+
 def highpass(signal):
     nyq = 0.5 * FPS
-    b, a = butter(FILTER_ORDER, HIGHPASS_CUTOFF / nyq, btype="high")
-    return filtfilt(b, a, signal, axis=0)
+
+    # High-pass
+    b_high, a_high = butter(FILTER_ORDER, HIGHPASS_CUTOFF / nyq, btype="high")
+    signal = filtfilt(b_high, a_high, signal, axis=0)
+
+    # Low-pass
+    b_low, a_low = butter(FILTER_ORDER, LOWPASS_CUTOFF / nyq, btype="low")
+    signal = filtfilt(b_low, a_low, signal, axis=0)
+
+    return signal
 
 # =========================
 # LOAD MANO
@@ -74,7 +88,7 @@ def process_wilor(root_dir, HAND_ID):
         m = load(selected)
         V = m.points
         J = J_reg @ V
-        m.shift(-J[0])  # wrist center
+        # m.shift(-J[0])  # wrist center
 
         centroids.append(m.points.mean(axis=0))
 
