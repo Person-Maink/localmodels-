@@ -20,6 +20,22 @@ def main(args):
     model, model_cfg, detector = setup_models(device=device)
 
     img_paths = load_images_from_folder(args.image_folder)
+    if args.video:
+        target_parent = f"{args.video}_frames"
+        img_paths = [img_path for img_path in img_paths if Path(img_path).parent.name == target_parent]
+
+        if not img_paths:
+            available_videos = sorted(
+                {
+                    Path(img_path).parent.name.replace("_frames", "")
+                    for img_path in load_images_from_folder(args.image_folder)
+                    if Path(img_path).parent.name.endswith("_frames")
+                }
+            )
+            print(f"[ERROR] No frames found for video '{args.video}' in {args.image_folder}")
+            if available_videos:
+                print("Available videos:", ", ".join(available_videos))
+            return
 
     for img_path in img_paths:
         base = os.path.splitext(os.path.basename(img_path))[0]
@@ -101,14 +117,22 @@ def main(args):
         single_out_root = Path(args.output_folder) / "single_images"
         video_out_root.mkdir(exist_ok=True)
 
-        for subdir in Path(args.output_folder).iterdir():
-            if not subdir.is_dir() or subdir == video_out_root or subdir == single_out_root:
-                continue
+        if args.video:
+            subdir = Path(args.output_folder) / args.video
+            if subdir.is_dir():
+                video_name = f"{subdir.name}.mp4"
+                output_path = video_out_root / video_name
+                print(f"\n[INFO] Creating video from {subdir.name} ...")
+                images_to_video(subdir / "visualizations", output_path, fps=30)
+        else:
+            for subdir in Path(args.output_folder).iterdir():
+                if not subdir.is_dir() or subdir == video_out_root or subdir == single_out_root:
+                    continue
 
-            video_name = f"{subdir.name}.mp4"
-            output_path = video_out_root / video_name
-            print(f"\n[INFO] Creating video from {subdir.name} ...")
-            images_to_video(subdir / "visualizations", output_path, fps=30)
+                video_name = f"{subdir.name}.mp4"
+                output_path = video_out_root / video_name
+                print(f"\n[INFO] Creating video from {subdir.name} ...")
+                images_to_video(subdir / "visualizations", output_path, fps=30)
 
     print("\nAll images processed.")
 
@@ -117,6 +141,7 @@ if __name__ == "__main__":
     parser.add_argument("--image_folder", type=str, default="/app/images/", help="Folder with input images.")
     parser.add_argument("--output_folder", type=str, default="../../outputs/wilor/", help="Folder for results.")
     parser.add_argument("--rescale_factor", type=float, default=2.0, help="BBox padding scale.")
+    parser.add_argument("--video", type=str, default=None, help="Video name to process (expects <video>_frames folder).")
     parser.add_argument("--visualize", action="store_true", default=True, help="Generate visualization overlays.")
     parser.add_argument("--save_mesh", action="store_true", default=True, help="Save mesh reconstructions (.obj).")
     parser.add_argument("--use_gpu", action="store_true", default=True, help="Use CUDA if available.")
