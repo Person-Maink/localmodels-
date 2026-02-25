@@ -1,11 +1,12 @@
-import glob
-import os
 import pickle
-from vedo import load, merge
-from vedo.applications import AnimationPlayer
-from visualizing_files import *
 
 import numpy as np
+from vedo import Mesh
+from vedo.applications import AnimationPlayer
+
+from visualizing_files import *
+from wilor_npy_io import list_frame_folders, load_frame_records, load_template_faces_from_root
+
 np.bool = bool
 np.int = int
 np.float = float
@@ -19,13 +20,10 @@ np.inf = float("inf")
 # =========================
 # CONFIG
 # =========================
-
-# Root directory containing frame_XXXXX folders
 ROOT_DIR = WILOR_ROOT
 
-WRIST_JOINT_IDX = 0   # MANO wrist index
-HAND_IDX = 1  # for right, 0 for left 
-# HAND_IDX = 1  # for right, 0 for left 
+WRIST_JOINT_IDX = 0
+HAND_IDX = 1  # 1=right, 0=left
 
 # =========================
 # LOAD MANO REGRESSOR
@@ -34,60 +32,73 @@ HAND_IDX = 1  # for right, 0 for left
 with open(MANO_RIGHT_PATH, "rb") as f:
     mano = pickle.load(f, encoding="latin1")
 
-J_reg = mano["J_regressor"]   # (21, 778), sparse OK
+J_reg = mano["J_regressor"]
+FACES_RIGHT = load_template_faces_from_root(ROOT_DIR)
+
+if FACES_RIGHT is None:
+    raise RuntimeError(
+        f"Could not find mesh faces from obj template under {ROOT_DIR}. "
+        "Need at least one .obj file to recover topology."
+    )
 
 # =========================
-# LOAD + CENTER HANDS
+# LOAD + WRIST CENTER HANDS (NPY)
 # =========================
 
-frame_folders = sorted(glob.glob(os.path.join(ROOT_DIR, "frame_*")))
-frames = []   # frames[i] = [hand0_mesh, hand1_mesh]
+frames = []
 
-for folder in frame_folders:
-    all_objs = sorted(glob.glob(os.path.join(folder, "*.obj")))
-    if not all_objs:
+for folder in list_frame_folders(ROOT_DIR):
+    records = load_frame_records(folder)
+    if not records:
         continue
 
     frame_hands = []
 
-    for fpath in all_objs:
-        # infer handedness from filename
-        is_right = fpath.endswith("_1.0.obj")
-        
-        m = load(fpath)
-        V = m.points
-
+    for rec in records:
+        V = rec["verts_world"]
         assert V.shape[0] == J_reg.shape[1]
-        J = J_reg @ V
 
+        J = J_reg @ V
         wrist = J[WRIST_JOINT_IDX]
-        m.shift(-wrist)
+        V_centered = V - wrist
 
         frame_hands.append({
-            "mesh": m,
-            "is_right": is_right
+            "verts": V_centered,
+            "is_right": int(rec["right"] == 1),
         })
 
-    frames.append(frame_hands)
+    if frame_hands:
+        frames.append(frame_hands)
 
-print(f"Loaded {len(frames)} frames with 2 hands each")
+print(f"Loaded {len(frames)} frames from npy")
+
+if not frames:
+    raise RuntimeError(f"No valid WiLoR npy records found under {ROOT_DIR}")
+
 
 # =========================
 # VISUALIZATION
 # =========================
-
 def build_actor(frame_hands):
-    selected = [
-        h["mesh"] for h in frame_hands
-        if h["is_right"] == HAND_IDX 
-    ]
-
+    selected = [h for h in frame_hands if h["is_right"] == HAND_IDX]
     if not selected:
         return None
 
-    return merge(selected) if len(selected) > 1 else selected[0]
+    actors = []
+    for h in selected:
+        faces = FACES_RIGHT if h["is_right"] == 1 else FACES_RIGHT[:, [0, 2, 1]]
+        a = Mesh([h["verts"], faces])
+        a.color("crimson" if h["is_right"] == 1 else "royalblue")
+        a.alpha(0.55)
+        actors.append(a)
+
+    if len(actors) == 1:
+        return actors[0]
+    return sum(actors[1:], actors[0])
+
 
 actor = build_actor(frames[0])
+
 
 def update_scene(i: int):
     global actor
@@ -95,29 +106,34 @@ def update_scene(i: int):
         plt.remove(actor)
 
     actor = build_actor(frames[i])
-
     if actor is not None:
         plt.add(actor)
 
     plt.render()
+
 
 def toggle_hand(*args, **kwargs):
     global HAND_IDX, actor
-    HAND_IDX = not HAND_IDX 
+    HAND_IDX = 1 - HAND_IDX
 
-    plt.remove(actor)
+    if actor is not None:
+        plt.remove(actor)
+
     actor = build_actor(frames[plt.frame])
     if actor is not None:
         plt.add(actor)
+
     plt.render()
 
+
 plt = AnimationPlayer(update_scene, irange=[0, len(frames) - 1])
-plt += actor
+if actor is not None:
+    plt += actor
 
 plt.add_button(
     toggle_hand,
-    pos=(0.02, 0.92),          # top-left
-    states=["Hand 0", "Hand 1"],
+    pos=(0.02, 0.92),
+    states=["Left", "Right"],
     c=["white", "white"],
     bc=["#444444", "#444444"],
 )

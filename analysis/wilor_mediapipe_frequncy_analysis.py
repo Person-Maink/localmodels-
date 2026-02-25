@@ -1,15 +1,14 @@
-import glob
-import os
-import pickle
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+
 from scipy.signal import butter, filtfilt, welch
-from vedo import load, merge
+
 from visualizing_files import *
+from wilor_npy_io import list_frame_folders, load_frame_records
 
 # =========================
-# NUMPY LEGACY PATCH (MANO)
+# NUMPY LEGACY PATCH
 # =========================
 np.bool = bool
 np.int = int
@@ -26,68 +25,43 @@ np.inf = float("inf")
 # =========================
 FPS = 30.0
 FILTER_ORDER = 3
-HIGHPASS_CUTOFF = 2.0  # Hz (physiological tremor ~8–12 Hz)
-LOWPASS_CUTOFF = 12.0  # Hz (physiological tremor ~8–12 Hz)
+HIGHPASS_CUTOFF = 2.0
+LOWPASS_CUTOFF = 12.0
 
-WILOR_ROOT = WILOR_ROOT 
-MEDIAPIPE_CSV = MEDIAPIPE_ROOT 
+WILOR_ROOT = WILOR_ROOT
+MEDIAPIPE_CSV = MEDIAPIPE_ROOT
 
-HAND_ID = 1   # change to the hand you want
+HAND_ID = 1  # right=1, left=0
+
 
 # =========================
 # FILTER UTILITY
 # =========================
-# def highpass(signal):
-#     nyq = 0.5 * FPS
-#     b, a = butter(FILTER_ORDER, HIGHPASS_CUTOFF / nyq, btype="high")
-#     return filtfilt(b, a, signal, axis=0)
-
 def highpass(signal):
     nyq = 0.5 * FPS
 
-    # High-pass
     b_high, a_high = butter(FILTER_ORDER, HIGHPASS_CUTOFF / nyq, btype="high")
     signal = filtfilt(b_high, a_high, signal, axis=0)
 
-    # Low-pass
     b_low, a_low = butter(FILTER_ORDER, LOWPASS_CUTOFF / nyq, btype="low")
     signal = filtfilt(b_low, a_low, signal, axis=0)
 
     return signal
 
-# =========================
-# WILOR PIPELINE
-# =========================
-with open(MANO_RIGHT_PATH, "rb") as f:
-    mano = pickle.load(f, encoding="latin1")
-J_reg = mano["J_regressor"]
 
-frame_folders = sorted(glob.glob(os.path.join(WILOR_ROOT, "frame_*")))
+# =========================
+# WILOR PIPELINE (NPY)
+# =========================
 wilor_centroids = []
 
-for folder in frame_folders:
-    objs = glob.glob(os.path.join(folder, "*.obj"))
-    if not objs:
+for folder in list_frame_folders(WILOR_ROOT):
+    records = load_frame_records(folder)
+    records = [r for r in records if r["right"] == HAND_ID]
+    if not records:
         continue
 
-    # select single hand by is_right flag encoded in filename
-    selected = None
-    for fpath in objs:
-        is_right = float(os.path.splitext(fpath)[0].split("_")[-1])
-        if int(is_right) == HAND_ID:
-            selected = fpath
-            break
-
-    if selected is None:
-        continue
-
-    m = load(selected)
-    V = m.points
-    J = J_reg @ V
-    # m.shift(-J[0])  # wrist center
-
-    wilor_centroids.append(m.points.mean(axis=0))
-
+    # Pick first matched hand in this frame.
+    wilor_centroids.append(records[0]["verts_world"].mean(axis=0))
 
 wilor_centroids = np.stack(wilor_centroids)
 wilor_filt = highpass(wilor_centroids)
@@ -121,14 +95,13 @@ fm, Pm = welch(mp_mag, fs=FPS, nperseg=min(512, len(mp_mag)))
 mp_dom = fm[np.argmax(Pm)]
 
 # =========================
-# PLOTTING (SAME FIGURE)
+# PLOTTING
 # =========================
 t_w = np.arange(len(wilor_mag)) / FPS
 t_m = np.arange(len(mp_mag)) / FPS
 
 fig, axes = plt.subplots(3, 1, figsize=(13, 11))
 
-# 1) Displacement over time
 axes[0].plot(t_w, wilor_mag, label="Wilor", lw=1.5)
 axes[0].plot(t_m, mp_mag, "--", label="MediaPipe", lw=1.5)
 axes[0].set_title("Hand displacement over time")
@@ -136,7 +109,6 @@ axes[0].set_ylabel("Displacement magnitude")
 axes[0].legend()
 axes[0].grid(True)
 
-# 2) Frequency spectrum
 axes[1].semilogy(fw, Pw, label=f"Wilor ({wilor_dom:.2f} Hz)")
 axes[1].semilogy(fm, Pm, "--", label=f"MediaPipe ({mp_dom:.2f} Hz)")
 axes[1].axvline(wilor_dom, color="C0", ls=":")
@@ -146,7 +118,6 @@ axes[1].set_ylabel("Power")
 axes[1].legend()
 axes[1].grid(True)
 
-# 3) Per-axis displacement
 labels = ["x", "y", "z"]
 for i, lab in enumerate(labels):
     axes[2].plot(t_w, wilor_filt[:, i], label=f"Wilor {lab}")
@@ -161,7 +132,4 @@ axes[2].grid(True)
 plt.tight_layout()
 plt.show()
 
-# =========================
-# PRINT SUMMARY
-# =========================
 print(f"Wilor dominant frequency:     {wilor_dom:.2f} Hz")

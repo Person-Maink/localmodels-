@@ -1,14 +1,13 @@
-import glob
-import os
-import pickle
 import numpy as np
 import matplotlib.pyplot as plt
+
 from scipy.signal import butter, filtfilt, welch
-from vedo import load, merge
+
 from visualizing_files import *
+from wilor_npy_io import list_frame_folders, load_frame_records
 
 # =========================
-# NUMPY LEGACY PATCH (MANO)
+# NUMPY LEGACY PATCH
 # =========================
 np.bool = bool
 np.int = int
@@ -31,66 +30,37 @@ FILTER_ORDER = 3
 WILOR_ROOT_A = WILOR_ROOT
 WILOR_ROOT_B = WILOR_COMP
 
-HAND_ID = 1   # change to the hand you want
+HAND_ID = 1  # right=1, left=0
+
 
 # =========================
 # FILTER
 # =========================
-# def highpass(signal):
-#     nyq = 0.5 * FPS
-#     b, a = butter(FILTER_ORDER, HIGHPASS_CUTOFF / nyq, btype="high")
-#     return filtfilt(b, a, signal, axis=0)
-
 def highpass(signal):
     nyq = 0.5 * FPS
 
-    # High-pass
     b_high, a_high = butter(FILTER_ORDER, HIGHPASS_CUTOFF / nyq, btype="high")
     signal = filtfilt(b_high, a_high, signal, axis=0)
 
-    # Low-pass
     b_low, a_low = butter(FILTER_ORDER, LOWPASS_CUTOFF / nyq, btype="low")
     signal = filtfilt(b_low, a_low, signal, axis=0)
 
     return signal
 
-# =========================
-# LOAD MANO
-# =========================
-with open(MANO_RIGHT_PATH, "rb") as f:
-    mano = pickle.load(f, encoding="latin1")
-
-J_reg = mano["J_regressor"]
 
 # =========================
 # WILOR PIPELINE (FUNCTION)
 # =========================
-def process_wilor(root_dir, HAND_ID):
-    frame_folders = sorted(glob.glob(os.path.join(root_dir, "frame_*")))
+def process_wilor(root_dir, hand_id):
     centroids = []
 
-    for folder in frame_folders:
-        objs = glob.glob(os.path.join(folder, "*.obj"))
-        if not objs:
+    for folder in list_frame_folders(root_dir):
+        records = load_frame_records(folder)
+        records = [r for r in records if r["right"] == hand_id]
+        if not records:
             continue
 
-        # select single hand by is_right flag encoded in filename
-        selected = None
-        for fpath in objs:
-            is_right = float(os.path.splitext(fpath)[0].split("_")[-1])
-            if int(is_right) == HAND_ID:
-                selected = fpath
-                break
-
-        if selected is None:
-            continue
-
-        m = load(selected)
-        V = m.points
-        J = J_reg @ V
-        # m.shift(-J[0])  # wrist center
-
-        centroids.append(m.points.mean(axis=0))
+        centroids.append(records[0]["verts_world"].mean(axis=0))
 
     centroids = np.stack(centroids)
     filt = highpass(centroids)
@@ -120,11 +90,10 @@ tA = np.arange(len(wilor_A["magnitude"])) / FPS
 tB = np.arange(len(wilor_B["magnitude"])) / FPS
 
 # =========================
-# PLOTS (SAME FIGURE)
+# PLOTS
 # =========================
 fig, axes = plt.subplots(3, 1, figsize=(13, 11))
 
-# 1) Displacement over time
 axes[0].plot(tA, wilor_A["magnitude"], label=f"Wilor ({wilor_A['dominant']:.2f} Hz)")
 axes[0].plot(tB, wilor_B["magnitude"], "--", label=f"Amplified ({wilor_B['dominant']:.2f} Hz)")
 axes[0].set_title("Wilor displacement over time")
@@ -132,7 +101,6 @@ axes[0].set_ylabel("Displacement magnitude")
 axes[0].legend()
 axes[0].grid(True)
 
-# 2) Frequency spectrum
 axes[1].semilogy(wilor_A["freqs"], wilor_A["psd"], label="Wilor")
 axes[1].semilogy(wilor_B["freqs"], wilor_B["psd"], "--", label="Amplified")
 axes[1].axvline(wilor_A["dominant"], color="C0", ls=":")
@@ -142,7 +110,6 @@ axes[1].set_ylabel("Power")
 axes[1].legend()
 axes[1].grid(True)
 
-# 3) Per-axis displacement
 labels = ["x", "y", "z"]
 for i, lab in enumerate(labels):
     axes[2].plot(tA, wilor_A["filtered"][:, i], label=f"Normal {lab}")
@@ -157,8 +124,5 @@ axes[2].grid(True)
 plt.tight_layout()
 plt.show()
 
-# =========================
-# SUMMARY
-# =========================
 print(f"Wilor dominant frequency: {wilor_A['dominant']:.2f} Hz")
 print(f"Amplified dominant frequency: {wilor_B['dominant']:.2f} Hz")
