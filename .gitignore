@@ -22,9 +22,6 @@ __pycache__/
 **/*.h5
 **/*.pth
 **/*.pt
-**/*.pkl
-**/*.npz
-**/*.npy
 **/saved_models/
 **/checkpoints/
 
