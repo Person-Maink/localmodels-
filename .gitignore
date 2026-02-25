@@ -44,6 +44,7 @@ __pycache__/
 # Docker-related files
 docker-compose.oerride.yml
 Dockerfile.*
+*.sif
 
 # macOS system files
 .DS_Store
