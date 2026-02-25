@@ -138,7 +138,7 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run WiLoR inference on image folder.")
-    parser.add_argument("--image_folder", type=str, default="/app/images/", help="Folder with input images.")
+    parser.add_argument("--image_folder", type=str, default="../../data/images/", help="Folder with input images.")
     parser.add_argument("--output_folder", type=str, default="../../outputs/wilor/", help="Folder for results.")
     parser.add_argument("--rescale_factor", type=float, default=2.0, help="BBox padding scale.")
     parser.add_argument("--video", type=str, default=None, help="Video name to process (expects <video>_frames folder).")
