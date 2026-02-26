@@ -14,7 +14,9 @@ from vitpose_model import ViTPoseModel
 
 
 DEFAULT_HAMBA_CHECKPOINT = "ckpts/hamba/checkpoints/hamba.ckpt"
-DEFAULT_DETECTRON2_CHECKPOINT = "~/.cache/torch/hub/checkpoints/model_final_f05665.pkl"
+# DEFAULT_DETECTRON2_CHECKPOINT = "~/.cache/torch/hub/checkpoints/model_final_f05665.pkl"
+DEFAULT_DETECTRON2_CHECKPOINT = "/home/mthakur/.cache/torch/hub/detectron2/model_final_f05665.pkl"
+
 
 PERSON_DET_THRESHOLD = 0.5
 HAND_KEYPOINT_THRESHOLD = 0.1
