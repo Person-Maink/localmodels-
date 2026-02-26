@@ -1,0 +1,164 @@
+Bootstrap: docker
+From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
+
+%labels
+    Author REIT Team, Modified by Mayank Thakur
+    Description Dyn-HaMR inference container (CUDA 11.7, Python 3.10, UV)
+
+%help
+    Dyn-HaMR Apptainer container with CUDA + UV-based Python environment.
+
+    Usage:
+        apptainer shell container.sif
+        apptainer exec --nv <container>.sif python script.py
+
+%files
+    /scratch/mthakur/Dyn-HaMR/dyn-hamr /app/dyn-hamr
+    /scratch/mthakur/Dyn-HaMR/third-party /app/third-party
+    /scratch/mthakur/Dyn-HaMR/setup.py /app/setup.py
+    /scratch/mthakur/Dyn-HaMR/requirements.txt /app/requirements.txt
+
+%post
+    set -e
+
+    echo "=============================="
+    echo "Installing system dependencies"
+    echo "=============================="
+
+    apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        python3.10 \
+        python3-pip \
+        build-essential \
+        ninja-build \
+        git \
+        curl \
+        libgl1 \
+        libboost-all-dev\
+        zlib1g\
+        libglib2.0-0 \
+        libglib2.0-dev \
+        libsm6 \
+        libxext6 \
+        libxrender1 \
+        libgomp1 \
+        libgl1-mesa-glx \
+
+    ln -sf /usr/bin/python3.10 /usr/bin/python
+    python -m pip install --upgrade pip
+
+    echo "=============================="
+    echo "Installing UV"
+    echo "=============================="
+
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    export PATH="/root/.local/bin:$PATH"
+    uv pip install --system setuptools wheel
+
+    echo "=============================="
+    echo "Installing PyTorch (CUDA 11.7)"
+    echo "=============================="
+
+    uv pip install --system torch==1.13.0 torchvision==0.14.0 --no-build-isolation \
+        --index-url https://download.pytorch.org/whl/cu117
+
+    uv pip install --system torch-scatter --no-build-isolation \
+        -f https://data.pyg.org/whl/torch-1.13.0+cu117.html
+
+    echo "=============================="
+    echo "Installing base project"
+    echo "=============================="
+
+    cd /app
+    uv pip install --system .
+
+    echo "=============================="
+    echo "Installing requirements"
+    echo "=============================="
+
+    uv pip install --system -r /app/requirements.txt --no-build-isolation
+
+    echo "=============================="
+    echo "Installing DROID-SLAM"
+    echo "=============================="
+
+    cd /app/third-party/DROID-SLAM
+    python setup.py install
+
+    echo "=============================="
+    echo "Installing HaMeR + ViTPose"
+    echo "=============================="
+
+    cd /app/third-party/hamer
+    uv pip install --system .[all] --no-build-isolation
+    uv pip install --system -v third-party/ViTPose --no-build-isolation
+
+    echo "=============================="
+    echo "Fixing Numpy"
+    echo "=============================="
+
+    uv pip install --system \
+        numpy==1.22.4 --no-build-isolation
+
+    echo "=============================="
+    echo "Installing MANO"
+    echo "=============================="
+
+    cd /app/third-party/manopth
+    uv pip install --system .
+
+    echo "=============================="
+    echo "Applying pinned broken deps"
+    echo "=============================="
+
+    uv pip install --system \
+        contourpy==1.0.7 \
+        matplotlib==3.5.3 \
+        opencv-python==4.6.0.66 \
+        scikit-image==0.19.3 \
+        scipy==1.8.1 \
+        --no-build-isolation
+
+    echo "=============================="
+    echo "Installing missing utilities"
+    echo "=============================="
+
+    uv pip install --system loguru arguments future consoleprinter plyfile --no-build-isolation
+
+    echo "=============================="
+    echo "Installing human_body_prior"
+    echo "=============================="
+
+    cd /app/third-party/human_body_prior
+    uv pip install --system -r requirements.txt --no-deps --no-build-isolation
+    python setup.py develop
+
+    echo "=============================="
+    echo "Installing MediaPipe + protobuf"
+    echo "=============================="
+
+    uv pip install --system mediapipe==0.10.9 protobuf==3.20.3 --no-build-isolation
+
+    echo "=============================="
+    echo "Reinstalling PyTorch last (safety)"
+    echo "=============================="
+
+    uv pip install --system torch==1.13.0 torchvision==0.14.0 --no-build-isolation \
+        --index-url https://download.pytorch.org/whl/cu117
+
+    echo "=============================="
+    echo "Build completed successfully"
+    echo "=============================="
+
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+%environment
+    export LC_ALL=C
+    export PYTHONUNBUFFERED=1
+    export PATH="/root/.local/bin:$PATH"
+
+%runscript
+    echo "=============================="
+    echo "Dyn-HaMR Apptainer Container"
+    echo "=============================="
+    echo "Python: $(python --version)"
+    exec "$@"
