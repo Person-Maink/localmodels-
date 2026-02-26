@@ -1,0 +1,96 @@
+Bootstrap: docker
+From: nvidia/cuda:12.8.0-cudnn-devel-ubuntu24.04
+
+%labels
+    Author REIT Team, Modified by Mayank Thakur
+    Description ViPE container (CUDA 12.8, PyTorch 2.0.x, Python 3.10, Conda)
+
+%help
+    Vipe Apptainer container with CUDA + PyTorch 2.0.x using Conda.
+    Usage:
+        apptainer shell --nv container.sif
+        apptainer exec --nv container.sif python script.py
+
+%environment
+    export LC_ALL=C
+    export PYTHONUNBUFFERED=1
+    export PATH="/.venv/bin:$PATH"
+
+
+%files
+    /scratch/mthakur/vipe/vipe        /app/ViPE/vipe
+    /scratch/mthakur/vipe/configs     /app/ViPE/configs
+    /scratch/mthakur/vipe/assets      /app/ViPE/assets
+    /scratch/mthakur/vipe/csrc        /app/ViPE/csrc
+    /scratch/mthakur/vipe/envs        /app/ViPE/envs
+    /scratch/mthakur/vipe/run.py      /app/ViPE/run.py
+    /scratch/mthakur/vipe/setup.py        /app/ViPE/setup.py
+    /scratch/mthakur/vipe/pyproject.toml  /app/ViPE/pyproject.toml
+
+%post
+    echo "=============================="
+    echo "System dependencies"
+    echo "=============================="
+
+    apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        build-essential \
+        git \
+        curl \
+        libgl1 \
+        libglib2.0-0 \
+        ca-certificates
+
+    echo "=============================="
+    echo "Installing Miniconda"
+    echo "=============================="
+
+    curl -fsSL https://repo.anaconda.com/miniconda/Miniconda3-py310_24.1.2-0-Linux-x86_64.sh -o /tmp/miniconda.sh
+    bash /tmp/miniconda.sh -b -p /opt/conda
+    rm /tmp/miniconda.sh
+
+    export PATH=/opt/conda/bin:$PATH
+
+    echo "=============================="
+    echo "Creating ViPE conda environment"
+    echo "=============================="
+
+    cd /app/ViPE
+    conda env create -f envs/base.yml
+    conda clean -afy
+
+    echo "=============================="
+    echo "Installing Python dependencies"
+    echo "=============================="
+
+    export CUDA_HOME=/usr/local/cuda
+    export TORCH_CUDA_ARCH_LIST="7.5;8.0;8.6;9.0"
+
+    conda run -n vipe pip install -r envs/requirements.txt \
+    --extra-index-url https://download.pytorch.org/whl/cu128
+
+    echo "=============================="
+    echo "Installing ViPE"
+    echo "=============================="
+
+    conda run -n vipe pip install --no-build-isolation -e .
+
+    echo "=============================="
+    echo "Installing Ninja"
+    echo "=============================="
+
+    conda run -n vipe pip install ninja
+
+    echo "=============================="
+    echo "ViPE build complete"
+    echo "=============================="
+
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+%runscript
+    echo "=============================="
+    echo "WiLoR Apptainer Container"
+    echo "=============================="
+    echo "Python: $(python --version)"
+    echo "PyTorch: $(python -c 'import torch; print(torch.__version__)')"
+    echo "CUDA Available: $(python -c 'import torch; print(torch.cuda.is_available())')"
+    exec "$@"

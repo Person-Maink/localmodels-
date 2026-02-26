@@ -1,0 +1,141 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/12.9
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Mon Feb  2 17:01:43 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   40C    P0             46W /  300W |     249MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    7   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9039412
+Job Name:       vipe-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/vipe
+Work dir:       /scratch/mthakur/vipe
+Job started at: Mon Feb  2 17:01:43 CET 2026
+===============================================
+2026-02-02 17:01:49,312 - vipe - INFO - Processing video data/120-2_clip_1.mp4...
+
+Reading video stream:   0%|          | 0/155 [00:00<?, ?it/s]Reading video stream:   1%|          | 1/155 [00:00<00:22,  6.71it/s]Reading video stream:   8%|▊         | 12/155 [00:00<00:02, 55.75it/s]Reading video stream:  15%|█▍        | 23/155 [00:00<00:01, 76.12it/s]Reading video stream:  22%|██▏       | 34/155 [00:00<00:01, 86.51it/s]Reading video stream:  29%|██▉       | 45/155 [00:00<00:01, 92.32it/s]Reading video stream:  35%|███▌      | 55/155 [00:00<00:01, 94.60it/s]Reading video stream:  43%|████▎     | 66/155 [00:00<00:00, 97.80it/s]Reading video stream:  50%|████▉     | 77/155 [00:00<00:00, 99.96it/s]Reading video stream:  57%|█████▋    | 88/155 [00:00<00:00, 101.00it/s]Reading video stream:  64%|██████▍   | 99/155 [00:01<00:00, 101.48it/s]Reading video stream:  71%|███████   | 110/155 [00:01<00:00, 101.42it/s]Reading video stream:  78%|███████▊  | 121/155 [00:01<00:00, 99.98it/s] Reading video stream:  85%|████████▌ | 132/155 [00:01<00:00, 100.48it/s]Reading video stream:  92%|█████████▏| 143/155 [00:01<00:00, 101.95it/s]Reading video stream:  99%|█████████▉| 154/155 [00:01<00:00, 103.11it/s]Reading video stream: 100%|██████████| 155/155 [00:01<00:00, 94.19it/s] 
+Caching:   0%|          | 0/25 [00:00<?, ?it/s]Caching:  68%|██████▊   | 17/25 [00:00<00:00, 169.16it/s]Caching: 100%|██████████| 25/25 [00:00<00:00, 165.85it/s]
+Caching:   0%|          | 0/25 [00:00<?, ?it/s]Caching:  72%|███████▏  | 18/25 [00:00<00:00, 171.46it/s]Caching: 100%|██████████| 25/25 [00:00<00:00, 175.15it/s]
+Traceback (most recent call last):
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    raise err
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/util/connection.py", line 73, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [Errno 111] Connection refused
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connection.py", line 219, in _new_conn
+    raise NewConnectionError(
+urllib3.exceptions.NewConnectionError: HTTPSConnection(host='drive.google.com', port=443): Failed to establish a new connection: [Errno 111] Connection refused
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/mthakur/.local/lib/python3.10/site-packages/requests/adapters.py", line 644, in send
+    resp = conn.urlopen(
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/util/retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='drive.google.com', port=443): Max retries exceeded with url: /uc?id=1PpqVt1H4maBa_GbPJp4NwxRsd9jk-elh (Caused by NewConnectionError("HTTPSConnection(host='drive.google.com', port=443): Failed to establish a new connection: [Errno 111] Connection refused"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/conda/envs/vipe/bin/vipe", line 7, in <module>
+    sys.exit(main())
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1161, in __call__
+    return self.main(*args, **kwargs)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1082, in main
+    rv = self.invoke(ctx)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1697, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1443, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 788, in invoke
+    return __callback(*args, **kwargs)
+  File "/app/ViPE/vipe/cli/main.py", line 91, in infer
+    vipe_pipeline.run(video_stream)
+  File "/app/ViPE/vipe/pipeline/default.py", line 124, in run
+    slam_output = slam_pipeline.run(slam_streams, rig=slam_rig, camera_type=self.camera_type)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/app/ViPE/vipe/slam/system.py", line 246, in run
+    self._build_components()
+  File "/app/ViPE/vipe/slam/system.py", line 92, in _build_components
+    self.droid_net = DroidNet().to(self.device)
+  File "/app/ViPE/vipe/slam/networks/droid_net.py", line 508, in __init__
+    self.load_weights()
+  File "/app/ViPE/vipe/slam/networks/droid_net.py", line 537, in load_weights
+    gdown.download(
+  File "/home/mthakur/.local/lib/python3.10/site-packages/gdown/download.py", line 202, in download
+    res = sess.get(url, stream=True, verify=verify)
+  File "/home/mthakur/.local/lib/python3.10/site-packages/requests/sessions.py", line 602, in get
+    return self.request("GET", url, **kwargs)
+  File "/home/mthakur/.local/lib/python3.10/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/home/mthakur/.local/lib/python3.10/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "/home/mthakur/.local/lib/python3.10/site-packages/requests/adapters.py", line 677, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='drive.google.com', port=443): Max retries exceeded with url: /uc?id=1PpqVt1H4maBa_GbPJp4NwxRsd9jk-elh (Caused by NewConnectionError("HTTPSConnection(host='drive.google.com', port=443): Failed to establish a new connection: [Errno 111] Connection refused"))
+
+ERROR conda.cli.main_run:execute(124): `conda run vipe infer data/120-2_clip_1.mp4 --output output/` failed. (See above for error)
+===============================================
+Job finished at: Mon Feb  2 17:02:08 CET 2026
+Execution took 0.01 hours
+Writing output to SLURM_logs/vipe-inference_029.out
+===============================================

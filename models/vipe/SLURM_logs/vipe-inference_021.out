@@ -1,0 +1,192 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/12.9
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Thu Jan 29 17:55:06 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   38C    P0             46W /  300W |     249MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    7   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9011940
+Job Name:       vipe-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/vipe
+Work dir:       /scratch/mthakur/vipe
+Job started at: Thu Jan 29 17:55:06 CET 2026
+===============================================
+2026-01-29 17:55:41,878 - vipe - INFO - Processing video data/120-2_clip_1.mp4...
+
+Reading video stream:   0%|          | 0/155 [00:00<?, ?it/s]Reading video stream:   1%|          | 1/155 [00:00<01:24,  1.81it/s]Reading video stream:   8%|▊         | 12/155 [00:00<00:06, 23.69it/s]Reading video stream:  14%|█▎        | 21/155 [00:00<00:03, 38.31it/s]Reading video stream:  19%|█▉        | 30/155 [00:00<00:03, 39.97it/s]Reading video stream:  26%|██▋       | 41/155 [00:01<00:02, 53.99it/s]Reading video stream:  32%|███▏      | 49/155 [00:01<00:01, 58.64it/s]Reading video stream:  39%|███▊      | 60/155 [00:01<00:01, 70.02it/s]Reading video stream:  46%|████▌     | 71/155 [00:01<00:01, 78.70it/s]Reading video stream:  53%|█████▎    | 82/155 [00:01<00:00, 85.41it/s]Reading video stream:  60%|██████    | 93/155 [00:01<00:00, 90.10it/s]Reading video stream:  67%|██████▋   | 104/155 [00:01<00:00, 93.46it/s]Reading video stream:  74%|███████▎  | 114/155 [00:01<00:00, 93.36it/s]Reading video stream:  81%|████████  | 125/155 [00:01<00:00, 95.53it/s]Reading video stream:  88%|████████▊ | 136/155 [00:02<00:00, 97.81it/s]Reading video stream:  94%|█████████▍| 146/155 [00:02<00:00, 97.79it/s]Reading video stream: 100%|██████████| 155/155 [00:02<00:00, 69.23it/s]
+Caching:   0%|          | 0/25 [00:00<?, ?it/s]Caching:  68%|██████▊   | 17/25 [00:00<00:00, 165.41it/s]Caching: 100%|██████████| 25/25 [00:00<00:00, 160.78it/s]
+Caching:   0%|          | 0/25 [00:00<?, ?it/s]Caching:  68%|██████▊   | 17/25 [00:00<00:00, 164.93it/s]Caching: 100%|██████████| 25/25 [00:00<00:00, 169.41it/s]
+Traceback (most recent call last):
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    raise err
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/util/connection.py", line 73, in create_connection
+    sock.connect(sa)
+OSError: [Errno 101] Network is unreachable
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connection.py", line 219, in _new_conn
+    raise NewConnectionError(
+urllib3.exceptions.NewConnectionError: HTTPSConnection(host='huggingface.co', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/mthakur/.local/lib/python3.10/site-packages/requests/adapters.py", line 644, in send
+    resp = conn.urlopen(
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/util/retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /bert-base-uncased/resolve/main/config.json (Caused by NewConnectionError("HTTPSConnection(host='huggingface.co', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1746, in _get_metadata_or_catch_error
+    metadata = get_hf_file_metadata(
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1666, in get_hf_file_metadata
+    r = _request_wrapper(
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 364, in _request_wrapper
+    response = _request_wrapper(
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 387, in _request_wrapper
+    response = get_session().request(method=method, url=url, **params)
+  File "/home/mthakur/.local/lib/python3.10/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/home/mthakur/.local/lib/python3.10/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/utils/_http.py", line 93, in send
+    return super().send(request, *args, **kwargs)
+  File "/home/mthakur/.local/lib/python3.10/site-packages/requests/adapters.py", line 677, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: (MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /bert-base-uncased/resolve/main/config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: 22f5946e-4655-449f-9253-a2d274f357d1)')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/transformers/utils/hub.py", line 403, in cached_file
+    resolved_file = hf_hub_download(
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/utils/_deprecation.py", line 101, in inner_f
+    return f(*args, **kwargs)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1232, in hf_hub_download
+    return _hf_hub_download_to_cache_dir(
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1339, in _hf_hub_download_to_cache_dir
+    _raise_on_head_call_error(head_call_error, force_download, local_files_only)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1857, in _raise_on_head_call_error
+    raise LocalEntryNotFoundError(
+huggingface_hub.errors.LocalEntryNotFoundError: An error happened while trying to locate the file on the Hub and we cannot find the requested files in the local cache. Please check your connection and try again or make sure your Internet connection is on.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/conda/envs/vipe/bin/vipe", line 7, in <module>
+    sys.exit(main())
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1161, in __call__
+    return self.main(*args, **kwargs)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1082, in main
+    rv = self.invoke(ctx)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1697, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1443, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 788, in invoke
+    return __callback(*args, **kwargs)
+  File "/app/ViPE/vipe/cli/main.py", line 91, in infer
+    vipe_pipeline.run(video_stream)
+  File "/app/ViPE/vipe/pipeline/default.py", line 119, in run
+    slam_streams: list[VideoStream] = [
+  File "/app/ViPE/vipe/pipeline/default.py", line 120, in <listcomp>
+    self._add_init_processors(video_stream).cache("process", online=True) for video_stream in video_streams
+  File "/app/ViPE/vipe/pipeline/default.py", line 75, in _add_init_processors
+    TrackAnythingProcessor(
+  File "/app/ViPE/vipe/pipeline/processors.py", line 125, in __init__
+    self.tracker = TrackAnythingPipeline(self.mask_phrases, sam_points_per_side=50, sam_run_gap=self.sam_run_gap)
+  File "/app/ViPE/vipe/priors/track_anything/__init__.py", line 50, in __init__
+    self.segtracker = SegTracker(
+  File "/app/ViPE/vipe/priors/track_anything/seg_tracker.py", line 19, in __init__
+    self.detector = Detector(self.sam.device)
+  File "/app/ViPE/vipe/priors/track_anything/detector.py", line 23, in __init__
+    self.gd = build_grounding_dino(args)
+  File "/app/ViPE/vipe/priors/track_anything/groundingdino/models/__init__.py", line 17, in build_model
+    model = build_func(args)
+  File "/app/ViPE/vipe/priors/track_anything/groundingdino/models/main/groundingdino.py", line 404, in build_groundingdino
+    model = GroundingDINO(
+  File "/app/ViPE/vipe/priors/track_anything/groundingdino/models/main/groundingdino.py", line 93, in __init__
+    self.tokenizer = get_tokenlizer.get_tokenlizer(text_encoder_type)
+  File "/app/ViPE/vipe/priors/track_anything/groundingdino/util/get_tokenlizer.py", line 19, in get_tokenlizer
+    tokenizer = AutoTokenizer.from_pretrained(text_encoder_type)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/transformers/models/auto/tokenization_auto.py", line 891, in from_pretrained
+    config = AutoConfig.from_pretrained(
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/transformers/models/auto/configuration_auto.py", line 1054, in from_pretrained
+    config_dict, unused_kwargs = PretrainedConfig.get_config_dict(pretrained_model_name_or_path, **kwargs)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/transformers/configuration_utils.py", line 591, in get_config_dict
+    config_dict, kwargs = cls._get_config_dict(pretrained_model_name_or_path, **kwargs)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/transformers/configuration_utils.py", line 650, in _get_config_dict
+    resolved_config_file = cached_file(
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/transformers/utils/hub.py", line 446, in cached_file
+    raise EnvironmentError(
+OSError: We couldn't connect to 'https://huggingface.co' to load this file, couldn't find it in the cached files and it looks like bert-base-uncased is not the path to a directory containing a file named config.json.
+Checkout your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.
+
+ERROR conda.cli.main_run:execute(124): `conda run vipe infer data/120-2_clip_1.mp4 --output output/` failed. (See above for error)
+===============================================
+Job finished at: Thu Jan 29 17:56:44 CET 2026
+Execution took 0.03 hours
+Writing output to SLURM_logs/vipe-inference_021.out
+===============================================

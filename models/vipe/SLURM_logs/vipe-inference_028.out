@@ -1,0 +1,136 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/12.9
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Mon Feb  2 16:59:41 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   39C    P0             46W /  300W |     249MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    7   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9039406
+Job Name:       vipe-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/vipe
+Work dir:       /scratch/mthakur/vipe
+Job started at: Mon Feb  2 16:59:42 CET 2026
+===============================================
+2026-02-02 16:59:52,955 - vipe - INFO - Processing video data/120-2_clip_1.mp4...
+Downloading: "https://huggingface.co/ShilongLiu/GroundingDINO/resolve/main/groundingdino_swint_ogc.pth" to /home/mthakur/.cache/torch/hub/checkpoints/groundingdino_swint_ogc.pth
+
+Reading video stream:   0%|          | 0/155 [00:00<?, ?it/s]Reading video stream:   1%|          | 1/155 [00:00<00:38,  3.97it/s]Reading video stream:   8%|▊         | 12/155 [00:00<00:03, 41.18it/s]Reading video stream:  12%|█▏        | 19/155 [00:00<00:05, 24.68it/s]Reading video stream:  19%|█▉        | 30/155 [00:00<00:03, 36.70it/s]Reading video stream:  26%|██▋       | 41/155 [00:01<00:02, 50.56it/s]Reading video stream:  32%|███▏      | 49/155 [00:01<00:02, 51.86it/s]Reading video stream:  39%|███▊      | 60/155 [00:01<00:01, 63.92it/s]Reading video stream:  46%|████▌     | 71/155 [00:01<00:01, 74.29it/s]Reading video stream:  53%|█████▎    | 82/155 [00:01<00:00, 81.32it/s]Reading video stream:  60%|██████    | 93/155 [00:01<00:00, 87.21it/s]Reading video stream:  67%|██████▋   | 104/155 [00:01<00:00, 91.62it/s]Reading video stream:  74%|███████▎  | 114/155 [00:01<00:00, 92.94it/s]Reading video stream:  80%|████████  | 124/155 [00:01<00:00, 94.81it/s]Reading video stream:  87%|████████▋ | 135/155 [00:02<00:00, 96.93it/s]Reading video stream:  94%|█████████▎| 145/155 [00:02<00:00, 95.47it/s]Reading video stream: 100%|██████████| 155/155 [00:02<00:00, 95.70it/s]Reading video stream: 100%|██████████| 155/155 [00:02<00:00, 69.17it/s]
+Caching:   0%|          | 0/25 [00:00<?, ?it/s]Caching:  64%|██████▍   | 16/25 [00:00<00:00, 156.83it/s]Caching: 100%|██████████| 25/25 [00:00<00:00, 155.82it/s]
+Caching:   0%|          | 0/25 [00:00<?, ?it/s]Caching:  68%|██████▊   | 17/25 [00:00<00:00, 167.37it/s]Caching: 100%|██████████| 25/25 [00:00<00:00, 171.98it/s]
+Traceback (most recent call last):
+  File "/opt/conda/envs/vipe/lib/python3.10/urllib/request.py", line 1348, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+  File "/opt/conda/envs/vipe/lib/python3.10/http/client.py", line 1283, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/opt/conda/envs/vipe/lib/python3.10/http/client.py", line 1329, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/opt/conda/envs/vipe/lib/python3.10/http/client.py", line 1278, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/opt/conda/envs/vipe/lib/python3.10/http/client.py", line 1038, in _send_output
+    self.send(msg)
+  File "/opt/conda/envs/vipe/lib/python3.10/http/client.py", line 976, in send
+    self.connect()
+  File "/opt/conda/envs/vipe/lib/python3.10/http/client.py", line 1448, in connect
+    super().connect()
+  File "/opt/conda/envs/vipe/lib/python3.10/http/client.py", line 942, in connect
+    self.sock = self._create_connection(
+  File "/opt/conda/envs/vipe/lib/python3.10/socket.py", line 857, in create_connection
+    raise err
+  File "/opt/conda/envs/vipe/lib/python3.10/socket.py", line 845, in create_connection
+    sock.connect(sa)
+OSError: [Errno 101] Network is unreachable
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/conda/envs/vipe/bin/vipe", line 7, in <module>
+    sys.exit(main())
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1161, in __call__
+    return self.main(*args, **kwargs)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1082, in main
+    rv = self.invoke(ctx)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1697, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1443, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 788, in invoke
+    return __callback(*args, **kwargs)
+  File "/app/ViPE/vipe/cli/main.py", line 91, in infer
+    vipe_pipeline.run(video_stream)
+  File "/app/ViPE/vipe/pipeline/default.py", line 119, in run
+    slam_streams: list[VideoStream] = [
+  File "/app/ViPE/vipe/pipeline/default.py", line 120, in <listcomp>
+    self._add_init_processors(video_stream).cache("process", online=True) for video_stream in video_streams
+  File "/app/ViPE/vipe/pipeline/default.py", line 75, in _add_init_processors
+    TrackAnythingProcessor(
+  File "/app/ViPE/vipe/pipeline/processors.py", line 125, in __init__
+    self.tracker = TrackAnythingPipeline(self.mask_phrases, sam_points_per_side=50, sam_run_gap=self.sam_run_gap)
+  File "/app/ViPE/vipe/priors/track_anything/__init__.py", line 50, in __init__
+    self.segtracker = SegTracker(
+  File "/app/ViPE/vipe/priors/track_anything/seg_tracker.py", line 19, in __init__
+    self.detector = Detector(self.sam.device)
+  File "/app/ViPE/vipe/priors/track_anything/detector.py", line 25, in __init__
+    checkpoint = torch.hub.load_state_dict_from_url(
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/torch/hub.py", line 871, in load_state_dict_from_url
+    download_url_to_file(url, cached_file, hash_prefix, progress=progress)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/torch/hub.py", line 712, in download_url_to_file
+    u = urlopen(req)
+  File "/opt/conda/envs/vipe/lib/python3.10/urllib/request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "/opt/conda/envs/vipe/lib/python3.10/urllib/request.py", line 519, in open
+    response = self._open(req, data)
+  File "/opt/conda/envs/vipe/lib/python3.10/urllib/request.py", line 536, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+  File "/opt/conda/envs/vipe/lib/python3.10/urllib/request.py", line 496, in _call_chain
+    result = func(*args)
+  File "/opt/conda/envs/vipe/lib/python3.10/urllib/request.py", line 1391, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+  File "/opt/conda/envs/vipe/lib/python3.10/urllib/request.py", line 1351, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error [Errno 101] Network is unreachable>
+
+ERROR conda.cli.main_run:execute(124): `conda run vipe infer data/120-2_clip_1.mp4 --output output/` failed. (See above for error)
+===============================================
+Job finished at: Mon Feb  2 17:00:34 CET 2026
+Execution took 0.01 hours
+Writing output to SLURM_logs/vipe-inference_028.out
+===============================================

@@ -1,0 +1,130 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/12.9
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Thu Jan 29 18:49:16 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   38C    P0             46W /  300W |     249MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    7   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9012621
+Job Name:       vipe-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/vipe
+Work dir:       /scratch/mthakur/vipe
+Job started at: Thu Jan 29 18:49:17 CET 2026
+===============================================
+2026-01-29 18:50:03,729 - vipe - INFO - Processing video data/120-2_clip_1.mp4...
+
+Reading video stream:   0%|          | 0/155 [00:00<?, ?it/s]Reading video stream:   1%|          | 1/155 [00:00<01:18,  1.96it/s]Reading video stream:   8%|▊         | 12/155 [00:00<00:05, 25.23it/s]Reading video stream:  13%|█▎        | 20/155 [00:00<00:03, 37.92it/s]Reading video stream:  19%|█▉        | 30/155 [00:00<00:02, 44.10it/s]Reading video stream:  26%|██▋       | 41/155 [00:01<00:01, 58.05it/s]Reading video stream:  32%|███▏      | 49/155 [00:01<00:01, 63.26it/s]Reading video stream:  39%|███▊      | 60/155 [00:01<00:01, 74.28it/s]Reading video stream:  46%|████▌     | 71/155 [00:01<00:01, 82.73it/s]Reading video stream:  53%|█████▎    | 82/155 [00:01<00:00, 88.50it/s]Reading video stream:  60%|██████    | 93/155 [00:01<00:00, 92.31it/s]Reading video stream:  67%|██████▋   | 104/155 [00:01<00:00, 95.11it/s]Reading video stream:  74%|███████▎  | 114/155 [00:01<00:00, 95.07it/s]Reading video stream:  80%|████████  | 124/155 [00:01<00:00, 96.27it/s]Reading video stream:  87%|████████▋ | 135/155 [00:01<00:00, 98.34it/s]Reading video stream:  94%|█████████▍| 146/155 [00:02<00:00, 100.23it/s]Reading video stream: 100%|██████████| 155/155 [00:02<00:00, 72.19it/s] 
+Caching:   0%|          | 0/25 [00:00<?, ?it/s]Caching:  68%|██████▊   | 17/25 [00:00<00:00, 167.11it/s]Caching: 100%|██████████| 25/25 [00:00<00:00, 161.99it/s]
+Caching:   0%|          | 0/25 [00:00<?, ?it/s]Caching:  68%|██████▊   | 17/25 [00:00<00:00, 167.65it/s]Caching: 100%|██████████| 25/25 [00:00<00:00, 171.87it/s]
+Traceback (most recent call last):
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/transformers/utils/hub.py", line 403, in cached_file
+    resolved_file = hf_hub_download(
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/utils/_deprecation.py", line 101, in inner_f
+    return f(*args, **kwargs)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1232, in hf_hub_download
+    return _hf_hub_download_to_cache_dir(
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1339, in _hf_hub_download_to_cache_dir
+    _raise_on_head_call_error(head_call_error, force_download, local_files_only)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1848, in _raise_on_head_call_error
+    raise LocalEntryNotFoundError(
+huggingface_hub.errors.LocalEntryNotFoundError: Cannot find the requested files in the disk cache and outgoing traffic has been disabled. To enable hf.co look-ups and downloads online, set 'local_files_only' to False.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/conda/envs/vipe/bin/vipe", line 7, in <module>
+    sys.exit(main())
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1161, in __call__
+    return self.main(*args, **kwargs)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1082, in main
+    rv = self.invoke(ctx)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1697, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1443, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 788, in invoke
+    return __callback(*args, **kwargs)
+  File "/app/ViPE/vipe/cli/main.py", line 91, in infer
+    vipe_pipeline.run(video_stream)
+  File "/app/ViPE/vipe/pipeline/default.py", line 119, in run
+    slam_streams: list[VideoStream] = [
+  File "/app/ViPE/vipe/pipeline/default.py", line 120, in <listcomp>
+    self._add_init_processors(video_stream).cache("process", online=True) for video_stream in video_streams
+  File "/app/ViPE/vipe/pipeline/default.py", line 75, in _add_init_processors
+    TrackAnythingProcessor(
+  File "/app/ViPE/vipe/pipeline/processors.py", line 125, in __init__
+    self.tracker = TrackAnythingPipeline(self.mask_phrases, sam_points_per_side=50, sam_run_gap=self.sam_run_gap)
+  File "/app/ViPE/vipe/priors/track_anything/__init__.py", line 50, in __init__
+    self.segtracker = SegTracker(
+  File "/app/ViPE/vipe/priors/track_anything/seg_tracker.py", line 19, in __init__
+    self.detector = Detector(self.sam.device)
+  File "/app/ViPE/vipe/priors/track_anything/detector.py", line 23, in __init__
+    self.gd = build_grounding_dino(args)
+  File "/app/ViPE/vipe/priors/track_anything/groundingdino/models/__init__.py", line 17, in build_model
+    model = build_func(args)
+  File "/app/ViPE/vipe/priors/track_anything/groundingdino/models/main/groundingdino.py", line 404, in build_groundingdino
+    model = GroundingDINO(
+  File "/app/ViPE/vipe/priors/track_anything/groundingdino/models/main/groundingdino.py", line 93, in __init__
+    self.tokenizer = get_tokenlizer.get_tokenlizer(text_encoder_type)
+  File "/app/ViPE/vipe/priors/track_anything/groundingdino/util/get_tokenlizer.py", line 19, in get_tokenlizer
+    tokenizer = AutoTokenizer.from_pretrained(text_encoder_type)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/transformers/models/auto/tokenization_auto.py", line 891, in from_pretrained
+    config = AutoConfig.from_pretrained(
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/transformers/models/auto/configuration_auto.py", line 1054, in from_pretrained
+    config_dict, unused_kwargs = PretrainedConfig.get_config_dict(pretrained_model_name_or_path, **kwargs)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/transformers/configuration_utils.py", line 591, in get_config_dict
+    config_dict, kwargs = cls._get_config_dict(pretrained_model_name_or_path, **kwargs)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/transformers/configuration_utils.py", line 650, in _get_config_dict
+    resolved_config_file = cached_file(
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/transformers/utils/hub.py", line 446, in cached_file
+    raise EnvironmentError(
+OSError: We couldn't connect to 'https://huggingface.co' to load this file, couldn't find it in the cached files and it looks like bert-base-uncased is not the path to a directory containing a file named config.json.
+Checkout your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.
+
+ERROR conda.cli.main_run:execute(124): `conda run vipe infer data/120-2_clip_1.mp4 --output output/` failed. (See above for error)
+===============================================
+Job finished at: Thu Jan 29 18:51:10 CET 2026
+Execution took 0.03 hours
+Writing output to SLURM_logs/vipe-inference_023.out
+===============================================

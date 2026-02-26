@@ -1,0 +1,80 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/12.9
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Thu Jan 29 17:14:17 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:2C:00.0 Off |                   On |
+| N/A   38C    P0             44W /  300W |     249MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    7   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9011631
+Job Name:       vipe-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/vipe
+Work dir:       /scratch/mthakur/vipe
+Job started at: Thu Jan 29 17:14:18 CET 2026
+===============================================
+Error for command "exec": requires at least 2 arg(s), only received 0
+
+Usage:
+  apptainer [global options...] exec [exec options...] <container> <command>
+
+Run 'apptainer --help' for more detailed usage information.
+/cm/local/apps/slurm/var/spool/job9011631/slurm_script: line 86: --bind: command not found
+==============================
+WiLoR Apptainer Container
+==============================
+/.singularity.d/runscript: 6: python: not found
+Python: 
+/.singularity.d/runscript: 7: python: not found
+PyTorch: 
+/.singularity.d/runscript: 8: python: not found
+CUDA Available: 
+No CUDA runtime is found, using CUDA_HOME='/beegfs/apps/generic/cuda/12.9'
+Usage: vipe infer [OPTIONS] [VIDEO]
+Try 'vipe infer --help' for help.
+
+Error: Invalid value for '[VIDEO]': Path '/data/120-2_clip_1.mp4' does not exist.
+
+ERROR conda.cli.main_run:execute(124): `conda run vipe infer /data/120-2_clip_1.mp4 --output output/` failed. (See above for error)
+===============================================
+Job finished at: Thu Jan 29 17:14:52 CET 2026
+Execution took 0.01 hours
+Writing output to SLURM_logs/vipe-inference_014.out
+===============================================

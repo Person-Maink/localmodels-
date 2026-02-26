@@ -1,0 +1,91 @@
+
+The following have been reloaded with a version change:
+  1) python/3.10.12 => python/3.10.13
+
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) python/3.10.13
+  2) DefaultModules   4) 2024r1       6) cuda/12.9
+
+ 
+
+Wed Feb  4 18:30:25 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla V100S-PCIE-32GB          On  |   00000000:C7:00.0 Off |                    0 |
+| N/A   33C    P0             26W /  250W |       0MiB /  32768MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9060883
+Job Name:       vipe-inference
+Partition:      gpu-v100
+Node List:      gpu010
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 24576
+Submit dir:     /scratch/mthakur/vipe
+Work dir:       /scratch/mthakur/vipe
+Job started at: Wed Feb  4 18:30:25 CET 2026
+===============================================
+2026-02-04 18:30:53,119 - vipe - INFO - Processing video data/120-2_clip_1.mp4...
+
+Reading video stream:   0%|          | 0/155 [00:00<?, ?it/s]/opt/conda/envs/vipe/lib/python3.10/site-packages/torch/cuda/__init__.py:262: UserWarning: 
+    Found GPU0 Tesla V100S-PCIE-32GB which is of cuda capability 7.0.
+    PyTorch no longer supports this GPU because it is too old.
+    The minimum cuda capability supported by this library is 7.5.
+    
+  warnings.warn(
+Reading video stream:   1%|          | 1/155 [00:00<00:58,  2.65it/s]Reading video stream:   6%|▋         | 10/155 [00:00<00:05, 26.26it/s]Reading video stream:  11%|█         | 17/155 [00:00<00:03, 37.57it/s]Reading video stream:  17%|█▋        | 26/155 [00:00<00:02, 51.43it/s]Reading video stream:  23%|██▎       | 35/155 [00:00<00:01, 61.68it/s]Reading video stream:  28%|██▊       | 44/155 [00:00<00:01, 68.94it/s]Reading video stream:  34%|███▎      | 52/155 [00:01<00:01, 56.47it/s]Reading video stream:  39%|███▉      | 61/155 [00:01<00:01, 63.62it/s]Reading video stream:  45%|████▌     | 70/155 [00:01<00:01, 69.89it/s]Reading video stream:  51%|█████     | 79/155 [00:01<00:01, 73.77it/s]Reading video stream:  57%|█████▋    | 88/155 [00:01<00:00, 76.33it/s]Reading video stream:  63%|██████▎   | 97/155 [00:01<00:00, 78.04it/s]Reading video stream:  68%|██████▊   | 106/155 [00:01<00:00, 79.28it/s]Reading video stream:  74%|███████▍  | 115/155 [00:01<00:00, 77.94it/s]Reading video stream:  79%|███████▉  | 123/155 [00:01<00:00, 77.99it/s]Reading video stream:  85%|████████▌ | 132/155 [00:02<00:00, 79.13it/s]Reading video stream:  91%|█████████ | 141/155 [00:02<00:00, 81.48it/s]Reading video stream:  97%|█████████▋| 150/155 [00:02<00:00, 82.69it/s]Reading video stream: 100%|██████████| 155/155 [00:02<00:00, 66.12it/s]
+Caching:   0%|          | 0/25 [00:00<?, ?it/s]Caching:  88%|████████▊ | 22/25 [00:00<00:00, 212.89it/s]Caching: 100%|██████████| 25/25 [00:00<00:00, 211.05it/s]
+Caching:   0%|          | 0/25 [00:00<?, ?it/s]Caching:  84%|████████▍ | 21/25 [00:00<00:00, 204.65it/s]Caching: 100%|██████████| 25/25 [00:00<00:00, 204.34it/s]
+Traceback (most recent call last):
+  File "/opt/conda/envs/vipe/bin/vipe", line 7, in <module>
+    sys.exit(main())
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1161, in __call__
+    return self.main(*args, **kwargs)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1082, in main
+    rv = self.invoke(ctx)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1697, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1443, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 788, in invoke
+    return __callback(*args, **kwargs)
+  File "/app/ViPE/vipe/cli/main.py", line 91, in infer
+    vipe_pipeline.run(video_stream)
+  File "/app/ViPE/vipe/pipeline/default.py", line 119, in run
+    slam_streams: list[VideoStream] = [
+  File "/app/ViPE/vipe/pipeline/default.py", line 120, in <listcomp>
+    self._add_init_processors(video_stream).cache("process", online=True) for video_stream in video_streams
+  File "/app/ViPE/vipe/pipeline/default.py", line 72, in _add_init_processors
+    init_processors.append(GeoCalibIntrinsicsProcessor(video_stream, camera_type=self.camera_type))
+  File "/app/ViPE/vipe/pipeline/processors.py", line 82, in __init__
+    sample_frames = torch.stack([indexable_stream[i].rgb.moveaxis(-1, 0) for i in self.sample_frame_inds])
+RuntimeError: CUDA error: no kernel image is available for execution on the device
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+ERROR conda.cli.main_run:execute(124): `conda run vipe infer data/120-2_clip_1.mp4 --output output/` failed. (See above for error)
+===============================================
+Job finished at: Wed Feb  4 18:31:21 CET 2026
+Execution took 0.02 hours
+Writing output to SLURM_logs/vipe-inference_037.out
+===============================================

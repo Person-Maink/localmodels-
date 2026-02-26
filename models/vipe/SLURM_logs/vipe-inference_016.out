@@ -1,0 +1,130 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/12.9
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Thu Jan 29 17:17:35 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:2C:00.0 Off |                   On |
+| N/A   38C    P0             44W /  300W |     249MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    7   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9011641
+Job Name:       vipe-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/vipe
+Work dir:       /scratch/mthakur/vipe
+Job started at: Thu Jan 29 17:17:36 CET 2026
+===============================================
+2026-01-29 17:17:41,487 - vipe - INFO - Processing video data/120-2_clip_1.mp4...
+Downloading: "https://github.com/cvg/GeoCalib/releases/download/v1.0/geocalib-pinhole.tar" to /home/mthakur/.cache/torch/hub/geocalib/pinhole.tar
+
+Reading video stream:   0%|          | 0/155 [00:00<?, ?it/s]Reading video stream:   1%|          | 1/155 [00:00<00:32,  4.77it/s]Reading video stream:   8%|▊         | 12/155 [00:00<00:03, 45.97it/s]Reading video stream:  13%|█▎        | 20/155 [00:00<00:02, 56.62it/s]Reading video stream:  19%|█▉        | 30/155 [00:00<00:01, 65.36it/s]Reading video stream:  26%|██▋       | 41/155 [00:00<00:01, 78.45it/s]Reading video stream:  32%|███▏      | 50/155 [00:00<00:01, 71.99it/s]Reading video stream:  39%|███▉      | 61/155 [00:00<00:01, 81.44it/s]Reading video stream:  46%|████▋     | 72/155 [00:01<00:00, 88.43it/s]Reading video stream:  54%|█████▎    | 83/155 [00:01<00:00, 93.76it/s]Reading video stream:  61%|██████    | 94/155 [00:01<00:00, 96.59it/s]Reading video stream:  68%|██████▊   | 105/155 [00:01<00:00, 98.48it/s]Reading video stream:  75%|███████▍  | 116/155 [00:01<00:00, 98.03it/s]Reading video stream:  82%|████████▏ | 127/155 [00:01<00:00, 98.80it/s]Reading video stream:  89%|████████▉ | 138/155 [00:01<00:00, 101.42it/s]Reading video stream:  96%|█████████▌| 149/155 [00:01<00:00, 103.33it/s]Reading video stream: 100%|██████████| 155/155 [00:01<00:00, 85.82it/s] 
+Traceback (most recent call last):
+  File "/opt/conda/envs/vipe/lib/python3.10/urllib/request.py", line 1348, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+  File "/opt/conda/envs/vipe/lib/python3.10/http/client.py", line 1283, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/opt/conda/envs/vipe/lib/python3.10/http/client.py", line 1329, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/opt/conda/envs/vipe/lib/python3.10/http/client.py", line 1278, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/opt/conda/envs/vipe/lib/python3.10/http/client.py", line 1038, in _send_output
+    self.send(msg)
+  File "/opt/conda/envs/vipe/lib/python3.10/http/client.py", line 976, in send
+    self.connect()
+  File "/opt/conda/envs/vipe/lib/python3.10/http/client.py", line 1448, in connect
+    super().connect()
+  File "/opt/conda/envs/vipe/lib/python3.10/http/client.py", line 942, in connect
+    self.sock = self._create_connection(
+  File "/opt/conda/envs/vipe/lib/python3.10/socket.py", line 857, in create_connection
+    raise err
+  File "/opt/conda/envs/vipe/lib/python3.10/socket.py", line 845, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [Errno 111] Connection refused
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/conda/envs/vipe/bin/vipe", line 7, in <module>
+    sys.exit(main())
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1161, in __call__
+    return self.main(*args, **kwargs)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1082, in main
+    rv = self.invoke(ctx)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1697, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1443, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 788, in invoke
+    return __callback(*args, **kwargs)
+  File "/app/ViPE/vipe/cli/main.py", line 91, in infer
+    vipe_pipeline.run(video_stream)
+  File "/app/ViPE/vipe/pipeline/default.py", line 119, in run
+    slam_streams: list[VideoStream] = [
+  File "/app/ViPE/vipe/pipeline/default.py", line 120, in <listcomp>
+    self._add_init_processors(video_stream).cache("process", online=True) for video_stream in video_streams
+  File "/app/ViPE/vipe/pipeline/default.py", line 72, in _add_init_processors
+    init_processors.append(GeoCalibIntrinsicsProcessor(video_stream, camera_type=self.camera_type))
+  File "/app/ViPE/vipe/pipeline/processors.py", line 78, in __init__
+    model = GeoCalib(weights=weights).cuda()
+  File "/app/ViPE/vipe/priors/geocalib/extractor.py", line 38, in __init__
+    state_dict = torch.hub.load_state_dict_from_url(
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/torch/hub.py", line 871, in load_state_dict_from_url
+    download_url_to_file(url, cached_file, hash_prefix, progress=progress)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/torch/hub.py", line 712, in download_url_to_file
+    u = urlopen(req)
+  File "/opt/conda/envs/vipe/lib/python3.10/urllib/request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "/opt/conda/envs/vipe/lib/python3.10/urllib/request.py", line 519, in open
+    response = self._open(req, data)
+  File "/opt/conda/envs/vipe/lib/python3.10/urllib/request.py", line 536, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+  File "/opt/conda/envs/vipe/lib/python3.10/urllib/request.py", line 496, in _call_chain
+    result = func(*args)
+  File "/opt/conda/envs/vipe/lib/python3.10/urllib/request.py", line 1391, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+  File "/opt/conda/envs/vipe/lib/python3.10/urllib/request.py", line 1351, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error [Errno 111] Connection refused>
+
+ERROR conda.cli.main_run:execute(124): `conda run vipe infer data/120-2_clip_1.mp4 --output output/` failed. (See above for error)
+===============================================
+Job finished at: Thu Jan 29 17:17:48 CET 2026
+Execution took 0.00 hours
+Writing output to SLURM_logs/vipe-inference_016.out
+===============================================

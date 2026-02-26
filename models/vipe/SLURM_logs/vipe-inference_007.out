@@ -1,0 +1,76 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/12.9
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Thu Jan 29 16:02:52 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   40C    P0             47W /  300W |     249MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    7   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9010440
+Job Name:       vipe-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/vipe
+Work dir:       /scratch/mthakur/vipe
+Job started at: Thu Jan 29 16:02:53 CET 2026
+===============================================
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/scratch/mthakur/vipe/vipe/__init__.py", line 20, in <module>
+    from vipe.pipeline import make_pipeline
+  File "/scratch/mthakur/vipe/vipe/pipeline/__init__.py", line 26, in <module>
+    from vipe.streams.base import MultiviewVideoList, VideoStream
+  File "/scratch/mthakur/vipe/vipe/streams/base.py", line 28, in <module>
+    from vipe.ext.lietorch import SE3
+  File "/scratch/mthakur/vipe/vipe/ext/__init__.py", line 31, in <module>
+    _C = load(
+  File "/.venv/lib/python3.10/site-packages/torch/utils/cpp_extension.py", line 1767, in load
+    return _jit_compile(
+  File "/.venv/lib/python3.10/site-packages/torch/utils/cpp_extension.py", line 2207, in _jit_compile
+    _write_ninja_file_and_build_library(
+  File "/.venv/lib/python3.10/site-packages/torch/utils/cpp_extension.py", line 2318, in _write_ninja_file_and_build_library
+    verify_ninja_availability()
+  File "/.venv/lib/python3.10/site-packages/torch/utils/cpp_extension.py", line 2381, in verify_ninja_availability
+    raise RuntimeError("Ninja is required to load C++ extensions (pip install ninja to get it)")
+RuntimeError: Ninja is required to load C++ extensions (pip install ninja to get it)
+===============================================
+Job finished at: Thu Jan 29 16:03:48 CET 2026
+Execution took 0.02 hours
+Writing output to SLURM_logs/vipe-inference_007.out
+===============================================

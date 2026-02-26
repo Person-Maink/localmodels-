@@ -1,0 +1,108 @@
+Bootstrap: docker
+From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
+
+%labels
+    Author REIT Team, Modified by Mayank Thakur
+    Description DROID-SLAM container (CUDA 11.7, Python 3.10, UV)
+
+%help
+    DROID-SLAM Apptainer container with CUDA + Python environment using UV.
+
+    Usage:
+        apptainer shell container.sif
+        apptainer exec --nv <container>.sif python script.py
+
+%files
+
+    /scratch/mthakur/DROID-SLAM /app/DROID-SLAM
+
+%post
+
+    set -e
+
+    echo "=============================="
+    echo "Installing system dependencies"
+    echo "=============================="
+
+    apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        python3.10 \
+        python3-pip \
+        build-essential \
+        ninja-build \
+        git \
+        curl \
+        libgl1 \
+        libboost-all-dev\
+        zlib1g\
+        libglib2.0-0 \
+        libglib2.0-dev \
+        libsm6 \
+        libxext6 \
+        libxrender1 \
+        libgomp1 \
+        libgl1-mesa-glx \
+
+    nvcc --version
+
+    ln -sf /usr/bin/python3.10 /usr/bin/python
+    python -m pip install --upgrade pip
+
+    echo "=============================="
+    echo "Installing UV"
+    echo "=============================="
+
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    export PATH="/root/.local/bin:$PATH"
+
+    uv venv
+    . .venv/bin/activate
+
+    ln -sf /usr/bin/python3.10 /usr/bin/python
+
+    echo "===== Upgrading build tooling ====="
+    uv pip install  -U pip setuptools wheel
+
+    echo "=============================="
+    echo "Installing requirements"
+    echo "=============================="
+
+    cd /app/DROID-SLAM/
+    uv pip install -r requirements.txt
+
+    echo "=============================="
+    echo "Installing optional visualization tools"
+    echo "=============================="
+
+    uv pip install moderngl moderngl-window
+
+    echo "=============================="
+    echo "Installing third-party modules"
+    echo "=============================="
+
+    uv pip install --no-build-isolation thirdparty/lietorch
+    uv pip install --no-build-isolation thirdparty/pytorch_scatter
+
+    echo "=============================="
+    echo "Installing DROID-SLAM backends"
+    echo "=============================="
+
+    uv pip install -e .
+
+    echo "=============================="
+    echo "Build completed successfully"
+    echo "=============================="
+
+    uv apt-get clean && rm -rf /var/lib/apt/lists/*
+
+%environment
+    export LC_ALL=C
+    export PYTHONUNBUFFERED=1
+    export PATH="/root/.local/bin:$PATH"
+    source .venv/bin/activate
+
+%runscript
+    echo "=============================="
+    echo "DROID-SLAM Apptainer Container"
+    echo "=============================="
+    echo "Python: $(python --version)"
+    exec "$@"

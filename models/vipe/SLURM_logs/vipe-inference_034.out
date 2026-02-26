@@ -1,0 +1,203 @@
+
+The following have been reloaded with a version change:
+  1) python/3.10.12 => python/3.10.13
+
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) python/3.10.13
+  2) DefaultModules   4) 2024r1       6) cuda/12.9
+
+ 
+
+Wed Feb  4 18:09:18 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:2C:00.0 Off |                   On |
+| N/A   48C    P0             70W /  300W |    1010MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    8   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9060701
+Job Name:       vipe-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/vipe
+Work dir:       /scratch/mthakur/vipe
+Job started at: Wed Feb  4 18:09:18 CET 2026
+===============================================
+2026-02-04 18:09:24,274 - vipe - INFO - Processing video data/120-2_clip_1.mp4...
+2026-02-04 18:10:37,100 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 55.786155462265015 -> 3.9588071703910828
+2026-02-04 18:10:37,827 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 2.749972939491272 -> 0.9804238975048065
+2026-02-04 18:10:38,555 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.8959815502166748 -> 0.4345868267118931
+2026-02-04 18:10:40,030 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 1.91934734582901 -> 0.4212220311164856
+2026-02-04 18:10:40,680 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.6204343214631081 -> 0.49657630175352097
+2026-02-04 18:10:41,331 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.41226446628570557 -> 0.3546242378652096
+2026-02-04 18:10:41,983 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.3771512806415558 -> 0.33453788980841637
+2026-02-04 18:10:42,760 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 6.294632162898779 -> 3.151991128921509
+2026-02-04 18:10:43,462 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 1.5556907653808594 -> 1.1159771978855133
+2026-02-04 18:10:44,165 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 1.0522844195365906 -> 0.47425778582692146
+2026-02-04 18:10:44,868 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.48947061970829964 -> 0.35476424917578697
+2026-02-04 18:10:45,572 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.4513833150267601 -> 0.40678082406520844
+2026-02-04 18:10:46,275 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.34762728214263916 -> 0.3245301619172096
+2026-02-04 18:10:46,979 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.33888253569602966 -> 0.3058690782636404
+2026-02-04 18:10:47,683 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.32374294847249985 -> 0.30659602396190166
+2026-02-04 18:10:48,387 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.299151124432683 -> 0.2923788893967867
+2026-02-04 18:10:49,091 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.2863520346581936 -> 0.2820583749562502
+2026-02-04 18:10:49,796 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.2766116037964821 -> 0.27417440712451935
+2026-02-04 18:10:50,502 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.2692885808646679 -> 0.26782367937266827
+2026-02-04 18:10:51,953 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.7920214384794235 -> 0.269716240465641
+2026-02-04 18:10:52,580 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.2650603596121073 -> 0.26438407972455025
+2026-02-04 18:10:53,206 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.2611701190471649 -> 0.2608660142868757
+2026-02-04 18:10:53,831 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.2572704702615738 -> 0.25708639062941074
+2026-02-04 18:10:54,458 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.25504752807319164 -> 0.25493090972304344
+2026-02-04 18:10:55,084 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.2529517449438572 -> 0.2528677172958851
+2026-02-04 18:10:55,709 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.2513232082128525 -> 0.25126178562641144
+2026-02-04 18:10:56,336 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.24977894127368927 -> 0.24972748756408691
+2026-02-04 18:10:56,963 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.24834886565804482 -> 0.24830983765423298
+2026-02-04 18:10:57,590 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.24738181568682194 -> 0.2473483383655548
+2026-02-04 18:10:58,216 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.24634687416255474 -> 0.24631814286112785
+2026-02-04 18:10:58,843 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.24562446679919958 -> 0.245598622597754
+
+Reading video stream:   0%|          | 0/155 [00:00<?, ?it/s]Reading video stream:   1%|          | 1/155 [00:00<00:23,  6.51it/s]Reading video stream:   8%|▊         | 12/155 [00:00<00:02, 55.45it/s]Reading video stream:  15%|█▍        | 23/155 [00:00<00:01, 76.47it/s]Reading video stream:  22%|██▏       | 34/155 [00:00<00:01, 88.13it/s]Reading video stream:  29%|██▉       | 45/155 [00:00<00:01, 88.83it/s]Reading video stream:  36%|███▌      | 56/155 [00:00<00:01, 94.51it/s]Reading video stream:  43%|████▎     | 67/155 [00:00<00:00, 98.46it/s]Reading video stream:  50%|█████     | 78/155 [00:00<00:00, 101.25it/s]Reading video stream:  57%|█████▋    | 89/155 [00:00<00:00, 102.75it/s]Reading video stream:  65%|██████▍   | 100/155 [00:01<00:00, 103.27it/s]Reading video stream:  72%|███████▏  | 111/155 [00:01<00:00, 102.95it/s]Reading video stream:  79%|███████▊  | 122/155 [00:01<00:00, 101.44it/s]Reading video stream:  86%|████████▌ | 133/155 [00:01<00:00, 102.01it/s]Reading video stream:  93%|█████████▎| 144/155 [00:01<00:00, 104.01it/s]Reading video stream: 100%|██████████| 155/155 [00:01<00:00, 105.42it/s]Reading video stream: 100%|██████████| 155/155 [00:01<00:00, 95.12it/s] 
+Caching:   0%|          | 0/25 [00:00<?, ?it/s]Caching:  72%|███████▏  | 18/25 [00:00<00:00, 171.88it/s]Caching: 100%|██████████| 25/25 [00:00<00:00, 167.83it/s]
+Caching:   0%|          | 0/25 [00:00<?, ?it/s]Caching:  72%|███████▏  | 18/25 [00:00<00:00, 174.29it/s]Caching: 100%|██████████| 25/25 [00:00<00:00, 177.85it/s]
+SLAM Pass (1/2):   0%|          | 0/155 [00:00<?, ?it/s]SLAM Pass (1/2):   1%|          | 1/155 [00:02<06:57,  2.71s/it]SLAM Pass (1/2):   1%|▏         | 2/155 [00:03<03:20,  1.31s/it]SLAM Pass (1/2):   2%|▏         | 3/155 [00:03<02:05,  1.21it/s]SLAM Pass (1/2):   3%|▎         | 4/155 [00:03<01:30,  1.67it/s]SLAM Pass (1/2):   3%|▎         | 5/155 [00:03<01:10,  2.12it/s]SLAM Pass (1/2):   4%|▍         | 6/155 [00:04<00:59,  2.52it/s]SLAM Pass (1/2):   5%|▍         | 7/155 [00:04<00:51,  2.87it/s]SLAM Pass (1/2):   5%|▌         | 8/155 [00:04<00:46,  3.16it/s]SLAM Pass (1/2):   6%|▌         | 9/155 [00:04<00:43,  3.38it/s]SLAM Pass (1/2):   6%|▋         | 10/155 [00:05<00:40,  3.55it/s]SLAM Pass (1/2):   7%|▋         | 11/155 [00:05<00:39,  3.67it/s]SLAM Pass (1/2):   8%|▊         | 12/155 [00:05<00:37,  3.77it/s]SLAM Pass (1/2):   8%|▊         | 13/155 [00:05<00:37,  3.83it/s]SLAM Pass (1/2):   9%|▉         | 14/155 [00:06<00:36,  3.88it/s]SLAM Pass (1/2):  10%|▉         | 15/155 [00:06<00:35,  3.91it/s]SLAM Pass (1/2):  10%|█         | 16/155 [00:06<00:35,  3.94it/s]SLAM Pass (1/2):  11%|█         | 17/155 [00:06<00:34,  3.96it/s]SLAM Pass (1/2):  12%|█▏        | 18/155 [00:07<00:34,  3.98it/s]SLAM Pass (1/2):  12%|█▏        | 19/155 [00:07<00:34,  4.00it/s]SLAM Pass (1/2):  13%|█▎        | 20/155 [00:07<00:33,  4.00it/s]SLAM Pass (1/2):  14%|█▎        | 21/155 [00:07<00:33,  4.01it/s]SLAM Pass (1/2):  14%|█▍        | 22/155 [00:08<00:33,  4.01it/s]SLAM Pass (1/2):  15%|█▍        | 23/155 [00:08<00:32,  4.01it/s]SLAM Pass (1/2):  15%|█▌        | 24/155 [00:08<00:32,  4.01it/s]SLAM Pass (1/2):  16%|█▌        | 25/155 [00:08<00:32,  4.02it/s]SLAM Pass (1/2):  17%|█▋        | 26/155 [00:09<00:32,  4.02it/s]SLAM Pass (1/2):  17%|█▋        | 27/155 [00:09<00:31,  4.02it/s]SLAM Pass (1/2):  18%|█▊        | 28/155 [00:09<00:31,  4.02it/s]SLAM Pass (1/2):  19%|█▊        | 29/155 [00:09<00:31,  4.01it/s]SLAM Pass (1/2):  19%|█▉        | 30/155 [00:10<00:31,  4.01it/s]SLAM Pass (1/2):  20%|██        | 31/155 [00:10<00:30,  4.01it/s]SLAM Pass (1/2):  21%|██        | 32/155 [00:10<00:30,  3.99it/s]SLAM Pass (1/2):  21%|██▏       | 33/155 [00:10<00:30,  4.00it/s]SLAM Pass (1/2):  22%|██▏       | 34/155 [00:11<00:30,  4.00it/s]SLAM Pass (1/2):  23%|██▎       | 35/155 [00:11<00:29,  4.01it/s]SLAM Pass (1/2):  23%|██▎       | 36/155 [00:11<00:29,  4.00it/s]SLAM Pass (1/2):  24%|██▍       | 37/155 [00:11<00:29,  4.01it/s]SLAM Pass (1/2):  25%|██▍       | 38/155 [00:12<00:29,  4.01it/s]SLAM Pass (1/2):  25%|██▌       | 39/155 [00:12<00:28,  4.00it/s]SLAM Pass (1/2):  26%|██▌       | 40/155 [00:12<00:28,  4.00it/s]SLAM Pass (1/2):  26%|██▋       | 41/155 [00:12<00:28,  4.01it/s]SLAM Pass (1/2):  27%|██▋       | 42/155 [00:13<00:28,  4.01it/s]SLAM Pass (1/2):  28%|██▊       | 43/155 [00:13<00:27,  4.01it/s]SLAM Pass (1/2):  28%|██▊       | 44/155 [00:13<00:27,  3.99it/s]SLAM Pass (1/2):  29%|██▉       | 45/155 [00:13<00:27,  3.99it/s]SLAM Pass (1/2):  30%|██▉       | 46/155 [00:14<00:27,  3.99it/s]SLAM Pass (1/2):  30%|███       | 47/155 [00:14<00:27,  4.00it/s]SLAM Pass (1/2):  31%|███       | 48/155 [00:14<00:26,  4.00it/s]SLAM Pass (1/2):  32%|███▏      | 49/155 [00:14<00:26,  4.01it/s]SLAM Pass (1/2):  32%|███▏      | 50/155 [00:15<00:26,  4.01it/s]SLAM Pass (1/2):  33%|███▎      | 51/155 [00:16<01:02,  1.65it/s]SLAM Pass (1/2):  34%|███▎      | 52/155 [00:16<00:51,  2.00it/s]SLAM Pass (1/2):  34%|███▍      | 53/155 [00:16<00:43,  2.36it/s]SLAM Pass (1/2):  35%|███▍      | 54/155 [00:17<00:37,  2.69it/s]SLAM Pass (1/2):  35%|███▌      | 55/155 [00:17<00:33,  2.99it/s]SLAM Pass (1/2):  36%|███▌      | 56/155 [00:17<00:30,  3.23it/s]SLAM Pass (1/2):  37%|███▋      | 57/155 [00:17<00:28,  3.43it/s]SLAM Pass (1/2):  37%|███▋      | 58/155 [00:18<00:27,  3.59it/s]SLAM Pass (1/2):  38%|███▊      | 59/155 [00:18<00:25,  3.70it/s]SLAM Pass (1/2):  39%|███▊      | 60/155 [00:18<00:25,  3.79it/s]SLAM Pass (1/2):  39%|███▉      | 61/155 [00:18<00:24,  3.85it/s]SLAM Pass (1/2):  40%|████      | 62/155 [00:19<00:23,  3.90it/s]SLAM Pass (1/2):  41%|████      | 63/155 [00:19<00:23,  3.93it/s]SLAM Pass (1/2):  41%|████▏     | 64/155 [00:19<00:23,  3.95it/s]SLAM Pass (1/2):  42%|████▏     | 65/155 [00:19<00:22,  3.97it/s]SLAM Pass (1/2):  43%|████▎     | 66/155 [00:20<00:22,  3.98it/s]SLAM Pass (1/2):  43%|████▎     | 67/155 [00:20<00:22,  3.99it/s]SLAM Pass (1/2):  44%|████▍     | 68/155 [00:20<00:21,  3.98it/s]SLAM Pass (1/2):  45%|████▍     | 69/155 [00:20<00:21,  3.99it/s]SLAM Pass (1/2):  45%|████▌     | 70/155 [00:21<00:21,  4.00it/s]SLAM Pass (1/2):  46%|████▌     | 71/155 [00:21<00:21,  3.99it/s]SLAM Pass (1/2):  46%|████▋     | 72/155 [00:21<00:20,  4.00it/s]SLAM Pass (1/2):  47%|████▋     | 73/155 [00:21<00:20,  4.00it/s]SLAM Pass (1/2):  48%|████▊     | 74/155 [00:22<00:20,  4.00it/s]SLAM Pass (1/2):  48%|████▊     | 75/155 [00:22<00:19,  4.00it/s]SLAM Pass (1/2):  49%|████▉     | 76/155 [00:22<00:19,  4.01it/s]SLAM Pass (1/2):  50%|████▉     | 77/155 [00:22<00:19,  4.00it/s]SLAM Pass (1/2):  50%|█████     | 78/155 [00:23<00:19,  4.00it/s]SLAM Pass (1/2):  51%|█████     | 79/155 [00:23<00:18,  4.00it/s]SLAM Pass (1/2):  52%|█████▏    | 80/155 [00:23<00:18,  4.01it/s]SLAM Pass (1/2):  52%|█████▏    | 81/155 [00:23<00:18,  3.99it/s]SLAM Pass (1/2):  53%|█████▎    | 82/155 [00:24<00:18,  3.99it/s]SLAM Pass (1/2):  54%|█████▎    | 83/155 [00:24<00:18,  3.98it/s]SLAM Pass (1/2):  54%|█████▍    | 84/155 [00:24<00:17,  3.99it/s]SLAM Pass (1/2):  55%|█████▍    | 85/155 [00:24<00:17,  3.99it/s]SLAM Pass (1/2):  55%|█████▌    | 86/155 [00:25<00:17,  4.00it/s]SLAM Pass (1/2):  56%|█████▌    | 87/155 [00:25<00:16,  4.00it/s]SLAM Pass (1/2):  57%|█████▋    | 88/155 [00:25<00:16,  4.00it/s]SLAM Pass (1/2):  57%|█████▋    | 89/155 [00:25<00:16,  4.00it/s]SLAM Pass (1/2):  58%|█████▊    | 90/155 [00:26<00:16,  4.01it/s]SLAM Pass (1/2):  59%|█████▊    | 91/155 [00:26<00:15,  4.01it/s]SLAM Pass (1/2):  59%|█████▉    | 92/155 [00:26<00:15,  4.01it/s]SLAM Pass (1/2):  60%|██████    | 93/155 [00:26<00:15,  4.01it/s]SLAM Pass (1/2):  61%|██████    | 94/155 [00:27<00:15,  4.01it/s]SLAM Pass (1/2):  61%|██████▏   | 95/155 [00:27<00:14,  4.01it/s]SLAM Pass (1/2):  62%|██████▏   | 96/155 [00:27<00:14,  4.01it/s]SLAM Pass (1/2):  63%|██████▎   | 97/155 [00:27<00:14,  4.01it/s]SLAM Pass (1/2):  63%|██████▎   | 98/155 [00:28<00:14,  4.00it/s]SLAM Pass (1/2):  64%|██████▍   | 99/155 [00:28<00:13,  4.01it/s]SLAM Pass (1/2):  65%|██████▍   | 100/155 [00:28<00:15,  3.64it/s]SLAM Pass (1/2):  65%|██████▌   | 101/155 [00:30<00:34,  1.58it/s]SLAM Pass (1/2):  66%|██████▌   | 102/155 [00:30<00:27,  1.92it/s]SLAM Pass (1/2):  66%|██████▋   | 103/155 [00:30<00:22,  2.28it/s]SLAM Pass (1/2):  67%|██████▋   | 104/155 [00:31<00:19,  2.62it/s]SLAM Pass (1/2):  68%|██████▊   | 105/155 [00:31<00:17,  2.92it/s]SLAM Pass (1/2):  68%|██████▊   | 106/155 [00:31<00:15,  3.17it/s]SLAM Pass (1/2):  69%|██████▉   | 107/155 [00:31<00:14,  3.37it/s]SLAM Pass (1/2):  70%|██████▉   | 108/155 [00:32<00:13,  3.53it/s]SLAM Pass (1/2):  70%|███████   | 109/155 [00:32<00:12,  3.66it/s]SLAM Pass (1/2):  71%|███████   | 110/155 [00:32<00:11,  3.75it/s]SLAM Pass (1/2):  72%|███████▏  | 111/155 [00:32<00:12,  3.51it/s]SLAM Pass (1/2):  72%|███████▏  | 112/155 [00:33<00:13,  3.23it/s]SLAM Pass (1/2):  73%|███████▎  | 113/155 [00:33<00:12,  3.30it/s]SLAM Pass (1/2):  74%|███████▎  | 114/155 [00:33<00:12,  3.22it/s]SLAM Pass (1/2):  74%|███████▍  | 115/155 [00:34<00:12,  3.28it/s]SLAM Pass (1/2):  75%|███████▍  | 116/155 [00:34<00:11,  3.47it/s]SLAM Pass (1/2):  75%|███████▌  | 117/155 [00:34<00:10,  3.61it/s]SLAM Pass (1/2):  76%|███████▌  | 118/155 [00:34<00:09,  3.72it/s]SLAM Pass (1/2):  77%|███████▋  | 119/155 [00:35<00:09,  3.81it/s]SLAM Pass (1/2):  77%|███████▋  | 120/155 [00:35<00:09,  3.87it/s]SLAM Pass (1/2):  78%|███████▊  | 121/155 [00:35<00:08,  3.91it/s]SLAM Pass (1/2):  79%|███████▊  | 122/155 [00:35<00:08,  3.94it/s]SLAM Pass (1/2):  79%|███████▉  | 123/155 [00:36<00:08,  3.96it/s]SLAM Pass (1/2):  80%|████████  | 124/155 [00:36<00:07,  3.97it/s]SLAM Pass (1/2):  81%|████████  | 125/155 [00:36<00:07,  3.99it/s]SLAM Pass (1/2):  81%|████████▏ | 126/155 [00:36<00:07,  3.99it/s]SLAM Pass (1/2):  82%|████████▏ | 127/155 [00:37<00:07,  3.99it/s]SLAM Pass (1/2):  83%|████████▎ | 128/155 [00:37<00:06,  4.00it/s]SLAM Pass (1/2):  83%|████████▎ | 129/155 [00:37<00:06,  4.00it/s]SLAM Pass (1/2):  84%|████████▍ | 130/155 [00:37<00:06,  4.00it/s]SLAM Pass (1/2):  85%|████████▍ | 131/155 [00:38<00:05,  4.00it/s]SLAM Pass (1/2):  85%|████████▌ | 132/155 [00:38<00:05,  4.00it/s]SLAM Pass (1/2):  86%|████████▌ | 133/155 [00:38<00:05,  4.01it/s]SLAM Pass (1/2):  86%|████████▋ | 134/155 [00:38<00:05,  4.00it/s]SLAM Pass (1/2):  87%|████████▋ | 135/155 [00:39<00:04,  4.01it/s]SLAM Pass (1/2):  88%|████████▊ | 136/155 [00:39<00:04,  4.01it/s]SLAM Pass (1/2):  88%|████████▊ | 137/155 [00:39<00:04,  4.01it/s]SLAM Pass (1/2):  89%|████████▉ | 138/155 [00:39<00:04,  4.01it/s]SLAM Pass (1/2):  90%|████████▉ | 139/155 [00:40<00:03,  4.01it/s]SLAM Pass (1/2):  90%|█████████ | 140/155 [00:40<00:04,  3.66it/s]SLAM Pass (1/2):  91%|█████████ | 141/155 [00:40<00:03,  3.61it/s]SLAM Pass (1/2):  92%|█████████▏| 142/155 [00:40<00:03,  3.71it/s]SLAM Pass (1/2):  92%|█████████▏| 143/155 [00:41<00:03,  3.80it/s]SLAM Pass (1/2):  93%|█████████▎| 144/155 [00:41<00:02,  3.86it/s]SLAM Pass (1/2):  94%|█████████▎| 145/155 [00:41<00:02,  3.90it/s]SLAM Pass (1/2):  94%|█████████▍| 146/155 [00:41<00:02,  3.94it/s]SLAM Pass (1/2):  95%|█████████▍| 147/155 [00:42<00:02,  3.96it/s]SLAM Pass (1/2):  95%|█████████▌| 148/155 [00:42<00:01,  3.97it/s]SLAM Pass (1/2):  96%|█████████▌| 149/155 [00:42<00:01,  3.98it/s]SLAM Pass (1/2):  97%|█████████▋| 150/155 [00:42<00:01,  3.99it/s]SLAM Pass (1/2):  97%|█████████▋| 151/155 [00:44<00:02,  1.65it/s]SLAM Pass (1/2):  98%|█████████▊| 152/155 [00:44<00:01,  2.00it/s]SLAM Pass (1/2):  99%|█████████▊| 153/155 [00:44<00:00,  2.35it/s]SLAM Pass (1/2):  99%|█████████▉| 154/155 [00:45<00:00,  2.69it/s]SLAM Pass (1/2): 100%|██████████| 155/155 [00:45<00:00,  2.54it/s]SLAM Pass (1/2): 100%|██████████| 155/155 [00:45<00:00,  3.40it/s]
+Update depth:   0%|          | 0/7 [00:00<?, ?it/s]Update depth:  29%|██▊       | 2/7 [00:00<00:00, 11.13it/s]Update depth:  57%|█████▋    | 4/7 [00:00<00:00,  9.90it/s]Update depth:  71%|███████▏  | 5/7 [00:00<00:00,  9.68it/s]Update depth:  86%|████████▌ | 6/7 [00:00<00:00,  9.52it/s]Update depth: 100%|██████████| 7/7 [00:00<00:00,  9.42it/s]Update depth: 100%|██████████| 7/7 [00:00<00:00,  9.67it/s]
+Update depth:   0%|          | 0/7 [00:00<?, ?it/s]Update depth:  29%|██▊       | 2/7 [00:00<00:00, 11.09it/s]Update depth:  57%|█████▋    | 4/7 [00:00<00:00,  9.88it/s]Update depth:  71%|███████▏  | 5/7 [00:00<00:00,  9.65it/s]Update depth:  86%|████████▌ | 6/7 [00:00<00:00,  9.52it/s]Update depth: 100%|██████████| 7/7 [00:00<00:00,  9.42it/s]Update depth: 100%|██████████| 7/7 [00:00<00:00,  9.65it/s]
+SLAM Pass (2/2):   0%|          | 0/155 [00:00<?, ?it/s]SLAM Pass (2/2):   8%|▊         | 12/155 [00:00<00:01, 119.55it/s]SLAM Pass (2/2):  15%|█▌        | 24/155 [00:01<00:06, 19.43it/s] SLAM Pass (2/2):  21%|██        | 32/155 [00:02<00:09, 13.25it/s]SLAM Pass (2/2):  28%|██▊       | 44/155 [00:02<00:05, 21.58it/s]SLAM Pass (2/2):  33%|███▎      | 51/155 [00:03<00:07, 14.36it/s]SLAM Pass (2/2):  41%|████      | 63/155 [00:03<00:04, 21.99it/s]SLAM Pass (2/2):  46%|████▌     | 71/155 [00:04<00:05, 15.29it/s]SLAM Pass (2/2):  52%|█████▏    | 80/155 [00:05<00:05, 12.83it/s]SLAM Pass (2/2):  59%|█████▉    | 92/155 [00:05<00:03, 19.08it/s]SLAM Pass (2/2):  64%|██████▍   | 99/155 [00:06<00:04, 13.96it/s]SLAM Pass (2/2):  72%|███████▏  | 111/155 [00:06<00:02, 20.55it/s]SLAM Pass (2/2):  76%|███████▌  | 118/155 [00:07<00:02, 14.52it/s]SLAM Pass (2/2):  83%|████████▎ | 128/155 [00:08<00:02, 12.83it/s]SLAM Pass (2/2):  90%|█████████ | 140/155 [00:08<00:00, 18.79it/s]SLAM Pass (2/2):  95%|█████████▍| 147/155 [00:09<00:00, 13.92it/s]SLAM Pass (2/2): 100%|██████████| 155/155 [00:09<00:00, 13.30it/s]SLAM Pass (2/2): 100%|██████████| 155/155 [00:09<00:00, 15.73it/s]
+Traceback (most recent call last):
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    raise err
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/util/connection.py", line 73, in create_connection
+    sock.connect(sa)
+OSError: [Errno 101] Network is unreachable
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connection.py", line 219, in _new_conn
+    raise NewConnectionError(
+urllib3.exceptions.NewConnectionError: HTTPSConnection(host='huggingface.co', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/mthakur/.local/lib/python3.10/site-packages/requests/adapters.py", line 644, in send
+    resp = conn.urlopen(
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+  File "/home/mthakur/.local/lib/python3.10/site-packages/urllib3/util/retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /Rain729/Prior-Depth-Anything/resolve/main/depth_anything_v2_vitb.pth (Caused by NewConnectionError("HTTPSConnection(host='huggingface.co', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1746, in _get_metadata_or_catch_error
+    metadata = get_hf_file_metadata(
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1666, in get_hf_file_metadata
+    r = _request_wrapper(
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 364, in _request_wrapper
+    response = _request_wrapper(
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 387, in _request_wrapper
+    response = get_session().request(method=method, url=url, **params)
+  File "/home/mthakur/.local/lib/python3.10/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/home/mthakur/.local/lib/python3.10/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/utils/_http.py", line 93, in send
+    return super().send(request, *args, **kwargs)
+  File "/home/mthakur/.local/lib/python3.10/site-packages/requests/adapters.py", line 677, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: (MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /Rain729/Prior-Depth-Anything/resolve/main/depth_anything_v2_vitb.pth (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: 24307bf3-0d99-4d0d-866f-784b19cba7fd)')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/conda/envs/vipe/bin/vipe", line 7, in <module>
+    sys.exit(main())
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1161, in __call__
+    return self.main(*args, **kwargs)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1082, in main
+    rv = self.invoke(ctx)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1697, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 1443, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/click/core.py", line 788, in invoke
+    return __callback(*args, **kwargs)
+  File "/app/ViPE/vipe/cli/main.py", line 91, in infer
+    vipe_pipeline.run(video_stream)
+  File "/app/ViPE/vipe/pipeline/default.py", line 130, in run
+    output_streams = [
+  File "/app/ViPE/vipe/pipeline/default.py", line 131, in <listcomp>
+    self._add_post_processors(view_idx, slam_stream, slam_output).cache("depth", online=True)
+  File "/app/ViPE/vipe/pipeline/default.py", line 98, in _add_post_processors
+    post_processors.append(AdaptiveDepthProcessor(slam_output, view_idx, depth_align_model))
+  File "/app/ViPE/vipe/pipeline/processors.py", line 179, in __init__
+    self.prompt_model = PriorDAModel()
+  File "/app/ViPE/vipe/priors/depth/priorda/__init__.py", line 33, in __init__
+    self.model = PriorDepthAnything(device="cuda")
+  File "/app/ViPE/vipe/priors/depth/priorda/priorda.py", line 55, in __init__
+    fmde_path = hf_hub_download(repo_id=self.args.repo_name, filename=fmde_name)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/utils/_deprecation.py", line 101, in inner_f
+    return f(*args, **kwargs)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1232, in hf_hub_download
+    return _hf_hub_download_to_cache_dir(
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1339, in _hf_hub_download_to_cache_dir
+    _raise_on_head_call_error(head_call_error, force_download, local_files_only)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1857, in _raise_on_head_call_error
+    raise LocalEntryNotFoundError(
+huggingface_hub.errors.LocalEntryNotFoundError: An error happened while trying to locate the file on the Hub and we cannot find the requested files in the local cache. Please check your connection and try again or make sure your Internet connection is on.
+
+ERROR conda.cli.main_run:execute(124): `conda run vipe infer data/120-2_clip_1.mp4 --output output/` failed. (See above for error)
+===============================================
+Job finished at: Wed Feb  4 18:11:18 CET 2026
+Execution took 0.03 hours
+Writing output to SLURM_logs/vipe-inference_034.out
+===============================================
