@@ -60,7 +60,11 @@ From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
     cd /app/Hamba
 
     uv pip install pip setuptools==60.2.0 wheel "numpy<2"
-    uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cu117
+    uv pip install torch=="2.0.1" torchvision=="0.15.2" \
+        --index-url https://download.pytorch.org/whl/cu117
+
+    uv pip install --python /.venv/bin/python --no-build-isolation pytorch3d \
+        -f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py310_cu117_pyt201/download.html
 
     uv pip install --no-build-isolation mmcv==1.3.9
 
@@ -68,9 +72,6 @@ From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
     export FORCE_CUDA="1"
 
     uv pip install --no-build-isolation .
-
-    #uv sync \
-    #    --python /.venv/bin/python \
 
     echo "===== Final cleanup ====="
     apt-get clean && rm -rf /var/lib/apt/lists/* /root/.cache/uv
@@ -80,6 +81,10 @@ From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
     echo "Python: $(python --version)"
     echo "Torch: $(python - <<'EOF'
 import torch; print(torch.__version__)
+EOF
+)"
+    echo "PyTorch3D: $(python - <<'EOF'
+import pytorch3d; print(pytorch3d.__version__)
 EOF
 )"
     exec "$@"
