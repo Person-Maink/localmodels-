@@ -1,0 +1,60 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Tue Feb 17 12:21:29 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   60C    P0            115W /  300W |     766MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    8   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9192864
+Job Name:       hamba-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/Hamba
+Work dir:       /scratch/mthakur/Hamba
+Job started at: Tue Feb 17 12:21:30 CET 2026
+===============================================
+FATAL:   While checking container encryption: could not open image /scratch/mthakur/hamba/apptainer/template.sif: failed to retrieve path for /scratch/mthakur/hamba/apptainer/template.sif: lstat /scratch/mthakur/hamba: no such file or directory
+srun: error: gpu020: task 0: Exited with exit code 255
+srun: launch/slurm: _step_signal: Terminating StepId=9192864.0
+===============================================
+Job finished at: Tue Feb 17 12:21:30 CET 2026
+Execution took 0.00 hours
+Writing output to SLURM_logs/hamba-inference_001.out
+===============================================

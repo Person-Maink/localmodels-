@@ -1,0 +1,102 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Thu Feb 19 12:30:10 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   42C    P0             47W /  300W |     249MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    7   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9206861
+Job Name:       hamba-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/hamba
+Work dir:       /scratch/mthakur/hamba
+Job started at: Thu Feb 19 12:30:10 CET 2026
+===============================================
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+WARNING: can not import selective_scan_cuda_core.
+No module named 'selective_scan_cuda_core'
+apex is not installed
+apex is not installed
+apex is not installed
+/.venv/lib/python3.10/site-packages/mmcv/cnn/bricks/transformer.py:27: UserWarning: Fail to import ``MultiScaleDeformableAttention`` from ``mmcv.ops.multi_scale_deform_attn``, You should install ``mmcv-full`` if you need this module. 
+  warnings.warn('Fail to import ``MultiScaleDeformableAttention`` from '
+checkpoint_path:  ckpts/hamba/checkpoints/hamba.ckpt
+/.venv/lib/python3.10/site-packages/pytorch_lightning/utilities/migration/utils.py:55: PossibleUserWarning: The loaded checkpoint was produced with Lightning v2.2.0.post0, which is newer than your current Lightning version: v2.0.9
+  rank_zero_warn(
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+Traceback (most recent call last):
+  File "/scratch/mthakur/hamba/demo.py", line 237, in <module>
+    main()
+  File "/scratch/mthakur/hamba/demo.py", line 41, in main
+    model, model_cfg = load_hamba(args.checkpoint)
+  File "/scratch/mthakur/hamba/hamba/models/__init__.py", line 59, in load_hamba
+    model = HAMBA.load_from_checkpoint(checkpoint_path, strict=False, cfg=model_cfg)
+  File "/.venv/lib/python3.10/site-packages/pytorch_lightning/core/module.py", line 1543, in load_from_checkpoint
+    loaded = _load_from_checkpoint(
+  File "/.venv/lib/python3.10/site-packages/pytorch_lightning/core/saving.py", line 91, in _load_from_checkpoint
+    model = _load_state(cls, checkpoint, strict=strict, **kwargs)
+  File "/.venv/lib/python3.10/site-packages/pytorch_lightning/core/saving.py", line 144, in _load_state
+    obj = cls(**_cls_kwargs)
+  File "/scratch/mthakur/hamba/hamba/models/hamba.py", line 93, in __init__
+    self.mesh_renderer = MeshRenderer(self.cfg, faces=self.mano.faces)
+  File "/scratch/mthakur/hamba/hamba/utils/mesh_renderer.py", line 50, in __init__
+    self.renderer = pyrender.OffscreenRenderer(viewport_width=self.img_res,
+  File "/.venv/lib/python3.10/site-packages/pyrender/offscreen.py", line 31, in __init__
+    self._create()
+  File "/.venv/lib/python3.10/site-packages/pyrender/offscreen.py", line 149, in _create
+    self._platform.init_context()
+  File "/.venv/lib/python3.10/site-packages/pyrender/platforms/osmesa.py", line 19, in init_context
+    from OpenGL.osmesa import (
+  File "/.venv/lib/python3.10/site-packages/OpenGL/osmesa/__init__.py", line 2, in <module>
+    from OpenGL.raw.osmesa.mesa import *
+  File "/.venv/lib/python3.10/site-packages/OpenGL/raw/osmesa/mesa.py", line 34, in <module>
+    def OSMesaCreateContext(format,sharelist): pass
+  File "/.venv/lib/python3.10/site-packages/OpenGL/raw/osmesa/mesa.py", line 9, in _f
+    function,_p.PLATFORM.OSMesa,
+AttributeError: 'EGLPlatform' object has no attribute 'OSMesa'
+srun: error: gpu020: task 0: Exited with exit code 1
+srun: launch/slurm: _step_signal: Terminating StepId=9206861.0
+===============================================
+Job finished at: Thu Feb 19 12:31:37 CET 2026
+Execution took 0.02 hours
+Writing output to SLURM_logs/hamba-inference_006.out
+===============================================

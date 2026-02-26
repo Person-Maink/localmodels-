@@ -1,0 +1,108 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Tue Feb 17 12:40:07 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:2C:00.0 Off |                   On |
+| N/A   53C    P0            115W /  300W |    6814MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    8   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9192899
+Job Name:       hamba-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/Hamba
+Work dir:       /scratch/mthakur/Hamba
+Job started at: Tue Feb 17 12:40:08 CET 2026
+===============================================
+Traceback (most recent call last):
+  File "/.venv/lib/python3.10/site-packages/OpenGL/platform/osmesa.py", line 22, in GL
+    return ctypesloader.loadLibrary(
+  File "/.venv/lib/python3.10/site-packages/OpenGL/platform/ctypesloader.py", line 45, in loadLibrary
+    return dllType( name, mode )
+  File "/usr/lib/python3.10/ctypes/__init__.py", line 374, in __init__
+    self._handle = _dlopen(self._name, mode)
+OSError: ('OSMesa: cannot open shared object file: No such file or directory', 'OSMesa', None)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/scratch/mthakur/Hamba/demo.py", line 12, in <module>
+    from hamba.models import HAMBA, download_models, load_hamba, DEFAULT_CHECKPOINT
+  File "/scratch/mthakur/Hamba/hamba/models/__init__.py", line 2, in <module>
+    from .hamba import HAMBA
+  File "/scratch/mthakur/Hamba/hamba/models/hamba.py", line 7, in <module>
+    from ..utils import SkeletonRenderer, MeshRenderer
+  File "/scratch/mthakur/Hamba/hamba/utils/__init__.py", line 4, in <module>
+    from .renderer import Renderer
+  File "/scratch/mthakur/Hamba/hamba/utils/renderer.py", line 7, in <module>
+    import pyrender
+  File "/.venv/lib/python3.10/site-packages/pyrender/__init__.py", line 3, in <module>
+    from .light import Light, PointLight, DirectionalLight, SpotLight
+  File "/.venv/lib/python3.10/site-packages/pyrender/light.py", line 10, in <module>
+    from OpenGL.GL import *
+  File "/.venv/lib/python3.10/site-packages/OpenGL/GL/__init__.py", line 3, in <module>
+    from OpenGL import error as _error
+  File "/.venv/lib/python3.10/site-packages/OpenGL/error.py", line 12, in <module>
+    from OpenGL import platform, _configflags
+  File "/.venv/lib/python3.10/site-packages/OpenGL/platform/__init__.py", line 35, in <module>
+    _load()
+  File "/.venv/lib/python3.10/site-packages/OpenGL/platform/__init__.py", line 32, in _load
+    plugin.install(globals())
+  File "/.venv/lib/python3.10/site-packages/OpenGL/platform/baseplatform.py", line 92, in install
+    namespace[ name ] = getattr(self,name,None)
+  File "/.venv/lib/python3.10/site-packages/OpenGL/platform/baseplatform.py", line 14, in __get__
+    value = self.fget( obj )
+  File "/.venv/lib/python3.10/site-packages/OpenGL/platform/osmesa.py", line 66, in GetCurrentContext
+    function = self.OSMesa.OSMesaGetCurrentContext
+  File "/.venv/lib/python3.10/site-packages/OpenGL/platform/baseplatform.py", line 14, in __get__
+    value = self.fget( obj )
+  File "/.venv/lib/python3.10/site-packages/OpenGL/platform/osmesa.py", line 60, in OSMesa
+    def OSMesa( self ): return self.GL
+  File "/.venv/lib/python3.10/site-packages/OpenGL/platform/baseplatform.py", line 14, in __get__
+    value = self.fget( obj )
+  File "/.venv/lib/python3.10/site-packages/OpenGL/platform/osmesa.py", line 28, in GL
+    raise ImportError("Unable to load OpenGL library", *err.args)
+ImportError: ('Unable to load OpenGL library', 'OSMesa: cannot open shared object file: No such file or directory', 'OSMesa', None)
+srun: error: gpu020: task 0: Exited with exit code 1
+srun: launch/slurm: _step_signal: Terminating StepId=9192899.0
+===============================================
+Job finished at: Tue Feb 17 12:40:50 CET 2026
+Execution took 0.01 hours
+Writing output to SLURM_logs/hamba-inference_002.out
+===============================================

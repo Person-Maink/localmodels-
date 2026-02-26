@@ -1,0 +1,118 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Thu Feb 19 12:40:23 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:AE:00.0 Off |                    0 |
+| N/A   35C    P0             63W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9206867
+Job Name:       hamba-inference
+Partition:      gpu-a100
+Node List:      gpu014
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 11264
+Submit dir:     /scratch/mthakur/hamba
+Work dir:       /scratch/mthakur/hamba
+Job started at: Thu Feb 19 12:40:23 CET 2026
+===============================================
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+WARNING: can not import selective_scan_cuda_core.
+No module named 'selective_scan_cuda_core'
+apex is not installed
+apex is not installed
+apex is not installed
+/.venv/lib/python3.10/site-packages/mmcv/cnn/bricks/transformer.py:27: UserWarning: Fail to import ``MultiScaleDeformableAttention`` from ``mmcv.ops.multi_scale_deform_attn``, You should install ``mmcv-full`` if you need this module. 
+  warnings.warn('Fail to import ``MultiScaleDeformableAttention`` from '
+checkpoint_path:  ckpts/hamba/checkpoints/hamba.ckpt
+/.venv/lib/python3.10/site-packages/pytorch_lightning/utilities/migration/utils.py:55: PossibleUserWarning: The loaded checkpoint was produced with Lightning v2.2.0.post0, which is newer than your current Lightning version: v2.0.9
+  rank_zero_warn(
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+model_final_f05665.pkl: 0.00B [00:00, ?B/s]model_final_f05665.pkl: 0.00B [00:00, ?B/s]
+Failed to download https://dl.fbaipublicfiles.com/detectron2/ViTDet/COCO/cascade_mask_rcnn_vitdet_h/f328730692/model_final_f05665.pkl
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/urllib/request.py", line 1348, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+  File "/usr/lib/python3.10/http/client.py", line 1303, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/lib/python3.10/http/client.py", line 1349, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.10/http/client.py", line 1298, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.10/http/client.py", line 1058, in _send_output
+    self.send(msg)
+  File "/usr/lib/python3.10/http/client.py", line 996, in send
+    self.connect()
+  File "/usr/lib/python3.10/http/client.py", line 1468, in connect
+    super().connect()
+  File "/usr/lib/python3.10/http/client.py", line 962, in connect
+    self.sock = self._create_connection(
+  File "/usr/lib/python3.10/socket.py", line 845, in create_connection
+    raise err
+  File "/usr/lib/python3.10/socket.py", line 833, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [Errno 111] Connection refused
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/scratch/mthakur/hamba/demo.py", line 237, in <module>
+    main()
+  File "/scratch/mthakur/hamba/demo.py", line 58, in main
+    detector = DefaultPredictor_Lazy(detectron2_cfg)
+  File "/scratch/mthakur/hamba/hamba/utils/utils_detectron2.py", line 64, in __init__
+    checkpointer.load(OmegaConf.select(cfg, "train.init_checkpoint", default=""))
+  File "/.venv/lib/python3.10/site-packages/detectron2/checkpoint/detection_checkpoint.py", line 61, in load
+    path = self.path_manager.get_local_path(path)
+  File "/.venv/lib/python3.10/site-packages/iopath/common/file_io.py", line 1197, in get_local_path
+    bret = handler._get_local_path(path, force=force, **kwargs)
+  File "/.venv/lib/python3.10/site-packages/iopath/common/file_io.py", line 797, in _get_local_path
+    cached = download(path, dirname, filename=filename)
+  File "/.venv/lib/python3.10/site-packages/iopath/common/download.py", line 58, in download
+    tmp, _ = request.urlretrieve(url, filename=tmp, reporthook=hook(t))
+  File "/usr/lib/python3.10/urllib/request.py", line 241, in urlretrieve
+    with contextlib.closing(urlopen(url, data)) as fp:
+  File "/usr/lib/python3.10/urllib/request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.10/urllib/request.py", line 519, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.10/urllib/request.py", line 536, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+  File "/usr/lib/python3.10/urllib/request.py", line 496, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.10/urllib/request.py", line 1391, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+  File "/usr/lib/python3.10/urllib/request.py", line 1351, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error [Errno 111] Connection refused>
+srun: error: gpu014: task 0: Exited with exit code 1
+srun: launch/slurm: _step_signal: Terminating StepId=9206867.0
+===============================================
+Job finished at: Thu Feb 19 12:40:59 CET 2026
+Execution took 0.01 hours
+Writing output to SLURM_logs/hamba-inference_009.out
+===============================================

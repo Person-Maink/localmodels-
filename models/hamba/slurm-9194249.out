@@ -1,0 +1,31 @@
+/usr/bin/lua: /usr/share/lmod/lmod/libexec/LocationT.lua:196: attempt to index a nil value (field 'dirT')
+stack traceback:
+	/usr/share/lmod/lmod/libexec/LocationT.lua:196: in function 'LocationT.search'
+	(...tail calls...)
+	/usr/share/lmod/lmod/libexec/MName.lua:213: in upvalue 'lazyEval'
+	/usr/share/lmod/lmod/libexec/MName.lua:264: in function 'MName.sn'
+	/usr/share/lmod/lmod/libexec/Master.lua:298: in function 'Master.load'
+	/usr/share/lmod/lmod/libexec/MasterControl.lua:1009: in function 'MC_Load.load'
+	/usr/share/lmod/lmod/libexec/MasterControl.lua:985: in function 'MC_Load.always_load'
+	/usr/share/lmod/lmod/libexec/cmdfuncs.lua:459: in function 'Load_Usr'
+	/usr/share/lmod/lmod/libexec/lmod:512: in function 'main'
+	/usr/share/lmod/lmod/libexec/lmod:570: in main chunk
+	[C]: in ?
+(EE) 
+Fatal server error:
+(EE) Server is already active for display 0
+	If this server is no longer running, remove /tmp/.X0-lock
+	and start again.
+(EE) 
+(EE) 
+Please consult the The X.Org Foundation support 
+	 at http://wiki.x.org
+ for help. 
+(EE) 
+
+Desktop 'TurboVNC: visual02:2 (mthakur)' started on display visual02:2
+
+Starting applications specified in /opt/TurboVNC/bin/xstartup.turbovnc
+Log file is /home/mthakur/.vnc/visual02:2.log
+
+Killing Xvnc process ID 1953512
