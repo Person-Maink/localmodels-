@@ -1,7 +1,3 @@
-import os
-os.environ["PYOPENGL_PLATFORM"] = "egl"
-os.environ["PYOPENGL_PLATFORM"] = "osmesa"
-
 import argparse
 import cv2
 import numpy as np
@@ -9,7 +5,6 @@ from inference import *
 from loader import * 
 from visualize import *
 
-# from wilor.utils.renderer import Renderer
 from utils_new import *
 
 LIGHT_PURPLE = (0.25098039, 0.274117647, 0.65882353)
@@ -80,9 +75,6 @@ def main(args):
 
 
         if args.visualize and results:
-            # renderer = Renderer(model_cfg, faces=model.mano.faces)
-            # img_size = img_cv2.shape[:2][::-1]  # (W, H)
-
             all_verts = [r["verts"] for r in results]
             all_cam_t = [r["cam_t"] for r in results]
             all_right = [r["right"] for r in results]
@@ -97,9 +89,6 @@ def main(args):
                 focal_length=focal_length,
             )
 
-            # cam_view = renderer.render_rgba_multiple(
-            #     all_verts, cam_t=all_cam_t, render_res=render_res, is_right=all_right, **misc_args
-            # )
             cam_view = render_rgba_multiple(
                 all_verts, model.mano.faces, cam_t=all_cam_t, render_res=render_res, is_right=all_right, **misc_args
             )
