@@ -4,7 +4,8 @@ import pickle
 
 from scipy.signal import butter, filtfilt, welch
 
-from visualizing_files import *
+from _path_setup import PROJECT_ROOT  # ensures root imports work
+from FILENAME import *
 from wilor_npy_io import list_frame_folders, load_frame_records
 
 np.bool = bool

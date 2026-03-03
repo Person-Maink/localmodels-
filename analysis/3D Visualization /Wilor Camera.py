@@ -252,7 +252,7 @@ def visualize_wilor_cameras(
     invert_cam_t=True,
     fov_deg=60.0,
     aspect=16 / 9,
-    frustum_scale=0.2,
+    frustum_scale=0.5,
     center_radius=0.01,
 ):
     if Plotter is None:
@@ -328,10 +328,10 @@ def main():
     parser.add_argument("--results_file", type=Path, default=None, help="run_wilor_inference results (.npy/.pkl).")
     parser.add_argument("--save_camera_npy", type=Path, default=None, help="Optional output .npy path.")
     parser.add_argument("--hand", choices=["all", "right", "left"], default="all")
-    parser.add_argument("--stride", type=int, default=1)
+    parser.add_argument("--stride", type=int, default=5)
     parser.add_argument("--fov_deg", type=float, default=60.0)
-    parser.add_argument("--aspect", type=float, default=4 / 3)
-    parser.add_argument("--frustum_scale", type=float, default=0.2)
+    parser.add_argument("--aspect", type=float, default=16 / 9)
+    parser.add_argument("--frustum_scale", type=float, default=0.5)
     parser.add_argument("--center_radius", type=float, default=0.01)
     parser.add_argument("--invert_cam_t", dest="invert_cam_t", action="store_true", default=True)
     parser.add_argument("--no_invert_cam_t", dest="invert_cam_t", action="store_false")

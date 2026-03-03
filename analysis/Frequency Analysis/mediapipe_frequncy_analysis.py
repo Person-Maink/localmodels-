@@ -6,7 +6,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.signal import butter, filtfilt, welch
 from vedo import load, merge
-from visualizing_files import *
+from _path_setup import PROJECT_ROOT  # ensures root imports work
+from FILENAME import *
 
 FPS = 30.0
 FILTER_ORDER = 3

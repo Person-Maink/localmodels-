@@ -2,7 +2,8 @@ import pandas as pd
 import numpy as np
 from vedo import Points, Lines
 from vedo.applications import AnimationPlayer
-from visualizing_files import *
+from _path_setup import PROJECT_ROOT  # ensures root imports work
+from FILENAME import *
 
 CSV_PATH = MEDIAPIPE_ROOT
 

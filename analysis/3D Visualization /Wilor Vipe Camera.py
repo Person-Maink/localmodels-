@@ -12,7 +12,7 @@ except ModuleNotFoundError:
 # HARD-CODED PATHS (as requested)
 # -----------------------------
 VIPE_POSE_FILE = Path(
-    "/home/mayank/Documents/Uni/TUD/Thesis Extra/DELFTBLUE /vipe/output/pose/120-2_clip_1.npz"
+    "/home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/outputs/vipe/pose/120-2_clip_1.npz"
 )
 FRAMES_ROOT = Path(
     "/home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/outputs/wilor/120-2_clip_1/meshes"

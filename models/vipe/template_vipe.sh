@@ -7,13 +7,13 @@
 #   compute-p2             : CPU jobs (64 CPUs, 250 GB RAM, Phase 2)
 #   gpu / gpu-v100         : GPU jobs (4x V100, 32 GB VRAM each, Phase 1)
 #   gpu-a100               : GPU jobs (4x A100, 80 GB VRAM each, Phase 2)
-#   gpu-a100-small         : Small GPU jobs (≤1 GPU, ≤10 GB VRAM, ≤2 CPUs, ≤4h)
+#   gpu-a100-small         : Small GPU jobs (<=1 GPU, <=10 GB VRAM, <=2 CPUs, <=4h)
 #   memory                 : High-memory CPU jobs (>250 GB RAM)
 #   visual                 : Visualization jobs
 
 #SBATCH --job-name=vipe-inference
 #SBATCH --partition=gpu-a100
-#SBATCH --time=00:15:00
+#SBATCH --time=__TIME__
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
@@ -37,32 +37,12 @@ exec >"$outfile" 2>&1
 
 # Load modules:
 module load 2024r1
-# module load miniconda3
 module load cuda/12.9
-# module load openmpi/4.1.6
-# module load python/3.10.13
-# module load py-torch/1.12.1
-# module load gcc/11.3.0
-# module load py-pip
-# module load py-numpy
-# module load py-pyyaml
-# module load py-tqdm
-# module load ffmpeg
 
 # ================ CODE EXECUTION ================
 
-## Use this simple command to check that your sbatch
-## settings are working (it should show the GPU that you requested)
-
-# source /scratch/mthakur/Dyn-HaMR/.dynhamr/bin/activate
-# echo "Activated environment: $VIRTUAL_ENV"
-# echo "Python version:"
-#  /scratch/mthakur/Dyn-HaMR/.dynhamr/bin/python3.10 --version
 echo "Loaded modules:"
 module list 2>&1
-
-# echo "Loaded Python Libraries"
-#  /scratch/mthakur/Dyn-HaMR/.dynhamr/bin/pip freeze 2>&1
 
 nvidia-smi
 
@@ -87,9 +67,7 @@ apptainer exec --nv \
     --bind ~/.cache/torch:/home/mthakur/.cache/torch \
     --bind ~/.cache/huggingface:/home/mthakur/.cache/huggingface \
     /scratch/mthakur/manifold/models/vipe/apptainer/template.sif \
-    bash -c '/opt/conda/bin/conda run -n vipe vipe infer data/120-2_clip_1.mp4 --output output/'
-    # bash -c 'HF_HUB_OFFLINE=1 \ /opt/conda/bin/conda run -n vipe vipe infer data/120-2_clip_1.mp4 --output output/'
-    # bash -c ' /opt/conda/bin/conda run -n vipe python -c "import torch;import vipe; print(torch.cuda.is_available(), torch.version.cuda)" '
+    bash -c '/opt/conda/bin/conda run -n vipe vipe infer data/__VIDEO_FILE__ --output output/'
 
 echo "==============================================="
 end_time=$(date +%s)

@@ -4,8 +4,9 @@ import numpy as np
 from vedo import Mesh
 from vedo.applications import AnimationPlayer
 
-from visualizing_files import *
-from wilor_npy_io import list_frame_folders, load_frame_records, load_template_faces_from_root
+from _path_setup import PROJECT_ROOT  # ensures root imports work
+from FILENAME import *
+from wilor_npy_io import list_frame_folders, load_frame_records
 
 np.bool = bool
 np.int = int
@@ -33,13 +34,7 @@ with open(MANO_RIGHT_PATH, "rb") as f:
     mano = pickle.load(f, encoding="latin1")
 
 J_reg = mano["J_regressor"]
-FACES_RIGHT = load_template_faces_from_root(ROOT_DIR)
-
-if FACES_RIGHT is None:
-    raise RuntimeError(
-        f"Could not find mesh faces from obj template under {ROOT_DIR}. "
-        "Need at least one .obj file to recover topology."
-    )
+FACES_RIGHT = np.asarray(mano["f"], dtype=np.int32)
 
 # =========================
 # LOAD + WRIST CENTER HANDS (NPY)
@@ -48,7 +43,7 @@ if FACES_RIGHT is None:
 frames = []
 
 for folder in list_frame_folders(ROOT_DIR):
-    records = load_frame_records(folder)
+    records = load_frame_records(folder, pattern="*.npy")
     if not records:
         continue
 
