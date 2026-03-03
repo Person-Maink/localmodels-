@@ -136,8 +136,8 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run Hamba inference with WiLoR-style IO.")
-    parser.add_argument("--image_folder", type=str, default="../../data/images/", help="Folder with input images/videos.")
-    parser.add_argument("--output_folder", type=str, default="../../outputs/hamba/", help="Folder for results.")
+    parser.add_argument("--image_folder", type=str, default="/scratch/mthakur/manifold/data/images/", help="Folder with input images/videos.")
+    parser.add_argument("--output_folder", type=str, default="/scratch/mthakur/manifold/outputs/hamba/", help="Folder for results.")
     parser.add_argument("--rescale_factor", type=float, default=2.0, help="BBox padding scale.")
     parser.add_argument("--video", type=str, default=None, help="Video name to process (<video>_frames).")
     parser.add_argument(

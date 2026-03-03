@@ -83,8 +83,10 @@ echo "==============================================="
 
 srun apptainer exec \
   --nv \
-  /scratch/mthakur/hamba/apptainer/template.sif \
-  python demo.py --checkpoint ckpts/hamba/checkpoints/hamba.ckpt --img_folder example_data --out_folder ./demo_out/example_data/ --full_frame
+  --bind /scratch:/scratch \
+  /scratch/mthakur/manifold/models/hamba/apptainer/template.sif \
+  python main.py
+  # python demo.py --checkpoint ckpts/hamba/checkpoints/hamba.ckpt --img_folder example_data --out_folder ./demo_out/example_data/ --full_frame
   # python demo.py --checkpoint ckpts/hamba.ckpt --img_folder /scratch/mthakur/manifold/data/images/ --out_folder /demo_out/ --full_frame
 
 # srun apptainer exec\
