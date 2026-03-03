@@ -386,3 +386,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+
+**/_DATA/
