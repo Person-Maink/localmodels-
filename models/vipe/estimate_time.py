@@ -16,7 +16,7 @@ height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 cap.release()
 
 # Temporary constant: tune later once timings are collected.
-SEC_PER_FRAME_AT_1MP = 1.3
+SEC_PER_FRAME_AT_1MP = 0.67
 PIXELS = width * height
 PIX_SCALE = PIXELS / 1_000_000
 
