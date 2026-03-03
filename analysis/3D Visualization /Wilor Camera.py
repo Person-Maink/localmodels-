@@ -2,13 +2,12 @@ import argparse
 import pickle
 import re
 from pathlib import Path
-
 import numpy as np
+from vedo import Lines, Plotter, Sphere
 
-try:
-    from vedo import Lines, Plotter, Sphere
-except ModuleNotFoundError:
-    Lines = Plotter = Sphere = None
+from _path_setup import PROJECT_ROOT  # ensures root imports work
+from FILENAME import * 
+CAMERA = WILOR_ROOT
 
 
 def extract_camera_params_from_results(results):
@@ -315,7 +314,7 @@ def main():
     parser.add_argument(
         "--frames_root",
         type=Path,
-        default="../outputs/wilor/120-2_clip_1/meshes",
+        default=CAMERA,
         help="Folder containing frame_000xxx subfolders with per-frame camera files.",
     )
     parser.add_argument("--frame_dirs_glob", type=str, default="frame_*", help="Glob for frame folders.")

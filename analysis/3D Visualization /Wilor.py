@@ -5,11 +5,12 @@ from vedo import Mesh
 from vedo.applications import AnimationPlayer
 
 from _path_setup import PROJECT_ROOT  # ensures root imports work
-from FILENAME import MANO_RIGHT_PATH, WILOR_ROOT
+from FILENAME import * 
 from wilor_npy_io import list_frame_folders, load_frame_records
 
 
-ROOT_DIR = WILOR_ROOT
+# ROOT_DIR = WILOR_ROOT
+ROOT_DIR = HAMBA_ROOT
 APPLY_X180 = True
 MESH_ALPHA = 0.5
 

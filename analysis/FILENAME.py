@@ -5,9 +5,9 @@ _OUTPUTS_ROOT = Path("/home/mayank/Documents/Uni/TUD/Thesis Extra/comparative st
 _ANALYSIS_ROOT = Path("/home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/analysis")
 
 # Hamba root clip (comment in/out one line)
-_HAMBA_CLIP = "163 (2) FU"
+# _HAMBA_CLIP = "163 (2) FU"
 # _HAMBA_CLIP = "120-2_clip_1"  # show stable right hand
-# _HAMBA_CLIP = "120-2_clip_1_amplified"  # show stable right hand
+_HAMBA_CLIP = "120-2_clip_1_amplified"  # show stable right hand
 # _HAMBA_CLIP = "120-2_clip_2"
 # _HAMBA_CLIP = "120-2_clip_2_amplified"
 # _HAMBA_CLIP = "120-2_clip_3"
@@ -42,10 +42,10 @@ _HAMBA_COMP_CLIP = "120-2_clip_1_amplified"  # show stable right hand
 
 # WiLoR root clip (comment in/out one line)
 # _WILOR_CLIP = "163 (2) FU"
-_WILOR_CLIP = "120-2_clip_1"  # show stable right hand
+# _WILOR_CLIP = "120-2_clip_1"  # show stable right hand
 # _WILOR_CLIP = "120-2_clip_1_amplified"  # show stable right hand
 # _WILOR_CLIP = "120-2_clip_2"
-# _WILOR_CLIP = "120-2_clip_2_amplified"
+_WILOR_CLIP = "120-2_clip_2_amplified"
 # _WILOR_CLIP = "120-2_clip_3"
 # _WILOR_CLIP = "120-2_clip_3_amplified"
 # _WILOR_CLIP = "120-2_clip_4"  # show left hand
