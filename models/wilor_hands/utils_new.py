@@ -99,6 +99,17 @@ def render_rgba_multiple(
 
     images = renderer(scene_mesh)
 
+    alpha = images[0, ..., 3]
+    alpha_min = float(alpha.min().item())
+    alpha_max = float(alpha.max().item())
+    alpha_mean = float(alpha.mean().item())
+    alpha_fg_pct = float((alpha > 1e-4).float().mean().item() * 100.0)
+    if alpha_fg_pct < 0.01:
+        print(
+            "[render_rgba_multiple] warning: extremely low alpha coverage "
+            f"(min={alpha_min:.6f}, max={alpha_max:.6f}, mean={alpha_mean:.6f}, fg%={alpha_fg_pct:.6f})"
+        )
+
     return images[0, ..., :4].detach().cpu().numpy()
 
 
@@ -126,11 +137,6 @@ def vertices_to_trimesh(
             np.radians(rot_angle), rot_axis
         )
         mesh.apply_transform(rot)
-
-    rot = trimesh.transformations.rotation_matrix(
-        np.radians(180), [1, 0, 0]
-    )
-    mesh.apply_transform(rot)
 
     return mesh
 
