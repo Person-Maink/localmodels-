@@ -6,8 +6,12 @@ OUT_DIR="generated_jobs"
 
 mkdir -p "$OUT_DIR"
 
-if [ -f .venv/bin/activate ]; then
-    source .venv/bin/activate
+if [ -x .venv/bin/python3.10 ]; then
+    PYTHON_BIN=".venv/bin/python3.10"
+elif [ -x .venv/bin/python ]; then
+    PYTHON_BIN=".venv/bin/python"
+else
+    PYTHON_BIN="python3"
 fi
 
 for video in "$VIDEO_DIR"/*.mp4; do
@@ -16,7 +20,11 @@ for video in "$VIDEO_DIR"/*.mp4; do
     filename=$(basename "$video")
     name="${filename%.*}"
 
-    TIME_FMT=$(python estimate_time.py "$video")
+    TIME_FMT=$("$PYTHON_BIN" estimate_time.py "$video")
+    if [ $? -ne 0 ] || [ -z "$TIME_FMT" ]; then
+        echo "Skipping $video: failed to estimate runtime with $PYTHON_BIN"
+        continue
+    fi
 
     job_script="$OUT_DIR/demo_${name}.sh"
 
