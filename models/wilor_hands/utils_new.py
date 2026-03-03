@@ -99,6 +99,11 @@ def render_rgba_multiple(
 
     images = renderer(scene_mesh)
 
+    # Slightly boost alpha so mesh overlays are easier to see in saved visualizations.
+    alpha_gain = 1.35
+    images = images.clone()
+    images[..., 3] = torch.clamp(images[..., 3] * alpha_gain, 0.0, 1.0)
+
     alpha = images[0, ..., 3]
     alpha_min = float(alpha.min().item())
     alpha_max = float(alpha.max().item())
@@ -124,6 +129,11 @@ def vertices_to_trimesh(
 
     vertex_colors = np.array([(*mesh_base_color, 1.0)] * vertices.shape[0])
     verts = vertices.copy() + camera_translation
+
+    # Convert OpenCV-style hand coords (x right, y down, z forward) to
+    # PyTorch3D camera convention used here by rotating 180 deg around Z.
+    verts[:, 0] *= -1.0
+    verts[:, 1] *= -1.0
 
     mesh = trimesh.Trimesh(
         verts,
@@ -170,12 +180,9 @@ def vertices_to_pytorch3d_mesh(
         rot = torch.tensor(rot, dtype=torch.float32, device=device)
         verts = verts @ rot.T
 
-    # Apply fixed 180° flip
-    rot180 = trimesh.transformations.rotation_matrix(
-        np.radians(180), [1, 0, 0]
-    )[:3, :3]
-    rot180 = torch.tensor(rot180, dtype=torch.float32, device=device)
-    verts = verts @ rot180.T
+    # Convert OpenCV-style hand coords to PyTorch3D convention.
+    verts[:, 0] *= -1.0
+    verts[:, 1] *= -1.0
 
     verts = verts.unsqueeze(0)
     faces = faces.unsqueeze(0)
