@@ -134,7 +134,7 @@ def main(args):
     modified_vis_dir.mkdir(parents=True, exist_ok=True)
     modified_mesh_root.mkdir(parents=True, exist_ok=True)
 
-    pose_path = Path(args.vipe_pose_path) if args.vipe_pose_path else Path(args.output_folder) / "pose" / f"{args.video}.npz"
+    pose_path = Path(args.vipe_pose_path) if args.vipe_pose_path else Path(args.output_folder) /".." / "vipe" / "pose" / f"{args.video}.npz"
     pose_inds, poses_c2w = load_vipe_pose_artifact(pose_path)
     image_map = build_frame_image_map(Path(args.image_folder), args.video)
 
