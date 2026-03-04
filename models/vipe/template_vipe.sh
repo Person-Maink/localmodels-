@@ -62,8 +62,8 @@ start_time=$(date +%s)
 echo "==============================================="
 
 apptainer exec --nv \
-    --bind /scratch/mthakur/vipe/data/:/data/ \
-    --bind /scratch/mthakur/vipe/output/:/output/ \
+    --bind /scratch/mthakur/manifold/data/:/data/ \
+    --bind /scratch/mthakur/manifold/output/vipe/:/output/ \
     --bind ~/.cache/torch:/home/mthakur/.cache/torch \
     --bind ~/.cache/huggingface:/home/mthakur/.cache/huggingface \
     /scratch/mthakur/manifold/models/vipe/apptainer/template.sif \
