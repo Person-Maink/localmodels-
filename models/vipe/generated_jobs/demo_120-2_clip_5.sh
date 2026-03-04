@@ -17,7 +17,7 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
-#SBATCH --mem-per-gpu=24G
+#SBATCH --mem-per-gpu=32G
 #SBATCH --account=Education-EEMCS-MSc-DSAIT
 #SBATCH --output=%x.out
 
@@ -62,12 +62,12 @@ start_time=$(date +%s)
 echo "==============================================="
 
 apptainer exec --nv \
-    --bind /scratch/mthakur/manifold/data/images/:/data/ \
-    --bind /scratch/mthakur/manifold/outputs/vipe/:/outputs/ \
+    --bind /scratch/mthakur/manifold/data/:/data/ \
+    --bind /scratch/mthakur/manifold/output/vipe/:/output/ \
     --bind ~/.cache/torch:/home/mthakur/.cache/torch \
     --bind ~/.cache/huggingface:/home/mthakur/.cache/huggingface \
     /scratch/mthakur/manifold/models/vipe/apptainer/template.sif \
-    bash -c '/opt/conda/bin/conda run -n vipe vipe infer "data/120-2_clip_5.mp4" --output outputs/'
+    bash -c '/opt/conda/bin/conda run -n vipe vipe infer data/120-2_clip_5.mp4 --output output/'
 
 echo "==============================================="
 end_time=$(date +%s)
