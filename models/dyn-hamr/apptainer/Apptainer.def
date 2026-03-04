@@ -42,6 +42,9 @@ From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
         libxrender1 \
         libgomp1 \
         libgl1-mesa-glx \
+        libegl1 \
+        libegl-mesa0 \
+        libglvnd0
 
     ln -sf /usr/bin/python3.10 /usr/bin/python
     python -m pip install --upgrade pip
@@ -91,6 +94,17 @@ From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
     cd /app/third-party/hamer
     uv pip install --system .[all] --no-build-isolation
     uv pip install --system -v third-party/ViTPose --no-build-isolation
+
+    echo "=============================="
+    echo "Pinning Lightning for Torch 1.13"
+    echo "=============================="
+
+    # torch._dynamo exists only in torch>=2.0; keep Lightning on the 1.x line.
+    uv pip install --system \
+        pytorch-lightning==1.9.5 \
+        torchmetrics==0.11.4 \
+        lightning-utilities==0.11.9 \
+        --no-build-isolation
 
     echo "=============================="
     echo "Fixing Numpy"
@@ -155,6 +169,8 @@ From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
     export LC_ALL=C
     export PYTHONUNBUFFERED=1
     export PATH="/root/.local/bin:$PATH"
+    export PYOPENGL_PLATFORM=egl
+    export EGL_DEVICE_ID=0
 
 %runscript
     echo "=============================="
