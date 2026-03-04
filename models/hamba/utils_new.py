@@ -53,13 +53,11 @@ def render_rgba_multiple(
     if is_right is None:
         is_right = [1] * len(vertices)
 
-    faces_right = np.asarray(faces_in, dtype=np.int64).copy()
+    if torch.is_tensor(faces_in):
+        faces_right = faces_in.detach().cpu().numpy().copy()
+    else:
+        faces_right = np.asarray(faces_in, dtype=np.int64).copy()
     faces_left = faces_right[:, [0, 2, 1]]
-    rot180_x = torch.tensor(
-        [[1.0, 0.0, 0.0], [0.0, -1.0, 0.0], [0.0, 0.0, -1.0]],
-        dtype=torch.float32,
-        device=device,
-    )
 
     mesh_list = []
     for verts_np, cam_np, right_flag in zip(vertices, cam_t, is_right):
@@ -69,7 +67,10 @@ def render_rgba_multiple(
 
         verts = torch.as_tensor(verts_np, dtype=torch.float32, device=device)
         verts = verts + torch.as_tensor(cam_np, dtype=torch.float32, device=device)[None, :]
-        verts = verts @ rot180_x.T
+        # Convert OpenCV-style hand coords to the convention expected here:
+        # flip x/y but keep z so geometry stays in front of the camera.
+        verts[:, 0] *= -1.0
+        verts[:, 1] *= -1.0
         verts = verts.unsqueeze(0)
 
         faces = torch.as_tensor(faces_np, dtype=torch.int64, device=device).unsqueeze(0)
@@ -106,6 +107,23 @@ def render_rgba_multiple(
     )
 
     rendered = renderer(scene_mesh)
+
+    # Slightly boost alpha so overlays are easier to see.
+    alpha_gain = 1.35
+    rendered = rendered.clone()
+    rendered[..., 3] = torch.clamp(rendered[..., 3] * alpha_gain, 0.0, 1.0)
+
+    alpha = rendered[0, ..., 3]
+    alpha_min = float(alpha.min().item())
+    alpha_max = float(alpha.max().item())
+    alpha_mean = float(alpha.mean().item())
+    alpha_fg_pct = float((alpha > 1e-4).float().mean().item() * 100.0)
+    if alpha_fg_pct < 0.01:
+        print(
+            "[render_rgba_multiple] warning: extremely low alpha coverage "
+            f"(min={alpha_min:.6f}, max={alpha_max:.6f}, mean={alpha_mean:.6f}, fg%={alpha_fg_pct:.6f})"
+        )
+
     return rendered[0, ..., :4].detach().cpu().numpy()
 
 
