@@ -81,11 +81,17 @@ echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
 
+# srun apptainer exec \
+#   --nv \
+#   --bind /scratch:/scratch \
+#   /scratch/mthakur/manifold/models/wilor_hands/apptainer/template.sif \
+#   python /scratch/mthakur/manifold/models/wilor_hands/main.py
+
 srun apptainer exec \
   --nv \
   --bind /scratch:/scratch \
   /scratch/mthakur/manifold/models/wilor_hands/apptainer/template.sif \
-  python /scratch/mthakur/manifold/models/wilor_hands/main.py
+  python /scratch/mthakur/manifold/models/wilor_hands/modify.py --video 120-2_clip_1.mp4
 
   # python -c "import torch; print(torch.__version__); print(torch.version.cuda); print(torch.version.git_version)"
 # srun apptainer exec\
