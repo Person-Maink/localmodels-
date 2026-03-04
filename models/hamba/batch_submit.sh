@@ -14,7 +14,7 @@ else
     PYTHON_BIN="python3"
 fi
 
-for video in "$VIDEO_DIR"/*.mp4; do
+for video in "$VIDEO_DIR"/*.*; do
     [ -f "$video" ] || continue
 
     filename=$(basename "$video")

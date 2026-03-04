@@ -1,7 +1,5 @@
 #!/bin/bash
-
 # ================ SLURM SETUP ================
-
 # Available HPC Partitions:
 #   compute / compute-p1   : CPU jobs (48 CPUs, 185 GB RAM, Phase 1)
 #   compute-p2             : CPU jobs (64 CPUs, 250 GB RAM, Phase 2)
@@ -11,18 +9,17 @@
 #   memory                 : High-memory CPU jobs (>250 GB RAM)
 #   visual                 : Visualization jobs
 
-#SBATCH --job-name=vipe-inference
+#SBATCH --job-name=hamba-inference
 #SBATCH --partition=gpu-a100
-#SBATCH --time=00:05:16
+#SBATCH --time=00:21:11
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
-#SBATCH --mem-per-gpu=32G
+#SBATCH --mem-per-gpu=24G
 #SBATCH --account=Education-EEMCS-MSc-DSAIT
 #SBATCH --output=%x.out
 
 # ================ OUTPUT FILES ================
-
 # compute a small incremental index based on existing files
 base_name="${SLURM_JOB_NAME}"
 dir="SLURM_logs"
@@ -34,17 +31,13 @@ outfile="${dir}/${base_name}_${count}.out"
 exec >"$outfile" 2>&1
 
 # ================ SLURM SETUP ================
-
 # Load modules:
 module load 2024r1
-module load cuda/12.9
+module load cuda/11.7
 
 # ================ CODE EXECUTION ================
-
 echo "Loaded modules:"
 module list 2>&1
-
-nvidia-smi
 
 echo "================ SLURM JOB INFO ================"
 echo "Job ID:         $SLURM_JOB_ID"
@@ -61,13 +54,13 @@ echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
 
-apptainer exec --nv \
-    --bind /scratch/mthakur/manifold/data/:/data/ \
-    --bind /scratch/mthakur/manifold/outputs/vipe/:/output/ \
-    --bind ~/.cache/torch:/home/mthakur/.cache/torch \
-    --bind ~/.cache/huggingface:/home/mthakur/.cache/huggingface \
-    /scratch/mthakur/manifold/models/vipe/apptainer/template.sif \
-    bash -c '/opt/conda/bin/conda run -n vipe vipe infer data/120-2_clip_5.mp4 --output output/'
+mkdir -p /scratch/mthakur/manifold/data/images/120-2_clip_1_amplified_frames
+
+srun apptainer exec \
+  --nv \
+  --bind /scratch:/scratch \
+  /scratch/mthakur/manifold/models/hamba/apptainer/template.sif \
+  python /scratch/mthakur/manifold/models/hamba/main.py --video 120-2_clip_1_amplified
 
 echo "==============================================="
 end_time=$(date +%s)
