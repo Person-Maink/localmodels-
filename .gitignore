@@ -257,7 +257,6 @@ __pycache__/
 test/
 
 *.swp
-*.out
 *.err
 
 # C extensions
