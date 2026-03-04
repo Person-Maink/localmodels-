@@ -62,12 +62,19 @@ start_time=$(date +%s)
 echo "==============================================="
 
 apptainer exec --nv \
-    --bind /scratch/mthakur/manifold/data/:/data/ \
-    --bind /scratch/mthakur/manifold/outputs/vipe/:/output/ \
+    --bind /scratch:/scratch \
     --bind ~/.cache/torch:/home/mthakur/.cache/torch \
     --bind ~/.cache/huggingface:/home/mthakur/.cache/huggingface \
     /scratch/mthakur/manifold/models/vipe/apptainer/template.sif \
-    bash -c '/opt/conda/bin/conda run -n vipe vipe infer data/163 (2) FU.MTS --output output/'
+    bash -c '/opt/conda/bin/conda run -n vipe vipe infer /scratch/mthakur/manifold/data/images/163 (2) FU.MTS --output /scratch/mthakur/manifold/outputs/vipe/'
+
+# apptainer exec --nv \
+#     --bind /scratch/mthakur/manifold/data/:/data/ \
+#     --bind /scratch/mthakur/manifold/outputs/vipe/:/output/ \
+#     --bind ~/.cache/torch:/home/mthakur/.cache/torch \
+#     --bind ~/.cache/huggingface:/home/mthakur/.cache/huggingface \
+#     /scratch/mthakur/manifold/models/vipe/apptainer/template.sif \
+#     bash -c '/opt/conda/bin/conda run -n vipe vipe infer data/163 (2) FU.MTS --output /output/'
 
 echo "==============================================="
 end_time=$(date +%s)
