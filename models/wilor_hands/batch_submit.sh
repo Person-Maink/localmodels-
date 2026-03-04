@@ -8,7 +8,7 @@ mkdir -p "$OUT_DIR"
 
 source .venv/bin/activate
 
-for video in "$VIDEO_DIR"/*.avi; do
+for video in "$VIDEO_DIR"/*.*; do
     [ -f "$video" ] || continue
 
     filename=$(basename "$video")

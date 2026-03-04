@@ -1,0 +1,71 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Thu Feb 26 13:07:04 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:98:00.0 Off |                    0 |
+| N/A   56C    P0             56W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9259621
+Job Name:       hamba-inference
+Partition:      gpu-a100
+Node List:      gpu015
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 11264
+Submit dir:     /scratch/mthakur/manifold/models/hamba
+Work dir:       /scratch/mthakur/manifold/models/hamba
+Job started at: Thu Feb 26 13:07:04 CET 2026
+===============================================
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+WARNING: can not import selective_scan_cuda_core.
+No module named 'selective_scan_cuda_core'
+apex is not installed
+apex is not installed
+apex is not installed
+/.venv/lib/python3.10/site-packages/mmcv/cnn/bricks/transformer.py:27: UserWarning: Fail to import ``MultiScaleDeformableAttention`` from ``mmcv.ops.multi_scale_deform_attn``, You should install ``mmcv-full`` if you need this module. 
+  warnings.warn('Fail to import ``MultiScaleDeformableAttention`` from '
+checkpoint_path:  ckpts/hamba/checkpoints/hamba.ckpt
+/.venv/lib/python3.10/site-packages/pytorch_lightning/utilities/migration/utils.py:55: PossibleUserWarning: The loaded checkpoint was produced with Lightning v2.2.0.post0, which is newer than your current Lightning version: v2.0.9
+  rank_zero_warn(
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+Traceback (most recent call last):
+  File "/scratch/mthakur/manifold/models/hamba/main.py", line 161, in <module>
+    main(parser.parse_args())
+  File "/scratch/mthakur/manifold/models/hamba/main.py", line 18, in main
+    runtime = init_runtime(device=device)
+  File "/scratch/mthakur/manifold/models/hamba/inference.py", line 60, in init_runtime
+    _require_file(DEFAULT_DETECTRON2_CHECKPOINT, "Detectron2 checkpoint")
+  File "/scratch/mthakur/manifold/models/hamba/inference.py", line 35, in _require_file
+    raise FileNotFoundError(f"{description} not found at: {path}")
+FileNotFoundError: Detectron2 checkpoint not found at: ~/.cache/torch/hub/checkpoints/model_final_f05665.pkl
+srun: error: gpu015: task 0: Exited with exit code 1
+srun: launch/slurm: _step_signal: Terminating StepId=9259621.0
+===============================================
+Job finished at: Thu Feb 26 13:08:11 CET 2026
+Execution took 0.02 hours
+Writing output to SLURM_logs/hamba-inference_017.out
+===============================================

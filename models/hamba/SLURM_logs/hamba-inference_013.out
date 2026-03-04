@@ -1,0 +1,60 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Thu Feb 26 11:04:22 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                    0 |
+| N/A   48C    P0             50W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9259200
+Job Name:       hamba-inference
+Partition:      gpu-a100
+Node List:      gpu015
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 11264
+Submit dir:     /scratch/mthakur/manifold/models/hamba
+Work dir:       /scratch/mthakur/manifold/models/hamba
+Job started at: Thu Feb 26 11:04:22 CET 2026
+===============================================
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+WARNING: can not import selective_scan_cuda_core.
+No module named 'selective_scan_cuda_core'
+Traceback (most recent call last):
+  File "/scratch/mthakur/manifold/models/hamba/main.py", line 7, in <module>
+    from inference import detect_hands_and_keypoints, init_runtime, run_hamba_inference
+  File "/scratch/mthakur/manifold/models/hamba/inference.py", line 12, in <module>
+    from utils_new import cam_crop_to_full
+  File "/scratch/mthakur/manifold/models/hamba/utils_new.py", line 4, in <module>
+    from pytorch3d.renderer import (
+ModuleNotFoundError: No module named 'pytorch3d'
+srun: error: gpu015: task 0: Exited with exit code 1
+srun: launch/slurm: _step_signal: Terminating StepId=9259200.0
+===============================================
+Job finished at: Thu Feb 26 11:05:17 CET 2026
+Execution took 0.02 hours
+Writing output to SLURM_logs/hamba-inference_013.out
+===============================================

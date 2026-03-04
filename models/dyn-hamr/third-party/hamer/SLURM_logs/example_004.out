@@ -1,0 +1,53 @@
+Activated environment: /scratch/mthakur/Dyn-HaMR/.dynhamr
+Python version:
+Python 3.10.13
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7       7) python/3.10.13
+  2) DefaultModules   4) 2024r1       6) openmpi/4.1.6   8) py-pip/23.1.2
+
+ 
+
+================ SLURM JOB INFO ================
+Job ID:         8589096
+Job Name:       example
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Submit dir:     /scratch/mthakur/Dyn-HaMR/third-party/hamer
+Work dir:       /scratch/mthakur/Dyn-HaMR
+Job started at: Wed Nov 12 17:25:41 CET 2025
+===============================================
+/scratch/mthakur/Dyn-HaMR/.dynhamr/lib/python3.10/site-packages/mmcv/cnn/bricks/transformer.py:27: UserWarning: Fail to import ``MultiScaleDeformableAttention`` from ``mmcv.ops.multi_scale_deform_attn``, You should install ``mmcv-full`` if you need this module. 
+  warnings.warn('Fail to import ``MultiScaleDeformableAttention`` from '
+apex is not installed
+apex is not installed
+apex is not installed
+_DATA/data/mano_mean_params.npz CREATE_BODY_POSE: False
+DATA_DIR: _DATA/data/
+GENDER: neutral
+MEAN_PARAMS: _DATA/data/mano_mean_params.npz
+MODEL_PATH: _DATA/data/mano
+NUM_HAND_JOINTS: 15
+!!!!!!!!!! {'data_dir': '_DATA/data/', 'model_path': '_DATA/data/mano', 'gender': 'neutral', 'num_hand_joints': 15, 'mean_params': '_DATA/data/mano_mean_params.npz', 'create_body_pose': False}
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+MANO(
+  Gender: NEUTRAL
+  Number of joints: 16
+  Betas: 10
+  Number of PCA components: 6
+  Flat hand mean: False
+  (vertex_joint_selector): VertexJointSelector()
+)
+Traceback (most recent call last):
+  File "/scratch/mthakur/Dyn-HaMR/third-party/hamer/demo.py", line 208, in <module>
+    main()
+  File "/scratch/mthakur/Dyn-HaMR/third-party/hamer/demo.py", line 65, in main
+    cpm = ViTPoseModel(device)
+TypeError: ViTPoseModel.__init__() missing 1 required positional argument: 'device'
+===============================================
+Job finished at: Wed Nov 12 17:26:13 CET 2025
+Writing output to SLURM_logs/example_004.out
+===============================================

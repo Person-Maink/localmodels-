@@ -11,7 +11,7 @@
 
 #SBATCH --job-name=hamba-inference
 #SBATCH --partition=gpu-a100
-#SBATCH --time=00:21:20
+#SBATCH --time=00:32:12
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
@@ -54,13 +54,13 @@ echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
 
-mkdir -p /scratch/mthakur/manifold/data/images/120-2_clip_1_frames
+mkdir -p /scratch/mthakur/manifold/data/images/clip_1_frames
 
 srun apptainer exec \
   --nv \
   --bind /scratch:/scratch \
   /scratch/mthakur/manifold/models/hamba/apptainer/template.sif \
-  python /scratch/mthakur/manifold/models/hamba/main.py --video 120-2_clip_1
+  python /scratch/mthakur/manifold/models/hamba/main.py --video clip_1
 
 echo "==============================================="
 end_time=$(date +%s)

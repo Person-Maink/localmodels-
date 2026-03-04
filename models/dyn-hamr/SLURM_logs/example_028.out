@@ -1,0 +1,22 @@
+Activated environment: /scratch/mthakur/Dyn-HaMR/.dynhamr
+Python version:
+Python 3.10.13
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7       7) python/3.10.13
+  2) DefaultModules   4) 2024r1       6) openmpi/4.1.6   8) py-pip/23.1.2
+
+ 
+
+================ SLURM JOB INFO ================
+Job ID:         8589172
+Job Name:       example
+Partition:      gpu-a100
+Node List:      gpu014
+CPUs per task:  2
+GPUs per task:  1
+Submit dir:     /scratch/mthakur/Dyn-HaMR
+Work dir:       /scratch/mthakur/Dyn-HaMR
+Job started at: Wed Nov 12 17:44:54 CET 2025
+===============================================
