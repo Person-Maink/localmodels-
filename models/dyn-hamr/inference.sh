@@ -12,12 +12,12 @@
 #   visual                 : Visualization jobs
 
 #SBATCH --job-name=example
-#SBATCH --partition=gpu-a100-small
+#SBATCH --partition=gpu-a100
 #SBATCH --time=00:15:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
-#SBATCH --mem-per-gpu=10G
+#SBATCH --mem-per-gpu=24G
 #SBATCH --account=Education-EEMCS-MSc-DSAIT
 #SBATCH --output=%x.out
 
