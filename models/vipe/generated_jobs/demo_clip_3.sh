@@ -66,7 +66,7 @@ apptainer exec --nv \
     --bind ~/.cache/torch:/home/mthakur/.cache/torch \
     --bind ~/.cache/huggingface:/home/mthakur/.cache/huggingface \
     /scratch/mthakur/manifold/models/vipe/apptainer/template.sif \
-    bash -c '/opt/conda/bin/conda run -n vipe vipe infer /scratch/mthakur/manifold/data/images/clip_3.mp4 --output /scratch/mthakur/manifold/outputs/vipe/'
+    bash -c '/opt/conda/bin/conda run -n vipe vipe infer /scratch/mthakur/manifold/data/images/clip_3.mp4 --output /scratch/mthakur/manifold/outputs/vipe/ --pipeline no_vda'
 
 # apptainer exec --nv \
 #     --bind /scratch/mthakur/manifold/data/:/data/ \
@@ -74,7 +74,7 @@ apptainer exec --nv \
 #     --bind ~/.cache/torch:/home/mthakur/.cache/torch \
 #     --bind ~/.cache/huggingface:/home/mthakur/.cache/huggingface \
 #     /scratch/mthakur/manifold/models/vipe/apptainer/template.sif \
-#     bash -c '/opt/conda/bin/conda run -n vipe vipe infer data/clip_3.mp4 --output /output/'
+#     bash -c '/opt/conda/bin/conda run -n vipe vipe infer data/clip_3.mp4 --output /output/ --pipeline no_vda'
 
 echo "==============================================="
 end_time=$(date +%s)
