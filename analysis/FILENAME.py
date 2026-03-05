@@ -8,73 +8,148 @@ _ANALYSIS_ROOT = Path("/home/mayank/Documents/Uni/TUD/Thesis Extra/comparative s
 # _HAMBA_CLIP = "163 (2) FU"
 # _HAMBA_CLIP = "120-2_clip_1"  # show stable right hand
 _HAMBA_CLIP = "120-2_clip_1_amplified"  # show stable right hand
+# _HAMBA_CLIP = "120-2_clip_1_amplified_modified"  # show stable right hand
+# _HAMBA_CLIP = "120-2_clip_1_modified"  # show stable right hand
 # _HAMBA_CLIP = "120-2_clip_2"
 # _HAMBA_CLIP = "120-2_clip_2_amplified"
+# _HAMBA_CLIP = "120-2_clip_2_amplified_modified"
+# _HAMBA_CLIP = "120-2_clip_2_modified"
 # _HAMBA_CLIP = "120-2_clip_3"
 # _HAMBA_CLIP = "120-2_clip_3_amplified"
+# _HAMBA_CLIP = "120-2_clip_3_amplified_modified"
+# _HAMBA_CLIP = "120-2_clip_3_modified"
 # _HAMBA_CLIP = "120-2_clip_4"  # show left hand
 # _HAMBA_CLIP = "120-2_clip_4_amplified"  # show left hand
+# _HAMBA_CLIP = "120-2_clip_4_amplified_modified"  # show left hand
+# _HAMBA_CLIP = "120-2_clip_4_modified"  # show left hand
 # _HAMBA_CLIP = "120-2_clip_5"  # both hands out
 # _HAMBA_CLIP = "120-2_clip_5_amplified"  # both hands out
+# _HAMBA_CLIP = "120-2_clip_5_amplified_modified"  # both hands out
+# _HAMBA_CLIP = "120-2_clip_5_modified"  # both hands out
 # _HAMBA_CLIP = "120-2_clip_6"  # not that good acc
+# _HAMBA_CLIP = "120-2_clip_6_modified"  # not that good acc
 # _HAMBA_CLIP = "120-2_clip_7"
 # _HAMBA_CLIP = "120-2_clip_7_amplified"
+# _HAMBA_CLIP = "120-2_clip_7_amplified_modified"
+# _HAMBA_CLIP = "120-2_clip_7_modified"
 # _HAMBA_CLIP = "124-7 DBS uit"
 # _HAMBA_CLIP = "163 (2) FU"  # water pouring good angle
 # _HAMBA_CLIP = "clip_1"  # hand shaking very fast
 # _HAMBA_CLIP = "clip_1_amplified"  # hand shaking very fast
+# _HAMBA_CLIP = "clip_1_amplified_modified"  # hand shaking very fast
+# _HAMBA_CLIP = "clip_1_modified"  # hand shaking very fast
 # _HAMBA_CLIP = "clip_2"
 # _HAMBA_CLIP = "clip_2_amplified"
+# _HAMBA_CLIP = "clip_2_amplified_modified"
+# _HAMBA_CLIP = "clip_2_modified"
 # _HAMBA_CLIP = "clip_3"
 # _HAMBA_CLIP = "clip_3_amplified"
+# _HAMBA_CLIP = "clip_3_amplified_modified"
+# _HAMBA_CLIP = "clip_3_modified"
 # _HAMBA_CLIP = "clip_4"
+# _HAMBA_CLIP = "clip_4_modified"
 
 # WiLoR comparison clip (comment in/out one line)
 _HAMBA_COMP_CLIP = "120-2_clip_1_amplified"  # show stable right hand
+# _HAMBA_COMP_CLIP = "120-2_clip_1_amplified_modified"  # show stable right hand
+# _HAMBA_COMP_CLIP = "120-2_clip_1_modified"  # show stable right hand
 # _HAMBA_COMP_CLIP = "120-2_clip_2_amplified"
+# _HAMBA_COMP_CLIP = "120-2_clip_2_amplified_modified"
+# _HAMBA_COMP_CLIP = "120-2_clip_2_modified"
 # _HAMBA_COMP_CLIP = "120-2_clip_3_amplified"
+# _HAMBA_COMP_CLIP = "120-2_clip_3_amplified_modified"
+# _HAMBA_COMP_CLIP = "120-2_clip_3_modified"
 # _HAMBA_COMP_CLIP = "120-2_clip_4_amplified"
+# _HAMBA_COMP_CLIP = "120-2_clip_4_amplified_modified"
+# _HAMBA_COMP_CLIP = "120-2_clip_4_modified"
 # _HAMBA_COMP_CLIP = "120-2_clip_5_amplified"
+# _HAMBA_COMP_CLIP = "120-2_clip_5_amplified_modified"
+# _HAMBA_COMP_CLIP = "120-2_clip_5_modified"
 # _HAMBA_COMP_CLIP = "120-2_clip_7_amplified"
+# _HAMBA_COMP_CLIP = "120-2_clip_7_amplified_modified"
+# _HAMBA_COMP_CLIP = "120-2_clip_7_modified"
 # _HAMBA_COMP_CLIP = "clip_1_amplified"
+# _HAMBA_COMP_CLIP = "clip_1_amplified_modified"
+# _HAMBA_COMP_CLIP = "clip_1_modified"
 # _HAMBA_COMP_CLIP = "clip_2_amplified"
+# _HAMBA_COMP_CLIP = "clip_2_amplified_modified"
+# _HAMBA_COMP_CLIP = "clip_2_modified"
 # _HAMBA_COMP_CLIP = "clip_3_amplified"
+# _HAMBA_COMP_CLIP = "clip_3_amplified_modified"
+# _HAMBA_COMP_CLIP = "clip_3_modified"
 
 # WiLoR root clip (comment in/out one line)
 # _WILOR_CLIP = "163 (2) FU"
-# _WILOR_CLIP = "120-2_clip_1"  # show stable right hand
+_WILOR_CLIP = "120-2_clip_1"  # show stable right hand
 # _WILOR_CLIP = "120-2_clip_1_amplified"  # show stable right hand
+# _WILOR_CLIP = "120-2_clip_1_amplified_modified"  # show stable right hand
+# _WILOR_CLIP = "120-2_clip_1_modified"  # show stable right hand
 # _WILOR_CLIP = "120-2_clip_2"
-_WILOR_CLIP = "120-2_clip_2_amplified"
+# _WILOR_CLIP = "120-2_clip_2_amplified"
+# _WILOR_CLIP = "120-2_clip_2_amplified_modified"
+# _WILOR_CLIP = "120-2_clip_2_modified"
 # _WILOR_CLIP = "120-2_clip_3"
 # _WILOR_CLIP = "120-2_clip_3_amplified"
+# _WILOR_CLIP = "120-2_clip_3_amplified_modified"
+# _WILOR_CLIP = "120-2_clip_3_modified"
 # _WILOR_CLIP = "120-2_clip_4"  # show left hand
 # _WILOR_CLIP = "120-2_clip_4_amplified"  # show left hand
+# _WILOR_CLIP = "120-2_clip_4_amplified_modified"  # show left hand
+# _WILOR_CLIP = "120-2_clip_4_modified"  # show left hand
 # _WILOR_CLIP = "120-2_clip_5"  # both hands out
 # _WILOR_CLIP = "120-2_clip_5_amplified"  # both hands out
+# _WILOR_CLIP = "120-2_clip_5_amplified_modified"  # both hands out
+# _WILOR_CLIP = "120-2_clip_5_modified"  # show stable right hand
 # _WILOR_CLIP = "120-2_clip_6"  # not that good acc
+# _WILOR_CLIP = "120-2_clip_6_modified"  # not that good acc
 # _WILOR_CLIP = "120-2_clip_7"
 # _WILOR_CLIP = "120-2_clip_7_amplified"
+# _WILOR_CLIP = "120-2_clip_7_amplified_modified"
+# _WILOR_CLIP = "120-2_clip_7_modified"
 # _WILOR_CLIP = "124-7 DBS uit"
 # _WILOR_CLIP = "163 (2) FU"  # water pouring good angle
 # _WILOR_CLIP = "clip_1"  # hand shaking very fast
 # _WILOR_CLIP = "clip_1_amplified"  # hand shaking very fast
+# _WILOR_CLIP = "clip_1_amplified_modified"  # hand shaking very fast
+# _WILOR_CLIP = "clip_1_modified"  # hand shaking very fast
 # _WILOR_CLIP = "clip_2"
 # _WILOR_CLIP = "clip_2_amplified"
+# _WILOR_CLIP = "clip_2_amplified_modified"
+# _WILOR_CLIP = "clip_2_modified"
 # _WILOR_CLIP = "clip_3"
 # _WILOR_CLIP = "clip_3_amplified"
+# _WILOR_CLIP = "clip_3_amplified_modified"
+# _WILOR_CLIP = "clip_3_modified"
 # _WILOR_CLIP = "clip_4"
+# _WILOR_CLIP = "clip_4_modified"
 
 # WiLoR comparison clip (comment in/out one line)
-_WILOR_COMP_CLIP = "120-2_clip_1_amplified"  # show stable right hand
+# _WILOR_COMP_CLIP = "120-2_clip_1_amplified"  # show stable right hand
+# _WILOR_COMP_CLIP = "120-2_clip_1_amplified_modified"  # show stable right hand
+# _WILOR_COMP_CLIP = "120-2_clip_1_modified"  # show stable right hand
 # _WILOR_COMP_CLIP = "120-2_clip_2_amplified"
+# _WILOR_COMP_CLIP = "120-2_clip_2_amplified_modified"
 # _WILOR_COMP_CLIP = "120-2_clip_3_amplified"
+# _WILOR_COMP_CLIP = "120-2_clip_3_amplified_modified"
+# _WILOR_COMP_CLIP = "120-2_clip_3_modified"  # show stable right hand
 # _WILOR_COMP_CLIP = "120-2_clip_4_amplified"
+# _WILOR_COMP_CLIP = "120-2_clip_4_amplified_modified"  # show stable right hand
+# _WILOR_COMP_CLIP = "120-2_clip_4_modified"  # show stable right hand
 # _WILOR_COMP_CLIP = "120-2_clip_5_amplified"
+# _WILOR_COMP_CLIP = "120-2_clip_5_amplified_modified"  # show stable right hand
+_WILOR_COMP_CLIP = "120-2_clip_5_modified"  # show stable right hand
 # _WILOR_COMP_CLIP = "120-2_clip_7_amplified"
+# _WILOR_COMP_CLIP = "120-2_clip_7_amplified_modified"  # show stable right hand
+# _WILOR_COMP_CLIP = "120-2_clip_7_modified"  # show stable right hand
 # _WILOR_COMP_CLIP = "clip_1_amplified"
+# _WILOR_COMP_CLIP = "clip_1_amplified_modified"
+# _WILOR_COMP_CLIP = "clip_1_modified"
 # _WILOR_COMP_CLIP = "clip_2_amplified"
+# _WILOR_COMP_CLIP = "clip_2_amplified_modified"
+# _WILOR_COMP_CLIP = "clip_2_modified"
 # _WILOR_COMP_CLIP = "clip_3_amplified"
+# _WILOR_COMP_CLIP = "clip_3_amplified_modified"
+# _WILOR_COMP_CLIP = "clip_3_modified"
 
 # MediaPipe root file (comment in/out one line)
 _MEDIAPIPE_CLIP = "120-2_clip_1_keypoints.csv"
@@ -112,11 +187,15 @@ _MEDIAPIPE_COMP_CLIP = "120-2_clip_5_amplified_keypoints.csv"
 # _MEDIAPIPE_COMP_CLIP = "clip_3_amplified_keypoints.csv"
 
 # ViPE pose file
-_VIPE_POSE_FILE = "120-2_clip_1.npz"
+# _VIPE_POSE_FILE = "120-2_clip_1.npz"
+_VIPE_POSE_FILE = "120-2_clip_5.npz"
 
 # Specific WiLoR frequency-analysis seed vertices (0-based MANO indices)
-_WILOR_SPECIFIC_VERTEX_A = 91
-_WILOR_SPECIFIC_VERTEX_B = 587
+_WILOR_SPECIFIC_VERTEX_A = 333
+_WILOR_SPECIFIC_VERTEX_B = 67 
+_N_NEIGHBORS = 3
+_WRIST_JOINT_IDX = 0
+_HAND_IDX = 0  # 1=right, 0=left
 
 _MANO_RIGHT_PATH = _ANALYSIS_ROOT / "mano_data" / "MANO_RIGHT.pkl"
 _WILOR_ROOT = _OUTPUTS_ROOT / "wilor" / _WILOR_CLIP / "meshes"
@@ -131,17 +210,68 @@ _VIPE_POSE_FILE = _VIPE_ROOT / _VIPE_POSE_FILE
 # Legacy alias with trailing slash expected by older scripts.
 base = str(_OUTPUTS_ROOT) + "/"
 
-# String exports for compatibility with existing consumers.
-OUTPUTS_ROOT = str(_OUTPUTS_ROOT)
-ANALYSIS_ROOT = str(_ANALYSIS_ROOT)
-MANO_RIGHT_PATH = str(_MANO_RIGHT_PATH)
-WILOR_ROOT = str(_WILOR_ROOT)
-WILOR_COMP = str(_WILOR_COMP)
-HAMBA_ROOT = str(_HAMBA_ROOT)
-HAMBA_COMP = str(_HAMBA_COMP)
-MEDIAPIPE_ROOT = str(_MEDIAPIPE_ROOT)
-MEDIAPIPE_COMP = str(_MEDIAPIPE_COMP)
-VIPE_ROOT = str(_VIPE_ROOT)
-VIPE_POSE_FILE = str(_VIPE_POSE_FILE)
-WILOR_SPECIFIC_VERTEX_A = int(_WILOR_SPECIFIC_VERTEX_A)
-WILOR_SPECIFIC_VERTEX_B = int(_WILOR_SPECIFIC_VERTEX_B)
+# Export policy:
+# - Internal `_...` variables are the source of truth.
+# - Public exports are generated below with explicit type conversion.
+# - Alias/config section after this block stays explicit for readability and compatibility.
+_PATH_EXPORTS = {
+    "OUTPUTS_ROOT": _OUTPUTS_ROOT,
+    "ANALYSIS_ROOT": _ANALYSIS_ROOT,
+    "MANO_RIGHT_PATH": _MANO_RIGHT_PATH,
+    "WILOR_ROOT": _WILOR_ROOT,
+    "WILOR_COMP": _WILOR_COMP,
+    "HAMBA_ROOT": _HAMBA_ROOT,
+    "HAMBA_COMP": _HAMBA_COMP,
+    "MEDIAPIPE_ROOT": _MEDIAPIPE_ROOT,
+    "MEDIAPIPE_COMP": _MEDIAPIPE_COMP,
+    "VIPE_ROOT": _VIPE_ROOT,
+    "VIPE_POSE_FILE": _VIPE_POSE_FILE,
+}
+
+_INT_EXPORTS = {
+    "WILOR_SPECIFIC_VERTEX_A": _WILOR_SPECIFIC_VERTEX_A,
+    "WILOR_SPECIFIC_VERTEX_B": _WILOR_SPECIFIC_VERTEX_B,
+    "N_NEIGHBORS": _N_NEIGHBORS,
+    "WRIST_JOINT_IDX": _WRIST_JOINT_IDX,
+    "HAND_IDX": _HAND_IDX,
+}
+
+_RAW_EXPORTS = {}
+
+for _name, _value in _PATH_EXPORTS.items():
+    globals()[_name] = str(_value)
+for _name, _value in _INT_EXPORTS.items():
+    globals()[_name] = int(_value)
+for _name, _value in _RAW_EXPORTS.items():
+    globals()[_name] = _value
+
+# Generic model aliases (preferred by new scripts).
+MODEL_ROOT = WILOR_ROOT
+MODEL_COMP = WILOR_COMP
+MODEL_SPECIFIC_VERTEX_A = WILOR_SPECIFIC_VERTEX_A
+MODEL_SPECIFIC_VERTEX_B = WILOR_SPECIFIC_VERTEX_B
+
+# Generic frequency-analysis sources (each can be model meshes dir or MediaPipe .csv).
+# Keep these as the two canonical inputs used by Frequency Analysis/Compare.py.
+ANALYSIS_SOURCE_A = MODEL_ROOT
+ANALYSIS_SOURCE_B = MODEL_COMP
+# Optional labels shown in plots/summary. Set to None to auto-infer from paths.
+ANALYSIS_LABEL_A = None
+ANALYSIS_LABEL_B = None
+
+# Point-to-point specific sources (model mesh roots).
+POINT_SOURCE_A = MODEL_ROOT
+POINT_SOURCE_B = MODEL_COMP
+# Optional labels shown in point-to-point plots/summary.
+POINT_LABEL_A = None
+POINT_LABEL_B = None
+
+# 3D visualization sources.
+FREE_SOURCE = MODEL_COMP
+WRIST_GROUNDING_SOURCE = MODEL_ROOT
+
+# Frequency-analysis image export defaults.
+ANALYSIS_IMAGE_WIDTH_PX = 1920
+ANALYSIS_IMAGE_HEIGHT_PX = 1080
+ANALYSIS_IMAGE_DPI = 100
+ANALYSIS_OUTPUT_DIR = str(_OUTPUTS_ROOT / "analysis_images")

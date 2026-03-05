@@ -6,12 +6,8 @@ import numpy as np
 from vedo import Mesh, Plotter, Text2D
 
 
-THIS_DIR = Path(__file__).resolve().parent
-PROJECT_ROOT = THIS_DIR.parent.parent
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
-
-from FILENAME import MANO_RIGHT_PATH  # noqa: E402
+from _path_setup import PROJECT_ROOT  # ensures root imports work
+from FILENAME import MANO_RIGHT_PATH  
 
 
 RIGHT_COLOR = "crimson"

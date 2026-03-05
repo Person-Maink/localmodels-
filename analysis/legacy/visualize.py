@@ -6,7 +6,7 @@ import pandas as pd
 from vedo import Lines, Mesh, Points, merge
 from vedo.applications import AnimationPlayer
 
-from wilor_npy_io import load_frame_records, load_template_faces_from_root
+from npy_io import load_frame_records, load_template_faces_from_root
 
 
 def center_points(pts):

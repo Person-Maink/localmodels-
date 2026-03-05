@@ -37,7 +37,13 @@ def load_wilor_record(npy_path):
 
 def load_frame_records(frame_dir, pattern="*_verts.npy"):
     records = []
-    for npy_path in sorted(glob.glob(os.path.join(frame_dir, pattern))):
+    npy_paths = sorted(glob.glob(os.path.join(frame_dir, pattern)))
+
+    # Some exports write plain *.npy files instead of *_verts.npy.
+    if not npy_paths and pattern == "*_verts.npy":
+        npy_paths = sorted(glob.glob(os.path.join(frame_dir, "*.npy")))
+
+    for npy_path in npy_paths:
         try:
             records.append(load_wilor_record(npy_path))
         except Exception:

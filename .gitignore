@@ -391,3 +391,6 @@ dmypy.json
 
 **/*.tar.gz.1
 **/_DATA/
+**/*.csv
+**/*.png
+**/*.json

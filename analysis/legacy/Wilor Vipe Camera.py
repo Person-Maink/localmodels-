@@ -2,6 +2,9 @@ import re
 from pathlib import Path
 
 import numpy as np
+from _path_setup import PROJECT_ROOT  # ensures root imports work
+from FILENAME import VIPE_POSE_FILE as VIPE_POSE_FILE_CFG, WILOR_ROOT as WILOR_ROOT_CFG
+
 try:
     from vedo import Lines, Plotter, Sphere
 except ModuleNotFoundError:
@@ -9,14 +12,10 @@ except ModuleNotFoundError:
 
 
 # -----------------------------
-# HARD-CODED PATHS (as requested)
+# Input paths from shared config
 # -----------------------------
-VIPE_POSE_FILE = Path(
-    "/home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/outputs/vipe/pose/120-2_clip_1.npz"
-)
-FRAMES_ROOT = Path(
-    "/home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/outputs/wilor/120-2_clip_1/meshes"
-)
+VIPE_POSE_FILE = Path(VIPE_POSE_FILE_CFG)
+FRAMES_ROOT = Path(WILOR_ROOT_CFG)
 
 # -----------------------------
 # Visualization config

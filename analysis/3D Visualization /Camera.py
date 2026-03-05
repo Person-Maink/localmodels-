@@ -2,12 +2,38 @@ import argparse
 import pickle
 import re
 from pathlib import Path
+
 import numpy as np
-from vedo import Lines, Plotter, Sphere
 
 from _path_setup import PROJECT_ROOT  # ensures root imports work
-from FILENAME import * 
-CAMERA = WILOR_ROOT
+from FILENAME import *
+
+try:
+    from vedo import Lines, Plotter, Sphere
+except ModuleNotFoundError:
+    Lines = Plotter = Sphere = None
+
+VIPE_POSE_FILE_CFG = None
+PRIMARY_MODEL_FRAMES_ROOT_CFG = None
+ALT_MODEL_FRAMES_ROOT_CFG = None
+
+VIPE_POSE_FILE_CFG = VIPE_POSE_FILE
+PRIMARY_MODEL_FRAMES_ROOT_CFG = WILOR_ROOT
+ALT_MODEL_FRAMES_ROOT_CFG = HAMBA_ROOT
+
+def _normalize_optional_path(value):
+    if value is None:
+        return None
+    text = str(value).strip()
+    if text.lower() in {"", "none", "null"}:
+        return None
+    return Path(text)
+
+
+DEFAULT_VIPE_POSE_FILE = _normalize_optional_path(VIPE_POSE_FILE_CFG)
+DEFAULT_MODEL_FRAMES_ROOT = _normalize_optional_path(PRIMARY_MODEL_FRAMES_ROOT_CFG)
+if DEFAULT_MODEL_FRAMES_ROOT is None:
+    DEFAULT_MODEL_FRAMES_ROOT = _normalize_optional_path(ALT_MODEL_FRAMES_ROOT_CFG)
 
 
 def extract_camera_params_from_results(results):
@@ -67,7 +93,6 @@ def _normalize_cam_t_shape(cam_t, source_name):
     if cam_t.ndim == 1 and cam_t.shape[0] == 3:
         return cam_t.reshape(1, 3)
     if cam_t.ndim == 2 and cam_t.shape[1] == 3:
-        # Avoid misreading vertex arrays (e.g. 778x3) as camera translation arrays.
         if cam_t.shape[0] > 10:
             raise ValueError(
                 f"{source_name} shape {cam_t.shape} looks like vertices, not camera translations."
@@ -87,14 +112,6 @@ def _parse_right_from_filename(path):
 
 
 def load_camera_file(camera_file):
-    """
-    Load camera data from .npy or .npz.
-
-    Supported:
-    - .npz with key 'cam_t' (+ optional 'right')
-    - .npy scalar object dict with key 'cam_t'
-    - .npy raw array shaped (3,) or (N,3)
-    """
     camera_file = Path(camera_file)
     data = np.load(camera_file, allow_pickle=True)
 
@@ -214,10 +231,23 @@ def load_cameras_from_frames_root(frames_root, frame_dirs_glob="frame_*", file_g
     }
 
 
+def read_vipe_pose_artifacts(npz_file_path):
+    data = np.load(npz_file_path)
+    inds = data["inds"]
+    poses = data["data"]  # (T, 4, 4), camera-to-world
+    return inds, poses
+
+
 def cam_t_to_pose_wc(cam_t, invert_cam_t=True):
     T_wc = np.eye(4, dtype=np.float32)
     T_wc[:3, 3] = -cam_t if invert_cam_t else cam_t
     return T_wc
+
+
+def apply_translation_transform(poses, shift, scale):
+    out = poses.copy()
+    out[:, :3, 3] = (out[:, :3, 3] - shift.reshape(1, 3)) * float(scale)
+    return out
 
 
 def make_camera_frustum(T_wc, fov_deg=60.0, aspect=16 / 9, scale=0.2, color="red"):
@@ -243,79 +273,154 @@ def make_camera_frustum(T_wc, fov_deg=60.0, aspect=16 / 9, scale=0.2, color="red
     return Lines(lines, c=color)
 
 
-def visualize_wilor_cameras(
-    cam_t,
-    right=None,
-    hand="all",
-    stride=5,
+def _add_pose_track(plotter, poses, stride, frustum_scale, center_radius, fov_deg, aspect, color):
+    centers = poses[:, :3, 3]
+
+    if len(centers) > 1:
+        segments = [[centers[i], centers[i + 1]] for i in range(len(centers) - 1)]
+        plotter += Lines(segments, c=color, lw=2)
+
+    for i in range(0, len(poses), max(1, int(stride))):
+        plotter += make_camera_frustum(
+            poses[i],
+            fov_deg=fov_deg,
+            aspect=aspect,
+            scale=frustum_scale,
+            color=color,
+        )
+
+    for c in centers:
+        plotter += Sphere(c, r=center_radius, c=color)
+
+
+def visualize_sources(
+    vipe_poses=None,
+    model_cam_t=None,
+    model_right=None,
+    model_hand="all",
+    model_stride=5,
+    vipe_stride=5,
     invert_cam_t=True,
     fov_deg=60.0,
     aspect=16 / 9,
-    frustum_scale=0.5,
+    model_frustum_scale=0.5,
+    vipe_frustum_scale=0.5,
     center_radius=0.01,
+    center_to_first_frame=True,
+    model_translation_scale=1.0,
+    vipe_translation_scale=1.0,
 ):
     if Plotter is None:
         raise ModuleNotFoundError("vedo is required for visualization. Install it with: pip install vedo")
 
-    cam_t = np.asarray(cam_t, dtype=np.float32).reshape(-1, 3)
-    T_wcs = np.stack([cam_t_to_pose_wc(c, invert_cam_t=invert_cam_t) for c in cam_t], axis=0)
-    centers = T_wcs[:, :3, 3]
+    has_vipe = vipe_poses is not None and len(vipe_poses) > 0
+    has_model = model_cam_t is not None and len(model_cam_t) > 0
 
-    if right is None:
-        right = np.full((len(cam_t),), -1, dtype=np.int32)
-    else:
-        right = np.asarray(right, dtype=np.int32).reshape(-1)
-        if len(right) != len(cam_t):
-            raise ValueError("Length mismatch between cam_t and right.")
+    if not has_vipe and not has_model:
+        raise ValueError("Both sources are empty/None. Provide at least one source.")
 
-    if hand == "right":
-        keep = right == 1
-    elif hand == "left":
-        keep = right == 0
-    else:
-        keep = np.ones(len(cam_t), dtype=bool)
-
-    if not np.any(keep):
-        raise ValueError(f"No camera entries found for hand='{hand}'.")
-
-    hand_styles = {1: "crimson", 0: "royalblue", -1: "gray"}
     plt = Plotter(bg="white", axes=1)
 
-    for hand_id in [0, 1, -1]:
-        idx = np.where(keep & (right == hand_id))[0]
-        if len(idx) == 0:
-            continue
+    vipe_poses_local = None
+    if has_vipe:
+        vipe_poses_local = np.asarray(vipe_poses, dtype=np.float32)
+        if vipe_poses_local.ndim != 3 or vipe_poses_local.shape[1:] != (4, 4):
+            raise ValueError(f"Invalid ViPE pose shape: {vipe_poses_local.shape}, expected (N, 4, 4).")
 
-        color = hand_styles[hand_id]
-        points = centers[idx]
+    model_poses_local = None
+    model_right_local = None
+    if has_model:
+        model_cam_t = np.asarray(model_cam_t, dtype=np.float32).reshape(-1, 3)
+        model_poses_local = np.stack(
+            [cam_t_to_pose_wc(c, invert_cam_t=invert_cam_t) for c in model_cam_t],
+            axis=0,
+        )
 
-        if len(points) > 1:
-            segments = [[points[i], points[i + 1]] for i in range(len(points) - 1)]
-            plt += Lines(segments, c=color, lw=2)
+        if model_right is None:
+            model_right_local = np.full((len(model_cam_t),), -1, dtype=np.int32)
+        else:
+            model_right_local = np.asarray(model_right, dtype=np.int32).reshape(-1)
+            if len(model_right_local) != len(model_cam_t):
+                raise ValueError("Length mismatch between model_cam_t and model_right.")
 
-        for j in idx[:: max(1, int(stride))]:
-            plt += make_camera_frustum(
-                T_wcs[j],
-                fov_deg=fov_deg,
-                aspect=aspect,
-                scale=frustum_scale,
-                color=color,
+    if center_to_first_frame:
+        if has_vipe:
+            vipe_shift = vipe_poses_local[0, :3, 3]
+            vipe_poses_local = apply_translation_transform(
+                vipe_poses_local,
+                vipe_shift,
+                vipe_translation_scale,
+            )
+        if has_model:
+            model_shift = model_poses_local[0, :3, 3]
+            model_poses_local = apply_translation_transform(
+                model_poses_local,
+                model_shift,
+                model_translation_scale,
             )
 
-        for p in points:
-            plt += Sphere(p, r=center_radius, c=color)
+    if has_vipe:
+        _add_pose_track(
+            plotter=plt,
+            poses=vipe_poses_local,
+            stride=vipe_stride,
+            frustum_scale=vipe_frustum_scale,
+            center_radius=center_radius,
+            fov_deg=fov_deg,
+            aspect=aspect,
+            color="forestgreen",
+        )
+
+    if has_model:
+        if model_hand == "right":
+            keep = model_right_local == 1
+        elif model_hand == "left":
+            keep = model_right_local == 0
+        else:
+            keep = np.ones(len(model_poses_local), dtype=bool)
+
+        if not np.any(keep):
+            raise ValueError(f"No model camera entries found for hand='{model_hand}'.")
+
+        hand_styles = {1: "crimson", 0: "royalblue", -1: "gray"}
+        for hand_id in [0, 1, -1]:
+            idx = np.where(keep & (model_right_local == hand_id))[0]
+            if len(idx) == 0:
+                continue
+            _add_pose_track(
+                plotter=plt,
+                poses=model_poses_local[idx],
+                stride=model_stride,
+                frustum_scale=model_frustum_scale,
+                center_radius=center_radius,
+                fov_deg=fov_deg,
+                aspect=aspect,
+                color=hand_styles[hand_id],
+            )
+
+    if has_vipe and has_model:
+        print("Color key: ViPE=forestgreen, model right=crimson, model left=royalblue, unknown=gray")
+    elif has_vipe:
+        print("Color key: ViPE=forestgreen")
+    else:
+        print("Color key: model right=crimson, model left=royalblue, unknown=gray")
 
     plt.show()
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Extract and visualize WiLoR camera parameters in 3D space.")
-    parser.add_argument("--camera_npy", type=Path, default=None, help="Single camera file (.npy or .npz).")
+    parser = argparse.ArgumentParser(description="Visualize ViPE and frame-camera trajectories in one scene.")
+    parser.add_argument(
+        "--vipe_pose_file",
+        type=str,
+        default=str(DEFAULT_VIPE_POSE_FILE) if DEFAULT_VIPE_POSE_FILE is not None else None,
+        help="ViPE pose .npz file path. Use 'None' to disable ViPE source.",
+    )
     parser.add_argument(
         "--frames_root",
-        type=Path,
-        default=CAMERA,
-        help="Folder containing frame_000xxx subfolders with per-frame camera files.",
+        type=str,
+        default=str(DEFAULT_MODEL_FRAMES_ROOT) if DEFAULT_MODEL_FRAMES_ROOT is not None else None,
+        help="Frame-camera folder (e.g. model meshes/frame_*/...). Use 'None' to disable this source.",
     )
     parser.add_argument("--frame_dirs_glob", type=str, default="frame_*", help="Glob for frame folders.")
     parser.add_argument(
@@ -324,57 +429,71 @@ def main():
         default="*.npy",
         help="Glob for camera files inside each frame folder (e.g. '*cam*.npy').",
     )
-    parser.add_argument("--results_file", type=Path, default=None, help="run_wilor_inference results (.npy/.pkl).")
-    parser.add_argument("--save_camera_npy", type=Path, default=None, help="Optional output .npy path.")
     parser.add_argument("--hand", choices=["all", "right", "left"], default="all")
-    parser.add_argument("--stride", type=int, default=5)
+    parser.add_argument("--model_stride", type=int, default=5)
+    parser.add_argument("--vipe_stride", type=int, default=5)
     parser.add_argument("--fov_deg", type=float, default=60.0)
     parser.add_argument("--aspect", type=float, default=16 / 9)
-    parser.add_argument("--frustum_scale", type=float, default=0.5)
+    parser.add_argument("--model_frustum_scale", type=float, default=0.5)
+    parser.add_argument("--vipe_frustum_scale", type=float, default=0.5)
     parser.add_argument("--center_radius", type=float, default=0.01)
+    parser.add_argument("--center_to_first_frame", action="store_true", default=True)
+    parser.add_argument("--no_center_to_first_frame", dest="center_to_first_frame", action="store_false")
+    parser.add_argument("--model_translation_scale", type=float, default=1.0)
+    parser.add_argument("--vipe_translation_scale", type=float, default=1.0)
     parser.add_argument("--invert_cam_t", dest="invert_cam_t", action="store_true", default=True)
     parser.add_argument("--no_invert_cam_t", dest="invert_cam_t", action="store_false")
     args = parser.parse_args()
 
-    provided_sources = int(args.camera_npy is not None) + int(args.frames_root is not None) + int(args.results_file is not None)
-    if provided_sources == 0:
-        raise ValueError("Provide one input source: --camera_npy or --frames_root or --results_file.")
-    if provided_sources > 1:
-        raise ValueError("Provide only one input source at a time.")
+    vipe_pose_path = _normalize_optional_path(args.vipe_pose_file)
+    model_frames_root = _normalize_optional_path(args.frames_root)
 
-    if args.frames_root is not None:
+    if vipe_pose_path is None and model_frames_root is None:
+        raise ValueError(
+            "Both configured sources are None. Set at least one of VIPE_POSE_FILE or model frame root in FILENAME."
+        )
+
+    vipe_poses = None
+    if vipe_pose_path is not None:
+        _, vipe_poses = read_vipe_pose_artifacts(vipe_pose_path)
+        print(f"Loaded {len(vipe_poses)} ViPE poses from: {vipe_pose_path}")
+    else:
+        print("ViPE source is None. Skipping ViPE visualization.")
+
+    model_cam_t = None
+    model_right = None
+    if model_frames_root is not None:
         cam_data = load_cameras_from_frames_root(
-            frames_root=args.frames_root,
+            frames_root=model_frames_root,
             frame_dirs_glob=args.frame_dirs_glob,
             file_glob=args.file_glob,
         )
+        model_cam_t = cam_data["cam_t"]
+        model_right = cam_data["right"]
         print(
-            f"Loaded {len(cam_data['cam_t'])} camera entries from "
+            f"Loaded {len(model_cam_t)} model camera entries from "
             f"{cam_data['loaded_files']}/{cam_data['total_files']} files "
             f"(skipped {cam_data['skipped_files']})."
         )
-    elif args.results_file is not None:
-        results = load_results_file(args.results_file)
-        cam_data = extract_camera_params_from_results(results)
-        if args.save_camera_npy is not None:
-            out_npy = save_camera_params_npy(results, args.save_camera_npy)
-            print(f"Saved camera params to: {out_npy}")
-        print(f"Loaded {len(cam_data['cam_t'])} WiLoR camera entries from results file.")
     else:
-        cam_t, right = load_camera_file(args.camera_npy)
-        cam_data = {"cam_t": cam_t, "right": right}
-        print(f"Loaded {len(cam_data['cam_t'])} WiLoR camera entries from single camera file.")
+        print("Model frame-camera source is None. Skipping frame-camera visualization.")
 
-    visualize_wilor_cameras(
-        cam_data["cam_t"],
-        right=cam_data.get("right"),
-        hand=args.hand,
-        stride=args.stride,
+    visualize_sources(
+        vipe_poses=vipe_poses,
+        model_cam_t=model_cam_t,
+        model_right=model_right,
+        model_hand=args.hand,
+        model_stride=args.model_stride,
+        vipe_stride=args.vipe_stride,
         invert_cam_t=args.invert_cam_t,
         fov_deg=args.fov_deg,
         aspect=args.aspect,
-        frustum_scale=args.frustum_scale,
+        model_frustum_scale=args.model_frustum_scale,
+        vipe_frustum_scale=args.vipe_frustum_scale,
         center_radius=args.center_radius,
+        center_to_first_frame=args.center_to_first_frame,
+        model_translation_scale=args.model_translation_scale,
+        vipe_translation_scale=args.vipe_translation_scale,
     )
 
 
