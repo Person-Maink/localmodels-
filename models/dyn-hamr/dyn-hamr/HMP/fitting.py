@@ -1,12 +1,9 @@
-import sys, os
-# Absolute path to the NeMF src directory
-print(os.getcwd())
-nemf_path = os.path.abspath("/scratch/mthakur/Dyn-HaMR/dyn-hamr/HMP/")
-if nemf_path not in sys.path:
-    sys.path.insert(0, nemf_path)
-
-
 import os
+import sys
+
+hmp_path = os.path.dirname(os.path.abspath(__file__))
+if hmp_path not in sys.path:
+    sys.path.insert(0, hmp_path)
 import cv2
 import copy
 import glob

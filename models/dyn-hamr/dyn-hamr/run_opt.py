@@ -44,8 +44,9 @@ import time
 N_STAGES = 3
 
 import sys
-sys.path.append('src/human_body_prior')
-sys.path.append('HMP/')
+this_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(this_dir, 'src', 'human_body_prior'))
+sys.path.append(os.path.join(this_dir, 'HMP'))
 # print(sys.path)
 # print(torch.cuda.memory_summary())
 from HMP.fitting import run_prior

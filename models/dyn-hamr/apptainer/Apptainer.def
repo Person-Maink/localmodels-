@@ -13,10 +13,10 @@ From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
         apptainer exec --nv <container>.sif python script.py
 
 %files
-    /scratch/mthakur/Dyn-HaMR/dyn-hamr /app/dyn-hamr
-    /scratch/mthakur/Dyn-HaMR/third-party /app/third-party
-    /scratch/mthakur/Dyn-HaMR/setup.py /app/setup.py
-    /scratch/mthakur/Dyn-HaMR/requirements.txt /app/requirements.txt
+    /scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr /app/dyn-hamr
+    /scratch/mthakur/manifold/models/dyn-hamr/third-party /app/third-party
+    /scratch/mthakur/manifold/models/dyn-hamr/setup.py /app/setup.py
+    /scratch/mthakur/manifold/models/dyn-hamr/requirements.txt /app/requirements.txt
 
 %post
     set -e
