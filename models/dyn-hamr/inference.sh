@@ -87,14 +87,14 @@ start_time=$(date +%s)
 echo "==============================================="
 
 # Assuming you have a dedicated directory for *.sif files
-export APPTAINER_IMAGE="/scratch/mthakur/child-example/apptainer-template/template/template.sif"
+export APPTAINER_IMAGE="/scratch/mthakur/manifold/models/dyn-hamr/apptainer/template.sif"
 # Run script
 # Note: There cannot be any characters incuding space behind the `\` symbol.
 
 VIDEO_NAME="clip2"
 VIDEO_EXT="mp4"
 DATA_ROOT="/scratch/mthakur/manifold/data"
-VIDEO_DIR="videos"
+VIDEO_DIR="images"
 IS_STATIC="False"
 
 VIDEO_PATH="${DATA_ROOT}/${VIDEO_DIR}/${VIDEO_NAME}.${VIDEO_EXT}"
