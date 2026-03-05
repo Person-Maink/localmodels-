@@ -107,6 +107,7 @@ echo "Using video: ${VIDEO_PATH}"
 
 srun apptainer exec\
   --nv\
+  --bind "/scratch/mthakur/manifold/data:/scratch/mthakur/manifold/data"\
   --bind "/scratch/mthakur/manifold/outputs/dynhamr/:/scratch/mthakur/manifold/outputs/dynhamr"\
   "${APPTAINER_IMAGE}"\
   python -u dyn-hamr/run_opt.py \
