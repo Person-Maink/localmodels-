@@ -1,0 +1,97 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/12.9
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Wed Mar  4 20:01:44 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:2C:00.0 Off |                    0 |
+| N/A   44C    P0             73W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9293875
+Job Name:       vipe-inference
+Partition:      gpu-a100
+Node List:      gpu015
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 40960
+Submit dir:     /scratch/mthakur/manifold/models/vipe
+Work dir:       /scratch/mthakur/manifold/models/vipe
+Job started at: Wed Mar  4 20:01:44 CET 2026
+===============================================
+2026-03-04 20:01:50,524 - vipe - INFO - Processing video /scratch/mthakur/manifold/data/images/clip_4.mp4...
+2026-03-04 20:01:57,349 - vipe.priors.geocalib.lm_optimizer - WARNING - Reached maximum number of steps without convergence.
+2026-03-04 20:02:19,964 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 34.0819887816906 -> 0.06825872822537349
+2026-03-04 20:02:20,155 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.012126877065384178 -> 0.010173622100637658
+2026-03-04 20:02:20,341 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.010287282307331225 -> 0.00977643259557226
+2026-03-04 20:02:20,535 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.03056002128869295 -> 0.009718145813451429
+2026-03-04 20:02:20,656 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.00884239711908208 -> 0.008779552985856753
+2026-03-04 20:02:20,778 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.009074338932293813 -> 0.00905994765645346
+2026-03-04 20:02:20,900 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.008987553158760875 -> 0.008985334599856287
+2026-03-04 20:02:21,101 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.0733380257730687 -> 0.06943734767082788
+2026-03-04 20:02:21,285 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.012125726475460397 -> 0.011074525934645862
+2026-03-04 20:02:21,471 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.010760001128119256 -> 0.01034494990000212
+2026-03-04 20:02:21,662 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.009722436758636377 -> 0.009635222652832454
+2026-03-04 20:02:21,852 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.00906716742218805 -> 0.009034041068787246
+2026-03-04 20:02:22,040 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.00934976500150242 -> 0.009339747287896216
+2026-03-04 20:02:22,224 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.009186289364549793 -> 0.00918301319973125
+2026-03-04 20:02:22,408 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.008699428166323742 -> 0.008696671195423278
+2026-03-04 20:02:22,593 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.008129496141577874 -> 0.008126135341569807
+2026-03-04 20:02:22,780 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.0076873625240523324 -> 0.007683944003986198
+2026-03-04 20:02:22,965 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.007269676095177147 -> 0.007266748679512602
+2026-03-04 20:02:23,152 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.007008122906199787 -> 0.007005211538540834
+2026-03-04 20:02:23,348 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.3591644186526537 -> 0.006854078900801142
+2026-03-04 20:02:23,474 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.006803126240015445 -> 0.006802991575625583
+2026-03-04 20:02:23,596 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.006761776826806454 -> 0.006761700187269071
+2026-03-04 20:02:23,721 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.006736213614033204 -> 0.006736185141164697
+2026-03-04 20:02:23,844 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.006747157986012553 -> 0.006747108812646729
+2026-03-04 20:02:23,966 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.0067654805478127855 -> 0.006765432464931109
+2026-03-04 20:02:24,093 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.006772442529268119 -> 0.006772428999624935
+2026-03-04 20:02:24,216 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.006809842095037766 -> 0.006809807781564814
+2026-03-04 20:02:24,341 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.0068317218022002635 -> 0.006831690091644305
+2026-03-04 20:02:24,463 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.006864700820074177 -> 0.006864689403982993
+2026-03-04 20:02:24,585 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.006888644421223944 -> 0.006888629265404234
+2026-03-04 20:02:24,707 - vipe.slam.components.buffer - INFO - BA iters = 16, energy: 0.006934160693219837 -> 0.0069341590128715325
+2026-03-04 20:02:41,174 - vipe.pipeline.default - INFO - Saving artifacts to ArtifactPath(base_path=PosixPath('/scratch/mthakur/manifold/outputs/vipe'), artifact_name='clip_4')
+2026-03-04 20:02:44,454 - vipe.pipeline.processors - INFO - Minimum UV score: 0.9400
+2026-03-04 20:02:56,758 - vipe - INFO - Finished
+
+Reading video stream:   0%|          | 0/57 [00:00<?, ?it/s]Reading video stream:   2%|▏         | 1/57 [00:00<00:12,  4.65it/s]Reading video stream:  19%|█▉        | 11/57 [00:00<00:01, 42.04it/s]Reading video stream:  37%|███▋      | 21/57 [00:00<00:00, 62.81it/s]Reading video stream:  54%|█████▍    | 31/57 [00:00<00:00, 73.18it/s]Reading video stream:  74%|███████▎  | 42/57 [00:00<00:00, 82.81it/s]Reading video stream:  89%|████████▉ | 51/57 [00:00<00:00, 83.27it/s]Reading video stream: 100%|██████████| 57/57 [00:00<00:00, 70.99it/s]
+Caching:   0%|          | 0/25 [00:00<?, ?it/s]Caching:  68%|██████▊   | 17/25 [00:00<00:00, 165.83it/s]Caching: 100%|██████████| 25/25 [00:00<00:00, 167.87it/s]
+Caching:   0%|          | 0/25 [00:00<?, ?it/s]Caching:  72%|███████▏  | 18/25 [00:00<00:00, 178.45it/s]Caching: 100%|██████████| 25/25 [00:00<00:00, 178.15it/s]
+SLAM Pass (1/2):   0%|          | 0/57 [00:00<?, ?it/s]SLAM Pass (1/2):   2%|▏         | 1/57 [00:01<01:25,  1.53s/it]SLAM Pass (1/2):   4%|▎         | 2/57 [00:01<00:39,  1.41it/s]SLAM Pass (1/2):   7%|▋         | 4/57 [00:01<00:16,  3.22it/s]SLAM Pass (1/2):  11%|█         | 6/57 [00:01<00:10,  5.07it/s]SLAM Pass (1/2):  14%|█▍        | 8/57 [00:02<00:07,  6.86it/s]SLAM Pass (1/2):  18%|█▊        | 10/57 [00:02<00:05,  8.48it/s]SLAM Pass (1/2):  21%|██        | 12/57 [00:02<00:04,  9.86it/s]SLAM Pass (1/2):  25%|██▍       | 14/57 [00:02<00:03, 11.00it/s]SLAM Pass (1/2):  28%|██▊       | 16/57 [00:02<00:03, 11.89it/s]SLAM Pass (1/2):  32%|███▏      | 18/57 [00:02<00:03, 12.55it/s]SLAM Pass (1/2):  35%|███▌      | 20/57 [00:02<00:02, 12.98it/s]SLAM Pass (1/2):  39%|███▊      | 22/57 [00:03<00:02, 13.21it/s]SLAM Pass (1/2):  42%|████▏     | 24/57 [00:03<00:02, 13.47it/s]SLAM Pass (1/2):  46%|████▌     | 26/57 [00:03<00:02, 13.66it/s]SLAM Pass (1/2):  49%|████▉     | 28/57 [00:03<00:02, 13.72it/s]SLAM Pass (1/2):  53%|█████▎    | 30/57 [00:03<00:01, 13.85it/s]SLAM Pass (1/2):  56%|█████▌    | 32/57 [00:03<00:01, 13.95it/s]SLAM Pass (1/2):  60%|█████▉    | 34/57 [00:03<00:01, 13.93it/s]SLAM Pass (1/2):  63%|██████▎   | 36/57 [00:04<00:01, 13.98it/s]SLAM Pass (1/2):  67%|██████▋   | 38/57 [00:04<00:01, 14.07it/s]SLAM Pass (1/2):  70%|███████   | 40/57 [00:04<00:01, 14.09it/s]SLAM Pass (1/2):  74%|███████▎  | 42/57 [00:04<00:01, 14.09it/s]SLAM Pass (1/2):  77%|███████▋  | 44/57 [00:04<00:00, 14.07it/s]SLAM Pass (1/2):  81%|████████  | 46/57 [00:04<00:00, 14.05it/s]SLAM Pass (1/2):  84%|████████▍ | 48/57 [00:04<00:00, 14.04it/s]SLAM Pass (1/2):  88%|████████▊ | 50/57 [00:05<00:00, 14.05it/s]SLAM Pass (1/2):  91%|█████████ | 52/57 [00:05<00:00,  8.91it/s]SLAM Pass (1/2):  95%|█████████▍| 54/57 [00:05<00:00, 10.02it/s]SLAM Pass (1/2):  98%|█████████▊| 56/57 [00:05<00:00, 10.98it/s]SLAM Pass (1/2): 100%|██████████| 57/57 [00:05<00:00,  9.62it/s]
+Update depth:   0%|          | 0/2 [00:00<?, ?it/s]Update depth: 100%|██████████| 2/2 [00:00<00:00, 33.83it/s]
+Update depth:   0%|          | 0/2 [00:00<?, ?it/s]Update depth: 100%|██████████| 2/2 [00:00<00:00, 33.70it/s]
+SLAM Pass (2/2):   0%|          | 0/57 [00:00<?, ?it/s]SLAM Pass (2/2):  28%|██▊       | 16/57 [00:00<00:00, 52.80it/s]SLAM Pass (2/2):  56%|█████▌    | 32/57 [00:00<00:00, 53.94it/s]SLAM Pass (2/2):  84%|████████▍ | 48/57 [00:00<00:00, 54.56it/s]SLAM Pass (2/2): 100%|██████████| 57/57 [00:01<00:00, 49.95it/s]SLAM Pass (2/2): 100%|██████████| 57/57 [00:01<00:00, 51.53it/s]
+  0%|          | 0/3 [00:00<?, ?it/s] 33%|███▎      | 1/3 [00:00<00:01,  1.38it/s] 67%|██████▋   | 2/3 [00:01<00:00,  1.40it/s]100%|██████████| 3/3 [00:02<00:00,  1.40it/s]100%|██████████| 3/3 [00:02<00:00,  1.40it/s]
+Aligning depth: 0it [00:00, ?it/s]                                  Aligning depth: 0it [00:00, ?it/s]Aligning depth: 1it [00:00,  3.64it/s]Aligning depth: 2it [00:00,  5.36it/s]Aligning depth: 3it [00:00,  6.37it/s]Aligning depth: 4it [00:00,  7.03it/s]Aligning depth: 5it [00:00,  7.46it/s]Aligning depth: 6it [00:00,  7.76it/s]Aligning depth: 7it [00:00,  7.94it/s]Aligning depth: 8it [00:01,  8.07it/s]Aligning depth: 9it [00:01,  8.16it/s]Aligning depth: 10it [00:01,  8.22it/s]Aligning depth: 11it [00:01,  8.27it/s]Aligning depth: 12it [00:01,  8.31it/s]Aligning depth: 13it [00:01,  8.34it/s]Aligning depth: 14it [00:01,  8.35it/s]Aligning depth: 15it [00:01,  8.36it/s]Aligning depth: 16it [00:02,  8.36it/s]Aligning depth: 17it [00:02,  8.36it/s]Aligning depth: 18it [00:02,  8.35it/s]Aligning depth: 19it [00:02,  8.36it/s]Aligning depth: 20it [00:02,  8.37it/s]Aligning depth: 21it [00:02,  8.37it/s]Aligning depth: 22it [00:02,  8.36it/s]Aligning depth: 23it [00:02,  8.37it/s]Aligning depth: 24it [00:03,  8.37it/s]Aligning depth: 25it [00:03,  8.36it/s]Aligning depth: 26it [00:03,  8.36it/s]Aligning depth: 27it [00:03,  8.37it/s]Aligning depth: 28it [00:03,  8.38it/s]Aligning depth: 29it [00:03,  8.35it/s]Aligning depth: 30it [00:03,  8.35it/s]Aligning depth: 31it [00:03,  8.33it/s]Aligning depth: 32it [00:03,  8.24it/s]Aligning depth: 33it [00:04,  8.20it/s]Aligning depth: 34it [00:04,  8.16it/s]Aligning depth: 35it [00:04,  8.14it/s]Aligning depth: 36it [00:04,  8.12it/s]Aligning depth: 37it [00:04,  8.09it/s]Aligning depth: 38it [00:04,  8.09it/s]Aligning depth: 39it [00:04,  8.09it/s]Aligning depth: 40it [00:04,  8.09it/s]Aligning depth: 41it [00:05,  8.08it/s]Aligning depth: 42it [00:05,  8.07it/s]Aligning depth: 43it [00:05,  8.06it/s]Aligning depth: 44it [00:05,  8.07it/s]Aligning depth: 45it [00:05,  8.08it/s]Aligning depth: 46it [00:05,  8.08it/s]Aligning depth: 47it [00:05,  8.08it/s]Aligning depth: 48it [00:05,  8.10it/s]Aligning depth: 49it [00:06,  8.09it/s]Aligning depth: 50it [00:06,  8.08it/s]Aligning depth: 51it [00:06,  8.05it/s]Aligning depth: 52it [00:06,  8.07it/s]Aligning depth: 53it [00:06,  8.08it/s]Aligning depth: 54it [00:06,  8.09it/s]Aligning depth: 55it [00:06,  8.11it/s]Aligning depth: 56it [00:06,  8.10it/s]Aligning depth: 56it [00:07,  7.90it/s]
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+
+===============================================
+Job finished at: Wed Mar  4 20:02:58 CET 2026
+Execution took 0.02 hours
+Writing output to SLURM_logs/vipe-inference_158.out
+===============================================

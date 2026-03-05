@@ -1,0 +1,1784 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+================ SLURM JOB INFO ================
+Job ID:         9293863
+Job Name:       hamba-inference
+Partition:      gpu-a100
+Node List:      gpu013
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 32768
+Submit dir:     /scratch/mthakur/manifold/models/hamba
+Work dir:       /scratch/mthakur/manifold/models/hamba
+Job started at: Wed Mar  4 19:53:25 CET 2026
+===============================================
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+WARNING: can not import selective_scan_cuda_core.
+No module named 'selective_scan_cuda_core'
+apex is not installed
+apex is not installed
+apex is not installed
+/.venv/lib/python3.10/site-packages/mmcv/cnn/bricks/transformer.py:27: UserWarning: Fail to import ``MultiScaleDeformableAttention`` from ``mmcv.ops.multi_scale_deform_attn``, You should install ``mmcv-full`` if you need this module. 
+  warnings.warn('Fail to import ``MultiScaleDeformableAttention`` from '
+checkpoint_path:  ckpts/hamba/checkpoints/hamba.ckpt
+/.venv/lib/python3.10/site-packages/pytorch_lightning/utilities/migration/utils.py:55: PossibleUserWarning: The loaded checkpoint was produced with Lightning v2.2.0.post0, which is newer than your current Lightning version: v2.0.9
+  rank_zero_warn(
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+Use load_from_local loader
+The model and loaded state dict do not match exactly
+
+unexpected key in source state_dict: backbone.blocks.0.mlp.experts.0.weight, backbone.blocks.0.mlp.experts.0.bias, backbone.blocks.0.mlp.experts.1.weight, backbone.blocks.0.mlp.experts.1.bias, backbone.blocks.0.mlp.experts.2.weight, backbone.blocks.0.mlp.experts.2.bias, backbone.blocks.0.mlp.experts.3.weight, backbone.blocks.0.mlp.experts.3.bias, backbone.blocks.0.mlp.experts.4.weight, backbone.blocks.0.mlp.experts.4.bias, backbone.blocks.0.mlp.experts.5.weight, backbone.blocks.0.mlp.experts.5.bias, backbone.blocks.1.mlp.experts.0.weight, backbone.blocks.1.mlp.experts.0.bias, backbone.blocks.1.mlp.experts.1.weight, backbone.blocks.1.mlp.experts.1.bias, backbone.blocks.1.mlp.experts.2.weight, backbone.blocks.1.mlp.experts.2.bias, backbone.blocks.1.mlp.experts.3.weight, backbone.blocks.1.mlp.experts.3.bias, backbone.blocks.1.mlp.experts.4.weight, backbone.blocks.1.mlp.experts.4.bias, backbone.blocks.1.mlp.experts.5.weight, backbone.blocks.1.mlp.experts.5.bias, backbone.blocks.2.mlp.experts.0.weight, backbone.blocks.2.mlp.experts.0.bias, backbone.blocks.2.mlp.experts.1.weight, backbone.blocks.2.mlp.experts.1.bias, backbone.blocks.2.mlp.experts.2.weight, backbone.blocks.2.mlp.experts.2.bias, backbone.blocks.2.mlp.experts.3.weight, backbone.blocks.2.mlp.experts.3.bias, backbone.blocks.2.mlp.experts.4.weight, backbone.blocks.2.mlp.experts.4.bias, backbone.blocks.2.mlp.experts.5.weight, backbone.blocks.2.mlp.experts.5.bias, backbone.blocks.3.mlp.experts.0.weight, backbone.blocks.3.mlp.experts.0.bias, backbone.blocks.3.mlp.experts.1.weight, backbone.blocks.3.mlp.experts.1.bias, backbone.blocks.3.mlp.experts.2.weight, backbone.blocks.3.mlp.experts.2.bias, backbone.blocks.3.mlp.experts.3.weight, backbone.blocks.3.mlp.experts.3.bias, backbone.blocks.3.mlp.experts.4.weight, backbone.blocks.3.mlp.experts.4.bias, backbone.blocks.3.mlp.experts.5.weight, backbone.blocks.3.mlp.experts.5.bias, backbone.blocks.4.mlp.experts.0.weight, backbone.blocks.4.mlp.experts.0.bias, backbone.blocks.4.mlp.experts.1.weight, backbone.blocks.4.mlp.experts.1.bias, backbone.blocks.4.mlp.experts.2.weight, backbone.blocks.4.mlp.experts.2.bias, backbone.blocks.4.mlp.experts.3.weight, backbone.blocks.4.mlp.experts.3.bias, backbone.blocks.4.mlp.experts.4.weight, backbone.blocks.4.mlp.experts.4.bias, backbone.blocks.4.mlp.experts.5.weight, backbone.blocks.4.mlp.experts.5.bias, backbone.blocks.5.mlp.experts.0.weight, backbone.blocks.5.mlp.experts.0.bias, backbone.blocks.5.mlp.experts.1.weight, backbone.blocks.5.mlp.experts.1.bias, backbone.blocks.5.mlp.experts.2.weight, backbone.blocks.5.mlp.experts.2.bias, backbone.blocks.5.mlp.experts.3.weight, backbone.blocks.5.mlp.experts.3.bias, backbone.blocks.5.mlp.experts.4.weight, backbone.blocks.5.mlp.experts.4.bias, backbone.blocks.5.mlp.experts.5.weight, backbone.blocks.5.mlp.experts.5.bias, backbone.blocks.6.mlp.experts.0.weight, backbone.blocks.6.mlp.experts.0.bias, backbone.blocks.6.mlp.experts.1.weight, backbone.blocks.6.mlp.experts.1.bias, backbone.blocks.6.mlp.experts.2.weight, backbone.blocks.6.mlp.experts.2.bias, backbone.blocks.6.mlp.experts.3.weight, backbone.blocks.6.mlp.experts.3.bias, backbone.blocks.6.mlp.experts.4.weight, backbone.blocks.6.mlp.experts.4.bias, backbone.blocks.6.mlp.experts.5.weight, backbone.blocks.6.mlp.experts.5.bias, backbone.blocks.7.mlp.experts.0.weight, backbone.blocks.7.mlp.experts.0.bias, backbone.blocks.7.mlp.experts.1.weight, backbone.blocks.7.mlp.experts.1.bias, backbone.blocks.7.mlp.experts.2.weight, backbone.blocks.7.mlp.experts.2.bias, backbone.blocks.7.mlp.experts.3.weight, backbone.blocks.7.mlp.experts.3.bias, backbone.blocks.7.mlp.experts.4.weight, backbone.blocks.7.mlp.experts.4.bias, backbone.blocks.7.mlp.experts.5.weight, backbone.blocks.7.mlp.experts.5.bias, backbone.blocks.8.mlp.experts.0.weight, backbone.blocks.8.mlp.experts.0.bias, backbone.blocks.8.mlp.experts.1.weight, backbone.blocks.8.mlp.experts.1.bias, backbone.blocks.8.mlp.experts.2.weight, backbone.blocks.8.mlp.experts.2.bias, backbone.blocks.8.mlp.experts.3.weight, backbone.blocks.8.mlp.experts.3.bias, backbone.blocks.8.mlp.experts.4.weight, backbone.blocks.8.mlp.experts.4.bias, backbone.blocks.8.mlp.experts.5.weight, backbone.blocks.8.mlp.experts.5.bias, backbone.blocks.9.mlp.experts.0.weight, backbone.blocks.9.mlp.experts.0.bias, backbone.blocks.9.mlp.experts.1.weight, backbone.blocks.9.mlp.experts.1.bias, backbone.blocks.9.mlp.experts.2.weight, backbone.blocks.9.mlp.experts.2.bias, backbone.blocks.9.mlp.experts.3.weight, backbone.blocks.9.mlp.experts.3.bias, backbone.blocks.9.mlp.experts.4.weight, backbone.blocks.9.mlp.experts.4.bias, backbone.blocks.9.mlp.experts.5.weight, backbone.blocks.9.mlp.experts.5.bias, backbone.blocks.10.mlp.experts.0.weight, backbone.blocks.10.mlp.experts.0.bias, backbone.blocks.10.mlp.experts.1.weight, backbone.blocks.10.mlp.experts.1.bias, backbone.blocks.10.mlp.experts.2.weight, backbone.blocks.10.mlp.experts.2.bias, backbone.blocks.10.mlp.experts.3.weight, backbone.blocks.10.mlp.experts.3.bias, backbone.blocks.10.mlp.experts.4.weight, backbone.blocks.10.mlp.experts.4.bias, backbone.blocks.10.mlp.experts.5.weight, backbone.blocks.10.mlp.experts.5.bias, backbone.blocks.11.mlp.experts.0.weight, backbone.blocks.11.mlp.experts.0.bias, backbone.blocks.11.mlp.experts.1.weight, backbone.blocks.11.mlp.experts.1.bias, backbone.blocks.11.mlp.experts.2.weight, backbone.blocks.11.mlp.experts.2.bias, backbone.blocks.11.mlp.experts.3.weight, backbone.blocks.11.mlp.experts.3.bias, backbone.blocks.11.mlp.experts.4.weight, backbone.blocks.11.mlp.experts.4.bias, backbone.blocks.11.mlp.experts.5.weight, backbone.blocks.11.mlp.experts.5.bias, backbone.blocks.12.mlp.experts.0.weight, backbone.blocks.12.mlp.experts.0.bias, backbone.blocks.12.mlp.experts.1.weight, backbone.blocks.12.mlp.experts.1.bias, backbone.blocks.12.mlp.experts.2.weight, backbone.blocks.12.mlp.experts.2.bias, backbone.blocks.12.mlp.experts.3.weight, backbone.blocks.12.mlp.experts.3.bias, backbone.blocks.12.mlp.experts.4.weight, backbone.blocks.12.mlp.experts.4.bias, backbone.blocks.12.mlp.experts.5.weight, backbone.blocks.12.mlp.experts.5.bias, backbone.blocks.13.mlp.experts.0.weight, backbone.blocks.13.mlp.experts.0.bias, backbone.blocks.13.mlp.experts.1.weight, backbone.blocks.13.mlp.experts.1.bias, backbone.blocks.13.mlp.experts.2.weight, backbone.blocks.13.mlp.experts.2.bias, backbone.blocks.13.mlp.experts.3.weight, backbone.blocks.13.mlp.experts.3.bias, backbone.blocks.13.mlp.experts.4.weight, backbone.blocks.13.mlp.experts.4.bias, backbone.blocks.13.mlp.experts.5.weight, backbone.blocks.13.mlp.experts.5.bias, backbone.blocks.14.mlp.experts.0.weight, backbone.blocks.14.mlp.experts.0.bias, backbone.blocks.14.mlp.experts.1.weight, backbone.blocks.14.mlp.experts.1.bias, backbone.blocks.14.mlp.experts.2.weight, backbone.blocks.14.mlp.experts.2.bias, backbone.blocks.14.mlp.experts.3.weight, backbone.blocks.14.mlp.experts.3.bias, backbone.blocks.14.mlp.experts.4.weight, backbone.blocks.14.mlp.experts.4.bias, backbone.blocks.14.mlp.experts.5.weight, backbone.blocks.14.mlp.experts.5.bias, backbone.blocks.15.mlp.experts.0.weight, backbone.blocks.15.mlp.experts.0.bias, backbone.blocks.15.mlp.experts.1.weight, backbone.blocks.15.mlp.experts.1.bias, backbone.blocks.15.mlp.experts.2.weight, backbone.blocks.15.mlp.experts.2.bias, backbone.blocks.15.mlp.experts.3.weight, backbone.blocks.15.mlp.experts.3.bias, backbone.blocks.15.mlp.experts.4.weight, backbone.blocks.15.mlp.experts.4.bias, backbone.blocks.15.mlp.experts.5.weight, backbone.blocks.15.mlp.experts.5.bias, backbone.blocks.16.mlp.experts.0.weight, backbone.blocks.16.mlp.experts.0.bias, backbone.blocks.16.mlp.experts.1.weight, backbone.blocks.16.mlp.experts.1.bias, backbone.blocks.16.mlp.experts.2.weight, backbone.blocks.16.mlp.experts.2.bias, backbone.blocks.16.mlp.experts.3.weight, backbone.blocks.16.mlp.experts.3.bias, backbone.blocks.16.mlp.experts.4.weight, backbone.blocks.16.mlp.experts.4.bias, backbone.blocks.16.mlp.experts.5.weight, backbone.blocks.16.mlp.experts.5.bias, backbone.blocks.17.mlp.experts.0.weight, backbone.blocks.17.mlp.experts.0.bias, backbone.blocks.17.mlp.experts.1.weight, backbone.blocks.17.mlp.experts.1.bias, backbone.blocks.17.mlp.experts.2.weight, backbone.blocks.17.mlp.experts.2.bias, backbone.blocks.17.mlp.experts.3.weight, backbone.blocks.17.mlp.experts.3.bias, backbone.blocks.17.mlp.experts.4.weight, backbone.blocks.17.mlp.experts.4.bias, backbone.blocks.17.mlp.experts.5.weight, backbone.blocks.17.mlp.experts.5.bias, backbone.blocks.18.mlp.experts.0.weight, backbone.blocks.18.mlp.experts.0.bias, backbone.blocks.18.mlp.experts.1.weight, backbone.blocks.18.mlp.experts.1.bias, backbone.blocks.18.mlp.experts.2.weight, backbone.blocks.18.mlp.experts.2.bias, backbone.blocks.18.mlp.experts.3.weight, backbone.blocks.18.mlp.experts.3.bias, backbone.blocks.18.mlp.experts.4.weight, backbone.blocks.18.mlp.experts.4.bias, backbone.blocks.18.mlp.experts.5.weight, backbone.blocks.18.mlp.experts.5.bias, backbone.blocks.19.mlp.experts.0.weight, backbone.blocks.19.mlp.experts.0.bias, backbone.blocks.19.mlp.experts.1.weight, backbone.blocks.19.mlp.experts.1.bias, backbone.blocks.19.mlp.experts.2.weight, backbone.blocks.19.mlp.experts.2.bias, backbone.blocks.19.mlp.experts.3.weight, backbone.blocks.19.mlp.experts.3.bias, backbone.blocks.19.mlp.experts.4.weight, backbone.blocks.19.mlp.experts.4.bias, backbone.blocks.19.mlp.experts.5.weight, backbone.blocks.19.mlp.experts.5.bias, backbone.blocks.20.mlp.experts.0.weight, backbone.blocks.20.mlp.experts.0.bias, backbone.blocks.20.mlp.experts.1.weight, backbone.blocks.20.mlp.experts.1.bias, backbone.blocks.20.mlp.experts.2.weight, backbone.blocks.20.mlp.experts.2.bias, backbone.blocks.20.mlp.experts.3.weight, backbone.blocks.20.mlp.experts.3.bias, backbone.blocks.20.mlp.experts.4.weight, backbone.blocks.20.mlp.experts.4.bias, backbone.blocks.20.mlp.experts.5.weight, backbone.blocks.20.mlp.experts.5.bias, backbone.blocks.21.mlp.experts.0.weight, backbone.blocks.21.mlp.experts.0.bias, backbone.blocks.21.mlp.experts.1.weight, backbone.blocks.21.mlp.experts.1.bias, backbone.blocks.21.mlp.experts.2.weight, backbone.blocks.21.mlp.experts.2.bias, backbone.blocks.21.mlp.experts.3.weight, backbone.blocks.21.mlp.experts.3.bias, backbone.blocks.21.mlp.experts.4.weight, backbone.blocks.21.mlp.experts.4.bias, backbone.blocks.21.mlp.experts.5.weight, backbone.blocks.21.mlp.experts.5.bias, backbone.blocks.22.mlp.experts.0.weight, backbone.blocks.22.mlp.experts.0.bias, backbone.blocks.22.mlp.experts.1.weight, backbone.blocks.22.mlp.experts.1.bias, backbone.blocks.22.mlp.experts.2.weight, backbone.blocks.22.mlp.experts.2.bias, backbone.blocks.22.mlp.experts.3.weight, backbone.blocks.22.mlp.experts.3.bias, backbone.blocks.22.mlp.experts.4.weight, backbone.blocks.22.mlp.experts.4.bias, backbone.blocks.22.mlp.experts.5.weight, backbone.blocks.22.mlp.experts.5.bias, backbone.blocks.23.mlp.experts.0.weight, backbone.blocks.23.mlp.experts.0.bias, backbone.blocks.23.mlp.experts.1.weight, backbone.blocks.23.mlp.experts.1.bias, backbone.blocks.23.mlp.experts.2.weight, backbone.blocks.23.mlp.experts.2.bias, backbone.blocks.23.mlp.experts.3.weight, backbone.blocks.23.mlp.experts.3.bias, backbone.blocks.23.mlp.experts.4.weight, backbone.blocks.23.mlp.experts.4.bias, backbone.blocks.23.mlp.experts.5.weight, backbone.blocks.23.mlp.experts.5.bias, backbone.blocks.24.mlp.experts.0.weight, backbone.blocks.24.mlp.experts.0.bias, backbone.blocks.24.mlp.experts.1.weight, backbone.blocks.24.mlp.experts.1.bias, backbone.blocks.24.mlp.experts.2.weight, backbone.blocks.24.mlp.experts.2.bias, backbone.blocks.24.mlp.experts.3.weight, backbone.blocks.24.mlp.experts.3.bias, backbone.blocks.24.mlp.experts.4.weight, backbone.blocks.24.mlp.experts.4.bias, backbone.blocks.24.mlp.experts.5.weight, backbone.blocks.24.mlp.experts.5.bias, backbone.blocks.25.mlp.experts.0.weight, backbone.blocks.25.mlp.experts.0.bias, backbone.blocks.25.mlp.experts.1.weight, backbone.blocks.25.mlp.experts.1.bias, backbone.blocks.25.mlp.experts.2.weight, backbone.blocks.25.mlp.experts.2.bias, backbone.blocks.25.mlp.experts.3.weight, backbone.blocks.25.mlp.experts.3.bias, backbone.blocks.25.mlp.experts.4.weight, backbone.blocks.25.mlp.experts.4.bias, backbone.blocks.25.mlp.experts.5.weight, backbone.blocks.25.mlp.experts.5.bias, backbone.blocks.26.mlp.experts.0.weight, backbone.blocks.26.mlp.experts.0.bias, backbone.blocks.26.mlp.experts.1.weight, backbone.blocks.26.mlp.experts.1.bias, backbone.blocks.26.mlp.experts.2.weight, backbone.blocks.26.mlp.experts.2.bias, backbone.blocks.26.mlp.experts.3.weight, backbone.blocks.26.mlp.experts.3.bias, backbone.blocks.26.mlp.experts.4.weight, backbone.blocks.26.mlp.experts.4.bias, backbone.blocks.26.mlp.experts.5.weight, backbone.blocks.26.mlp.experts.5.bias, backbone.blocks.27.mlp.experts.0.weight, backbone.blocks.27.mlp.experts.0.bias, backbone.blocks.27.mlp.experts.1.weight, backbone.blocks.27.mlp.experts.1.bias, backbone.blocks.27.mlp.experts.2.weight, backbone.blocks.27.mlp.experts.2.bias, backbone.blocks.27.mlp.experts.3.weight, backbone.blocks.27.mlp.experts.3.bias, backbone.blocks.27.mlp.experts.4.weight, backbone.blocks.27.mlp.experts.4.bias, backbone.blocks.27.mlp.experts.5.weight, backbone.blocks.27.mlp.experts.5.bias, backbone.blocks.28.mlp.experts.0.weight, backbone.blocks.28.mlp.experts.0.bias, backbone.blocks.28.mlp.experts.1.weight, backbone.blocks.28.mlp.experts.1.bias, backbone.blocks.28.mlp.experts.2.weight, backbone.blocks.28.mlp.experts.2.bias, backbone.blocks.28.mlp.experts.3.weight, backbone.blocks.28.mlp.experts.3.bias, backbone.blocks.28.mlp.experts.4.weight, backbone.blocks.28.mlp.experts.4.bias, backbone.blocks.28.mlp.experts.5.weight, backbone.blocks.28.mlp.experts.5.bias, backbone.blocks.29.mlp.experts.0.weight, backbone.blocks.29.mlp.experts.0.bias, backbone.blocks.29.mlp.experts.1.weight, backbone.blocks.29.mlp.experts.1.bias, backbone.blocks.29.mlp.experts.2.weight, backbone.blocks.29.mlp.experts.2.bias, backbone.blocks.29.mlp.experts.3.weight, backbone.blocks.29.mlp.experts.3.bias, backbone.blocks.29.mlp.experts.4.weight, backbone.blocks.29.mlp.experts.4.bias, backbone.blocks.29.mlp.experts.5.weight, backbone.blocks.29.mlp.experts.5.bias, backbone.blocks.30.mlp.experts.0.weight, backbone.blocks.30.mlp.experts.0.bias, backbone.blocks.30.mlp.experts.1.weight, backbone.blocks.30.mlp.experts.1.bias, backbone.blocks.30.mlp.experts.2.weight, backbone.blocks.30.mlp.experts.2.bias, backbone.blocks.30.mlp.experts.3.weight, backbone.blocks.30.mlp.experts.3.bias, backbone.blocks.30.mlp.experts.4.weight, backbone.blocks.30.mlp.experts.4.bias, backbone.blocks.30.mlp.experts.5.weight, backbone.blocks.30.mlp.experts.5.bias, backbone.blocks.31.mlp.experts.0.weight, backbone.blocks.31.mlp.experts.0.bias, backbone.blocks.31.mlp.experts.1.weight, backbone.blocks.31.mlp.experts.1.bias, backbone.blocks.31.mlp.experts.2.weight, backbone.blocks.31.mlp.experts.2.bias, backbone.blocks.31.mlp.experts.3.weight, backbone.blocks.31.mlp.experts.3.bias, backbone.blocks.31.mlp.experts.4.weight, backbone.blocks.31.mlp.experts.4.bias, backbone.blocks.31.mlp.experts.5.weight, backbone.blocks.31.mlp.experts.5.bias
+
+Found existing frames for 120-2_clip_1, skipping extraction.
+Found existing frames for 120-2_clip_1_amplified, skipping extraction.
+Found existing frames for 120-2_clip_2, skipping extraction.
+Found existing frames for 120-2_clip_2_amplified, skipping extraction.
+Found existing frames for 120-2_clip_3, skipping extraction.
+Found existing frames for 120-2_clip_3_amplified, skipping extraction.
+Found existing frames for 120-2_clip_4, skipping extraction.
+Found existing frames for 120-2_clip_4_amplified, skipping extraction.
+Found existing frames for 120-2_clip_5, skipping extraction.
+Found existing frames for 120-2_clip_5_amplified, skipping extraction.
+Found existing frames for 120-2_clip_6, skipping extraction.
+Found existing frames for 120-2_clip_7, skipping extraction.
+Found existing frames for 120-2_clip_7_amplified, skipping extraction.
+Found existing frames for 124-6 DBS uit, skipping extraction.
+Found existing frames for 163 (2) FU, skipping extraction.
+Found existing frames for clip_1, skipping extraction.
+Found existing frames for clip_1_amplified, skipping extraction.
+Found existing frames for clip_2, skipping extraction.
+Found existing frames for clip_2_amplified, skipping extraction.
+Found existing frames for clip_3, skipping extraction.
+Found existing frames for clip_3_amplified, skipping extraction.
+Found existing frames for clip_4, skipping extraction.
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000000.jpg
+/.venv/lib/python3.10/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1772650454.188728 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650454.254171 3653500 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4281603495279946
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+Handedness: [classification {
+  index: 0
+  score: 0.9963977932929993
+  label: "Left"
+}
+]
+downsampling_factor=3.5708223978678384
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9890500903129578
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9977083802223206
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000000.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000001.jpg
+I0000 00:00:1772650456.648171 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650456.686186 3653557 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4280967712402344
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9961193799972534
+  label: "Left"
+}
+]
+downsampling_factor=3.5707308451334634
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9893257021903992
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9982580542564392
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000001.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000002.jpg
+I0000 00:00:1772650457.584956 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650457.617913 3653631 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4298782348632812
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9964736104011536
+  label: "Left"
+}
+]
+downsampling_factor=3.573350270589193
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9902427196502686
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9935989379882812
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000002.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000003.jpg
+I0000 00:00:1772650458.525403 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650458.563352 3653699 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4286840756734214
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9952996969223022
+  label: "Left"
+}
+]
+downsampling_factor=3.5715955098470054
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9890220761299133
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9907832741737366
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000003.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000004.jpg
+I0000 00:00:1772650459.512132 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650459.546157 3653787 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4277076721191406
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9924183487892151
+  label: "Left"
+}
+]
+downsampling_factor=3.5701573689778647
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.989505410194397
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9937811493873596
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000004.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000005.jpg
+I0000 00:00:1772650460.869067 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650460.907611 3653841 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4275131225585938
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9952568411827087
+  label: "Left"
+}
+]
+downsampling_factor=3.5698725382486978
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9894884824752808
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9979578256607056
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000005.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000006.jpg
+I0000 00:00:1772650461.810977 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650461.849377 3653895 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.425572713216146
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9953734874725342
+  label: "Left"
+}
+]
+downsampling_factor=3.5670204162597656
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9906126260757446
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9985048174858093
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000006.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000007.jpg
+I0000 00:00:1772650462.736618 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650462.774465 3653963 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4273414611816406
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9955991506576538
+  label: "Left"
+}
+]
+downsampling_factor=3.5696207682291665
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9890797138214111
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9966822266578674
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000007.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000008.jpg
+I0000 00:00:1772650463.716338 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650463.750995 3654017 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4285279909769693
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9970222115516663
+  label: "Left"
+}
+]
+downsampling_factor=3.5713653564453125
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9881067276000977
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9979473948478699
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000008.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000009.jpg
+I0000 00:00:1772650464.642272 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650464.676586 3654071 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4255091349283853
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9973004460334778
+  label: "Left"
+}
+]
+downsampling_factor=3.5669263203938804
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9900990128517151
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.997931718826294
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000009.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000010.jpg
+I0000 00:00:1772650465.613772 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650465.656105 3654125 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4262517293294272
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.996356725692749
+  label: "Left"
+}
+]
+downsampling_factor=3.568017323811849
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9907656311988831
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9936425685882568
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000010.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000011.jpg
+I0000 00:00:1772650466.540461 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650466.575010 3654179 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4276986122131348
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9967557191848755
+  label: "Left"
+}
+]
+downsampling_factor=3.570145924886068
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9919588565826416
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9964321255683899
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000011.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000012.jpg
+I0000 00:00:1772650467.489456 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650467.528345 3654253 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4244675636291504
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9942285418510437
+  label: "Left"
+}
+]
+downsampling_factor=3.5653915405273438
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9928539991378784
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9978854060173035
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000012.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000013.jpg
+I0000 00:00:1772650468.416532 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+downsampling_factor=2.426257928212484
+I0000 00:00:1772650468.451254 3654307 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9966686964035034
+  label: "Left"
+}
+]
+downsampling_factor=3.5680274963378906
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9917755126953125
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9894953966140747
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000013.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000014.jpg
+I0000 00:00:1772650469.399969 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650469.444420 3654395 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4272359212239585
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9953266978263855
+  label: "Left"
+}
+]
+downsampling_factor=3.569463094075521
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9927970767021179
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9973905682563782
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000014.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000015.jpg
+I0000 00:00:1772650470.330414 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650470.366061 3654463 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4279098510742188
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9958282113075256
+  label: "Left"
+}
+]
+downsampling_factor=3.5704549153645835
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9928489923477173
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9977591633796692
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000015.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000016.jpg
+I0000 00:00:1772650471.270736 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650471.314947 3654517 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.431834061940511
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9959588050842285
+  label: "Left"
+}
+]
+downsampling_factor=3.5762252807617188
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9936580061912537
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9967701435089111
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000016.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000017.jpg
+I0000 00:00:1772650472.204427 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650472.245059 3654585 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4319583574930825
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.996151328086853
+  label: "Left"
+}
+]
+downsampling_factor=3.576409657796224
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9925866723060608
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9867634773254395
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000017.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000018.jpg
+I0000 00:00:1772650473.138531 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650473.173977 3654639 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4314525922139487
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9964323043823242
+  label: "Left"
+}
+]
+downsampling_factor=3.5756632486979165
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9919549822807312
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9925026893615723
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000018.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000019.jpg
+I0000 00:00:1772650474.119973 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650474.161079 3654693 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.42840576171875
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9945706725120544
+  label: "Left"
+}
+]
+downsampling_factor=3.5711847941080728
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.990105152130127
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9966660737991333
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000019.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000020.jpg
+I0000 00:00:1772650475.087959 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650475.135986 3654747 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4283242225646973
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9958120584487915
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.7953082323074341
+  label: "Left"
+}
+]
+downsampling_factor=3.5710627237955728
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9904208183288574
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000020.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000021.jpg
+I0000 00:00:1772650476.006152 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650476.044574 3654801 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.429431915283203
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9941648244857788
+  label: "Left"
+}
+]
+downsampling_factor=3.5726954142252603
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9918745160102844
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.992119312286377
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000021.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000022.jpg
+I0000 00:00:1772650476.946591 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650477.005212 3654855 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.431046644846598
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.99464350938797
+  label: "Left"
+}
+]
+downsampling_factor=3.4320665995279946
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9912849068641663
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9837873578071594
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000022.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000023.jpg
+I0000 00:00:1772650477.898915 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650477.942587 3654929 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4313241640726724
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9896647930145264
+  label: "Left"
+}
+]
+downsampling_factor=3.575476328531901
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9912359714508057
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.992091178894043
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000023.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000024.jpg
+I0000 00:00:1772650478.823602 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650478.859470 3654988 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4302291870117188
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9865450859069824
+  label: "Left"
+}
+]
+downsampling_factor=3.5738677978515625
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9937831163406372
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9974029064178467
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000024.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000025.jpg
+I0000 00:00:1772650479.799504 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650479.848326 3655071 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.431402842203776
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9932857155799866
+  label: "Left"
+}
+]
+downsampling_factor=3.5755933125813804
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9934686422348022
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9984399080276489
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000025.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000026.jpg
+I0000 00:00:1772650480.741469 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650480.777923 3655132 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4312159220377603
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9946991801261902
+  label: "Left"
+}
+]
+downsampling_factor=3.5753161112467446
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9928789734840393
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9987785816192627
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000026.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000027.jpg
+I0000 00:00:1772650481.686504 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650481.725996 3655200 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4321314493815103
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9962181448936462
+  label: "Left"
+}
+]
+downsampling_factor=3.57666015625
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9912562370300293
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9975208640098572
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000027.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000028.jpg
+I0000 00:00:1772650482.630057 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650482.668192 3655261 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4322115580240884
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9958271980285645
+  label: "Left"
+}
+]
+downsampling_factor=3.719853719075521
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.987921416759491
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9965255856513977
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000028.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000029.jpg
+I0000 00:00:1772650483.579610 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650483.616264 3655315 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4338200887044272
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9950926899909973
+  label: "Left"
+}
+]
+downsampling_factor=3.579146067301432
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.99079829454422
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9972093105316162
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000029.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000030.jpg
+I0000 00:00:1772650484.536564 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650484.573003 3655369 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4341456095377603
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9954448342323303
+  label: "Left"
+}
+, classification {
+  index: 1
+  score: 0.7704346179962158
+  label: "Right"
+}
+]
+downsampling_factor=3.579625447591146
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9987488389015198
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000030.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000031.jpg
+I0000 00:00:1772650485.518103 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650485.559502 3655423 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4317626953125
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.996484637260437
+  label: "Left"
+}
+, classification {
+  index: 1
+  score: 0.8452891707420349
+  label: "Right"
+}
+]
+downsampling_factor=3.4330774943033853
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9956771731376648
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000031.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000032.jpg
+I0000 00:00:1772650486.539446 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650486.576442 3655480 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4298386573791504
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9956413507461548
+  label: "Left"
+}
+]
+downsampling_factor=3.43035888671875
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9928590655326843
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.998319149017334
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000032.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000033.jpg
+I0000 00:00:1772650487.484911 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650487.522064 3655554 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.428521474202474
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9969683289527893
+  label: "Left"
+}
+]
+downsampling_factor=3.5713539123535156
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9902907609939575
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9961706399917603
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000033.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000034.jpg
+I0000 00:00:1772650488.401484 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650488.447899 3655608 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4293340047200522
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9923055768013
+  label: "Left"
+}
+]
+downsampling_factor=3.5725479125976562
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9910399317741394
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9980213642120361
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000034.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000035.jpg
+I0000 00:00:1772650489.339476 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650489.376528 3655689 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.430276393890381
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9937958717346191
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.554634153842926
+  label: "Left"
+}
+]
+downsampling_factor=3.5739358266194663
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9980887174606323
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000035.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000036.jpg
+I0000 00:00:1772650490.256327 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650490.293394 3655764 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4314422607421875
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9974135160446167
+  label: "Left"
+}
+]
+downsampling_factor=3.575653076171875
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9930408000946045
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9973249435424805
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000036.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000037.jpg
+I0000 00:00:1772650491.275762 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650491.313169 3655818 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.429948170979818
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9928135275840759
+  label: "Left"
+}
+]
+downsampling_factor=3.716390609741211
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9911687970161438
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9956029653549194
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000037.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000038.jpg
+I0000 00:00:1772650492.193167 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650492.230594 3655872 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4289538065592446
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9944443106651306
+  label: "Left"
+}
+, classification {
+  index: 1
+  score: 0.6787339448928833
+  label: "Right"
+}
+]
+downsampling_factor=3.714869817097982
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9965517520904541
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000038.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000039.jpg
+I0000 00:00:1772650493.114092 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650493.156642 3655926 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.427415370941162
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9942391514778137
+  label: "Left"
+}
+]
+downsampling_factor=3.712518056233724
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9916732311248779
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9979969263076782
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000039.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000040.jpg
+I0000 00:00:1772650494.062752 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650494.100307 3655994 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.428297678629557
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9947155714035034
+  label: "Left"
+}
+]
+downsampling_factor=3.7138684590657554
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9943224787712097
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9979075789451599
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000040.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000041.jpg
+I0000 00:00:1772650495.005418 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650495.049904 3656048 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.429100195566813
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9955226182937622
+  label: "Left"
+}
+]
+downsampling_factor=3.5722071329752603
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9933767318725586
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9960950613021851
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000041.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000042.jpg
+I0000 00:00:1772650495.948137 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650495.991774 3656102 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4276275634765625
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9832962155342102
+  label: "Left"
+}
+, classification {
+  index: 1
+  score: 0.8494187593460083
+  label: "Right"
+}
+]
+downsampling_factor=3.5700403849283853
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9974547624588013
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000042.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000043.jpg
+I0000 00:00:1772650496.885498 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650496.923496 3656156 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.427281697591146
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9898539185523987
+  label: "Left"
+}
+]
+downsampling_factor=3.569530487060547
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9942874908447266
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9978789687156677
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000043.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000044.jpg
+I0000 00:00:1772650497.812221 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650497.856611 3656230 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4272778828938804
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9859325885772705
+  label: "Left"
+}
+]
+downsampling_factor=3.7123082478841147
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9922609329223633
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9954915642738342
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000044.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000045.jpg
+I0000 00:00:1772650498.795473 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650498.834140 3656286 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.427008310953776
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9831341505050659
+  label: "Left"
+}
+]
+downsampling_factor=3.569128672281901
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.993466317653656
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9966785311698914
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000045.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000046.jpg
+I0000 00:00:1772650499.762382 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650499.803897 3656379 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.428059736887614
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9935112595558167
+  label: "Left"
+}
+]
+downsampling_factor=3.570673624674479
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9929192066192627
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9989819526672363
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000046.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000047.jpg
+I0000 00:00:1772650500.707213 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650500.757150 3656440 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4295616149902344
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9905737638473511
+  label: "Left"
+}
+, classification {
+  index: 1
+  score: 0.5152081251144409
+  label: "Right"
+}
+]
+downsampling_factor=3.5728848775227866
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9989511370658875
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000047.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000048.jpg
+I0000 00:00:1772650501.645233 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650501.689686 3656497 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4298818906148276
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9961013197898865
+  label: "Left"
+}
+]
+downsampling_factor=3.573357264200846
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9911117553710938
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9953827857971191
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000048.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000049.jpg
+I0000 00:00:1772650502.612042 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650502.650161 3656551 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4319852193196616
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9950401186943054
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9934845566749573
+  label: "Left"
+}
+]
+downsampling_factor=3.5764478047688804
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9975806474685669
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000049.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000050.jpg
+I0000 00:00:1772650503.539348 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650503.583367 3656605 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4310035705566406
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9850777387619019
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9924004673957825
+  label: "Left"
+}
+]
+downsampling_factor=3.5750033060709634
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9965618848800659
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000050.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000051.jpg
+I0000 00:00:1772650504.483917 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650504.522781 3656659 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.430821736653646
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9899096488952637
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.988013505935669
+  label: "Left"
+}
+]
+downsampling_factor=3.5747388203938804
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.997261643409729
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000051.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000052.jpg
+I0000 00:00:1772650505.399921 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650505.439057 3656720 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4299238522847495
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9964950084686279
+  label: "Left"
+}
+]
+downsampling_factor=3.716353098551432
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9903987646102905
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9903094172477722
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000052.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000053.jpg
+I0000 00:00:1772650506.352374 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650506.399713 3656781 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.432866414388021
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9943275451660156
+  label: "Left"
+}
+]
+downsampling_factor=3.4346351623535156
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9932798743247986
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9977657198905945
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000053.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000054.jpg
+I0000 00:00:1772650507.295226 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650507.334449 3656855 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.433904012044271
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9966754913330078
+  label: "Left"
+}
+]
+downsampling_factor=3.436101277669271
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9934258460998535
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.994354784488678
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000054.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000055.jpg
+I0000 00:00:1772650508.378174 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650508.417479 3656909 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4347904523213706
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9957748651504517
+  label: "Left"
+}
+]
+downsampling_factor=3.580572764078776
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.992598295211792
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.9893759489059448
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000055.jpg
+
+Processing: /scratch/mthakur/manifold/data/images/clip_4_frames/frame_000056.jpg
+I0000 00:00:1772650509.385720 3652836 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1772650509.424829 3656997 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=2.4332669576009116
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9959304332733154
+  label: "Left"
+}
+, classification {
+  index: 0
+  score: 0.7070167660713196
+  label: "Left"
+}
+]
+downsampling_factor=3.4352010091145835
+cvimg.shape:  (1080, 1440, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 0
+  score: 0.9073817729949951
+  label: "Left"
+}
+]
+/.venv/lib/python3.10/site-packages/torch/nn/functional.py:4236: UserWarning: Default grid_sample and affine_grid behavior has changed to align_corners=False since 1.3.0. Please specify align_corners=True if the old behavior is desired. See the documentation of grid_sample for details.
+  warnings.warn(
+Saved visualization: /scratch/mthakur/manifold/outputs/hamba/clip_4/visualizations/frame_000056.jpg
+
+[INFO] Creating video from clip_4 ...
+
+All images processed.
+===============================================
+Job finished at: Wed Mar  4 19:55:14 CET 2026
+Execution took 0.03 hours
+Writing output to SLURM_logs/hamba-inference_065.out
+===============================================
