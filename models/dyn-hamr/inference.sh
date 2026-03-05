@@ -107,20 +107,21 @@ fi
 echo "Using video: ${VIDEO_PATH}"
 if [[ -f "${DETECTRON2_CKPT}" ]]; then
   echo "Using local Detectron2 checkpoint: ${DETECTRON2_CKPT}"
-  DETECTRON2_PREFIX="HAMER_DETECTRON2_CKPT=${DETECTRON2_CKPT}"
+  export APPTAINERENV_HAMER_DETECTRON2_CKPT="${DETECTRON2_CKPT}"
 else
   echo "Local Detectron2 checkpoint not found at ${DETECTRON2_CKPT}; HaMeR will try downloading." >&2
-  DETECTRON2_PREFIX=""
+  unset APPTAINERENV_HAMER_DETECTRON2_CKPT
 fi
 
 srun apptainer exec\
   --nv\
   --bind ~/.cache/torch:/home/mthakur/.cache/torch \
   --bind ~/.cache/huggingface:/home/mthakur/.cache/huggingface \
+  --bind "/scratch/mthakur/manifold/models/dyn-hamr:/scratch/mthakur/manifold/models/dyn-hamr"\
   --bind "/scratch/mthakur/manifold/data:/scratch/mthakur/manifold/data"\
   --bind "/scratch/mthakur/manifold/outputs/dynhamr/:/scratch/mthakur/manifold/outputs/dynhamr"\
   "${APPTAINER_IMAGE}"\
-  ${DETECTRON2_PREFIX} python -u dyn-hamr/run_opt.py \
+  python -u dyn-hamr/run_opt.py \
   data=video \
   run_opt=True \
   run_vis=True \
