@@ -118,30 +118,55 @@ def build_frame_image_map(image_folder: Path, video_name: str):
     return image_map
 
 
-def main(args):
-    if not args.video:
-        raise ValueError("--video is required for modify.py")
+def discover_processed_videos(output_folder: Path):
+    videos = []
+    for candidate in sorted(output_folder.iterdir()):
+        if not candidate.is_dir():
+            continue
+        if candidate.name == "videos" or candidate.name.endswith("_modified"):
+            continue
+        if (candidate / "meshes").is_dir():
+            videos.append(candidate.name)
+    return videos
 
-    source_video_dir = Path(args.output_folder) / args.video
+
+def resolve_vipe_pose_path(video_name: str, args):
+    default_pose_path = Path(args.output_folder) / ".." / "vipe" / "pose" / f"{video_name}.npz"
+    if not args.vipe_pose_path:
+        return default_pose_path
+
+    raw_path = args.vipe_pose_path
+    if "{video}" in raw_path:
+        return Path(raw_path.format(video=video_name))
+
+    override_path = Path(raw_path)
+    if override_path.suffix not in {".npz", ".npy"}:
+        return override_path / f"{video_name}.npz"
+
+    if args.all_processed_videos:
+        print(
+            f"[WARN] --vipe_pose_path={override_path} points to a single file. "
+            "Ignoring it in --all_processed_videos mode and using default per-video VIPE paths."
+        )
+        return default_pose_path
+    return override_path
+
+
+def process_video(video_name: str, args, model, model_cfg, pose_path: Path):
+    source_video_dir = Path(args.output_folder) / video_name
     source_mesh_root = source_video_dir / "meshes"
     if not source_mesh_root.is_dir():
         raise FileNotFoundError(f"Source mesh directory not found: {source_mesh_root}")
 
-    modified_video_name = f"{args.video}_modified"
+    modified_video_name = f"{video_name}_modified"
     modified_base_dir = Path(args.output_folder) / modified_video_name
     modified_vis_dir = modified_base_dir / "visualizations"
     modified_mesh_root = modified_base_dir / "meshes"
     modified_vis_dir.mkdir(parents=True, exist_ok=True)
     modified_mesh_root.mkdir(parents=True, exist_ok=True)
 
-    pose_path = Path(args.vipe_pose_path) if args.vipe_pose_path else Path(args.output_folder) /".." / "vipe" / "pose" / f"{args.video}.npz"
     pose_inds, poses_c2w = load_vipe_pose_artifact(pose_path)
-    image_map = build_frame_image_map(Path(args.image_folder), args.video)
-
-    model, model_cfg = load_wilor(
-        checkpoint_path="./pretrained_models/wilor_final.ckpt",
-        cfg_path="./pretrained_models/model_config.yaml",
-    )
+    image_map = build_frame_image_map(Path(args.image_folder), video_name) if args.visualize else {}
     faces = model.mano.faces
 
     frame_dirs = sorted([p for p in source_mesh_root.iterdir() if p.is_dir()])
@@ -195,7 +220,7 @@ def main(args):
             frame_img_path = image_map.get(frame_name)
             if frame_img_path is None:
                 raise FileNotFoundError(
-                    f"No source frame image found for '{frame_name}' in {Path(args.image_folder) / (args.video + '_frames')}"
+                    f"No source frame image found for '{frame_name}' in {Path(args.image_folder) / (video_name + '_frames')}"
                 )
 
             img_cv2 = cv2.imread(str(frame_img_path))
@@ -230,9 +255,68 @@ def main(args):
         videos_dir.mkdir(parents=True, exist_ok=True)
         video_path = videos_dir / f"{modified_video_name}.mp4"
         images_to_video(modified_vis_dir, video_path, fps=30)
-        print(f"[INFO] Saved modified video: {video_path}")
+        print(f"[INFO] [{video_name}] Saved modified video: {video_path}")
 
-    print(f"[INFO] Done. Mesh files written: {mesh_written}, visualizations written: {vis_written}")
+    print(f"[INFO] [{video_name}] Done. Mesh files written: {mesh_written}, visualizations written: {vis_written}")
+    return mesh_written, vis_written
+
+
+def main(args):
+    if args.all_processed_videos:
+        video_names = discover_processed_videos(Path(args.output_folder))
+        if not video_names:
+            raise FileNotFoundError(f"No processed videos found in {Path(args.output_folder)}")
+    else:
+        if not args.video:
+            raise ValueError("--video is required unless --all_processed_videos is set")
+        video_names = [args.video]
+
+    model, model_cfg = load_wilor(
+        checkpoint_path="./pretrained_models/wilor_final.ckpt",
+        cfg_path="./pretrained_models/model_config.yaml",
+    )
+
+    total_mesh_written = 0
+    total_vis_written = 0
+    processed_count = 0
+    skipped = []
+
+    for video_name in video_names:
+        pose_path = resolve_vipe_pose_path(video_name, args)
+        if not pose_path.exists():
+            reason = f"ViPE pose file missing: {pose_path}"
+            if args.all_processed_videos:
+                print(f"[WARN] [{video_name}] {reason}. Skipping.")
+                skipped.append((video_name, reason))
+                continue
+            raise FileNotFoundError(reason)
+
+        try:
+            mesh_written, vis_written = process_video(
+                video_name=video_name,
+                args=args,
+                model=model,
+                model_cfg=model_cfg,
+                pose_path=pose_path,
+            )
+            total_mesh_written += mesh_written
+            total_vis_written += vis_written
+            processed_count += 1
+        except Exception as exc:
+            if args.all_processed_videos:
+                print(f"[WARN] [{video_name}] Failed: {exc}. Skipping.")
+                skipped.append((video_name, str(exc)))
+                continue
+            raise
+
+    print(
+        f"[INFO] Completed. Videos processed: {processed_count}/{len(video_names)}. "
+        f"Mesh files written: {total_mesh_written}, visualizations written: {total_vis_written}"
+    )
+    if skipped:
+        print(f"[WARN] Skipped {len(skipped)} video(s):")
+        for video_name, reason in skipped:
+            print(f"[WARN] - {video_name}: {reason}")
 
 
 if __name__ == "__main__":
@@ -241,6 +325,12 @@ if __name__ == "__main__":
     parser.add_argument("--output_folder", type=str, default="../../outputs/wilor/", help="Folder for results.")
     parser.add_argument("--rescale_factor", type=float, default=2.0, help="Unused here, kept for compatibility.")
     parser.add_argument("--video", type=str, default=None, help="Video name to process (expects <video>_frames folder).")
+    parser.add_argument(
+        "--all_processed_videos",
+        action="store_true",
+        default=False,
+        help="Modify all processed videos in output_folder (requires per-video ViPE pose file).",
+    )
     parser.add_argument("--visualize", action="store_true", default=True, help="Generate visualization overlays.")
     parser.add_argument("--save_mesh", action="store_true", default=True, help="Save modified mesh reconstructions (.npy).")
     parser.add_argument("--use_gpu", action="store_true", default=True, help="Kept for compatibility.")
@@ -248,6 +338,6 @@ if __name__ == "__main__":
         "--vipe_pose_path",
         type=str,
         default=None,
-        help="Path to ViPE pose artifact (.npz/.npy). Defaults to <output_folder>/pose/<video>.npz",
+        help="Path to ViPE pose artifact (.npz/.npy), or a directory/pattern like '/path/{video}.npz'.",
     )
     main(parser.parse_args())
