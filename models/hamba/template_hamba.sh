@@ -15,7 +15,7 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
-#SBATCH --mem-per-gpu=32G
+#SBATCH --mem-per-gpu=64G
 #SBATCH --account=Education-EEMCS-MSc-DSAIT
 #SBATCH --output=%x.out
 
@@ -54,13 +54,13 @@ echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
 
-mkdir -p /scratch/mthakur/manifold/data/images/__NAME___frames
+mkdir -p "/scratch/mthakur/manifold/data/images/__NAME___frames"
 
 srun apptainer exec \
   --nv \
   --bind /scratch:/scratch \
   /scratch/mthakur/manifold/models/hamba/apptainer/template.sif \
-  python /scratch/mthakur/manifold/models/hamba/main.py --video __NAME__
+  python /scratch/mthakur/manifold/models/hamba/main.py --video "__NAME__"
 
 echo "==============================================="
 end_time=$(date +%s)

@@ -14,7 +14,10 @@ else
     PYTHON_BIN="python3"
 fi
 
-for video in "$VIDEO_DIR"/*.*; do
+shopt -s nullglob nocaseglob
+videos=("$VIDEO_DIR"/*.mp4 "$VIDEO_DIR"/*.avi "$VIDEO_DIR"/*.mts)
+
+for video in "${videos[@]}"; do
     [ -f "$video" ] || continue
 
     filename=$(basename "$video")
@@ -28,9 +31,11 @@ for video in "$VIDEO_DIR"/*.*; do
 
     job_script="$OUT_DIR/demo_${name}.sh"
 
+    escaped_name=$(printf '%s\n' "$name" | sed 's/[&|]/\\&/g')
+
     sed \
-        -e "s/__NAME__/${name}/g" \
-        -e "s/__TIME__/${TIME_FMT}/g" \
+        -e "s|__NAME__|${escaped_name}|g" \
+        -e "s|__TIME__|${TIME_FMT}|g" \
         "$TEMPLATE" > "$job_script"
 
     sbatch "$job_script"
