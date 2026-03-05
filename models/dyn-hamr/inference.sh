@@ -91,7 +91,7 @@ export APPTAINER_IMAGE="/scratch/mthakur/child-example/apptainer-template/templa
 # Run script
 # Note: There cannot be any characters incuding space behind the `\` symbol.
 
-VIDEO_NAME="clip_2"
+VIDEO_NAME="clip2"
 VIDEO_EXT="mp4"
 DATA_ROOT="/scratch/mthakur/manifold/data"
 VIDEO_DIR="videos"
@@ -120,12 +120,6 @@ srun apptainer exec\
   "data.src_path=${VIDEO_PATH}" \
   "is_static=${IS_STATIC}" \
   log_root=outputs/logs
-
-srun apptainer exec\
-  --nv\
-  --bind "/scratch/mthakur/manifold/outputs/dynhamr/:/scratch/mthakur/manifold/outputs/dynhamr"\
-  "${APPTAINER_IMAGE}"\
-  python dyn-hamr/run_vis.py --log_root outputs/logs/video-custom
 
 echo "==============================================="
 end_time=$(date +%s)
