@@ -115,6 +115,8 @@ fi
 
 srun apptainer exec\
   --nv\
+  --bind ~/.cache/torch:/home/mthakur/.cache/torch \
+  --bind ~/.cache/huggingface:/home/mthakur/.cache/huggingface \
   --bind "/scratch/mthakur/manifold/data:/scratch/mthakur/manifold/data"\
   --bind "/scratch/mthakur/manifold/outputs/dynhamr/:/scratch/mthakur/manifold/outputs/dynhamr"\
   "${APPTAINER_IMAGE}"\
