@@ -91,17 +91,41 @@ export APPTAINER_IMAGE="/scratch/mthakur/child-example/apptainer-template/templa
 # Run script
 # Note: There cannot be any characters incuding space behind the `\` symbol.
 
-srun apptainer exec\
-  --nv\
-  --bind "/scratch/mthakur/manifold/outputs/dynhamr/:/scratch/mthakur/manifold/outputs/dynhamr"\
-  /scratch/mthakur/Dyn-HaMR/apptainer/template.sif\
-  python -u dyn-hamr/run_opt.py data=video run_opt=True data.seq=tremor is_static=False run_vis=True
+VIDEO_NAME="clip_2"
+VIDEO_EXT="mp4"
+DATA_ROOT="/scratch/mthakur/manifold/data"
+VIDEO_DIR="videos"
+IS_STATIC="False"
+
+VIDEO_PATH="${DATA_ROOT}/${VIDEO_DIR}/${VIDEO_NAME}.${VIDEO_EXT}"
+if [[ ! -f "${VIDEO_PATH}" ]]; then
+  echo "Video not found: ${VIDEO_PATH}" >&2
+  exit 1
+fi
+
+echo "Using video: ${VIDEO_PATH}"
 
 srun apptainer exec\
   --nv\
   --bind "/scratch/mthakur/manifold/outputs/dynhamr/:/scratch/mthakur/manifold/outputs/dynhamr"\
-  /scratch/mthakur/Dyn-HaMR/apptainer/template.sif\
-  python dyn-hamr/run_vis.py --log_root /scratch/mthakur/manifold/outputs/dynhamr
+  "${APPTAINER_IMAGE}"\
+  python -u dyn-hamr/run_opt.py \
+  data=video \
+  run_opt=True \
+  run_vis=True \
+  "data.root=${DATA_ROOT}" \
+  "data.video_dir=${VIDEO_DIR}" \
+  "data.seq=${VIDEO_NAME}" \
+  "data.ext=${VIDEO_EXT}" \
+  "data.src_path=${VIDEO_PATH}" \
+  "is_static=${IS_STATIC}" \
+  log_root=outputs/logs
+
+srun apptainer exec\
+  --nv\
+  --bind "/scratch/mthakur/manifold/outputs/dynhamr/:/scratch/mthakur/manifold/outputs/dynhamr"\
+  "${APPTAINER_IMAGE}"\
+  python dyn-hamr/run_vis.py --log_root outputs/logs/video-custom
 
 echo "==============================================="
 end_time=$(date +%s)
