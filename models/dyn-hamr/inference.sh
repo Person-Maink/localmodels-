@@ -96,6 +96,7 @@ VIDEO_EXT="mp4"
 DATA_ROOT="/scratch/mthakur/manifold/data"
 VIDEO_DIR="images"
 IS_STATIC="False"
+DETECTRON2_CKPT="/home/mthakur/.cache/torch/hub/detectron2/model_final_f05665.pkl"
 
 VIDEO_PATH="${DATA_ROOT}/${VIDEO_DIR}/${VIDEO_NAME}.${VIDEO_EXT}"
 if [[ ! -f "${VIDEO_PATH}" ]]; then
@@ -104,13 +105,20 @@ if [[ ! -f "${VIDEO_PATH}" ]]; then
 fi
 
 echo "Using video: ${VIDEO_PATH}"
+if [[ -f "${DETECTRON2_CKPT}" ]]; then
+  echo "Using local Detectron2 checkpoint: ${DETECTRON2_CKPT}"
+  DETECTRON2_PREFIX="HAMER_DETECTRON2_CKPT=${DETECTRON2_CKPT}"
+else
+  echo "Local Detectron2 checkpoint not found at ${DETECTRON2_CKPT}; HaMeR will try downloading." >&2
+  DETECTRON2_PREFIX=""
+fi
 
 srun apptainer exec\
   --nv\
   --bind "/scratch/mthakur/manifold/data:/scratch/mthakur/manifold/data"\
   --bind "/scratch/mthakur/manifold/outputs/dynhamr/:/scratch/mthakur/manifold/outputs/dynhamr"\
   "${APPTAINER_IMAGE}"\
-  python -u dyn-hamr/run_opt.py \
+  ${DETECTRON2_PREFIX} python -u dyn-hamr/run_opt.py \
   data=video \
   run_opt=True \
   run_vis=True \

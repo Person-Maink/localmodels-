@@ -62,8 +62,17 @@ def process_seq(
 
     if overwrite or not os.path.isfile(res_path):
         res = launch_hamer(gpus, seq, img_dir, res_dir, name, datatype, overwrite)
-        print(f'rename {res_dir}/demo_{name}.pkl into ', res_path)
-        os.rename(f"{res_dir}/demo_{name}.pkl", res_path)
+        demo_res_path = f"{res_dir}/demo_{name}.pkl"
+        print(f"rename {demo_res_path} into ", res_path)
+        if not os.path.isfile(demo_res_path):
+            raise FileNotFoundError(
+                f"HaMeR did not produce {demo_res_path}. "
+                f"HaMeR exit code={res}. "
+                "Check the HaMeR traceback above. "
+                "If network is blocked, set HAMER_DETECTRON2_CKPT to a local "
+                "model_final_f05665.pkl path."
+            )
+        os.rename(demo_res_path, res_path)
         assert res == 0, "HAMER FAILED"
 
     # export the HAMER predictions
