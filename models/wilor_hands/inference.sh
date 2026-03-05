@@ -13,7 +13,7 @@
 
 #SBATCH --job-name=wilor-inference
 #SBATCH --partition=gpu-a100-small
-#SBATCH --time=00:5:00
+#SBATCH --time=01:15:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
@@ -91,7 +91,7 @@ srun apptainer exec \
   --nv \
   --bind /scratch:/scratch \
   /scratch/mthakur/manifold/models/wilor_hands/apptainer/template.sif \
-  python /scratch/mthakur/manifold/models/wilor_hands/modify.py --video 120-2_clip_1
+  python /scratch/mthakur/manifold/models/wilor_hands/modify.py --all_processed_videos
 
   # python -c "import torch; print(torch.__version__); print(torch.version.cuda); print(torch.version.git_version)"
 # srun apptainer exec\
