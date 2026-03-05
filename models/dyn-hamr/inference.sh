@@ -91,7 +91,7 @@ export APPTAINER_IMAGE="/scratch/mthakur/manifold/models/dyn-hamr/apptainer/temp
 # Run script
 # Note: There cannot be any characters incuding space behind the `\` symbol.
 
-VIDEO_NAME="clip2"
+VIDEO_NAME="clip_2"
 VIDEO_EXT="mp4"
 DATA_ROOT="/scratch/mthakur/manifold/data"
 VIDEO_DIR="images"
