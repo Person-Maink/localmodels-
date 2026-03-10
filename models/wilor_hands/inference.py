@@ -61,17 +61,22 @@ def run_wilor_inference(model, model_cfg, detector, dataloader, img_cv2, device=
             verts[:, 0] = (2 * is_right - 1) * verts[:, 0]
             joints[:, 0] = (2 * is_right - 1) * joints[:, 0]
             cam_t = pred_cam_t_full[n]
+            box_center_n = box_center[n].detach().cpu().numpy()
+            box_size_n = box_size[n].detach().cpu().numpy()
 
             img_res = batch["img_size"][n].detach().cpu().numpy().astype(int)
 
-            all_results.append(dict(
+            result = dict(
                 verts=verts,
                 joints=joints,
                 cam_t=cam_t,
                 right=is_right,
+                box_center=box_center_n,
+                box_size=box_size_n,
                 focal_length=float(scaled_focal_length),  # <- store the scaled value actually used
                 img_res=img_res                           # <- store render resolution used in math
-            ))
+            )
+            all_results.append(result)
 
             # if save_mesh and out_folder:
             #     os.makedirs(out_folder, exist_ok=True)
@@ -80,6 +85,6 @@ def run_wilor_inference(model, model_cfg, detector, dataloader, img_cv2, device=
 
             if save_mesh and out_folder:
                 os.makedirs(out_folder, exist_ok=True)
-                np.save(os.path.join(out_folder, f"{img_fn}_{n}_{is_right}_verts.npy"),{"verts": verts, "cam_t":cam_t, "right":is_right})
+                np.save(os.path.join(out_folder, f"{img_fn}_{n}_{is_right}_verts.npy"), result)
 
     return all_results

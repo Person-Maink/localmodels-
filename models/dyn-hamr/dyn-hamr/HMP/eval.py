@@ -7,7 +7,10 @@ import random
 import numpy as np
 import pandas as pd
 from scipy import linalg
-from arguments import Arguments
+try:
+    from HMP.arguments import Arguments
+except ImportError:
+    from arguments import Arguments
 from nemf.losses import GeodesicLoss
 from nemf.generative import Architecture
 from nemf.fk import ForwardKinematicsLayer

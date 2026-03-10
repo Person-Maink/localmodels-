@@ -27,7 +27,11 @@ from torch.autograd import Variable
 # import open3d_viz_overlay
 # from datasets.amass import *
 
-from arguments import Arguments
+try:
+    from HMP.arguments import Arguments
+except ImportError:
+    # Fallback for direct script execution from inside HMP directory.
+    from arguments import Arguments
 from argparse import ArgumentParser
 from nemf.generative import Architecture
 from nemf.fk import ForwardKinematicsLayer
