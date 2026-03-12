@@ -1,0 +1,131 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+================ SLURM JOB INFO ================
+Job ID:         9336093
+Job Name:       hamba-inference
+Partition:      gpu-a100
+Node List:      gpu019
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 65536
+Submit dir:     /scratch/mthakur/manifold/models/hamba
+Work dir:       /scratch/mthakur/manifold/models/hamba
+Job started at: Thu Mar 12 11:34:37 CET 2026
+===============================================
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+WARNING: can not import selective_scan_cuda_core.
+No module named 'selective_scan_cuda_core'
+apex is not installed
+apex is not installed
+apex is not installed
+/.venv/lib/python3.10/site-packages/mmcv/cnn/bricks/transformer.py:27: UserWarning: Fail to import ``MultiScaleDeformableAttention`` from ``mmcv.ops.multi_scale_deform_attn``, You should install ``mmcv-full`` if you need this module. 
+  warnings.warn('Fail to import ``MultiScaleDeformableAttention`` from '
+checkpoint_path:  ckpts/hamba/checkpoints/hamba.ckpt
+/.venv/lib/python3.10/site-packages/pytorch_lightning/utilities/migration/utils.py:55: PossibleUserWarning: The loaded checkpoint was produced with Lightning v2.2.0.post0, which is newer than your current Lightning version: v2.0.9
+  rank_zero_warn(
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+Use load_from_local loader
+The model and loaded state dict do not match exactly
+
+unexpected key in source state_dict: backbone.blocks.0.mlp.experts.0.weight, backbone.blocks.0.mlp.experts.0.bias, backbone.blocks.0.mlp.experts.1.weight, backbone.blocks.0.mlp.experts.1.bias, backbone.blocks.0.mlp.experts.2.weight, backbone.blocks.0.mlp.experts.2.bias, backbone.blocks.0.mlp.experts.3.weight, backbone.blocks.0.mlp.experts.3.bias, backbone.blocks.0.mlp.experts.4.weight, backbone.blocks.0.mlp.experts.4.bias, backbone.blocks.0.mlp.experts.5.weight, backbone.blocks.0.mlp.experts.5.bias, backbone.blocks.1.mlp.experts.0.weight, backbone.blocks.1.mlp.experts.0.bias, backbone.blocks.1.mlp.experts.1.weight, backbone.blocks.1.mlp.experts.1.bias, backbone.blocks.1.mlp.experts.2.weight, backbone.blocks.1.mlp.experts.2.bias, backbone.blocks.1.mlp.experts.3.weight, backbone.blocks.1.mlp.experts.3.bias, backbone.blocks.1.mlp.experts.4.weight, backbone.blocks.1.mlp.experts.4.bias, backbone.blocks.1.mlp.experts.5.weight, backbone.blocks.1.mlp.experts.5.bias, backbone.blocks.2.mlp.experts.0.weight, backbone.blocks.2.mlp.experts.0.bias, backbone.blocks.2.mlp.experts.1.weight, backbone.blocks.2.mlp.experts.1.bias, backbone.blocks.2.mlp.experts.2.weight, backbone.blocks.2.mlp.experts.2.bias, backbone.blocks.2.mlp.experts.3.weight, backbone.blocks.2.mlp.experts.3.bias, backbone.blocks.2.mlp.experts.4.weight, backbone.blocks.2.mlp.experts.4.bias, backbone.blocks.2.mlp.experts.5.weight, backbone.blocks.2.mlp.experts.5.bias, backbone.blocks.3.mlp.experts.0.weight, backbone.blocks.3.mlp.experts.0.bias, backbone.blocks.3.mlp.experts.1.weight, backbone.blocks.3.mlp.experts.1.bias, backbone.blocks.3.mlp.experts.2.weight, backbone.blocks.3.mlp.experts.2.bias, backbone.blocks.3.mlp.experts.3.weight, backbone.blocks.3.mlp.experts.3.bias, backbone.blocks.3.mlp.experts.4.weight, backbone.blocks.3.mlp.experts.4.bias, backbone.blocks.3.mlp.experts.5.weight, backbone.blocks.3.mlp.experts.5.bias, backbone.blocks.4.mlp.experts.0.weight, backbone.blocks.4.mlp.experts.0.bias, backbone.blocks.4.mlp.experts.1.weight, backbone.blocks.4.mlp.experts.1.bias, backbone.blocks.4.mlp.experts.2.weight, backbone.blocks.4.mlp.experts.2.bias, backbone.blocks.4.mlp.experts.3.weight, backbone.blocks.4.mlp.experts.3.bias, backbone.blocks.4.mlp.experts.4.weight, backbone.blocks.4.mlp.experts.4.bias, backbone.blocks.4.mlp.experts.5.weight, backbone.blocks.4.mlp.experts.5.bias, backbone.blocks.5.mlp.experts.0.weight, backbone.blocks.5.mlp.experts.0.bias, backbone.blocks.5.mlp.experts.1.weight, backbone.blocks.5.mlp.experts.1.bias, backbone.blocks.5.mlp.experts.2.weight, backbone.blocks.5.mlp.experts.2.bias, backbone.blocks.5.mlp.experts.3.weight, backbone.blocks.5.mlp.experts.3.bias, backbone.blocks.5.mlp.experts.4.weight, backbone.blocks.5.mlp.experts.4.bias, backbone.blocks.5.mlp.experts.5.weight, backbone.blocks.5.mlp.experts.5.bias, backbone.blocks.6.mlp.experts.0.weight, backbone.blocks.6.mlp.experts.0.bias, backbone.blocks.6.mlp.experts.1.weight, backbone.blocks.6.mlp.experts.1.bias, backbone.blocks.6.mlp.experts.2.weight, backbone.blocks.6.mlp.experts.2.bias, backbone.blocks.6.mlp.experts.3.weight, backbone.blocks.6.mlp.experts.3.bias, backbone.blocks.6.mlp.experts.4.weight, backbone.blocks.6.mlp.experts.4.bias, backbone.blocks.6.mlp.experts.5.weight, backbone.blocks.6.mlp.experts.5.bias, backbone.blocks.7.mlp.experts.0.weight, backbone.blocks.7.mlp.experts.0.bias, backbone.blocks.7.mlp.experts.1.weight, backbone.blocks.7.mlp.experts.1.bias, backbone.blocks.7.mlp.experts.2.weight, backbone.blocks.7.mlp.experts.2.bias, backbone.blocks.7.mlp.experts.3.weight, backbone.blocks.7.mlp.experts.3.bias, backbone.blocks.7.mlp.experts.4.weight, backbone.blocks.7.mlp.experts.4.bias, backbone.blocks.7.mlp.experts.5.weight, backbone.blocks.7.mlp.experts.5.bias, backbone.blocks.8.mlp.experts.0.weight, backbone.blocks.8.mlp.experts.0.bias, backbone.blocks.8.mlp.experts.1.weight, backbone.blocks.8.mlp.experts.1.bias, backbone.blocks.8.mlp.experts.2.weight, backbone.blocks.8.mlp.experts.2.bias, backbone.blocks.8.mlp.experts.3.weight, backbone.blocks.8.mlp.experts.3.bias, backbone.blocks.8.mlp.experts.4.weight, backbone.blocks.8.mlp.experts.4.bias, backbone.blocks.8.mlp.experts.5.weight, backbone.blocks.8.mlp.experts.5.bias, backbone.blocks.9.mlp.experts.0.weight, backbone.blocks.9.mlp.experts.0.bias, backbone.blocks.9.mlp.experts.1.weight, backbone.blocks.9.mlp.experts.1.bias, backbone.blocks.9.mlp.experts.2.weight, backbone.blocks.9.mlp.experts.2.bias, backbone.blocks.9.mlp.experts.3.weight, backbone.blocks.9.mlp.experts.3.bias, backbone.blocks.9.mlp.experts.4.weight, backbone.blocks.9.mlp.experts.4.bias, backbone.blocks.9.mlp.experts.5.weight, backbone.blocks.9.mlp.experts.5.bias, backbone.blocks.10.mlp.experts.0.weight, backbone.blocks.10.mlp.experts.0.bias, backbone.blocks.10.mlp.experts.1.weight, backbone.blocks.10.mlp.experts.1.bias, backbone.blocks.10.mlp.experts.2.weight, backbone.blocks.10.mlp.experts.2.bias, backbone.blocks.10.mlp.experts.3.weight, backbone.blocks.10.mlp.experts.3.bias, backbone.blocks.10.mlp.experts.4.weight, backbone.blocks.10.mlp.experts.4.bias, backbone.blocks.10.mlp.experts.5.weight, backbone.blocks.10.mlp.experts.5.bias, backbone.blocks.11.mlp.experts.0.weight, backbone.blocks.11.mlp.experts.0.bias, backbone.blocks.11.mlp.experts.1.weight, backbone.blocks.11.mlp.experts.1.bias, backbone.blocks.11.mlp.experts.2.weight, backbone.blocks.11.mlp.experts.2.bias, backbone.blocks.11.mlp.experts.3.weight, backbone.blocks.11.mlp.experts.3.bias, backbone.blocks.11.mlp.experts.4.weight, backbone.blocks.11.mlp.experts.4.bias, backbone.blocks.11.mlp.experts.5.weight, backbone.blocks.11.mlp.experts.5.bias, backbone.blocks.12.mlp.experts.0.weight, backbone.blocks.12.mlp.experts.0.bias, backbone.blocks.12.mlp.experts.1.weight, backbone.blocks.12.mlp.experts.1.bias, backbone.blocks.12.mlp.experts.2.weight, backbone.blocks.12.mlp.experts.2.bias, backbone.blocks.12.mlp.experts.3.weight, backbone.blocks.12.mlp.experts.3.bias, backbone.blocks.12.mlp.experts.4.weight, backbone.blocks.12.mlp.experts.4.bias, backbone.blocks.12.mlp.experts.5.weight, backbone.blocks.12.mlp.experts.5.bias, backbone.blocks.13.mlp.experts.0.weight, backbone.blocks.13.mlp.experts.0.bias, backbone.blocks.13.mlp.experts.1.weight, backbone.blocks.13.mlp.experts.1.bias, backbone.blocks.13.mlp.experts.2.weight, backbone.blocks.13.mlp.experts.2.bias, backbone.blocks.13.mlp.experts.3.weight, backbone.blocks.13.mlp.experts.3.bias, backbone.blocks.13.mlp.experts.4.weight, backbone.blocks.13.mlp.experts.4.bias, backbone.blocks.13.mlp.experts.5.weight, backbone.blocks.13.mlp.experts.5.bias, backbone.blocks.14.mlp.experts.0.weight, backbone.blocks.14.mlp.experts.0.bias, backbone.blocks.14.mlp.experts.1.weight, backbone.blocks.14.mlp.experts.1.bias, backbone.blocks.14.mlp.experts.2.weight, backbone.blocks.14.mlp.experts.2.bias, backbone.blocks.14.mlp.experts.3.weight, backbone.blocks.14.mlp.experts.3.bias, backbone.blocks.14.mlp.experts.4.weight, backbone.blocks.14.mlp.experts.4.bias, backbone.blocks.14.mlp.experts.5.weight, backbone.blocks.14.mlp.experts.5.bias, backbone.blocks.15.mlp.experts.0.weight, backbone.blocks.15.mlp.experts.0.bias, backbone.blocks.15.mlp.experts.1.weight, backbone.blocks.15.mlp.experts.1.bias, backbone.blocks.15.mlp.experts.2.weight, backbone.blocks.15.mlp.experts.2.bias, backbone.blocks.15.mlp.experts.3.weight, backbone.blocks.15.mlp.experts.3.bias, backbone.blocks.15.mlp.experts.4.weight, backbone.blocks.15.mlp.experts.4.bias, backbone.blocks.15.mlp.experts.5.weight, backbone.blocks.15.mlp.experts.5.bias, backbone.blocks.16.mlp.experts.0.weight, backbone.blocks.16.mlp.experts.0.bias, backbone.blocks.16.mlp.experts.1.weight, backbone.blocks.16.mlp.experts.1.bias, backbone.blocks.16.mlp.experts.2.weight, backbone.blocks.16.mlp.experts.2.bias, backbone.blocks.16.mlp.experts.3.weight, backbone.blocks.16.mlp.experts.3.bias, backbone.blocks.16.mlp.experts.4.weight, backbone.blocks.16.mlp.experts.4.bias, backbone.blocks.16.mlp.experts.5.weight, backbone.blocks.16.mlp.experts.5.bias, backbone.blocks.17.mlp.experts.0.weight, backbone.blocks.17.mlp.experts.0.bias, backbone.blocks.17.mlp.experts.1.weight, backbone.blocks.17.mlp.experts.1.bias, backbone.blocks.17.mlp.experts.2.weight, backbone.blocks.17.mlp.experts.2.bias, backbone.blocks.17.mlp.experts.3.weight, backbone.blocks.17.mlp.experts.3.bias, backbone.blocks.17.mlp.experts.4.weight, backbone.blocks.17.mlp.experts.4.bias, backbone.blocks.17.mlp.experts.5.weight, backbone.blocks.17.mlp.experts.5.bias, backbone.blocks.18.mlp.experts.0.weight, backbone.blocks.18.mlp.experts.0.bias, backbone.blocks.18.mlp.experts.1.weight, backbone.blocks.18.mlp.experts.1.bias, backbone.blocks.18.mlp.experts.2.weight, backbone.blocks.18.mlp.experts.2.bias, backbone.blocks.18.mlp.experts.3.weight, backbone.blocks.18.mlp.experts.3.bias, backbone.blocks.18.mlp.experts.4.weight, backbone.blocks.18.mlp.experts.4.bias, backbone.blocks.18.mlp.experts.5.weight, backbone.blocks.18.mlp.experts.5.bias, backbone.blocks.19.mlp.experts.0.weight, backbone.blocks.19.mlp.experts.0.bias, backbone.blocks.19.mlp.experts.1.weight, backbone.blocks.19.mlp.experts.1.bias, backbone.blocks.19.mlp.experts.2.weight, backbone.blocks.19.mlp.experts.2.bias, backbone.blocks.19.mlp.experts.3.weight, backbone.blocks.19.mlp.experts.3.bias, backbone.blocks.19.mlp.experts.4.weight, backbone.blocks.19.mlp.experts.4.bias, backbone.blocks.19.mlp.experts.5.weight, backbone.blocks.19.mlp.experts.5.bias, backbone.blocks.20.mlp.experts.0.weight, backbone.blocks.20.mlp.experts.0.bias, backbone.blocks.20.mlp.experts.1.weight, backbone.blocks.20.mlp.experts.1.bias, backbone.blocks.20.mlp.experts.2.weight, backbone.blocks.20.mlp.experts.2.bias, backbone.blocks.20.mlp.experts.3.weight, backbone.blocks.20.mlp.experts.3.bias, backbone.blocks.20.mlp.experts.4.weight, backbone.blocks.20.mlp.experts.4.bias, backbone.blocks.20.mlp.experts.5.weight, backbone.blocks.20.mlp.experts.5.bias, backbone.blocks.21.mlp.experts.0.weight, backbone.blocks.21.mlp.experts.0.bias, backbone.blocks.21.mlp.experts.1.weight, backbone.blocks.21.mlp.experts.1.bias, backbone.blocks.21.mlp.experts.2.weight, backbone.blocks.21.mlp.experts.2.bias, backbone.blocks.21.mlp.experts.3.weight, backbone.blocks.21.mlp.experts.3.bias, backbone.blocks.21.mlp.experts.4.weight, backbone.blocks.21.mlp.experts.4.bias, backbone.blocks.21.mlp.experts.5.weight, backbone.blocks.21.mlp.experts.5.bias, backbone.blocks.22.mlp.experts.0.weight, backbone.blocks.22.mlp.experts.0.bias, backbone.blocks.22.mlp.experts.1.weight, backbone.blocks.22.mlp.experts.1.bias, backbone.blocks.22.mlp.experts.2.weight, backbone.blocks.22.mlp.experts.2.bias, backbone.blocks.22.mlp.experts.3.weight, backbone.blocks.22.mlp.experts.3.bias, backbone.blocks.22.mlp.experts.4.weight, backbone.blocks.22.mlp.experts.4.bias, backbone.blocks.22.mlp.experts.5.weight, backbone.blocks.22.mlp.experts.5.bias, backbone.blocks.23.mlp.experts.0.weight, backbone.blocks.23.mlp.experts.0.bias, backbone.blocks.23.mlp.experts.1.weight, backbone.blocks.23.mlp.experts.1.bias, backbone.blocks.23.mlp.experts.2.weight, backbone.blocks.23.mlp.experts.2.bias, backbone.blocks.23.mlp.experts.3.weight, backbone.blocks.23.mlp.experts.3.bias, backbone.blocks.23.mlp.experts.4.weight, backbone.blocks.23.mlp.experts.4.bias, backbone.blocks.23.mlp.experts.5.weight, backbone.blocks.23.mlp.experts.5.bias, backbone.blocks.24.mlp.experts.0.weight, backbone.blocks.24.mlp.experts.0.bias, backbone.blocks.24.mlp.experts.1.weight, backbone.blocks.24.mlp.experts.1.bias, backbone.blocks.24.mlp.experts.2.weight, backbone.blocks.24.mlp.experts.2.bias, backbone.blocks.24.mlp.experts.3.weight, backbone.blocks.24.mlp.experts.3.bias, backbone.blocks.24.mlp.experts.4.weight, backbone.blocks.24.mlp.experts.4.bias, backbone.blocks.24.mlp.experts.5.weight, backbone.blocks.24.mlp.experts.5.bias, backbone.blocks.25.mlp.experts.0.weight, backbone.blocks.25.mlp.experts.0.bias, backbone.blocks.25.mlp.experts.1.weight, backbone.blocks.25.mlp.experts.1.bias, backbone.blocks.25.mlp.experts.2.weight, backbone.blocks.25.mlp.experts.2.bias, backbone.blocks.25.mlp.experts.3.weight, backbone.blocks.25.mlp.experts.3.bias, backbone.blocks.25.mlp.experts.4.weight, backbone.blocks.25.mlp.experts.4.bias, backbone.blocks.25.mlp.experts.5.weight, backbone.blocks.25.mlp.experts.5.bias, backbone.blocks.26.mlp.experts.0.weight, backbone.blocks.26.mlp.experts.0.bias, backbone.blocks.26.mlp.experts.1.weight, backbone.blocks.26.mlp.experts.1.bias, backbone.blocks.26.mlp.experts.2.weight, backbone.blocks.26.mlp.experts.2.bias, backbone.blocks.26.mlp.experts.3.weight, backbone.blocks.26.mlp.experts.3.bias, backbone.blocks.26.mlp.experts.4.weight, backbone.blocks.26.mlp.experts.4.bias, backbone.blocks.26.mlp.experts.5.weight, backbone.blocks.26.mlp.experts.5.bias, backbone.blocks.27.mlp.experts.0.weight, backbone.blocks.27.mlp.experts.0.bias, backbone.blocks.27.mlp.experts.1.weight, backbone.blocks.27.mlp.experts.1.bias, backbone.blocks.27.mlp.experts.2.weight, backbone.blocks.27.mlp.experts.2.bias, backbone.blocks.27.mlp.experts.3.weight, backbone.blocks.27.mlp.experts.3.bias, backbone.blocks.27.mlp.experts.4.weight, backbone.blocks.27.mlp.experts.4.bias, backbone.blocks.27.mlp.experts.5.weight, backbone.blocks.27.mlp.experts.5.bias, backbone.blocks.28.mlp.experts.0.weight, backbone.blocks.28.mlp.experts.0.bias, backbone.blocks.28.mlp.experts.1.weight, backbone.blocks.28.mlp.experts.1.bias, backbone.blocks.28.mlp.experts.2.weight, backbone.blocks.28.mlp.experts.2.bias, backbone.blocks.28.mlp.experts.3.weight, backbone.blocks.28.mlp.experts.3.bias, backbone.blocks.28.mlp.experts.4.weight, backbone.blocks.28.mlp.experts.4.bias, backbone.blocks.28.mlp.experts.5.weight, backbone.blocks.28.mlp.experts.5.bias, backbone.blocks.29.mlp.experts.0.weight, backbone.blocks.29.mlp.experts.0.bias, backbone.blocks.29.mlp.experts.1.weight, backbone.blocks.29.mlp.experts.1.bias, backbone.blocks.29.mlp.experts.2.weight, backbone.blocks.29.mlp.experts.2.bias, backbone.blocks.29.mlp.experts.3.weight, backbone.blocks.29.mlp.experts.3.bias, backbone.blocks.29.mlp.experts.4.weight, backbone.blocks.29.mlp.experts.4.bias, backbone.blocks.29.mlp.experts.5.weight, backbone.blocks.29.mlp.experts.5.bias, backbone.blocks.30.mlp.experts.0.weight, backbone.blocks.30.mlp.experts.0.bias, backbone.blocks.30.mlp.experts.1.weight, backbone.blocks.30.mlp.experts.1.bias, backbone.blocks.30.mlp.experts.2.weight, backbone.blocks.30.mlp.experts.2.bias, backbone.blocks.30.mlp.experts.3.weight, backbone.blocks.30.mlp.experts.3.bias, backbone.blocks.30.mlp.experts.4.weight, backbone.blocks.30.mlp.experts.4.bias, backbone.blocks.30.mlp.experts.5.weight, backbone.blocks.30.mlp.experts.5.bias, backbone.blocks.31.mlp.experts.0.weight, backbone.blocks.31.mlp.experts.0.bias, backbone.blocks.31.mlp.experts.1.weight, backbone.blocks.31.mlp.experts.1.bias, backbone.blocks.31.mlp.experts.2.weight, backbone.blocks.31.mlp.experts.2.bias, backbone.blocks.31.mlp.experts.3.weight, backbone.blocks.31.mlp.experts.3.bias, backbone.blocks.31.mlp.experts.4.weight, backbone.blocks.31.mlp.experts.4.bias, backbone.blocks.31.mlp.experts.5.weight, backbone.blocks.31.mlp.experts.5.bias
+
+Found existing frames for me 1, skipping extraction.
+Found existing frames for me 2, skipping extraction.
+Found existing frames for me 3, skipping extraction.
+Found existing frames for me 4, skipping extraction.
+
+Processing: /scratch/mthakur/manifold/data/images/me 3_frames/frame_000000.jpg
+/.venv/lib/python3.10/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1773311730.417709 1366815 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1773311730.554046 1367159 gl_context.cc:344] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 580.105.08), renderer: NVIDIA A100 80GB PCIe/PCIe/SSE2
+downsampling_factor=8.008955637613932
+cvimg.shape:  (1080, 1920, 3)
+keypoints_2d.shape:  (21, 3)
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+Handedness: [classification {
+  index: 1
+  score: 0.6322582960128784
+  label: "Right"
+}
+]
+downsampling_factor=8.008955637613932
+cvimg.shape:  (1080, 1920, 3)
+keypoints_2d.shape:  (21, 3)
+Handedness: [classification {
+  index: 1
+  score: 0.5574235916137695
+  label: "Right"
+}
+]
+Traceback (most recent call last):
+  File "<string>", line 21, in triton_cross_scan
+KeyError: ('2-.-0-.-0-d82511111ad128294e9d31a6ac684238-d6252949da17ceb5f3a278a70250af13-3b85c7bef5f0a641282f3b73af50f599-3d2aedeb40d6d81c66a42791e268f98b-3498c340fd4b6ee7805fd54b882a04f5-e1f133f98d04093da2078dfc51c36b72-b26258bf01f839199e39d64851821f26-d7c06e3b46e708006c15224aac7a1378-f585402118c8a136948ce0a49cfe122c', (torch.float32, torch.float32), (1, 16, 16, 1024, 16, 12, 1, 1), (True, True))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/scratch/mthakur/manifold/models/hamba/main.py", line 161, in <module>
+    main(parser.parse_args())
+  File "/scratch/mthakur/manifold/models/hamba/main.py", line 71, in main
+    results = run_hamba_inference(
+  File "/scratch/mthakur/manifold/models/hamba/inference.py", line 181, in run_hamba_inference
+    out = runtime.model(batch)
+  File "/.venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/scratch/mthakur/manifold/models/hamba/hamba/models/hamba.py", line 319, in forward
+    ret_output = self.forward_step(batch, train=False)
+  File "/scratch/mthakur/manifold/models/hamba/hamba/models/hamba.py", line 149, in forward_step
+    pred_mano_params, pred_cam, _ = self.initRegression(conditioning_feats)
+  File "/.venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/scratch/mthakur/manifold/models/hamba/hamba/models/heads/init_regression.py", line 89, in forward
+    x = self.dec_vssm(x)[-1]
+  File "/.venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/scratch/mthakur/manifold/models/hamba/hamba/models/backbones/vmamba/vmamba.py", line 1552, in forward
+    o, x = layer_forward(layer, x) # (B, H, W, C)
+  File "/scratch/mthakur/manifold/models/hamba/hamba/models/backbones/vmamba/vmamba.py", line 1542, in layer_forward
+    x = l.blocks(x)
+  File "/.venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/.venv/lib/python3.10/site-packages/torch/nn/modules/container.py", line 217, in forward
+    input = module(input)
+  File "/.venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/scratch/mthakur/manifold/models/hamba/hamba/models/backbones/vmamba/vmamba.py", line 1148, in forward
+    return self._forward(input)
+  File "/scratch/mthakur/manifold/models/hamba/hamba/models/backbones/vmamba/vmamba.py", line 1136, in _forward
+    x = x + self.drop_path(self.op(self.norm(x)))
+  File "/.venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/scratch/mthakur/manifold/models/hamba/hamba/models/backbones/vmamba/vmamba.py", line 732, in forwardv2
+    y = self.forward_core(x)
+  File "/scratch/mthakur/manifold/models/hamba/hamba/models/backbones/vmamba/vmamba.py", line 670, in forward_corev2
+    xs = CrossScan.apply(x)
+  File "/.venv/lib/python3.10/site-packages/torch/autograd/function.py", line 506, in apply
+    return super().apply(*args, **kwargs)  # type: ignore[misc]
+  File "/scratch/mthakur/manifold/models/hamba/hamba/models/backbones/vmamba/csm_triton.py", line 174, in forward
+    triton_cross_scan[(NH * NW, NC, B)](x, y, BC, BH, BW, C, H, W, NH, NW)
+  File "<string>", line 41, in triton_cross_scan
+  File "/.venv/lib/python3.10/site-packages/triton/compiler.py", line 1632, in compile
+    fn_cache_manager.put(json.dumps(metadata), f"{name}.json", binary=False)
+  File "/.venv/lib/python3.10/site-packages/triton/compiler.py", line 1345, in put
+    os.rename(filepath + ".tmp", filepath)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/mthakur/.triton/cache/ab39113ea4ef82fa36d3920287a57802/triton_cross_scan.json.tmp' -> '/home/mthakur/.triton/cache/ab39113ea4ef82fa36d3920287a57802/triton_cross_scan.json'
+srun: error: gpu019: task 0: Exited with exit code 1
+srun: launch/slurm: _step_signal: Terminating StepId=9336093.0
+===============================================
+Job finished at: Thu Mar 12 11:35:32 CET 2026
+Execution took 0.02 hours
+Writing output to SLURM_logs/hamba-inference_068.out
+===============================================
