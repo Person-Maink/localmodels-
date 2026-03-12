@@ -11,7 +11,7 @@
 
 #SBATCH --job-name=wilor-inference
 #SBATCH --partition=gpu-a100-small
-#SBATCH --time=00:08:27
+#SBATCH --time=00:31:25
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
@@ -63,13 +63,13 @@ echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
 
-mkdir -p /scratch/mthakur/manifold/data/images/120-2_clip_1frames
+mkdir -p /scratch/mthakur/manifold/data/images/me 4_frames
 
 srun apptainer exec \
   --nv \
   --bind /scratch:/scratch \
   /scratch/mthakur/manifold/models/wilor_hands/apptainer/template.sif \
-  python /scratch/mthakur/manifold/models/wilor_hands/main.py --video 120-2_clip_1
+  python /scratch/mthakur/manifold/models/wilor_hands/main.py --video "me 4"
 
 echo "==============================================="
 end_time=$(date +%s)

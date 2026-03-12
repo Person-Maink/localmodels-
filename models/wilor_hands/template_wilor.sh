@@ -63,13 +63,13 @@ echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
 
-mkdir -p /scratch/mthakur/manifold/data/images/__NAME__frames
+mkdir -p /scratch/mthakur/manifold/data/images/__NAME___frames
 
 srun apptainer exec \
   --nv \
   --bind /scratch:/scratch \
   /scratch/mthakur/manifold/models/wilor_hands/apptainer/template.sif \
-  python /scratch/mthakur/manifold/models/wilor_hands/main.py --video __NAME__
+  python /scratch/mthakur/manifold/models/wilor_hands/main.py --video "__NAME__"
 
 echo "==============================================="
 end_time=$(date +%s)

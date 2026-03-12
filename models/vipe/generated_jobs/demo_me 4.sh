@@ -1,25 +1,28 @@
 #!/bin/bash
+
 # ================ SLURM SETUP ================
+
 # Available HPC Partitions:
 #   compute / compute-p1   : CPU jobs (48 CPUs, 185 GB RAM, Phase 1)
 #   compute-p2             : CPU jobs (64 CPUs, 250 GB RAM, Phase 2)
 #   gpu / gpu-v100         : GPU jobs (4x V100, 32 GB VRAM each, Phase 1)
 #   gpu-a100               : GPU jobs (4x A100, 80 GB VRAM each, Phase 2)
-#   gpu-a100-small         : Small GPU jobs (≤1 GPU, ≤10 GB VRAM, ≤2 CPUs, ≤4h)
+#   gpu-a100-small         : Small GPU jobs (<=1 GPU, <=10 GB VRAM, <=2 CPUs, <=4h)
 #   memory                 : High-memory CPU jobs (>250 GB RAM)
 #   visual                 : Visualization jobs
 
-#SBATCH --job-name=wilor-inference
-#SBATCH --partition=gpu-a100-small
-#SBATCH --time=00:08:27
+#SBATCH --job-name=vipe-inference
+#SBATCH --partition=gpu-a100
+#SBATCH --time=00:05:17
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
-#SBATCH --mem-per-gpu=10G
+#SBATCH --mem-per-gpu=40G
 #SBATCH --account=Education-EEMCS-MSc-DSAIT
 #SBATCH --output=%x.out
 
 # ================ OUTPUT FILES ================
+
 # compute a small incremental index based on existing files
 base_name="${SLURM_JOB_NAME}"
 dir="SLURM_logs"
@@ -31,22 +34,17 @@ outfile="${dir}/${base_name}_${count}.out"
 exec >"$outfile" 2>&1
 
 # ================ SLURM SETUP ================
+
 # Load modules:
 module load 2024r1
-# module load miniconda3
-module load cuda/11.7
-#module load openmpi/4.1.4
-#module load py-torch/1.12.1
-#module load py-pip/22.2.2
-# module load py-numpy
-# module load py-pyyaml
-# module load py-tqdm
-# module load ffmpeg
+module load cuda/12.9
 
 # ================ CODE EXECUTION ================
+
 echo "Loaded modules:"
 module list 2>&1
 
+nvidia-smi
 
 echo "================ SLURM JOB INFO ================"
 echo "Job ID:         $SLURM_JOB_ID"
@@ -63,13 +61,20 @@ echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
 
-mkdir -p /scratch/mthakur/manifold/data/images/120-2_clip_1frames
+apptainer exec --nv \
+    --bind /scratch:/scratch \
+    --bind ~/.cache/torch:/home/mthakur/.cache/torch \
+    --bind ~/.cache/huggingface:/home/mthakur/.cache/huggingface \
+    /scratch/mthakur/manifold/models/vipe/apptainer/template.sif \
+    bash -c '/opt/conda/bin/conda run -n vipe vipe infer "/scratch/mthakur/manifold/data/images/me 4.mp4" --output /scratch/mthakur/manifold/outputs/vipe/ --pipeline no_vda'
 
-srun apptainer exec \
-  --nv \
-  --bind /scratch:/scratch \
-  /scratch/mthakur/manifold/models/wilor_hands/apptainer/template.sif \
-  python /scratch/mthakur/manifold/models/wilor_hands/main.py --video 120-2_clip_1
+# apptainer exec --nv \
+#     --bind /scratch/mthakur/manifold/data/:/data/ \
+#     --bind /scratch/mthakur/manifold/outputs/vipe/:/output/ \
+#     --bind ~/.cache/torch:/home/mthakur/.cache/torch \
+#     --bind ~/.cache/huggingface:/home/mthakur/.cache/huggingface \
+#     /scratch/mthakur/manifold/models/vipe/apptainer/template.sif \
+#     bash -c '/opt/conda/bin/conda run -n vipe vipe infer "data/me 4.mp4" --output /output/ --pipeline no_vda'
 
 echo "==============================================="
 end_time=$(date +%s)

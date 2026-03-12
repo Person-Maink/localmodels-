@@ -1,0 +1,35 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+================ SLURM JOB INFO ================
+Job ID:         9336088
+Job Name:       wilor-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Thu Mar 12 11:24:54 CET 2026
+===============================================
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+usage: main.py [-h] [--image_folder IMAGE_FOLDER]
+               [--output_folder OUTPUT_FOLDER]
+               [--rescale_factor RESCALE_FACTOR] [--video VIDEO] [--visualize]
+               [--save_mesh] [--use_gpu]
+main.py: error: unrecognized arguments: 4
+srun: error: gpu020: task 0: Exited with exit code 2
+srun: launch/slurm: _step_signal: Terminating StepId=9336088.0
+===============================================
+Job finished at: Thu Mar 12 11:25:11 CET 2026
+Execution took 0.00 hours
+Writing output to SLURM_logs/wilor-inference_079.out
+===============================================

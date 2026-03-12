@@ -1,3 +1,0 @@
-slurmstepd: error: Detected 1 oom-kill event(s) in StepId=9293861.batch. Some of your processes may have been killed by the cgroup out-of-memory handler.
-slurmstepd: error: Detected 1 oom-kill event(s) in StepId=9293860.batch. Some of your processes may have been killed by the cgroup out-of-memory handler.
-slurmstepd: error: Detected 1 oom-kill event(s) in StepId=9293862.batch. Some of your processes may have been killed by the cgroup out-of-memory handler.
