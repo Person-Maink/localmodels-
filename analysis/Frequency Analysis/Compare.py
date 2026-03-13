@@ -1,3 +1,4 @@
+import argparse
 import pickle
 from functools import lru_cache
 from pathlib import Path
@@ -27,6 +28,7 @@ FPS = 30.0
 FILTER_ORDER = 3
 HIGHPASS_CUTOFF = 2.0
 LOWPASS_CUTOFF = 12.0
+DEFAULT_SLOT_NAMES = ("A", "B", "C")
 
 
 @lru_cache(maxsize=1)
@@ -55,6 +57,18 @@ def _default_source_b():
     if hasattr(CONFIG, "ANALYSIS_SOURCE_B"):
         return getattr(CONFIG, "ANALYSIS_SOURCE_B")
     return getattr(CONFIG, "MODEL_COMP", None)
+
+
+def _default_all_model_sources():
+    return [
+        getattr(CONFIG, "WILOR_ROOT", None),
+        getattr(CONFIG, "HAMBA_ROOT", None),
+        getattr(CONFIG, "MEDIAPIPE_ROOT", None),
+    ]
+
+
+def _default_all_model_labels():
+    return ["WILOR", "HAMBA", "MEDIAPIPE"]
 
 
 def _source_kind(path_text):
@@ -177,55 +191,87 @@ def _analyze_source(source_path, hand_idx, wrist_joint_idx, j_reg):
     return _analyze_model(source_path, hand_idx, wrist_joint_idx, j_reg)
 
 
-def run_compare_analysis(config_overrides=None):
-    overrides = config_overrides or {}
+def _resolve_entries(overrides):
+    all_models = bool(overrides.get("all_models", False))
+    sources_override = overrides.get("sources", None)
+    labels_override = overrides.get("labels", None)
 
-    source_a = _normalize_optional_path(overrides.get("source_a", _default_source_a()))
-    source_b = _normalize_optional_path(overrides.get("source_b", _default_source_b()))
+    if sources_override is not None:
+        raw_sources = list(sources_override)
+    elif all_models:
+        raw_sources = _default_all_model_sources()
+    else:
+        raw_sources = [
+            overrides.get("source_a", _default_source_a()),
+            overrides.get("source_b", _default_source_b()),
+        ]
 
-    if source_a is None and source_b is None:
+    sources = [_normalize_optional_path(source) for source in raw_sources]
+    sources = [source for source in sources if source is not None]
+    if not sources:
         raise ValueError(
-            "Both analysis sources are None. Set ANALYSIS_SOURCE_A and/or ANALYSIS_SOURCE_B in FILENAME.py."
+            "No analysis sources resolved. Set ANALYSIS_SOURCE_A/B in FILENAME.py, "
+            "pass explicit sources, or use --all-models with configured WILOR/HAMBA/MEDIAPIPE roots."
         )
 
+    if labels_override is not None:
+        if len(labels_override) != len(raw_sources):
+            raise ValueError("labels length must match sources length when both are provided.")
+        raw_labels = list(labels_override)
+    elif all_models and sources_override is None:
+        raw_labels = _default_all_model_labels()
+    else:
+        raw_labels = []
+        if len(raw_sources) >= 1:
+            raw_labels.append(
+                overrides.get("label_a") or getattr(CONFIG, "ANALYSIS_LABEL_A", None) or _infer_label(raw_sources[0], "Source A")
+            )
+        if len(raw_sources) >= 2:
+            raw_labels.append(
+                overrides.get("label_b") or getattr(CONFIG, "ANALYSIS_LABEL_B", None) or _infer_label(raw_sources[1], "Source B")
+            )
+        for idx in range(2, len(raw_sources)):
+            raw_labels.append(_infer_label(raw_sources[idx], f"Source {idx + 1}"))
+
+    entries = []
+    for idx, source in enumerate(raw_sources):
+        normalized = _normalize_optional_path(source)
+        if normalized is None:
+            continue
+        label = raw_labels[idx] if idx < len(raw_labels) else None
+        entries.append(
+            {
+                "slot": DEFAULT_SLOT_NAMES[idx] if idx < len(DEFAULT_SLOT_NAMES) else f"S{idx + 1}",
+                "source": normalized,
+                "kind": _source_kind(normalized),
+                "label": label or _infer_label(normalized, f"Source {idx + 1}"),
+            }
+        )
+    return entries
+
+
+def run_compare_analysis(config_overrides=None):
+    overrides = config_overrides or {}
+    entries = _resolve_entries(overrides)
     hand_idx = int(overrides.get("hand_idx", CONFIG.HAND_IDX))
     wrist_joint_idx = int(overrides.get("wrist_joint_idx", CONFIG.WRIST_JOINT_IDX))
 
     j_reg = None
-    if (source_a is not None and _source_kind(source_a) == "model") or (
-        source_b is not None and _source_kind(source_b) == "model"
-    ):
+    if any(entry["kind"] == "model" for entry in entries):
         try:
             j_reg = _load_j_regressor(str(CONFIG.MANO_RIGHT_PATH))
         except ModuleNotFoundError as exc:
             raise ModuleNotFoundError(
                 "Model analysis needs MANO pickle dependencies (missing module while loading MANO_RIGHT_PATH). "
-                "Install the missing module (commonly 'chumpy') or switch ANALYSIS_SOURCE_A/B to MediaPipe CSV inputs."
+                "Install the missing module (commonly 'chumpy') or switch sources to MediaPipe CSV inputs."
             ) from exc
 
-    entries = []
-
-    if source_a is not None:
-        label_a = overrides.get("label_a") or getattr(CONFIG, "ANALYSIS_LABEL_A", None) or _infer_label(source_a, "Source A")
-        entries.append(
+    resolved_entries = []
+    for entry in entries:
+        resolved_entries.append(
             {
-                "slot": "A",
-                "source": source_a,
-                "kind": _source_kind(source_a),
-                "label": label_a,
-                "result": _analyze_source(source_a, hand_idx, wrist_joint_idx, j_reg),
-            }
-        )
-
-    if source_b is not None:
-        label_b = overrides.get("label_b") or getattr(CONFIG, "ANALYSIS_LABEL_B", None) or _infer_label(source_b, "Source B")
-        entries.append(
-            {
-                "slot": "B",
-                "source": source_b,
-                "kind": _source_kind(source_b),
-                "label": label_b,
-                "result": _analyze_source(source_b, hand_idx, wrist_joint_idx, j_reg),
+                **entry,
+                "result": _analyze_source(entry["source"], hand_idx, wrist_joint_idx, j_reg),
             }
         )
 
@@ -233,7 +279,7 @@ def run_compare_analysis(config_overrides=None):
         "analysis": "compare",
         "hand_idx": hand_idx,
         "wrist_joint_idx": wrist_joint_idx,
-        "entries": entries,
+        "entries": resolved_entries,
     }
 
 
@@ -299,7 +345,11 @@ def build_compare_figure(analysis_data, figsize_inches=(13, 11), dpi=100):
 
 
 def main():
-    analysis_data = run_compare_analysis()
+    parser = argparse.ArgumentParser(description="Compare frequency analyses across configured sources.")
+    parser.add_argument("--all-models", action="store_true", help="Compare WiLoR, Hamba, and MediaPipe together.")
+    args = parser.parse_args()
+
+    analysis_data = run_compare_analysis({"all_models": args.all_models})
     fig = build_compare_figure(analysis_data)
     plt.show()
     plt.close(fig)

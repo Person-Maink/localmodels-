@@ -30,8 +30,8 @@ def _normalize_optional_path(value):
 def _resolve_source():
     return _normalize_optional_path(
         getattr(CONFIG, "FREE_SOURCE", None)
-        or getattr(CONFIG, "MODEL_COMP", None)
         or getattr(CONFIG, "MODEL_ROOT", None)
+        or getattr(CONFIG, "MODEL_COMP", None)
         or getattr(CONFIG, "MEDIAPIPE_ROOT", None)
     )
 
@@ -178,6 +178,7 @@ def _load_frames_from_mediapipe(csv_path):
 
 def main():
     source_path = _resolve_source()
+    print(source_path)
     if source_path is None:
         raise RuntimeError(
             "No source configured. Set FREE_SOURCE (or MODEL_COMP/MODEL_ROOT/MEDIAPIPE_ROOT) in FILENAME.py."

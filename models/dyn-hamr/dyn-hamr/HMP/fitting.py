@@ -725,162 +725,106 @@ def multi_stage_opt(opt, device, obs_data, res_dict, hand_model, config_f, exp_s
     P_list = []
     Be_list = []
     DR_list = []
+    clip_len = args.data.clip_length
+
+    def pad_chunk(arr, target_len):
+        if arr.shape[0] == target_len:
+            return arr
+        pad_repeat = target_len - arr.shape[0]
+        if pad_repeat < 0:
+            raise ValueError(f'Cannot pad array of length {arr.shape[0]} to shorter target {target_len}')
+        pad = np.repeat(arr[-1:], pad_repeat, axis=0)
+        return np.concatenate([arr, pad], axis=0)
+
     for idx in range(len(res_dict['pose_body'])):
 
         assert (res_dict['is_right'][idx] == (obs_data['is_right'][idx])).all()
         rhand_orient_padded, rhand_betas_padded, rhand_trans_padded, rhand_pose_padded, is_right = \
                             res_dict['root_orient'][idx], res_dict['betas'][idx], res_dict['trans'][idx], res_dict['pose_body'][idx], res_dict['is_right'][idx]
+        seq_len = rhand_pose_padded.shape[0]
+        seq_intervals = compute_seq_intervals(seq_len, clip_len, args.overlap_len) if seq_len > clip_len else [(0, seq_len)]
 
-        cam_center = torch.tensor(res_dict['intrins'][2:][None]).repeat(128, 1)  # (T, 2)
-        cam_f = torch.tensor(res_dict['intrins'][:2][None]).repeat(128, 1)  # (T, 2)
+        hand_R = []
+        hand_T = []
+        hand_P = []
+        hand_DR = []
 
-        init_dict = {
-                    "keyp2d": obs_data['joints2d'][idx],
-                    "betas": rhand_betas_padded,
-                    "trans": rhand_trans_padded,
-                    "root_orient": rhand_orient_padded,
-                    "poses": rhand_pose_padded.reshape(-1, 45),
-                    "cam_R": res_dict['cam_R'][idx],
-                    "cam_t": res_dict['cam_t'][idx],
-                    "img_dir":abs_video_path,
-                    "is_right": res_dict['is_right'][idx],
-                    "cam_f": cam_f,
-                    "cam_center": cam_center,
-                    'vis_mask': obs_data['vis_mask'][idx]
-                    }
+        for chunk_idx, (seq_s, seq_e) in enumerate(seq_intervals):
+            chunk_len = seq_e - seq_s
+            cam_center = torch.tensor(res_dict['intrins'][2:][None]).repeat(clip_len, 1)  # (T, 2)
+            cam_f = torch.tensor(res_dict['intrins'][:2][None]).repeat(clip_len, 1)  # (T, 2)
 
-        # save the results, expand the length by padding so that it matches the number of frames in the video
-        args.pkl_output_dir = os.path.join(args.save_path, "pkls")
-        os.makedirs(args.pkl_output_dir, exist_ok=True)
+            init_dict = {
+                        "keyp2d": pad_chunk(obs_data['joints2d'][idx][seq_s:seq_e], clip_len),
+                        "betas": rhand_betas_padded,
+                        "trans": pad_chunk(rhand_trans_padded[seq_s:seq_e], clip_len),
+                        "root_orient": pad_chunk(rhand_orient_padded[seq_s:seq_e], clip_len),
+                        "poses": pad_chunk(rhand_pose_padded[seq_s:seq_e].reshape(-1, 45), clip_len),
+                        "cam_R": pad_chunk(res_dict['cam_R'][idx][seq_s:seq_e], clip_len),
+                        "cam_t": pad_chunk(res_dict['cam_t'][idx][seq_s:seq_e], clip_len),
+                        "img_dir": abs_video_path,
+                        "is_right": pad_chunk(res_dict['is_right'][idx][seq_s:seq_e], clip_len),
+                        "cam_f": cam_f,
+                        "cam_center": cam_center,
+                        'vis_mask': pad_chunk(obs_data['vis_mask'][idx][seq_s:seq_e], clip_len)
+                        }
 
-        # run stage3 optimization
-        os.makedirs(args.save_path, exist_ok=True)
-        data = get_stage2_res(opt.paths.base_dir, device, init_dict, hand_model)
+            args.pkl_output_dir = os.path.join(args.save_path, "pkls")
+            os.makedirs(args.pkl_output_dir, exist_ok=True)
 
-        data['save_path'] =  os.path.join(args.save_path, 'pymaf_output.npz')
-        data['config_type'] = config_type
-        args.orig_seq_len = data['trans'].shape[0]
+            os.makedirs(args.save_path, exist_ok=True)
+            data = get_stage2_res(opt.paths.base_dir, device, init_dict, hand_model)
 
-        shutil.copy2(config_f, args.save_path)
+            data['save_path'] = os.path.join(args.save_path, 'pymaf_output.npz')
+            data['config_type'] = config_type
+            args.orig_seq_len = chunk_len
 
-        data['betas'] = data['betas'][None].repeat(128, 1)
+            shutil.copy2(config_f, args.save_path)
 
-        for k, v in data.items():
-            if k in IGNORE_KEYS:
-                continue
-            else:
-                if k == 'betas':
-                    print(k, v.shape)
-                if v.shape[0] > 128:
+            data['betas'] = data['betas'][None].repeat(clip_len, 1)
 
-                    # in case of batch optimization, we need to split the data into chunks of 128 frames
-                    if args.overlap_len > 0:
-                        # compute start and end indices
-                        seq_intervals = compute_seq_intervals(v.shape[0], 128, args.overlap_len)
-                        data_split = []
-                        for seq_s, seq_e in seq_intervals:
-                            data_split.append(v[seq_s:seq_e])
-                    else:
-                        data_split = list(torch.split(v, 128))
+            for k, v in data.items():
+                if k in IGNORE_KEYS:
+                    continue
+                data[k] = v.unsqueeze(0) if v.shape[0] == clip_len else torch.cat(
+                    [v, v[-1:].repeat_interleave(clip_len - v.shape[0], 0)]
+                ).unsqueeze(0)
 
-                    if data_split[-1].shape[0] == 128:
-                        data[k] = torch.stack(data_split, dim=0)
-                    else:
-                        pad_repeat = 128 - data_split[-1].shape[0]
-                        last_el = data_split[-1]
-                        last_el = torch.cat([last_el, last_el[-1:].repeat_interleave(pad_repeat, 0)])
-                        data_split[-1] = last_el
-                        data[k] = torch.stack(data_split, dim=0)
-                else:
-                    pad_repeat = 128 - v.shape[0]
-                    data[k] = torch.cat([v, v[-1:].repeat_interleave(pad_repeat, 0)]).unsqueeze(0) # BxTxJxD
+            args.data.clip_length = data['pos'].shape[1]
+            model.set_input(data)
 
-        args.data.clip_length = data['pos'].shape[1]
-        model.set_input(data)
+            target = dict()
+            target['pos'] = data['pos'].to(model.device)
+            target['rotmat'] = rotation_6d_to_matrix(data['global_xform'].to(model.device))
+            target['trans'] = data['trans'].to(model.device)
+            target['root_orient'] = data['root_orient'].to(model.device)
+            target['cam_R'] = data['cam_R'].to(model.device)
+            target['cam_t'] = data['cam_t'].to(model.device)
+            target['cam_f'] = data['cam_f'].to(model.device).squeeze(0)
+            target['cam_center'] = data['cam_center'].to(model.device).squeeze(0)
+            target['joints2d'] = data['joints2d'].to(model.device)
+            target['joints3d'] = data['joints3d'].to(model.device)
+            target['betas'] = data['betas'].to(model.device)
+            target['save_path'] = data['save_path']
+            target['config_type'] = data['config_type']
+            target['handedness'] = data['is_right']
+            target['vis_mask'] = data['vis_mask']
+            target['is_right'] = data['is_right']
 
-        target = dict()
-        target['pos'] = data['pos'].to(model.device)
-        target['rotmat'] = rotation_6d_to_matrix(data['global_xform'].to(model.device))
-        target['trans'] = data['trans'].to(model.device)
-        target['root_orient'] = data['root_orient'].to(model.device)
-        target['cam_R'] = data['cam_R'].to(model.device)
-        target['cam_t'] = data['cam_t'].to(model.device)
-        target['cam_f'] = data['cam_f'].to(model.device).squeeze(0)
-        target['cam_center'] = data['cam_center'].to(model.device).squeeze(0)
-        target['joints2d'] = data['joints2d'].to(model.device)
-        target['joints3d'] = data['joints3d'].to(model.device)
-        # target['verts3d'] = data['verts3d'].to(model.device)
-        target['betas'] = data['betas'].to(model.device)
-        target['save_path'] = data['save_path']
-        target['config_type'] = data['config_type']
-        target['handedness'] = data['is_right']
-        target['vis_mask'] = data['vis_mask']
-        target['is_right'] = data['is_right']
+            R, T, P, Be, DR = motion_reconstruction(hand_model, target, args.save_path, steps=[1.0], idx=idx)
 
-        ####################
-        # vis for debugging
-        # rhand_trans_padded = target['trans']
-        # rhand_orient_padded = matrix_to_axis_angle(rotation_6d_to_matrix(target['root_orient']))
-        # rhand_betas_padded = target['betas'][:, 0, ]
-        # is_right = target['is_right']
-        # rhand_pose_padded = fk.global_to_local(target['rotmat'].view(-1, HAND_JOINT_NUM, 3, 3))  # (B x T, J, 3, 3)
-        # rhand_pose_padded = rhand_pose_padded.view(1*args.nsubject, -1, HAND_JOINT_NUM, 3, 3) # (B x T, J, 3, 3)
-        # rhand_pose_padded = matrix_to_axis_angle(rhand_pose_padded)[:, :, 1:]
-        # print(rhand_pose_padded.shape)
+            keep_start = args.overlap_len if chunk_idx > 0 else 0
+            keep_start = min(keep_start, chunk_len)
+            hand_R.append(R[:, keep_start:chunk_len].detach().cpu().numpy())
+            hand_T.append(T[:, keep_start:chunk_len].detach().cpu().numpy())
+            hand_P.append(P[:, keep_start:chunk_len].detach().cpu().numpy())
+            hand_DR.append(DR[:, keep_start:chunk_len].detach().cpu().numpy())
 
-        # # print(rhand_trans_padded.shape, rhand_orient_padded.shape, rhand_pose_padded.reshape(1, 128, 45).shape, is_right.shape, rhand_betas_padded.shape)
-        # rh_mano_out = pred_mano(hand_model, rhand_trans_padded, rhand_orient_padded, rhand_pose_padded.reshape(1, 128, 45), is_right, rhand_betas_padded, only_right=False)
-
-        # joints3d_pred = rh_mano_out['joints3d'].view(1, 128, -1, 3)
-        # vertices_pred = rh_mano_out['verts3d'].view(1, 128, -1, 3)
-        # print(joints3d_pred.shape, vertices_pred.shape)
-
-        # cam_R = torch.tensor(res_dict['cam_R'][idx]).cuda()[None]
-        # cam_t = torch.tensor(res_dict['cam_t'][idx]).cuda()[None]
-        # cam_center = torch.tensor(res_dict['intrins'][2:][None]).repeat(128, 1).cuda()  # (T, 2)
-        # cam_f = torch.tensor(res_dict['intrins'][:2][None]).repeat(128, 1).cuda()  # (T, 2)
-
-        # print(joints3d_pred.shape, cam_R.shape, cam_t.shape, cam_f.shape, cam_center.shape)
-        # joints2d_pred = reproject(
-        #         joints3d_pred, cam_R, cam_t, cam_f, cam_center
-        #     )
-
-        # # 2d keypoints debugging.
-        # openpose_indices = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-        # gt_indices = openpose_indices
-        # num_hand = 1
-        # num_frames = joints2d_pred.shape[1]
-        # for x in range(num_frames):
-
-        #     vit_img = cv2.imread(f'/data/home/x/code/hand/Dyn-HaMR/test/images/dance_old/' + str(x+1).zfill(6) + '.jpg')
-        #     print(f'/data/home/x/code/hand/Dyn-HaMR/test/images/dance_old/' + str(x+1).zfill(6) + '.jpg')
-        #     all_vit_2d = joints2d_pred[:, x].detach().cpu().numpy() # observed_data["joints2d"][:, x].cpu().numpy()
-        #     v = np.ones((len(all_vit_2d), 21, 1))
-        #     all_vit_2d = np.concatenate((all_vit_2d, v), axis=-1)
-        #     for i in range(num_hand):
-        #         body_keypoints_2d = all_vit_2d[i, :21].copy()
-        #         for op, gt in zip(openpose_indices, gt_indices):
-        #             if all_vit_2d[i, gt, -1] > body_keypoints_2d[op, -1]:
-        #                 body_keypoints_2d[op] = all_vit_2d[i, gt]
-        #         vit_img = render_openpose(vit_img, body_keypoints_2d)
-        #     cv2.imwrite(f'/data/home/x/code/hand/Dyn-HaMR/' + str(x+1).zfill(6) + '.jpg', vit_img)
-
-        R, T, P, Be, DR = motion_reconstruction(hand_model, target, args.save_path, steps=[1.0], idx=idx)
-
-        # vis
-        is_right = target['is_right'].clone()
-        rh_mano_out = pred_mano(hand_model, T, R, P, is_right, Be, only_right=False)
-        joints3d_pred = rh_mano_out['joints3d'].view(1, 128, -1, 3)
-        vertices_pred = rh_mano_out['verts3d'].view(1, 128, -1, 3)
-        joints2d_pred = reproject(
-                joints3d_pred, target['cam_R'], target['cam_t'], target['cam_f'], target['cam_center']
-            )
-
-        R_list.append(R.detach().cpu().numpy())
-        T_list.append(T.detach().cpu().numpy())
-        P_list.append(P.detach().cpu().numpy())
+        R_list.append(np.concatenate(hand_R, axis=1))
+        T_list.append(np.concatenate(hand_T, axis=1))
+        P_list.append(np.concatenate(hand_P, axis=1))
         Be_list.append(Be.detach().cpu().numpy())
-        DR_list.append(DR.detach().cpu().numpy())
+        DR_list.append(np.concatenate(hand_DR, axis=1))
 
     save_keys = ['root_orient', 'trans', 'latent_pose', 'is_right', 'init_body_pose', 'world_scale', 'betas', 'pose_body', 'cam_R', 'cam_t', 'intrins']
     R_list = np.vstack(R_list)
@@ -892,7 +836,7 @@ def multi_stage_opt(opt, device, obs_data, res_dict, hand_model, config_f, exp_s
     res_dict['trans'] = T_list
     res_dict['latent_pose'] = P_list
     num_hands = len(P_list)
-    res_dict['pose_body'] = P_list.reshape(num_hands, 128, 15, 3)
+    res_dict['pose_body'] = P_list.reshape(num_hands, -1, 15, 3)
     res_dict['betas'] = Be_list
     res_dict['decode_root'] = DR_list
     pred_save_path = os.path.join(args.save_path, os.path.basename(args.vid_path).split('.')[0] + f'_000000_world_results.npz')

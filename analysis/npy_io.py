@@ -1,5 +1,7 @@
 import glob
 import os
+import re
+from pathlib import Path
 
 import numpy as np
 
@@ -11,7 +13,7 @@ def list_frame_folders(root_dir):
 def load_wilor_record(npy_path):
     """
     Parse one WiLoR inference record saved as:
-      np.save(path, {"verts": verts, "cam_t": cam_t, "right": is_right})
+      np.save(path, {"verts": verts, "cam_t": cam_t, "right": is_right, ...})
     """
     arr = np.load(npy_path, allow_pickle=True)
 
@@ -25,12 +27,21 @@ def load_wilor_record(npy_path):
     verts = np.asarray(item["verts"], dtype=np.float32)
     cam_t = np.asarray(item.get("cam_t", [0.0, 0.0, 0.0]), dtype=np.float32).reshape(3)
     right = int(float(np.asarray(item.get("right", -1)).item()))
+    box_center = item.get("box_center", None)
+    box_size = item.get("box_size", None)
+
+    if box_center is not None:
+        box_center = np.asarray(box_center, dtype=np.float32).reshape(2)
+    if box_size is not None:
+        box_size = float(np.asarray(box_size, dtype=np.float32).reshape(()))
 
     return {
         "verts": verts,
         "cam_t": cam_t,
         "verts_world": verts + cam_t.reshape(1, 3),
         "right": right,
+        "box_center": box_center,
+        "box_size": box_size,
         "path": npy_path,
     }
 
@@ -49,6 +60,38 @@ def load_frame_records(frame_dir, pattern="*_verts.npy"):
         except Exception:
             continue
     return records
+
+
+def parse_frame_index(path):
+    path = Path(path)
+    for name in (path.name, path.parent.name):
+        match = re.match(r"frame_(\d+)$", name)
+        if match:
+            return int(match.group(1))
+    return -1
+
+
+def discover_frame_files(frames_root, frame_dirs_glob="frame_*", file_glob="*.npy"):
+    root = Path(frames_root)
+    if not root.exists():
+        raise FileNotFoundError(f"frames_root does not exist: {root}")
+
+    frame_dirs = [path for path in root.glob(frame_dirs_glob) if path.is_dir()]
+    frame_dirs = sorted(frame_dirs, key=lambda path: (parse_frame_index(path), path.name))
+
+    discovered = []
+    if frame_dirs:
+        for frame_dir in frame_dirs:
+            frame_idx = parse_frame_index(frame_dir)
+            for file_path in sorted(frame_dir.glob(file_glob)):
+                if file_path.is_file():
+                    discovered.append((frame_idx, file_path))
+    else:
+        for file_path in sorted(root.glob(file_glob)):
+            if file_path.is_file():
+                discovered.append((parse_frame_index(file_path), file_path))
+
+    return discovered
 
 
 def parse_obj_faces(obj_path):

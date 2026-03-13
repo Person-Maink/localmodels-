@@ -1,9 +1,12 @@
+import argparse
 import pickle
 from collections import deque
 from functools import lru_cache
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 from scipy.signal import butter, filtfilt, welch
 
 from _path_setup import PROJECT_ROOT  # ensures root imports work
@@ -26,6 +29,7 @@ np.inf = float("inf")
 LOWPASS_CUTOFF = 6.0
 FILTER_ORDER = 3
 FPS = 30.0
+DEFAULT_SLOT_NAMES = ("A", "B", "C")
 
 
 @lru_cache(maxsize=1)
@@ -59,17 +63,37 @@ def _default_source_b():
     return getattr(CONFIG, "MODEL_COMP", None)
 
 
+def _default_all_model_sources():
+    return [
+        getattr(CONFIG, "WILOR_ROOT", None),
+        getattr(CONFIG, "HAMBA_ROOT", None),
+        getattr(CONFIG, "MEDIAPIPE_ROOT", None),
+    ]
+
+
+def _default_all_model_labels():
+    return ["WILOR", "HAMBA", "MEDIAPIPE"]
+
+
 def _infer_label(root_dir, fallback):
     if root_dir is None:
         return fallback
 
-    root = str(root_dir)
-    parts = [p for p in root.split("/") if p]
-    if parts and parts[-1].lower() == "meshes" and len(parts) >= 2:
-        return parts[-2]
-    if parts:
-        return parts[-1]
+    path = Path(root_dir)
+    if path.suffix.lower() == ".csv":
+        return path.stem
+    if path.name.lower() in {"meshes", "mesh", "npy"} and path.parent.name:
+        return path.parent.name
+    if path.name:
+        return path.name
     return fallback
+
+
+def _source_kind(path_text):
+    path = Path(path_text)
+    if path.suffix.lower() == ".csv":
+        return "mediapipe"
+    return "model"
 
 
 def _validate_config_indices(total_verts, seed_a, seed_b, n_neighbors):
@@ -81,6 +105,15 @@ def _validate_config_indices(total_verts, seed_a, seed_b, n_neighbors):
         raise ValueError("MODEL_SPECIFIC_VERTEX_A and MODEL_SPECIFIC_VERTEX_B must be different")
     if n_neighbors <= 0:
         raise ValueError(f"N_NEIGHBORS must be > 0, got {n_neighbors}")
+
+
+def _validate_mediapipe_indices(point_a, point_b):
+    if point_a < 0:
+        raise ValueError(f"MEDIAPIPE_POINT_COORD_A must be >= 0, got {point_a}")
+    if point_b < 0:
+        raise ValueError(f"MEDIAPIPE_POINT_COORD_B must be >= 0, got {point_b}")
+    if point_a == point_b:
+        raise ValueError("MEDIAPIPE_POINT_COORD_A and MEDIAPIPE_POINT_COORD_B must be different")
 
 
 def _build_vertex_adjacency(total_verts, tri_faces):
@@ -131,12 +164,39 @@ def _lowpass_filter(signal, fs, cutoff, order):
     return filtfilt(b, a, signal, axis=0)
 
 
-def _analyze_source(root_dir, j_reg, region_a, region_b, n_verts, hand_idx, wrist_joint_idx):
-    if str(root_dir).lower().endswith(".csv"):
-        raise ValueError(
-            f"Point-to-point requires model mesh sources, got CSV input: {root_dir}."
-        )
+def _finish_analysis(trajectory):
+    trajectory = np.stack(trajectory, axis=0)
+    filtered = _lowpass_filter(
+        trajectory,
+        fs=FPS,
+        cutoff=LOWPASS_CUTOFF,
+        order=FILTER_ORDER,
+    )
 
+    magnitude = np.linalg.norm(filtered, axis=1)
+    magnitude -= magnitude.mean()
+
+    freqs, psd = welch(
+        magnitude,
+        fs=FPS,
+        nperseg=min(256, len(magnitude)),
+    )
+
+    dominant_freq = float(freqs[np.argmax(psd)])
+    rms_amplitude = float(np.sqrt(np.mean(magnitude**2)))
+
+    return {
+        "trajectory": trajectory,
+        "filtered": filtered,
+        "magnitude": magnitude,
+        "freqs": freqs,
+        "psd": psd,
+        "dominant": dominant_freq,
+        "rms": rms_amplitude,
+    }
+
+
+def _analyze_model(root_dir, j_reg, region_a, region_b, n_verts, hand_idx, wrist_joint_idx):
     frames = []
     for folder in list_frame_folders(root_dir):
         records = load_frame_records(folder)
@@ -188,96 +248,187 @@ def _analyze_source(root_dir, j_reg, region_a, region_b, n_verts, hand_idx, wris
             "Check hand side and input clip."
         )
 
-    trajectory = np.stack(trajectory, axis=0)
-    filtered = _lowpass_filter(
-        trajectory,
-        fs=FPS,
-        cutoff=LOWPASS_CUTOFF,
-        order=FILTER_ORDER,
+    print(f"Loaded {len(trajectory)} usable model frames for: {root_dir}")
+    return _finish_analysis(trajectory)
+
+
+def _analyze_mediapipe(csv_path, point_a, point_b, hand_idx):
+    hand_label = "Right" if int(hand_idx) == 1 else "Left"
+    df = pd.read_csv(csv_path)
+    hand_df = df[df["hand_id"] == hand_label]
+
+    if hand_df.empty:
+        raise ValueError(f"No usable MediaPipe records in '{csv_path}' for hand='{hand_label}'.")
+
+    available_joint_ids = set(hand_df["joint_id"].astype(int).unique().tolist())
+    missing = [joint_id for joint_id in (point_a, point_b) if joint_id not in available_joint_ids]
+    if missing:
+        missing_text = ", ".join(str(joint_id) for joint_id in missing)
+        raise ValueError(
+            f"MediaPipe point selector(s) {missing_text} not present in '{csv_path}' for hand='{hand_label}'."
+        )
+
+    trajectory = []
+    skipped_frames = 0
+
+    for frame_id in sorted(hand_df["frame_id"].unique()):
+        frame = hand_df[hand_df["frame_id"] == frame_id].sort_values("joint_id")
+        points = frame.set_index("joint_id")[["x", "y", "z"]]
+
+        if point_a not in points.index or point_b not in points.index:
+            skipped_frames += 1
+            continue
+
+        point_a_xyz = points.loc[point_a].to_numpy(dtype=float)
+        point_b_xyz = points.loc[point_b].to_numpy(dtype=float)
+        trajectory.append(point_a_xyz - point_b_xyz)
+
+    if not trajectory:
+        raise ValueError(
+            f"No usable MediaPipe frames in '{csv_path}' for hand='{hand_label}' "
+            f"with joint ids {point_a} and {point_b}."
+        )
+
+    print(
+        f"Loaded {len(trajectory)} usable MediaPipe frames for: {csv_path}"
+        + (f" (skipped {skipped_frames} incomplete frames)" if skipped_frames else "")
     )
+    return _finish_analysis(trajectory)
 
-    magnitude = np.linalg.norm(filtered, axis=1)
-    magnitude -= magnitude.mean()
 
-    freqs, psd = welch(
-        magnitude,
-        fs=FPS,
-        nperseg=min(256, len(magnitude)),
-    )
+def _analyze_source(
+    source_path,
+    hand_idx,
+    wrist_joint_idx,
+    j_reg=None,
+    region_a=None,
+    region_b=None,
+    n_verts=None,
+    mediapipe_point_a=None,
+    mediapipe_point_b=None,
+):
+    kind = _source_kind(source_path)
+    if kind == "mediapipe":
+        return _analyze_mediapipe(source_path, mediapipe_point_a, mediapipe_point_b, hand_idx)
+    return _analyze_model(source_path, j_reg, region_a, region_b, n_verts, hand_idx, wrist_joint_idx)
 
-    dominant_freq = float(freqs[np.argmax(psd)])
-    rms_amplitude = float(np.sqrt(np.mean(magnitude**2)))
 
-    return {
-        "trajectory": trajectory,
-        "filtered": filtered,
-        "magnitude": magnitude,
-        "freqs": freqs,
-        "psd": psd,
-        "dominant": dominant_freq,
-        "rms": rms_amplitude,
-    }
+def _resolve_entries(overrides):
+    all_models = bool(overrides.get("all_models", False))
+    sources_override = overrides.get("sources", None)
+    labels_override = overrides.get("labels", None)
+
+    if sources_override is not None:
+        raw_sources = list(sources_override)
+    elif all_models:
+        raw_sources = _default_all_model_sources()
+    else:
+        raw_sources = [
+            overrides.get("source_a", _default_source_a()),
+            overrides.get("source_b", _default_source_b()),
+        ]
+
+    normalized_sources = [_normalize_optional_path(source) for source in raw_sources]
+    if not any(source is not None for source in normalized_sources):
+        raise ValueError(
+            "No point-to-point sources resolved. Set POINT_SOURCE_A/B in FILENAME.py, "
+            "pass explicit sources, or use --all-models with configured WILOR/HAMBA/MEDIAPIPE roots."
+        )
+
+    if labels_override is not None:
+        if len(labels_override) != len(raw_sources):
+            raise ValueError("labels length must match sources length when both are provided.")
+        raw_labels = list(labels_override)
+    elif all_models and sources_override is None:
+        raw_labels = _default_all_model_labels()
+    else:
+        raw_labels = []
+        if len(raw_sources) >= 1:
+            raw_labels.append(
+                overrides.get("label_a") or getattr(CONFIG, "POINT_LABEL_A", None) or _infer_label(raw_sources[0], "Source A")
+            )
+        if len(raw_sources) >= 2:
+            raw_labels.append(
+                overrides.get("label_b") or getattr(CONFIG, "POINT_LABEL_B", None) or _infer_label(raw_sources[1], "Source B")
+            )
+        for idx in range(2, len(raw_sources)):
+            raw_labels.append(_infer_label(raw_sources[idx], f"Source {idx + 1}"))
+
+    entries = []
+    for idx, source in enumerate(normalized_sources):
+        if source is None:
+            continue
+        label = raw_labels[idx] if idx < len(raw_labels) else None
+        entries.append(
+            {
+                "slot": DEFAULT_SLOT_NAMES[idx] if idx < len(DEFAULT_SLOT_NAMES) else f"S{idx + 1}",
+                "source": source,
+                "kind": _source_kind(source),
+                "label": label or _infer_label(source, f"Source {idx + 1}"),
+            }
+        )
+    return entries
 
 
 def run_point_to_point_analysis(config_overrides=None):
     overrides = config_overrides or {}
-
-    source_a = _normalize_optional_path(overrides.get("source_a", _default_source_a()))
-    source_b = _normalize_optional_path(overrides.get("source_b", _default_source_b()))
-
-    if source_a is None and source_b is None:
-        raise ValueError(
-            "Both point-to-point sources are None. Set POINT_SOURCE_A and/or POINT_SOURCE_B in FILENAME.py."
-        )
+    entries = _resolve_entries(overrides)
 
     hand_idx = int(overrides.get("hand_idx", CONFIG.HAND_IDX))
     wrist_joint_idx = int(overrides.get("wrist_joint_idx", CONFIG.WRIST_JOINT_IDX))
     n_neighbors = int(overrides.get("n_neighbors", CONFIG.N_NEIGHBORS))
     vertex_a = int(overrides.get("vertex_a", CONFIG.MODEL_SPECIFIC_VERTEX_A))
     vertex_b = int(overrides.get("vertex_b", CONFIG.MODEL_SPECIFIC_VERTEX_B))
+    mediapipe_point_a = int(overrides.get("mediapipe_point_a", CONFIG.MEDIAPIPE_POINT_COORD_A))
+    mediapipe_point_b = int(overrides.get("mediapipe_point_b", CONFIG.MEDIAPIPE_POINT_COORD_B))
 
-    try:
-        j_reg, faces = _load_mano_assets(str(CONFIG.MANO_RIGHT_PATH))
-    except ModuleNotFoundError as exc:
-        raise ModuleNotFoundError(
-            "Point-to-point analysis needs MANO pickle dependencies (missing module while loading MANO_RIGHT_PATH). "
-            "Install the missing module (commonly 'chumpy')."
-        ) from exc
+    _validate_mediapipe_indices(mediapipe_point_a, mediapipe_point_b)
 
-    n_verts = int(j_reg.shape[1])
+    kinds = [entry["kind"] for entry in entries]
 
-    _validate_config_indices(n_verts, vertex_a, vertex_b, n_neighbors)
+    j_reg = None
+    n_verts = None
+    region_a = None
+    region_b = None
 
-    adjacency = _build_vertex_adjacency(n_verts, faces)
-    region_a = _build_region_indices(vertex_a, adjacency, n_neighbors)
-    region_b = _build_region_indices(vertex_b, adjacency, n_neighbors)
+    if "model" in kinds:
+        try:
+            j_reg, faces = _load_mano_assets(str(CONFIG.MANO_RIGHT_PATH))
+        except ModuleNotFoundError as exc:
+            raise ModuleNotFoundError(
+                "Point-to-point analysis needs MANO pickle dependencies for model sources "
+                "(missing module while loading MANO_RIGHT_PATH). Install the missing module "
+                "(commonly 'chumpy') or switch POINT_SOURCE_A/B to MediaPipe CSV inputs."
+            ) from exc
 
-    print(f"Using vertex A={vertex_a}, region size={len(region_a)}")
-    print(f"Using vertex B={vertex_b}, region size={len(region_b)}")
-    print(f"Region A indices: {region_a.tolist()}")
-    print(f"Region B indices: {region_b.tolist()}")
+        n_verts = int(j_reg.shape[1])
+        _validate_config_indices(n_verts, vertex_a, vertex_b, n_neighbors)
 
-    entries = []
+        adjacency = _build_vertex_adjacency(n_verts, faces)
+        region_a = _build_region_indices(vertex_a, adjacency, n_neighbors)
+        region_b = _build_region_indices(vertex_b, adjacency, n_neighbors)
 
-    if source_a is not None:
-        label_a = overrides.get("label_a") or getattr(CONFIG, "POINT_LABEL_A", None) or _infer_label(source_a, "Source A")
-        entries.append(
+        print(f"Using vertex A={vertex_a}, region size={len(region_a)}")
+        print(f"Using vertex B={vertex_b}, region size={len(region_b)}")
+        print(f"Region A indices: {region_a.tolist()}")
+        print(f"Region B indices: {region_b.tolist()}")
+
+    resolved_entries = []
+    for entry in entries:
+        resolved_entries.append(
             {
-                "slot": "A",
-                "source": source_a,
-                "label": label_a,
-                "result": _analyze_source(source_a, j_reg, region_a, region_b, n_verts, hand_idx, wrist_joint_idx),
-            }
-        )
-
-    if source_b is not None:
-        label_b = overrides.get("label_b") or getattr(CONFIG, "POINT_LABEL_B", None) or _infer_label(source_b, "Source B")
-        entries.append(
-            {
-                "slot": "B",
-                "source": source_b,
-                "label": label_b,
-                "result": _analyze_source(source_b, j_reg, region_a, region_b, n_verts, hand_idx, wrist_joint_idx),
+                **entry,
+                "result": _analyze_source(
+                    entry["source"],
+                    hand_idx,
+                    wrist_joint_idx,
+                    j_reg=j_reg,
+                    region_a=region_a,
+                    region_b=region_b,
+                    n_verts=n_verts,
+                    mediapipe_point_a=mediapipe_point_a,
+                    mediapipe_point_b=mediapipe_point_b,
+                ),
             }
         )
 
@@ -287,8 +438,10 @@ def run_point_to_point_analysis(config_overrides=None):
         "wrist_joint_idx": wrist_joint_idx,
         "vertex_a": vertex_a,
         "vertex_b": vertex_b,
+        "mediapipe_point_a": mediapipe_point_a,
+        "mediapipe_point_b": mediapipe_point_b,
         "n_neighbors": n_neighbors,
-        "entries": entries,
+        "entries": resolved_entries,
     }
 
 
@@ -348,7 +501,11 @@ def build_point_to_point_figure(analysis_data, figsize_inches=(12, 10), dpi=100)
 
 
 def main():
-    analysis_data = run_point_to_point_analysis()
+    parser = argparse.ArgumentParser(description="Run point-to-point frequency analysis across configured sources.")
+    parser.add_argument("--all-models", action="store_true", help="Compare WiLoR, Hamba, and MediaPipe together.")
+    args = parser.parse_args()
+
+    analysis_data = run_point_to_point_analysis({"all_models": args.all_models})
     fig = build_point_to_point_figure(analysis_data)
     plt.show()
     plt.close(fig)
