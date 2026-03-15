@@ -221,7 +221,11 @@ def get_stage2_res(base_dir, device, npz_init_dict, hand_model):
 
     pose = torch.from_numpy(np.asarray(data_poses, np.float32)).to(device)
     pose = pose.view(-1, 15 + 1, 3)  # axis-angle (T, J, 3)
-    assert len(pose) == 128
+    expected_len = int(args.data.clip_length)
+    if len(pose) != expected_len:
+        raise ValueError(
+            f"HMP prior expected a {expected_len}-frame chunk, but received {len(pose)} frames."
+        )
 
     trans = torch.from_numpy(np.asarray(cdata['trans'], np.float32)).to(device)  # global translation (T, 3)
 
@@ -725,7 +729,11 @@ def multi_stage_opt(opt, device, obs_data, res_dict, hand_model, config_f, exp_s
     P_list = []
     Be_list = []
     DR_list = []
-    clip_len = args.data.clip_length
+    # Use a fresh read of the HMP config here so chunking stays tied to the
+    # prior model's fixed clip length, even if the global args object changes later.
+    hmp_args = Arguments(opt.paths.base_dir, os.path.dirname(__file__), filename=opt.HMP.config)
+    clip_len = int(hmp_args.data.clip_length)
+    overlap_len = int(getattr(hmp_args, "overlap_len", 16))
 
     def pad_chunk(arr, target_len):
         if arr.shape[0] == target_len:
@@ -742,7 +750,11 @@ def multi_stage_opt(opt, device, obs_data, res_dict, hand_model, config_f, exp_s
         rhand_orient_padded, rhand_betas_padded, rhand_trans_padded, rhand_pose_padded, is_right = \
                             res_dict['root_orient'][idx], res_dict['betas'][idx], res_dict['trans'][idx], res_dict['pose_body'][idx], res_dict['is_right'][idx]
         seq_len = rhand_pose_padded.shape[0]
-        seq_intervals = compute_seq_intervals(seq_len, clip_len, args.overlap_len) if seq_len > clip_len else [(0, seq_len)]
+        seq_intervals = (
+            compute_seq_intervals(seq_len, clip_len, overlap_len)
+            if seq_len > clip_len
+            else [(0, seq_len)]
+        )
 
         hand_R = []
         hand_T = []
@@ -813,7 +825,7 @@ def multi_stage_opt(opt, device, obs_data, res_dict, hand_model, config_f, exp_s
 
             R, T, P, Be, DR = motion_reconstruction(hand_model, target, args.save_path, steps=[1.0], idx=idx)
 
-            keep_start = args.overlap_len if chunk_idx > 0 else 0
+            keep_start = overlap_len if chunk_idx > 0 else 0
             keep_start = min(keep_start, chunk_len)
             hand_R.append(R[:, keep_start:chunk_len].detach().cpu().numpy())
             hand_T.append(T[:, keep_start:chunk_len].detach().cpu().numpy())

@@ -11,14 +11,14 @@ optim:
     save_meshes: False
 
   root:
-    num_iters: 30
+    num_iters: 40
 
   smpl:
     num_iters: 0
 
   smooth:
     opt_scale: False
-    num_iters: 60
+    num_iters: 100
 
   motion_chunks:
     chunk_size: 10

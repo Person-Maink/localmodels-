@@ -11,9 +11,9 @@
 #   memory                 : High-memory CPU jobs (>250 GB RAM)
 #   visual                 : Visualization jobs
 
-#SBATCH --job-name=example
+#SBATCH --job-name=dynhamr-inference
 #SBATCH --partition=gpu-a100
-#SBATCH --time=00:45:00
+#SBATCH --time=01:30:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
@@ -86,19 +86,30 @@ echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
 
-# Assuming you have a dedicated directory for *.sif files
-export APPTAINER_IMAGE="/scratch/mthakur/manifold/models/dyn-hamr/apptainer/template.sif"
-# Run script
-# Note: There cannot be any characters incuding space behind the `\` symbol.
+PROJECT_ROOT="/scratch/mthakur/manifold"
+MODEL_ROOT="${PROJECT_ROOT}/models/dyn-hamr"
+DATA_ROOT="${PROJECT_ROOT}/data"
+OUTPUT_ROOT="${PROJECT_ROOT}/outputs/dynhamr"
+LOG_ROOT="${OUTPUT_ROOT}/logs"
+VIDEO_DIR="${VIDEO_DIR:-images}"
+VIDEO_NAME="${VIDEO_NAME:-clip_2}"
+VIDEO_EXT="${VIDEO_EXT:-mp4}"
+IS_STATIC="${IS_STATIC:-False}"
+RUN_PRIOR="${RUN_PRIOR:-True}"
+RUN_VIS="${RUN_VIS:-True}"
+START_IDX="${START_IDX:-0}"
+END_IDX="${END_IDX:--1}"
+ROOT_ITERS="${ROOT_ITERS:-40}"
+SMOOTH_ITERS="${SMOOTH_ITERS:-100}"
+DETECTRON2_CKPT="${DETECTRON2_CKPT:-/home/mthakur/.cache/torch/hub/detectron2/model_final_f05665.pkl}"
 
-VIDEO_NAME="clip_2"
-VIDEO_EXT="mp4"
-DATA_ROOT="/scratch/mthakur/manifold/data"
-VIDEO_DIR="images"
-IS_STATIC="False"
-DETECTRON2_CKPT="/home/mthakur/.cache/torch/hub/detectron2/model_final_f05665.pkl"
+# Assuming you have a dedicated directory for *.sif files
+export APPTAINER_IMAGE="${MODEL_ROOT}/apptainer/template.sif"
+
+mkdir -p "${OUTPUT_ROOT}" "${LOG_ROOT}"
 
 VIDEO_PATH="${DATA_ROOT}/${VIDEO_DIR}/${VIDEO_NAME}.${VIDEO_EXT}"
+HMP_FRAME_DIR="${DATA_ROOT}/images/${VIDEO_NAME}"
 if [[ ! -f "${VIDEO_PATH}" ]]; then
   echo "Video not found: ${VIDEO_PATH}" >&2
   exit 1
@@ -117,21 +128,25 @@ srun apptainer exec\
   --nv\
   --bind ~/.cache/torch:/home/mthakur/.cache/torch \
   --bind ~/.cache/huggingface:/home/mthakur/.cache/huggingface \
-  --bind "/scratch/mthakur/manifold/models/dyn-hamr:/scratch/mthakur/manifold/models/dyn-hamr"\
-  --bind "/scratch/mthakur/manifold/data:/scratch/mthakur/manifold/data"\
-  --bind "/scratch/mthakur/manifold/outputs/dynhamr/:/scratch/mthakur/manifold/outputs/dynhamr"\
+  --bind /scratch:/scratch \
   "${APPTAINER_IMAGE}"\
-  python -u dyn-hamr/run_opt.py \
+  python -u "${MODEL_ROOT}/dyn-hamr/run_opt.py" \
   data=video \
   run_opt=True \
-  run_vis=True \
+  "run_vis=${RUN_VIS}" \
+  "run_prior=${RUN_PRIOR}" \
   "data.root=${DATA_ROOT}" \
   "data.video_dir=${VIDEO_DIR}" \
   "data.seq=${VIDEO_NAME}" \
   "data.ext=${VIDEO_EXT}" \
   "data.src_path=${VIDEO_PATH}" \
+  "data.start_idx=${START_IDX}" \
+  "data.end_idx=${END_IDX}" \
   "is_static=${IS_STATIC}" \
-  log_root=outputs/logs
+  "HMP.vid_path=${HMP_FRAME_DIR}" \
+  "optim.root.num_iters=${ROOT_ITERS}" \
+  "optim.smooth.num_iters=${SMOOTH_ITERS}" \
+  "log_root=${LOG_ROOT}"
 
 echo "==============================================="
 end_time=$(date +%s)
