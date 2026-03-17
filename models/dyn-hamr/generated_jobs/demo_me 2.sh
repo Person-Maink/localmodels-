@@ -13,7 +13,7 @@
 
 #SBATCH --job-name=dynhamr-inference
 #SBATCH --partition=gpu-a100
-#SBATCH --time=__TIME__
+#SBATCH --time=01:20:38
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
@@ -70,8 +70,8 @@ DATA_ROOT="${PROJECT_ROOT}/data"
 OUTPUT_ROOT="${PROJECT_ROOT}/outputs/dynhamr"
 LOG_ROOT="${OUTPUT_ROOT}/logs"
 VIDEO_DIR="images"
-VIDEO_NAME="__NAME__"
-VIDEO_EXT="__VIDEO_EXT__"
+VIDEO_NAME="me 2"
+VIDEO_EXT="mp4"
 IS_STATIC="${IS_STATIC:-False}"
 RUN_PRIOR="${RUN_PRIOR:-False}"
 RUN_VIS="${RUN_VIS:-True}"
@@ -86,7 +86,7 @@ export APPTAINER_IMAGE="${MODEL_ROOT}/apptainer/template.sif"
 
 mkdir -p "${OUTPUT_ROOT}" "${LOG_ROOT}"
 
-VIDEO_PATH="${DATA_ROOT}/${VIDEO_DIR}/'${VIDEO_NAME}.${VIDEO_EXT}'"
+VIDEO_PATH="${DATA_ROOT}/${VIDEO_DIR}/${VIDEO_NAME}.${VIDEO_EXT}"
 HMP_FRAME_DIR="${DATA_ROOT}/images/${VIDEO_NAME}"
 if [[ ! -f "${VIDEO_PATH}" ]]; then
   echo "Video not found: ${VIDEO_PATH}" >&2

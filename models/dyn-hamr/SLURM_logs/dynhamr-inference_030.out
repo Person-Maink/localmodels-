@@ -1,0 +1,79 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1       6) python/3.10.13
+
+ 
+
+Tue Mar 17 14:51:28 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                    0 |
+| N/A   44C    P0             46W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9394870
+Job Name:       dynhamr-inference
+Partition:      gpu-a100
+Node List:      gpu019
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 24576
+Submit dir:     /scratch/mthakur/manifold/models/dyn-hamr
+Work dir:       /scratch/mthakur/manifold/models/dyn-hamr
+Job started at: Tue Mar 17 14:51:29 CET 2026
+===============================================
+Using video: /scratch/mthakur/manifold/data/images/163 (2) FU.MTS
+Using local Detectron2 checkpoint: /home/mthakur/.cache/torch/hub/detectron2/model_final_f05665.pkl
+Traceback (most recent call last):
+  File "/scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr/run_opt.py", line 207, in <module>
+    main()
+  File "/usr/local/lib/python3.10/dist-packages/hydra/main.py", line 94, in decorated_main
+    _run_hydra(
+  File "/usr/local/lib/python3.10/dist-packages/hydra/_internal/utils.py", line 394, in _run_hydra
+    _run_app(
+  File "/usr/local/lib/python3.10/dist-packages/hydra/_internal/utils.py", line 457, in _run_app
+    run_and_report(
+  File "/usr/local/lib/python3.10/dist-packages/hydra/_internal/utils.py", line 223, in run_and_report
+    raise ex
+  File "/usr/local/lib/python3.10/dist-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/usr/local/lib/python3.10/dist-packages/hydra/_internal/utils.py", line 458, in <lambda>
+    lambda: hydra.run(
+  File "/usr/local/lib/python3.10/dist-packages/hydra/_internal/hydra.py", line 105, in run
+    cfg = self.compose_config(
+  File "/usr/local/lib/python3.10/dist-packages/hydra/_internal/hydra.py", line 594, in compose_config
+    cfg = self.config_loader.load_configuration(
+  File "/usr/local/lib/python3.10/dist-packages/hydra/_internal/config_loader_impl.py", line 142, in load_configuration
+    return self._load_configuration_impl(
+  File "/usr/local/lib/python3.10/dist-packages/hydra/_internal/config_loader_impl.py", line 244, in _load_configuration_impl
+    parsed_overrides, caching_repo = self._parse_overrides_and_create_caching_repo(
+  File "/usr/local/lib/python3.10/dist-packages/hydra/_internal/config_loader_impl.py", line 228, in _parse_overrides_and_create_caching_repo
+    parsed_overrides = parser.parse_overrides(overrides=overrides)
+  File "/usr/local/lib/python3.10/dist-packages/hydra/core/override_parser/overrides_parser.py", line 96, in parse_overrides
+    raise OverrideParseException(
+hydra.errors.OverrideParseException: mismatched input ' (' expecting <EOF>
+See https://hydra.cc/docs/1.2/advanced/override_grammar/basic for details
+srun: error: gpu019: task 0: Exited with exit code 1
+srun: launch/slurm: _step_signal: Terminating StepId=9394870.0
+===============================================
+Job finished at: Tue Mar 17 14:51:38 CET 2026
+Execution took 0.00 hours
+Writing output to SLURM_logs/dynhamr-inference_030.out
+===============================================

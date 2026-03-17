@@ -1,0 +1,249 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1       6) python/3.10.13
+
+ 
+
+Tue Mar 17 14:28:03 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:2C:00.0 Off |                    0 |
+| N/A   36C    P0             44W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9394850
+Job Name:       dynhamr-inference
+Partition:      gpu-a100
+Node List:      gpu014
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 24576
+Submit dir:     /scratch/mthakur/manifold/models/dyn-hamr
+Work dir:       /scratch/mthakur/manifold/models/dyn-hamr
+Job started at: Tue Mar 17 14:28:04 CET 2026
+===============================================
+Using video: /scratch/mthakur/manifold/data/images/clip_2.mp4
+Using local Detectron2 checkpoint: /home/mthakur/.cache/torch/hub/detectron2/model_final_f05665.pkl
+run_opt.py:  {'data': {'type': 'video', 'split': 'custom', 'root': '/scratch/mthakur/manifold/data', 'video_dir': 'images', 'seq': 'clip_2', 'ext': 'mp4', 'src_path': '/scratch/mthakur/manifold/data/images/clip_2.mp4', 'frame_opts': {'ext': 'jpg', 'fps': 25, 'start_sec': 0, 'end_sec': -1}, 'use_cams': True, 'track_ids': 'all', 'shot_idx': 0, 'start_idx': 0, 'end_idx': -1, 'split_cameras': True, 'name': '${data.seq}-${data.track_ids}-shot-${data.shot_idx}-${data.start_idx}-${data.end_idx}', 'sources': {'images': '${data.root}/images/${data.seq}', 'cameras': '${data.root}/dynhamr/cameras/${data.seq}/shot-${data.shot_idx}', 'tracks': '${data.root}/dynhamr/track_preds/${data.seq}', 'shots': '${data.root}/dynhamr/shot_idcs/${data.seq}.json'}}, 'optim': {'options': {'robust_loss_type': 'bisquare', 'robust_tuning_const': 4.6851, 'joints2d_sigma': 100.0, 'lr': 1.0, 'lbfgs_max_iter': 20, 'save_every': 20, 'vis_every': -1, 'max_chunk_steps': 20, 'save_meshes': False}, 'root': {'num_iters': 40}, 'smpl': {'num_iters': 0}, 'smooth': {'opt_scale': False, 'num_iters': 60}, 'motion_chunks': {'chunk_size': 10, 'init_steps': 20, 'chunk_steps': 20, 'opt_cams': True}, 'loss_weights': {'penetration': [0, 0, 0], 'joints2d': [0.001, 0.001, 0.001], 'bg2d': [0.0, 0.0, 0.0], 'cam_R_smooth': [0.0, 0.0, 0.0], 'cam_t_smooth': [0.0, 0.0, 0.0], 'bio': [10, 10, 10], 'joints3d': [0.0, 0.0, 0.0], 'joints3d_smooth': [0.0, 1.0, 0.0], 'joints3d_rollout': [0.0, 0.0, 0.0], 'verts3d': [0.0, 0.0, 0.0], 'points3d': [0.0, 0.0, 0.0], 'pose_prior': [0.04, 0.04, 0.04], 'shape_prior': [0.05, 0.05, 0.05], 'motion_prior': [0.0, 0.0, 0.075], 'init_motion_prior': [0.0, 0.0, 0.075], 'joint_consistency': [0.0, 0.0, 100.0], 'bone_length': [0.0, 2000.0, 2000.0]}}, 'model': {'use_init': True, 'opt_cams': False, 'opt_scale': True, 'async_tracks': True}, 'overwrite': False, 'run_opt': True, 'run_vis': True, 'run_prior': False, 'datatype': '${data.video_dir}', 'vis': {'phases': ['smooth_fit', 'prior'], 'render_views': ['above', 'side', 'front'], 'make_grid': True, 'overwrite': False}, 'MANO': {'MODEL_PATH': '${paths.DATA_DIR}/mano', 'GENDER': 'neutral', 'NUM_HAND_JOINTS': 15, 'MEAN_PARAMS': '${paths.DATA_DIR}/mano_mean_params.npz', 'CREATE_BODY_POSE': False}, 'paths': {'base_dir': 'None', 'DATA_DIR': '_DATA/data/', 'vposer': 'VPoser/pretrained/Vposer_right_mirrored'}, 'HMP': {'config': 'hmp_config.yaml', 'use_hposer': False, 'vid_path': '/scratch/mthakur/manifold/data/images/clip_2', 'exp_name': 'None'}, 'fps': 30, 'log_root': '/scratch/mthakur/manifold/outputs/dynhamr/logs', 'log_dir': '${log_root}/${data.type}-${data.split}', 'exp_name': '${now:%Y-%m-%d}', 'temporal_smooth': False, 'gpu': 0, 'is_static': False}
+out_dir /scratch/mthakur/manifold/outputs/dynhamr/logs/video-custom/2026-03-17/clip_2-all-shot-0-0--1
+init SOURCES {'images': '${data.root}/images/${data.seq}', 'cameras': '${data.root}/dynhamr/cameras/${data.seq}/shot-${data.shot_idx}', 'tracks': '${data.root}/dynhamr/track_preds/${data.seq}', 'shots': '${data.root}/dynhamr/shot_idcs/${data.seq}.json'}
+SOURCES {'images': '/scratch/mthakur/manifold/data/images/clip_2', 'cameras': '/scratch/mthakur/manifold/data/dynhamr/cameras/clip_2/shot-0', 'tracks': '/scratch/mthakur/manifold/data/dynhamr/track_preds/clip_2', 'shots': '/scratch/mthakur/manifold/data/dynhamr/shot_idcs/clip_2.json'}
+DATA SOURCES {'images': '/scratch/mthakur/manifold/data/images/clip_2', 'cameras': '/scratch/mthakur/manifold/data/dynhamr/cameras/clip_2/shot-0', 'tracks': '/scratch/mthakur/manifold/data/dynhamr/track_preds/clip_2', 'shots': '/scratch/mthakur/manifold/data/dynhamr/shot_idcs/clip_2.json'}
+
+FOUND 519 FRAMES in /scratch/mthakur/manifold/data/images/clip_2
+FOUND TRACKS IN /scratch/mthakur/manifold/data/dynhamr/track_preds/clip_2
+FOUND CAMERAS IN /scratch/mthakur/manifold/data/dynhamr/cameras/clip_2/shot-0
+frame, hand track, slam camera:  0.009013175964355469 0.0027396678924560547 0.0016455650329589844
+end of check_data_sources, time:  0.013408660888671875
+FOUND 519/519 FRAMES FOR SHOT 0
+USING TOTAL 519 1440x1080 IMGS
+raw TRACK IDS and LENGTHS ['000', '001'] [519, 519]
+TRACK LENGTHS ['000', '001'] [519, 519]
+TRACK IDS ['000', '001']
+START 0 END 519
+SAVED TRACK INFO
+CUDA_VISIBLE_DEVICES 0
+0 519 0 519 (0, 519) (0, 519)
+Loading cameras from /scratch/mthakur/manifold/data/dynhamr/cameras/clip_2/shot-0/cameras.npz...
+Loaded 519 cameras
+Images have 1440x1080, intrins tensor([1260., 1260.,  720.,  540.])
+CAMERA DATA torch.Size([519, 3, 3]) torch.Size([519, 3]) tensor([1260., 1260.,  720.,  540.])
+2 000 torch.Size([519]) torch.Size([2])
+2 001 torch.Size([519]) torch.Size([2])
+Batch size (dataset_length), T (dataset.seq_len):  2 2 519
+OBS DATA dict_keys(['joints2d', 'init_body_pose', 'init_body_shape', 'init_root_orient', 'init_trans', 'is_right', 'vis_mask', 'seq_interval', 'track_interval', 'track_id', 'seq_name'])
+CAM DATA dict_keys(['cam_R', 'cam_t', 'intrins', 'static']) cam_R tensor([[[ 1.0000e+00,  3.2670e-04, -7.4587e-05],
+         [-3.2669e-04,  1.0000e+00,  1.2871e-04],
+         [ 7.4629e-05, -1.2868e-04,  1.0000e+00]],
+
+        [[ 1.0000e+00,  2.5892e-04,  1.3674e-04],
+         [-2.5890e-04,  1.0000e+00, -1.3933e-04],
+         [-1.3677e-04,  1.3929e-04,  1.0000e+00]],
+
+        [[ 1.0000e+00,  4.0957e-04, -1.1570e-04],
+         [-4.0959e-04,  1.0000e+00, -1.5876e-04],
+         [ 1.1563e-04,  1.5881e-04,  1.0000e+00]],
+
+        ...,
+
+        [[ 9.9999e-01, -3.3168e-03,  5.8943e-04],
+         [ 3.3201e-03,  9.9998e-01, -5.7245e-03],
+         [-5.7043e-04,  5.7265e-03,  9.9998e-01]],
+
+        [[ 9.9999e-01, -3.5188e-03,  5.4125e-04],
+         [ 3.5218e-03,  9.9998e-01, -5.6474e-03],
+         [-5.2137e-04,  5.6492e-03,  9.9998e-01]],
+
+        [[ 9.9999e-01, -3.5090e-03,  5.2366e-04],
+         [ 3.5118e-03,  9.9998e-01, -5.4693e-03],
+         [-5.0446e-04,  5.4711e-03,  9.9998e-01]]], device='cuda:0')
+dataset.py, cam2world:  tensor([[[ 1.0000e+00,  3.2670e-04, -7.4587e-05],
+         [-3.2669e-04,  1.0000e+00,  1.2871e-04],
+         [ 7.4629e-05, -1.2868e-04,  1.0000e+00]],
+
+        [[ 1.0000e+00,  2.5892e-04,  1.3674e-04],
+         [-2.5890e-04,  1.0000e+00, -1.3933e-04],
+         [-1.3677e-04,  1.3929e-04,  1.0000e+00]],
+
+        [[ 1.0000e+00,  4.0957e-04, -1.1570e-04],
+         [-4.0959e-04,  1.0000e+00, -1.5876e-04],
+         [ 1.1563e-04,  1.5881e-04,  1.0000e+00]],
+
+        ...,
+
+        [[ 9.9999e-01, -3.3168e-03,  5.8943e-04],
+         [ 3.3201e-03,  9.9998e-01, -5.7245e-03],
+         [-5.7043e-04,  5.7265e-03,  9.9998e-01]],
+
+        [[ 9.9999e-01, -3.5188e-03,  5.4125e-04],
+         [ 3.5218e-03,  9.9998e-01, -5.6474e-03],
+         [-5.2137e-04,  5.6492e-03,  9.9998e-01]],
+
+        [[ 9.9999e-01, -3.5090e-03,  5.2366e-04],
+         [ 3.5118e-03,  9.9998e-01, -5.4693e-03],
+         [-5.0446e-04,  5.4711e-03,  9.9998e-01]]])
+dataset.py, cam2world:  tensor([[[ 1.0000e+00, -3.2669e-04,  7.4629e-05],
+         [ 3.2670e-04,  1.0000e+00, -1.2868e-04],
+         [-7.4587e-05,  1.2871e-04,  1.0000e+00]],
+
+        [[ 1.0000e+00, -2.5890e-04, -1.3677e-04],
+         [ 2.5892e-04,  1.0000e+00,  1.3929e-04],
+         [ 1.3674e-04, -1.3933e-04,  1.0000e+00]],
+
+        [[ 1.0000e+00, -4.0959e-04,  1.1563e-04],
+         [ 4.0957e-04,  1.0000e+00,  1.5881e-04],
+         [-1.1570e-04, -1.5876e-04,  1.0000e+00]],
+
+        ...,
+
+        [[ 9.9999e-01,  3.3201e-03, -5.7043e-04],
+         [-3.3168e-03,  9.9998e-01,  5.7265e-03],
+         [ 5.8943e-04, -5.7245e-03,  9.9998e-01]],
+
+        [[ 9.9999e-01,  3.5218e-03, -5.2137e-04],
+         [-3.5188e-03,  9.9998e-01,  5.6492e-03],
+         [ 5.4125e-04, -5.6474e-03,  9.9998e-01]],
+
+        [[ 9.9999e-01,  3.5118e-03, -5.0446e-04],
+         [-3.5090e-03,  9.9998e-01,  5.4711e-03],
+         [ 5.2366e-04, -5.4693e-03,  9.9998e-01]]])
+OPT SCALE True
+RESOLVED PATHS {'base_dir': '/scratch/mthakur/manifold/models/dyn-hamr/None', 'DATA_DIR': '/scratch/mthakur/manifold/models/dyn-hamr/_DATA/data/', 'vposer': '/scratch/mthakur/manifold/models/dyn-hamr/VPoser/pretrained/Vposer_right_mirrored'}
+Loading pose prior from /scratch/mthakur/manifold/models/dyn-hamr/VPoser/pretrained/Vposer_right_mirrored
+RESOLVED PATHS {'base_dir': '/scratch/mthakur/manifold/models/dyn-hamr', 'DATA_DIR': '/scratch/mthakur/manifold/models/dyn-hamr/_DATA/data/', 'vposer': '/scratch/mthakur/manifold/models/dyn-hamr/VPoser/pretrained/Vposer_right_mirrored'}
+Loading hand model
+initializing MANO model with cfgs: {'model_path': '/scratch/mthakur/manifold/models/dyn-hamr/_DATA/data//mano', 'gender': 'neutral', 'num_hand_joints': 15, 'mean_params': '/scratch/mthakur/manifold/models/dyn-hamr/_DATA/data//mano_mean_params.npz', 'create_body_pose': False}
+!!!!!!!!!!!!!!!  /scratch/mthakur/manifold/models/dyn-hamr/_DATA/data//mano
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+USE INIT True
+OPT SCALE True
+OPT CAMERAS False
+Batch size:  2
+Initializing scene model with observed data
+SETTING PARAM world_scale torch.Size([1, 1])
+torch.Size([519, 3, 3]) torch.Size([2, 519, 3, 3])
+SETTING PARAM init_body_pose torch.Size([2, 519, 15, 3])
+SETTING PARAM latent_pose torch.Size([2, 519, 15, 3])
+SETTING PARAM betas torch.Size([2, 10])
+SETTING PARAM trans torch.Size([2, 519, 3])
+SETTING PARAM root_orient torch.Size([2, 519, 3])
+SETTING PARAM is_right torch.Size([2, 519])
+{'pose_body': (2, 519, 15, 3), 'trans': (2, 519, 3), 'root_orient': (2, 519, 3)}
+saving inputs to /scratch/mthakur/manifold/outputs/dynhamr/logs/video-custom/2026-03-17/clip_2-all-shot-0-0--1/hamer/clip_2_000000_phalp_world_results.npz
+go into get_optim_result from output.py save_initial_predictions
+running get_optim_result in base_scene.py...
+get_extrinsics
+saving initial results to /scratch/mthakur/manifold/outputs/dynhamr/logs/video-custom/2026-03-17/clip_2-all-shot-0-0--1/init/clip_2_000000_init_world_results.npz
+OPTIMIZER OPTIONS: {'robust_loss_type': 'bisquare', 'robust_tuning_const': 4.6851, 'joints2d_sigma': 100.0, 'lr': 1.0, 'lbfgs_max_iter': 20, 'save_every': 20, 'vis_every': -1, 'max_chunk_steps': 20, 'save_meshes': False}
+start optimization
+INITIALIZING OPTIMIZER root_fit for ['trans', 'root_orient']
+Set param names:
+['trans', 'root_orient']
+Set parameter grads:
+{'is_right': False, 'betas': False, 'trans': True, 'world_scale': False, 'latent_pose': False, 'init_body_pose': False, 'root_orient': True}
+Stage loss weights set to:
+{'penetration': 0, 'joints2d': 0.001, 'bg2d': 0.0, 'cam_R_smooth': 0.0, 'cam_t_smooth': 0.0, 'bio': 10, 'joints3d': 0.0, 'joints3d_smooth': 0.0, 'joints3d_rollout': 0.0, 'verts3d': 0.0, 'points3d': 0.0, 'pose_prior': 0.04, 'shape_prior': 0.05, 'motion_prior': 0.0, 'init_motion_prior': 0.0, 'joint_consistency': 0.0, 'bone_length': 0.0}
+{'ignore_op_joints': None, 'joints2d_sigma': 100.0, 'use_chamfer': False, 'robust_loss': 'bisquare', 'robust_tuning_const': 4.6851, 'faces': tensor([[  1,   2,   0],
+        [  0,   2,   3],
+        [  4,   5,   7],
+        ...,
+        [240, 266,   9],
+        [  9, 266,   8],
+        [  8, 266,  10]], device='cuda:0')}
+SEQ NAME clip_2 num_iters 40
+SETTING PARAM init_body_pose torch.Size([2, 519, 15, 3])
+SETTING PARAM world_scale torch.Size([1, 1])
+SETTING PARAM root_orient torch.Size([2, 519, 3])
+SETTING PARAM trans torch.Size([2, 519, 3])
+SETTING PARAM betas torch.Size([2, 10])
+SETTING PARAM is_right torch.Size([2, 519])
+SETTING PARAM latent_pose torch.Size([2, 519, 15, 3])
+Params loaded from /scratch/mthakur/manifold/outputs/dynhamr/logs/video-custom/2026-03-17/clip_2-all-shot-0-0--1/root_fit_params.pth
+Optimizer loaded from /scratch/mthakur/manifold/outputs/dynhamr/logs/video-custom/2026-03-17/clip_2-all-shot-0-0--1/root_fit_optim.pth at iter 40
+Current optimizer <optim.optimizers.RootOptimizer object at 0x1554b83ba050>
+Checkpoint at 40 >= 40, skipping
+{'opt_scale': False, 'num_iters': 60}
+root optimization time:  0.26861000061035156
+INITIALIZING OPTIMIZER smooth_fit for ['trans', 'root_orient', 'betas', 'latent_pose', 'world_scale']
+Set param names:
+['trans', 'root_orient', 'betas', 'latent_pose', 'world_scale']
+Set parameter grads:
+{'is_right': False, 'betas': True, 'trans': True, 'world_scale': True, 'latent_pose': True, 'init_body_pose': False, 'root_orient': True}
+Stage loss weights set to:
+{'penetration': 0, 'joints2d': 0.001, 'bg2d': 0.0, 'cam_R_smooth': 0.0, 'cam_t_smooth': 0.0, 'bio': 10, 'joints3d': 0.0, 'joints3d_smooth': 1.0, 'joints3d_rollout': 0.0, 'verts3d': 0.0, 'points3d': 0.0, 'pose_prior': 0.04, 'shape_prior': 0.05, 'motion_prior': 0.0, 'init_motion_prior': 0.0, 'joint_consistency': 0.0, 'bone_length': 2000.0}
+{'ignore_op_joints': None, 'joints2d_sigma': 100.0, 'use_chamfer': False, 'robust_loss': 'bisquare', 'robust_tuning_const': 4.6851, 'faces': tensor([[  1,   2,   0],
+        [  0,   2,   3],
+        [  4,   5,   7],
+        ...,
+        [240, 266,   9],
+        [  9, 266,   8],
+        [  8, 266,  10]], device='cuda:0')}
+SEQ NAME clip_2 num_iters 60
+SETTING PARAM init_body_pose torch.Size([2, 519, 15, 3])
+SETTING PARAM world_scale torch.Size([1, 1])
+SETTING PARAM root_orient torch.Size([2, 519, 3])
+SETTING PARAM trans torch.Size([2, 519, 3])
+SETTING PARAM betas torch.Size([2, 10])
+SETTING PARAM is_right torch.Size([2, 519])
+SETTING PARAM latent_pose torch.Size([2, 519, 15, 3])
+Params loaded from /scratch/mthakur/manifold/outputs/dynhamr/logs/video-custom/2026-03-17/clip_2-all-shot-0-0--1/smooth_fit_params.pth
+Optimizer loaded from /scratch/mthakur/manifold/outputs/dynhamr/logs/video-custom/2026-03-17/clip_2-all-shot-0-0--1/smooth_fit_optim.pth at iter 60
+Current optimizer <optim.optimizers.SmoothOptimizer object at 0x1554babdbfa0>
+Checkpoint at 60 >= 60, skipping
+Smooth optimization time:  0.6015036106109619
+prior optimization time:  6.198883056640625e-05
+OUT_DIR /scratch/mthakur/manifold/outputs/dynhamr/logs/video-custom/2026-03-17/clip_2-all-shot-0-0--1
+SAVE_DIR /scratch/mthakur/manifold/outputs/dynhamr/logs/video-custom/2026-03-17/clip_2-all-shot-0-0--1
+VISUALIZING PHASES ['smooth_fit', 'prior']
+RENDERING VIEWS ['above', 'side', 'front']
+OVERWRITE False
+[2026-03-17 14:28:38,376][imageio_ffmpeg][WARNING] - IMAGEIO FFMPEG_WRITER WARNING: input image is not divisible by macro_block_size=16, resizing from (1440, 1080) to (1440, 1088) to ensure video compatibility with most codecs and players. To prevent resizing, make your input image divisible by the macro_block_size or set the macro_block_size to 1 (risking incompatibility).
+SAVED 519 INPUT FRAMES TO /scratch/mthakur/manifold/outputs/dynhamr/logs/video-custom/2026-03-17/clip_2-all-shot-0-0--1/clip_2_input.mp4
+Keypoints already rendered in /scratch/mthakur/manifold/outputs/dynhamr/logs/video-custom/2026-03-17/clip_2-all-shot-0-0--1/clip_2_joints2d
+found 5 results in /scratch/mthakur/manifold/outputs/dynhamr/logs/video-custom/2026-03-17/clip_2-all-shot-0-0--1/smooth_fit
+FOUND 5 results in /scratch/mthakur/manifold/outputs/dynhamr/logs/video-custom/2026-03-17/clip_2-all-shot-0-0--1/smooth_fit
+FOUND OUT PATHS ['/scratch/mthakur/manifold/outputs/dynhamr/logs/video-custom/2026-03-17/clip_2-all-shot-0-0--1/clip_2_smooth_fit_final_000060_above.mp4', '/scratch/mthakur/manifold/outputs/dynhamr/logs/video-custom/2026-03-17/clip_2-all-shot-0-0--1/clip_2_smooth_fit_final_000060_side.mp4', '/scratch/mthakur/manifold/outputs/dynhamr/logs/video-custom/2026-03-17/clip_2-all-shot-0-0--1/clip_2_smooth_fit_final_000060_front.mp4']
+/scratch/mthakur/manifold/outputs/dynhamr/logs/video-custom/2026-03-17/clip_2-all-shot-0-0--1/prior does not exist, skipping
+Video grid created: /scratch/mthakur/manifold/outputs/dynhamr/logs/video-custom/2026-03-17/clip_2-all-shot-0-0--1/clip_2_smooth_fit_grid.mp4
+===============================================
+Job finished at: Tue Mar 17 14:29:09 CET 2026
+Execution took 0.02 hours
+Writing output to SLURM_logs/dynhamr-inference_010.out
+===============================================

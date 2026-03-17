@@ -1,0 +1,117 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1       6) python/3.10.13
+
+ 
+
+Tue Mar 17 14:50:45 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                    0 |
+| N/A   44C    P0             68W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9394869
+Job Name:       dynhamr-inference
+Partition:      gpu-a100
+Node List:      gpu019
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 24576
+Submit dir:     /scratch/mthakur/manifold/models/dyn-hamr
+Work dir:       /scratch/mthakur/manifold/models/dyn-hamr
+Job started at: Tue Mar 17 14:50:45 CET 2026
+===============================================
+Using video: /scratch/mthakur/manifold/data/images/124-6 DBS uit.MTS
+Using local Detectron2 checkpoint: /home/mthakur/.cache/torch/hub/detectron2/model_final_f05665.pkl
+run_opt.py:  {'data': {'type': 'video', 'split': 'custom', 'root': '/scratch/mthakur/manifold/data', 'video_dir': 'images', 'seq': '124-6 DBS uit', 'ext': 'MTS', 'src_path': '/scratch/mthakur/manifold/data/images/124-6 DBS uit.MTS', 'frame_opts': {'ext': 'jpg', 'fps': 25, 'start_sec': 0, 'end_sec': -1}, 'use_cams': True, 'track_ids': 'all', 'shot_idx': 0, 'start_idx': 0, 'end_idx': -1, 'split_cameras': True, 'name': '${data.seq}-${data.track_ids}-shot-${data.shot_idx}-${data.start_idx}-${data.end_idx}', 'sources': {'images': '${data.root}/images/${data.seq}', 'cameras': '${data.root}/dynhamr/cameras/${data.seq}/shot-${data.shot_idx}', 'tracks': '${data.root}/dynhamr/track_preds/${data.seq}', 'shots': '${data.root}/dynhamr/shot_idcs/${data.seq}.json'}}, 'optim': {'options': {'robust_loss_type': 'bisquare', 'robust_tuning_const': 4.6851, 'joints2d_sigma': 100.0, 'lr': 1.0, 'lbfgs_max_iter': 20, 'save_every': 20, 'vis_every': -1, 'max_chunk_steps': 20, 'save_meshes': False}, 'root': {'num_iters': 40}, 'smpl': {'num_iters': 0}, 'smooth': {'opt_scale': False, 'num_iters': 60}, 'motion_chunks': {'chunk_size': 10, 'init_steps': 20, 'chunk_steps': 20, 'opt_cams': True}, 'loss_weights': {'penetration': [0, 0, 0], 'joints2d': [0.001, 0.001, 0.001], 'bg2d': [0.0, 0.0, 0.0], 'cam_R_smooth': [0.0, 0.0, 0.0], 'cam_t_smooth': [0.0, 0.0, 0.0], 'bio': [10, 10, 10], 'joints3d': [0.0, 0.0, 0.0], 'joints3d_smooth': [0.0, 1.0, 0.0], 'joints3d_rollout': [0.0, 0.0, 0.0], 'verts3d': [0.0, 0.0, 0.0], 'points3d': [0.0, 0.0, 0.0], 'pose_prior': [0.04, 0.04, 0.04], 'shape_prior': [0.05, 0.05, 0.05], 'motion_prior': [0.0, 0.0, 0.075], 'init_motion_prior': [0.0, 0.0, 0.075], 'joint_consistency': [0.0, 0.0, 100.0], 'bone_length': [0.0, 2000.0, 2000.0]}}, 'model': {'use_init': True, 'opt_cams': False, 'opt_scale': True, 'async_tracks': True}, 'overwrite': False, 'run_opt': True, 'run_vis': True, 'run_prior': False, 'datatype': '${data.video_dir}', 'vis': {'phases': ['smooth_fit', 'prior'], 'render_views': ['above', 'side', 'front'], 'make_grid': True, 'overwrite': False}, 'MANO': {'MODEL_PATH': '${paths.DATA_DIR}/mano', 'GENDER': 'neutral', 'NUM_HAND_JOINTS': 15, 'MEAN_PARAMS': '${paths.DATA_DIR}/mano_mean_params.npz', 'CREATE_BODY_POSE': False}, 'paths': {'base_dir': 'None', 'DATA_DIR': '_DATA/data/', 'vposer': 'VPoser/pretrained/Vposer_right_mirrored'}, 'HMP': {'config': 'hmp_config.yaml', 'use_hposer': False, 'vid_path': '/scratch/mthakur/manifold/data/images/124-6 DBS uit', 'exp_name': 'None'}, 'fps': 30, 'log_root': '/scratch/mthakur/manifold/outputs/dynhamr/logs', 'log_dir': '${log_root}/${data.type}-${data.split}', 'exp_name': '${now:%Y-%m-%d}', 'temporal_smooth': False, 'gpu': 0, 'is_static': False}
+out_dir /scratch/mthakur/manifold/outputs/dynhamr/logs/video-custom/2026-03-17/124-6 DBS uit-all-shot-0-0--1
+init SOURCES {'images': '${data.root}/images/${data.seq}', 'cameras': '${data.root}/dynhamr/cameras/${data.seq}/shot-${data.shot_idx}', 'tracks': '${data.root}/dynhamr/track_preds/${data.seq}', 'shots': '${data.root}/dynhamr/shot_idcs/${data.seq}.json'}
+/scratch/mthakur/manifold/data/images/124-6 DBS uit does not exist
+/scratch/mthakur/manifold/data/dynhamr/cameras/124-6 DBS uit/shot-0 does not exist
+/scratch/mthakur/manifold/data/dynhamr/track_preds/124-6 DBS uit does not exist
+/scratch/mthakur/manifold/data/dynhamr/shot_idcs/124-6 DBS uit.json does not exist
+SOURCES {'images': '/scratch/mthakur/manifold/data/images/124-6 DBS uit', 'cameras': '/scratch/mthakur/manifold/data/dynhamr/cameras/124-6 DBS uit/shot-0', 'tracks': '/scratch/mthakur/manifold/data/dynhamr/track_preds/124-6 DBS uit', 'shots': '/scratch/mthakur/manifold/data/dynhamr/shot_idcs/124-6 DBS uit.json'}
+/scratch/mthakur/manifold/data/images/124-6 DBS uit does not exist
+/scratch/mthakur/manifold/data/dynhamr/cameras/124-6 DBS uit/shot-0 does not exist
+/scratch/mthakur/manifold/data/dynhamr/track_preds/124-6 DBS uit does not exist
+/scratch/mthakur/manifold/data/dynhamr/shot_idcs/124-6 DBS uit.json does not exist
+DATA SOURCES {'images': '/scratch/mthakur/manifold/data/images/124-6 DBS uit', 'cameras': '/scratch/mthakur/manifold/data/dynhamr/cameras/124-6 DBS uit/shot-0', 'tracks': '/scratch/mthakur/manifold/data/dynhamr/track_preds/124-6 DBS uit', 'shots': '/scratch/mthakur/manifold/data/dynhamr/shot_idcs/124-6 DBS uit.json'}
+
+EXTRACTING FRAMES FROM /scratch/mthakur/manifold/data/images/124-6 DBS uit.MTS TO /scratch/mthakur/manifold/data/images/124-6 DBS uit
+{'ext': 'jpg', 'fps': 25, 'start_sec': 0, 'end_sec': -1}
+processing /scratch/mthakur/manifold/data/images/124-6 DBS uit.MTS .....
+RUNNING HAMER ON /scratch/mthakur/manifold/data/images/124-6 DBS uit
+PROCESS MainProcess ()
+HAMER DIR /scratch/mthakur/manifold/models/dyn-hamr/third-party/hamer
+cd /scratch/mthakur/manifold/models/dyn-hamr/third-party/hamer; CUDA_VISIBLE_DEVICES=0 python -u run.py --img_folder /scratch/mthakur/manifold/data/images/124-6 DBS uit  --res_folder /scratch/mthakur/manifold/data/dynhamr/hamer_out/124-6 DBS uit/results/demo_124-6 DBS uit.pkl  --batch_size=48 --side_view --save_mesh --full_frame --type images --checkpoint /scratch/mthakur/manifold/models/dyn-hamr
+apex is not installed
+apex is not installed
+apex is not installed
+/usr/local/lib/python3.10/dist-packages/mmcv/cnn/bricks/transformer.py:27: UserWarning: Fail to import ``MultiScaleDeformableAttention`` from ``mmcv.ops.multi_scale_deform_attn``, You should install ``mmcv-full`` if you need this module. 
+  warnings.warn('Fail to import ``MultiScaleDeformableAttention`` from '
+usage: run.py [-h] [--checkpoint CHECKPOINT] [--img_folder IMG_FOLDER]
+              [--out_folder OUT_FOLDER] [--res_folder RES_FOLDER]
+              [--side_view] [--full_frame] [--save_mesh]
+              [--batch_size BATCH_SIZE] [--rescale_factor RESCALE_FACTOR]
+              [--file_type FILE_TYPE [FILE_TYPE ...]] [--conf CONF]
+              [--type TYPE] [--render]
+run.py: error: unrecognized arguments: DBS uit DBS uit/results/demo_124-6 DBS uit.pkl
+rename /scratch/mthakur/manifold/data/dynhamr/hamer_out/124-6 DBS uit/results/demo_124-6 DBS uit.pkl into  /scratch/mthakur/manifold/data/dynhamr/hamer_out/124-6 DBS uit/124-6 DBS uit.pkl
+Error executing job with overrides: ['data=video', 'run_opt=True', 'run_vis=True', 'run_prior=False', 'data.root=/scratch/mthakur/manifold/data', 'data.video_dir=images', 'data.seq=124-6 DBS uit', 'data.ext=MTS', 'data.src_path=/scratch/mthakur/manifold/data/images/124-6 DBS uit.MTS', 'data.start_idx=0', 'data.end_idx=-1', 'is_static=False', 'temporal_smooth=False', 'HMP.vid_path=/scratch/mthakur/manifold/data/images/124-6 DBS uit', 'optim.root.num_iters=40', 'optim.smooth.num_iters=60', 'log_root=/scratch/mthakur/manifold/outputs/dynhamr/logs']
+Traceback (most recent call last):
+  File "/scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr/run_opt.py", line 207, in <module>
+    main()
+  File "/usr/local/lib/python3.10/dist-packages/hydra/main.py", line 94, in decorated_main
+    _run_hydra(
+  File "/usr/local/lib/python3.10/dist-packages/hydra/_internal/utils.py", line 394, in _run_hydra
+    _run_app(
+  File "/usr/local/lib/python3.10/dist-packages/hydra/_internal/utils.py", line 457, in _run_app
+    run_and_report(
+  File "/usr/local/lib/python3.10/dist-packages/hydra/_internal/utils.py", line 223, in run_and_report
+    raise ex
+  File "/usr/local/lib/python3.10/dist-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/usr/local/lib/python3.10/dist-packages/hydra/_internal/utils.py", line 458, in <lambda>
+    lambda: hydra.run(
+  File "/usr/local/lib/python3.10/dist-packages/hydra/_internal/hydra.py", line 132, in run
+    _ = ret.return_value
+  File "/usr/local/lib/python3.10/dist-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+  File "/usr/local/lib/python3.10/dist-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+  File "/scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr/run_opt.py", line 190, in main
+    dataset = get_dataset_from_cfg(cfg)
+  File "/scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr/data/dataset.py", line 45, in get_dataset_from_cfg
+    check_data_sources(args, cfg)
+  File "/scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr/data/dataset.py", line 80, in check_data_sources
+    preprocess_tracks(cfg.datatype, args.sources.images, args.sources.tracks, args.sources.shots, gpu=cfg.gpu)
+  File "/scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr/data/vidproc.py", line 41, in preprocess_tracks
+    hamer.process_seq(
+  File "/scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr/preproc/launch_hamer.py", line 68, in process_seq
+    raise FileNotFoundError(
+FileNotFoundError: HaMeR did not produce /scratch/mthakur/manifold/data/dynhamr/hamer_out/124-6 DBS uit/results/demo_124-6 DBS uit.pkl. HaMeR exit code=2. Check the HaMeR traceback above. If network is blocked, set HAMER_DETECTRON2_CKPT to a local model_final_f05665.pkl path.
+srun: error: gpu019: task 0: Exited with exit code 1
+srun: launch/slurm: _step_signal: Terminating StepId=9394869.0
+===============================================
+Job finished at: Tue Mar 17 14:51:26 CET 2026
+Execution took 0.01 hours
+Writing output to SLURM_logs/dynhamr-inference_029.out
+===============================================
