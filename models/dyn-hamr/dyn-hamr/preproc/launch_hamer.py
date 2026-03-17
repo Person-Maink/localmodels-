@@ -1,4 +1,5 @@
 import os
+import shlex
 import subprocess
 import multiprocessing as mp
 from concurrent import futures
@@ -23,21 +24,30 @@ def launch_hamer(gpus, seq, img_dir, res_dir, name, datatype, overwrite=False):
     HAMER_DIR = SRC_DIR
     print("HAMER DIR", HAMER_DIR)
 
+    demo_res_path = os.path.join(res_dir, f"demo_{name}.pkl")
     cmd_args = [
-        f"cd {HAMER_DIR};",
-        f"CUDA_VISIBLE_DEVICES={gpu}",
-        "python -u run.py",
-        f"--img_folder {img_dir} ",
-        f"--res_folder {res_dir}/demo_{name}.pkl ",
-        f"--batch_size=48 --side_view --save_mesh --full_frame",
-        f"--type {datatype}",
-        f"--checkpoint {ROOT_DIR}"
+        "python",
+        "-u",
+        "run.py",
+        "--img_folder",
+        img_dir,
+        "--res_folder",
+        demo_res_path,
+        "--batch_size=48",
+        "--side_view",
+        "--save_mesh",
+        "--full_frame",
+        "--type",
+        datatype,
+        "--checkpoint",
+        ROOT_DIR,
         # "--render"
     ]
 
-    cmd = " ".join(cmd_args)
-    print(cmd)
-    return subprocess.call(cmd, shell=True)
+    print(f"cd {HAMER_DIR}; CUDA_VISIBLE_DEVICES={gpu} " + " ".join(shlex.quote(arg) for arg in cmd_args))
+    env = os.environ.copy()
+    env["CUDA_VISIBLE_DEVICES"] = str(gpu)
+    return subprocess.call(cmd_args, cwd=HAMER_DIR, env=env)
 
 
 def process_seq(
@@ -58,6 +68,7 @@ def process_seq(
     res_root = f"{out_root}/{out_name}/{seq}"
     os.makedirs(res_root, exist_ok=True)
     res_dir = os.path.join(res_root, "results")
+    os.makedirs(res_dir, exist_ok=True)
     res_path = f"{res_root}/{name}.pkl"
 
     if overwrite or not os.path.isfile(res_path):

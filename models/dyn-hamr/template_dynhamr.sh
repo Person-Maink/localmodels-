@@ -86,7 +86,7 @@ export APPTAINER_IMAGE="${MODEL_ROOT}/apptainer/template.sif"
 
 mkdir -p "${OUTPUT_ROOT}" "${LOG_ROOT}"
 
-VIDEO_PATH="${DATA_ROOT}/${VIDEO_DIR}/'${VIDEO_NAME}.${VIDEO_EXT}'"
+VIDEO_PATH="${DATA_ROOT}/${VIDEO_DIR}/${VIDEO_NAME}.${VIDEO_EXT}"
 HMP_FRAME_DIR="${DATA_ROOT}/images/${VIDEO_NAME}"
 if [[ ! -f "${VIDEO_PATH}" ]]; then
   echo "Video not found: ${VIDEO_PATH}" >&2
@@ -115,17 +115,17 @@ srun apptainer exec \
   "run_prior=${RUN_PRIOR}" \
   "data.root=${DATA_ROOT}" \
   "data.video_dir=${VIDEO_DIR}" \
-  "data.seq=${VIDEO_NAME}" \
+  "data.seq='${VIDEO_NAME}'" \
   "data.ext=${VIDEO_EXT}" \
-  "data.src_path=${VIDEO_PATH}" \
+  "data.src_path='${VIDEO_PATH}'" \
   "data.start_idx=${START_IDX}" \
   "data.end_idx=${END_IDX}" \
   "is_static=${IS_STATIC}" \
   "temporal_smooth=${TEMPORAL_SMOOTH}" \
-  "HMP.vid_path=${HMP_FRAME_DIR}" \
+  "HMP.vid_path='${HMP_FRAME_DIR}'" \
   "optim.root.num_iters=${ROOT_ITERS}" \
   "optim.smooth.num_iters=${SMOOTH_ITERS}" \
-  "log_root=${LOG_ROOT}"
+  "log_root='${LOG_ROOT}'"
 
 echo "==============================================="
 end_time=$(date +%s)

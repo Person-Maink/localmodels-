@@ -30,7 +30,8 @@ for video in "${videos[@]}"; do
         continue
     fi
 
-    job_script="$OUT_DIR/demo_${name}.sh"
+    safe_name=$(printf '%s\n' "$name" | tr ' /()' '_' | tr -cd '[:alnum:]_.-')
+    job_script="$OUT_DIR/demo_${safe_name}.sh"
 
     escaped_name=$(printf '%s\n' "$name" | sed 's/[&|]/\\&/g')
     escaped_ext=$(printf '%s\n' "$ext" | sed 's/[&|]/\\&/g')
