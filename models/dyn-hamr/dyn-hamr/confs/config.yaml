@@ -12,7 +12,7 @@ model:
 overwrite: False
 run_opt: True
 run_vis: True
-run_prior: True
+run_prior: False
 datatype: ${data.video_dir}
 vis:
   phases:
@@ -52,7 +52,7 @@ fps: 30
 log_root: ../../outputs/dynhamr/logs
 log_dir: ${log_root}/${data.type}-${data.split}
 exp_name: ${now:%Y-%m-%d}
-temporal_smooth: True
+temporal_smooth: False
 gpu: 0
 is_static: False
 

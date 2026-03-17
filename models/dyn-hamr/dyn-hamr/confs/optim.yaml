@@ -18,7 +18,7 @@ optim:
 
   smooth:
     opt_scale: False
-    num_iters: 100
+    num_iters: 60
 
   motion_chunks:
     chunk_size: 10
@@ -37,7 +37,7 @@ optim:
       #    cam_R_smooth : [0.0, 1000.0, 1000.0]
       #    cam_t_smooth : [0.0, 1000.0, 1000.0]
     joints3d: [0.0, 0.0, 0.0]
-    joints3d_smooth: [1.0, 10.0, 0.0] # raw: [1.0, 10.0, 0.0]
+    joints3d_smooth: [0.0, 1.0, 0.0] # lighter smoothing to preserve high-frequency motion
     joints3d_rollout: [0.0, 0.0, 0.0]
     verts3d: [0.0, 0.0, 0.0]
     points3d: [0.0, 0.0, 0.0]

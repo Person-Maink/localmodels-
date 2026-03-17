@@ -95,12 +95,13 @@ VIDEO_DIR="${VIDEO_DIR:-images}"
 VIDEO_NAME="${VIDEO_NAME:-clip_2}"
 VIDEO_EXT="${VIDEO_EXT:-mp4}"
 IS_STATIC="${IS_STATIC:-False}"
-RUN_PRIOR="${RUN_PRIOR:-True}"
+RUN_PRIOR="${RUN_PRIOR:-False}"
 RUN_VIS="${RUN_VIS:-True}"
+TEMPORAL_SMOOTH="${TEMPORAL_SMOOTH:-False}"
 START_IDX="${START_IDX:-0}"
 END_IDX="${END_IDX:--1}"
 ROOT_ITERS="${ROOT_ITERS:-40}"
-SMOOTH_ITERS="${SMOOTH_ITERS:-100}"
+SMOOTH_ITERS="${SMOOTH_ITERS:-60}"
 DETECTRON2_CKPT="${DETECTRON2_CKPT:-/home/mthakur/.cache/torch/hub/detectron2/model_final_f05665.pkl}"
 
 # Assuming you have a dedicated directory for *.sif files
@@ -143,6 +144,7 @@ srun apptainer exec\
   "data.start_idx=${START_IDX}" \
   "data.end_idx=${END_IDX}" \
   "is_static=${IS_STATIC}" \
+  "temporal_smooth=${TEMPORAL_SMOOTH}" \
   "HMP.vid_path=${HMP_FRAME_DIR}" \
   "optim.root.num_iters=${ROOT_ITERS}" \
   "optim.smooth.num_iters=${SMOOTH_ITERS}" \
