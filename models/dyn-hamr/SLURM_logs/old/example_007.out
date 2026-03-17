@@ -1,0 +1,39 @@
+
+The following have been reloaded with a version change:
+  1) python/3.10.12 => python/3.10.13
+
+Activated environment: /scratch/mthakur/Dyn-HaMR/.dynhamr
+Python version:
+Python 3.10.13
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7       7) python/3.10.13
+  2) DefaultModules   4) 2024r1       6) openmpi/4.1.6   8) py-pip/23.1.2
+
+ 
+
+================ SLURM JOB INFO ================
+Job ID:         8582223
+Job Name:       example
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Submit dir:     /scratch/mthakur/Dyn-HaMR
+Work dir:       /scratch/mthakur/Dyn-HaMR
+Job started at: Tue Nov 11 00:52:45 CET 2025
+===============================================
+/scratch/mthakur/Dyn-HaMR
+Traceback (most recent call last):
+  File "/scratch/mthakur/Dyn-HaMR/dyn-hamr/run_opt.py", line 51, in <module>
+    from HMP.fitting import run_prior
+  File "/scratch/mthakur/Dyn-HaMR/dyn-hamr/HMP/fitting.py", line 35, in <module>
+    from nemf.generative import Architecture
+  File "/scratch/mthakur/Dyn-HaMR/dyn-hamr/HMP/nemf/generative.py", line 10, in <module>
+    from human_body_prior.tools.omni_tools import copy2cpu as c2c
+ModuleNotFoundError: No module named 'human_body_prior'
+===============================================
+Job finished at: Tue Nov 11 00:52:52 CET 2025
+Writing output to SLURM_logs/example_007.out
+===============================================

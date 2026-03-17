@@ -1,0 +1,53 @@
+
+Lmod is automatically replacing "2023r1-gcc11" with "2024r1".
+
+
+Inactive Modules:
+  1) openmpi/4.1.4     2) python/3.10.8
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) gcc/11.3.0     2) ninja/1.11.1
+
+
+Activating Modules:
+  1) openmpi/4.1.6
+
+
+Activating Modules:
+  1) python/3.10.13
+
+[venv] Adjusting Python symlinks for this node...
+Activated environment: /scratch/mthakur/Dyn-HaMR/.dynhamr
+Python version:
+Python 3.10.13
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    4) 2024r1         7) openmpi/4.1.6
+  2) DefaultModules   5) ninja/1.11.1   8) python/3.10.13
+  3) gcc/11.3.0       6) cuda/11.7      9) py-pip/23.1.2
+
+ 
+
+================ SLURM JOB INFO ================
+Job ID:         8583435
+Job Name:       example
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Submit dir:     /scratch/mthakur/Dyn-HaMR
+Work dir:       /scratch/mthakur/Dyn-HaMR
+Job started at: Tue Nov 11 12:59:05 CET 2025
+===============================================
+/scratch/mthakur/Dyn-HaMR
+Traceback (most recent call last):
+  File "/scratch/mthakur/Dyn-HaMR/dyn-hamr/run_opt.py", line 51, in <module>
+    from HMP.fitting import run_prior
+  File "/scratch/mthakur/Dyn-HaMR/dyn-hamr/HMP/fitting.py", line 22, in <module>
+    from loguru import logger
+ModuleNotFoundError: No module named 'loguru'
+===============================================
+Job finished at: Tue Nov 11 13:00:30 CET 2025
+Writing output to SLURM_logs/example_011.out
+===============================================

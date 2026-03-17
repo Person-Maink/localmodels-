@@ -1,0 +1,69 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1       6) python/3.10.13
+
+ 
+
+Wed Dec 17 17:03:38 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:2C:00.0 Off |                   On |
+| N/A   38C    P0             44W /  300W |     249MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    7   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         8760821
+Job Name:       example
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/Dyn-HaMR
+Work dir:       /scratch/mthakur/Dyn-HaMR
+Job started at: Wed Dec 17 17:03:39 CET 2025
+===============================================
+WARNING: skipping mount of /scratch/mthakur/outputs: stat /scratch/mthakur/outputs: no such file or directory
+INFO:    Terminating squashfuse_ll after timeout
+INFO:    Timeouts can be caused by a running background process
+FATAL:   container creation failed: mount hook function failure: mount /scratch/mthakur/outputs->/scratch/mthakur/outputs error: while mounting /scratch/mthakur/outputs: mount source /scratch/mthakur/outputs doesn't exist
+srun: error: gpu020: task 0: Exited with exit code 255
+srun: launch/slurm: _step_signal: Terminating StepId=8760821.0
+WARNING: skipping mount of /scratch/mthakur/outputs: stat /scratch/mthakur/outputs: no such file or directory
+INFO:    Terminating squashfuse_ll after timeout
+INFO:    Timeouts can be caused by a running background process
+FATAL:   container creation failed: mount hook function failure: mount /scratch/mthakur/outputs->/scratch/mthakur/outputs error: while mounting /scratch/mthakur/outputs: mount source /scratch/mthakur/outputs doesn't exist
+srun: error: gpu020: task 0: Exited with exit code 255
+srun: launch/slurm: _step_signal: Terminating StepId=8760821.1
+===============================================
+Job finished at: Wed Dec 17 17:03:44 CET 2025
+Execution took 0.00 hours
+Writing output to SLURM_logs/example_087.out
+===============================================

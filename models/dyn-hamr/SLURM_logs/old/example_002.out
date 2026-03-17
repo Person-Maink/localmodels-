@@ -1,0 +1,54 @@
+[venv] Adjusting Python symlinks for this node...
+Activated environment: /scratch/mthakur/Dyn-HaMR/.dynhamr
+Python version:
+Python 3.10.13
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7       7) python/3.10.13
+  2) DefaultModules   4) 2024r1       6) openmpi/4.1.6   8) py-pip/23.1.2
+
+ 
+
+================ SLURM JOB INFO ================
+Job ID:         8581667
+Job Name:       example
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Submit dir:     /scratch/mthakur/Dyn-HaMR
+Work dir:       /scratch/mthakur/Dyn-HaMR
+Job started at: Mon Nov 10 20:08:40 CET 2025
+===============================================
+Traceback (most recent call last):
+  File "/scratch/mthakur/Dyn-HaMR/dyn-hamr/run_opt.py", line 12, in <module>
+    from data import get_dataset_from_cfg, expand_source_paths
+  File "/scratch/mthakur/Dyn-HaMR/dyn-hamr/data/__init__.py", line 1, in <module>
+    from .dataset import *
+  File "/scratch/mthakur/Dyn-HaMR/dyn-hamr/data/dataset.py", line 21, in <module>
+    from .vidproc import preprocess_cameras, preprocess_frames, preprocess_tracks
+  File "/scratch/mthakur/Dyn-HaMR/dyn-hamr/data/vidproc.py", line 5, in <module>
+    import preproc.launch_hamer as hamer
+  File "/scratch/mthakur/Dyn-HaMR/dyn-hamr/preproc/launch_hamer.py", line 6, in <module>
+    from preproc.datasets import update_args
+  File "/scratch/mthakur/Dyn-HaMR/dyn-hamr/preproc/datasets.py", line 3, in <module>
+    import pandas as pd
+  File "/scratch/mthakur/Dyn-HaMR/.dynhamr/lib/python3.10/site-packages/pandas/__init__.py", line 22, in <module>
+    from pandas.compat import is_numpy_dev as _is_numpy_dev
+  File "/scratch/mthakur/Dyn-HaMR/.dynhamr/lib/python3.10/site-packages/pandas/compat/__init__.py", line 14, in <module>
+    from pandas.compat.numpy import (
+  File "/scratch/mthakur/Dyn-HaMR/.dynhamr/lib/python3.10/site-packages/pandas/compat/numpy/__init__.py", line 4, in <module>
+    from pandas.util.version import Version
+  File "/scratch/mthakur/Dyn-HaMR/.dynhamr/lib/python3.10/site-packages/pandas/util/__init__.py", line 1, in <module>
+    from pandas.util._decorators import (  # noqa:F401
+  File "/scratch/mthakur/Dyn-HaMR/.dynhamr/lib/python3.10/site-packages/pandas/util/_decorators.py", line 14, in <module>
+    from pandas._libs.properties import cache_readonly  # noqa:F401
+  File "/scratch/mthakur/Dyn-HaMR/.dynhamr/lib/python3.10/site-packages/pandas/_libs/__init__.py", line 13, in <module>
+    from pandas._libs.interval import Interval
+  File "pandas/_libs/interval.pyx", line 1, in init pandas._libs.interval
+ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject
+===============================================
+Job finished at: Mon Nov 10 20:10:56 CET 2025
+Writing output to SLURM_logs/example_002.out
+===============================================
