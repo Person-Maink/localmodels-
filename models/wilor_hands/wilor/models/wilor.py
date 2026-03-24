@@ -5,12 +5,16 @@ from typing import Any, Dict, Mapping, Tuple
 from yacs.config import CfgNode
 
 # from ..utils import SkeletonRenderer, MeshRenderer
-from ..utils.geometry import aa_to_rotmat, perspective_projection
+from ..utils.geometry import (
+    aa_to_rotmat,
+    compute_full_image_camera_translation,
+    perspective_projection,
+)
 from ..utils.pylogger import get_pylogger
 from .backbones import create_backbone
 from .heads import RefineNet
 from .discriminator import Discriminator
-from .losses import Keypoint3DLoss, Keypoint2DLoss, ParameterLoss
+from .losses import CameraLoss, Keypoint3DLoss, Keypoint2DLoss, ParameterLoss
 from . import MANO
 
 log = get_pylogger(__name__)
@@ -46,6 +50,7 @@ class WiLoR(pl.LightningModule):
         self.keypoint_3d_loss = Keypoint3DLoss(loss_type='l1')
         self.keypoint_2d_loss = Keypoint2DLoss(loss_type='l1')
         self.mano_parameter_loss = ParameterLoss()
+        self.camera_parameter_loss = CameraLoss(loss_type='smooth_l1')
 
         # Instantiate MANO model
         mano_cfg = {k.lower(): v for k,v in dict(cfg.MANO).items()}
@@ -139,6 +144,19 @@ class WiLoR(pl.LightningModule):
         output['pred_cam_t'] = pred_cam_t
         output['focal_length'] = focal_length
 
+        if all(k in batch for k in ('box_center', 'box_size', 'img_size')):
+            pred_cam_t_full, scaled_focal_length = compute_full_image_camera_translation(
+                pred_cam,
+                batch['box_center'],
+                batch['box_size'],
+                batch['img_size'],
+                focal_length_base=self.cfg.EXTRA.FOCAL_LENGTH,
+                model_image_size=self.cfg.MODEL.IMAGE_SIZE,
+                right=batch.get('right'),
+            )
+            output['pred_cam_t_full'] = pred_cam_t_full
+            output['scaled_focal_length'] = scaled_focal_length
+
         # Compute model vertices, joints and the projected joints
         pred_mano_params['global_orient'] = pred_mano_params['global_orient'].reshape(batch_size, -1, 3, 3)
         pred_mano_params['hand_pose'] = pred_mano_params['hand_pose'].reshape(batch_size, -1, 3, 3)
@@ -199,9 +217,22 @@ class WiLoR(pl.LightningModule):
             has_gt = has_mano_params[k]
             loss_mano_params[k] = self.mano_parameter_loss(pred.reshape(batch_size, -1), gt.reshape(batch_size, -1), has_gt)
 
+        loss_camera_t_full = torch.zeros((), device=device, dtype=dtype)
+        if 'camera_target_t_full' in batch and 'pred_cam_t_full' in output:
+            has_camera = batch.get(
+                'camera_target_valid',
+                torch.ones(batch_size, device=device, dtype=dtype),
+            )
+            loss_camera_t_full = self.camera_parameter_loss(
+                output['pred_cam_t_full'].reshape(batch_size, -1),
+                batch['camera_target_t_full'].reshape(batch_size, -1),
+                has_camera,
+            )
+
         loss = self.cfg.LOSS_WEIGHTS['KEYPOINTS_3D'] * loss_keypoints_3d+\
                self.cfg.LOSS_WEIGHTS['KEYPOINTS_2D'] * loss_keypoints_2d+\
-               sum([loss_mano_params[k] * self.cfg.LOSS_WEIGHTS[k.upper()] for k in loss_mano_params])
+               sum([loss_mano_params[k] * self.cfg.LOSS_WEIGHTS[k.upper()] for k in loss_mano_params])+\
+               self.cfg.LOSS_WEIGHTS.get('CAMERA_T_FULL', 0.0) * loss_camera_t_full
 
 
         losses = dict(loss=loss.detach(),
@@ -210,6 +241,8 @@ class WiLoR(pl.LightningModule):
 
         for k, v in loss_mano_params.items():
             losses['loss_' + k] = v.detach()
+        if 'pred_cam_t_full' in output:
+            losses['loss_camera_t_full'] = loss_camera_t_full.detach()
 
         output['losses'] = losses
 

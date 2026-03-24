@@ -90,3 +90,31 @@ class ParameterLoss(nn.Module):
         has_param = has_param.type(pred_param.type()).view(*mask_dimension)
         loss_param = (has_param * self.loss_fn(pred_param, gt_param))
         return loss_param.sum()
+
+
+class CameraLoss(nn.Module):
+
+    def __init__(self, loss_type: str = 'l1'):
+        """
+        Camera translation loss with optional per-sample validity masking.
+        """
+        super(CameraLoss, self).__init__()
+        if loss_type == 'l1':
+            self.loss_fn = nn.L1Loss(reduction='none')
+        elif loss_type == 'l2':
+            self.loss_fn = nn.MSELoss(reduction='none')
+        elif loss_type == 'smooth_l1':
+            self.loss_fn = nn.SmoothL1Loss(reduction='none')
+        else:
+            raise NotImplementedError('Unsupported loss function')
+
+    def forward(
+        self,
+        pred_camera: torch.Tensor,
+        gt_camera: torch.Tensor,
+        has_camera: torch.Tensor,
+    ) -> torch.Tensor:
+        batch_size = pred_camera.shape[0]
+        mask = has_camera.type(pred_camera.type()).view(batch_size, 1)
+        loss_camera = mask * self.loss_fn(pred_camera, gt_camera)
+        return loss_camera.sum()

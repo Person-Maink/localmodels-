@@ -100,3 +100,66 @@ def perspective_projection(points: torch.Tensor,
     projected_points = torch.einsum('bij,bkj->bki', K, projected_points)
 
     return projected_points[:, :, :-1]
+
+
+def cam_crop_to_full(
+    cam_bbox: torch.Tensor,
+    box_center: torch.Tensor,
+    box_size: torch.Tensor,
+    img_size: torch.Tensor,
+    focal_length: torch.Tensor,
+) -> torch.Tensor:
+    """
+    Convert weak-perspective crop camera parameters to full-image translation.
+    Args:
+        cam_bbox (torch.Tensor): Tensor of shape (B, 3) with weak-perspective
+            camera parameters [scale, tx, ty].
+        box_center (torch.Tensor): Tensor of shape (B, 2) with bbox center.
+        box_size (torch.Tensor): Tensor of shape (B,) with square bbox size.
+        img_size (torch.Tensor): Tensor of shape (B, 2) with [width, height].
+        focal_length (torch.Tensor): Tensor of shape (B,) or (B, 2).
+    Returns:
+        torch.Tensor: Tensor of shape (B, 3) with full-image camera translation.
+    """
+    if focal_length.ndim == 2:
+        focal_length = focal_length[:, 0]
+    img_w, img_h = img_size[:, 0], img_size[:, 1]
+    cx, cy = box_center[:, 0], box_center[:, 1]
+    w_2, h_2 = img_w / 2.0, img_h / 2.0
+    bs = box_size * cam_bbox[:, 0] + 1e-9
+    tz = 2.0 * focal_length / bs
+    tx = (2.0 * (cx - w_2) / bs) + cam_bbox[:, 1]
+    ty = (2.0 * (cy - h_2) / bs) + cam_bbox[:, 2]
+    return torch.stack([tx, ty, tz], dim=-1)
+
+
+def compute_full_image_camera_translation(
+    pred_cam: torch.Tensor,
+    box_center: torch.Tensor,
+    box_size: torch.Tensor,
+    img_size: torch.Tensor,
+    focal_length_base: float,
+    model_image_size: int,
+    right: Optional[torch.Tensor] = None,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """
+    Convert WiLoR camera output to full-image translation using inference-time math.
+    Returns the translation and the scaled full-image focal length per sample.
+    """
+    pred_cam_full = pred_cam.clone()
+    if right is not None:
+        multiplier = 2.0 * right.float() - 1.0
+        pred_cam_full[:, 1] = multiplier * pred_cam_full[:, 1]
+
+    img_size_float = img_size.float()
+    scaled_focal_length = (
+        float(focal_length_base) / float(model_image_size) * img_size_float.max(dim=1).values
+    )
+    pred_cam_t_full = cam_crop_to_full(
+        pred_cam_full,
+        box_center.float(),
+        box_size.float(),
+        img_size_float,
+        scaled_focal_length,
+    )
+    return pred_cam_t_full, scaled_focal_length
