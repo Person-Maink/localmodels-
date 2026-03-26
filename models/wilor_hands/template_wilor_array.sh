@@ -19,7 +19,7 @@
 #SBATCH --mem-per-gpu=10G
 #SBATCH --account=Education-EEMCS-MSc-DSAIT
 #SBATCH --array=__ARRAY_SPEC__
-#SBATCH --output=%x_%A_%a.bootstrap.out
+#SBATCH --output=__BOOTSTRAP_LOG_DIR__/%x_%A_%a.bootstrap.out
 
 set -euo pipefail
 
@@ -46,10 +46,15 @@ fi
 # ================ OUTPUT FILES ================
 
 base_name="${SLURM_JOB_NAME}"
-dir="${SLURM_SUBMIT_DIR:-$(pwd)}/SLURM_logs"
+dir="__BOOTSTRAP_LOG_DIR__"
 mkdir -p "$dir"
-job_token="${SLURM_ARRAY_JOB_ID:-${SLURM_JOB_ID:-manual}}"
-outfile="${dir}/${base_name}_${job_token}_${TASK_ID}_${SAFE_NAME}.out"
+lockfile="${dir}/.${base_name}.lock"
+exec 9>"${lockfile}"
+flock 9
+count=$(printf "%03d" $(($(ls "$dir" 2>/dev/null | grep -c "^${base_name}_[0-9]\+\.out$") + 1)))
+outfile="${dir}/${base_name}_${count}.out"
+flock -u 9
+exec 9>&-
 
 exec >"$outfile" 2>&1
 

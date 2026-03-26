@@ -11,11 +11,12 @@ OUT_DIR="${OUT_DIR:-${SCRIPT_DIR}/generated_jobs}"
 DEBUG_DIR="${DEBUG_DIR:-${OUT_DIR}/debug}"
 ARRAY_DIR="${ARRAY_DIR:-${OUT_DIR}/arrays}"
 MANIFEST_DIR="${MANIFEST_DIR:-${OUT_DIR}/manifests}"
+BOOTSTRAP_LOG_DIR="${BOOTSTRAP_LOG_DIR:-${SCRIPT_DIR}/SLURM_logs}"
 RUN_STAMP="${RUN_STAMP:-$(date +%Y%m%d_%H%M%S)}"
 ARRAY_MAX_PARALLEL=$(normalize_positive_int "${ARRAY_MAX_PARALLEL:-8}" 8)
 BUCKET_SECONDS=$(normalize_positive_int "${BUCKET_SECONDS:-1800}" 1800)
 
-mkdir -p "${DEBUG_DIR}" "${ARRAY_DIR}" "${MANIFEST_DIR}"
+mkdir -p "${DEBUG_DIR}" "${ARRAY_DIR}" "${MANIFEST_DIR}" "${BOOTSTRAP_LOG_DIR}"
 
 if [[ -n "${PYTHON_BIN:-}" ]]; then
     :
@@ -99,6 +100,7 @@ while IFS= read -r bucket_label; do
         -e "s|__TIME__|$(escape_sed_replacement "${bucket_time}")|g" \
         -e "s|__ARRAY_SPEC__|$(escape_sed_replacement "${array_spec}")|g" \
         -e "s|__MANIFEST_PATH__|$(escape_sed_replacement "${manifest}")|g" \
+        -e "s|__BOOTSTRAP_LOG_DIR__|$(escape_sed_replacement "${BOOTSTRAP_LOG_DIR}")|g" \
         "${ARRAY_TEMPLATE}" > "${array_script}"
     chmod +x "${array_script}"
 
