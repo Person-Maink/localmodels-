@@ -62,7 +62,6 @@ for video in "${videos[@]}"; do
         -e "s|__TIME__|${escaped_time}|g" \
         -e "s|__VIDEO_FILE__|${escaped_file}|g" \
         "${TEMPLATE}" > "${debug_script}"
-    chmod +x "${debug_script}"
 
     time_seconds=$(hms_to_seconds "${TIME_FMT}")
     bucket_total_seconds=$(round_up_bucket_seconds "${time_seconds}" "${BUCKET_SECONDS}")
@@ -100,10 +99,10 @@ while IFS= read -r bucket_label; do
         -e "s|__ARRAY_SPEC__|$(escape_sed_replacement "${array_spec}")|g" \
         -e "s|__MANIFEST_FILE__|$(escape_sed_replacement "$(basename "${manifest}")")|g" \
         "${ARRAY_TEMPLATE}" > "${array_script}"
-    chmod +x "${array_script}"
 
     echo "Submitting vipe bucket ${bucket_time} with ${task_count} videos"
-    submit_batch_script "${array_script}"
+    echo "${array_script}"
+    sbatch "${array_script}"
     submitted_arrays=$((submitted_arrays + 1))
 done < <(printf '%s\n' "${!BUCKET_MANIFESTS[@]}" | sort)
 

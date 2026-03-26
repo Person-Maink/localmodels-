@@ -1,0 +1,1803 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1       6) python/3.10.13
+
+ 
+
+Wed Mar 18 00:32:38 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                    0 |
+| N/A   34C    P0             44W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9398005
+Job Name:       dynhamr-inference
+Partition:      gpu-a100
+Node List:      gpu014
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 24576
+Submit dir:     /scratch/mthakur/manifold/models/dyn-hamr
+Work dir:       /scratch/mthakur/manifold/models/dyn-hamr
+Job started at: Wed Mar 18 00:32:39 CET 2026
+===============================================
+Using video: /scratch/mthakur/manifold/data/images/me 3.mp4
+Using local Detectron2 checkpoint: /home/mthakur/.cache/torch/hub/detectron2/model_final_f05665.pkl
+run_opt.py:  {'data': {'type': 'video', 'split': 'custom', 'root': '/scratch/mthakur/manifold/data', 'video_dir': 'images', 'seq': 'me 3', 'ext': 'mp4', 'src_path': '/scratch/mthakur/manifold/data/images/me 3.mp4', 'frame_opts': {'ext': 'jpg', 'fps': 25, 'start_sec': 0, 'end_sec': -1}, 'use_cams': True, 'track_ids': 'all', 'shot_idx': 0, 'start_idx': 0, 'end_idx': -1, 'split_cameras': True, 'name': '${data.seq}-${data.track_ids}-shot-${data.shot_idx}-${data.start_idx}-${data.end_idx}', 'sources': {'images': '${data.root}/images/${data.seq}', 'cameras': '${data.root}/dynhamr/cameras/${data.seq}/shot-${data.shot_idx}', 'tracks': '${data.root}/dynhamr/track_preds/${data.seq}', 'shots': '${data.root}/dynhamr/shot_idcs/${data.seq}.json'}}, 'optim': {'options': {'robust_loss_type': 'bisquare', 'robust_tuning_const': 4.6851, 'joints2d_sigma': 100.0, 'lr': 1.0, 'lbfgs_max_iter': 20, 'save_every': 20, 'vis_every': -1, 'max_chunk_steps': 20, 'save_meshes': False}, 'root': {'num_iters': 40}, 'smpl': {'num_iters': 0}, 'smooth': {'opt_scale': False, 'num_iters': 60}, 'motion_chunks': {'chunk_size': 10, 'init_steps': 20, 'chunk_steps': 20, 'opt_cams': True}, 'loss_weights': {'penetration': [0, 0, 0], 'joints2d': [0.001, 0.001, 0.001], 'bg2d': [0.0, 0.0, 0.0], 'cam_R_smooth': [0.0, 0.0, 0.0], 'cam_t_smooth': [0.0, 0.0, 0.0], 'bio': [10, 10, 10], 'joints3d': [0.0, 0.0, 0.0], 'joints3d_smooth': [0.0, 1.0, 0.0], 'joints3d_rollout': [0.0, 0.0, 0.0], 'verts3d': [0.0, 0.0, 0.0], 'points3d': [0.0, 0.0, 0.0], 'pose_prior': [0.04, 0.04, 0.04], 'shape_prior': [0.05, 0.05, 0.05], 'motion_prior': [0.0, 0.0, 0.075], 'init_motion_prior': [0.0, 0.0, 0.075], 'joint_consistency': [0.0, 0.0, 100.0], 'bone_length': [0.0, 2000.0, 2000.0]}}, 'model': {'use_init': True, 'opt_cams': False, 'opt_scale': True, 'async_tracks': True}, 'overwrite': False, 'run_opt': True, 'run_vis': True, 'run_prior': False, 'datatype': '${data.video_dir}', 'vis': {'phases': ['smooth_fit', 'prior'], 'render_views': ['above', 'side', 'front'], 'make_grid': True, 'overwrite': False}, 'MANO': {'MODEL_PATH': '${paths.DATA_DIR}/mano', 'GENDER': 'neutral', 'NUM_HAND_JOINTS': 15, 'MEAN_PARAMS': '${paths.DATA_DIR}/mano_mean_params.npz', 'CREATE_BODY_POSE': False}, 'paths': {'base_dir': 'None', 'DATA_DIR': '_DATA/data/', 'vposer': 'VPoser/pretrained/Vposer_right_mirrored'}, 'HMP': {'config': 'hmp_config.yaml', 'use_hposer': False, 'vid_path': '/scratch/mthakur/manifold/data/images/me 3', 'exp_name': 'None'}, 'fps': 30, 'log_root': '/scratch/mthakur/manifold/outputs/dynhamr/logs', 'log_dir': '${log_root}/${data.type}-${data.split}', 'exp_name': '${now:%Y-%m-%d}', 'temporal_smooth': False, 'gpu': 0, 'is_static': False}
+out_dir /scratch/mthakur/manifold/outputs/dynhamr/logs/video-custom/2026-03-18/me 3-all-shot-0-0--1
+init SOURCES {'images': '${data.root}/images/${data.seq}', 'cameras': '${data.root}/dynhamr/cameras/${data.seq}/shot-${data.shot_idx}', 'tracks': '${data.root}/dynhamr/track_preds/${data.seq}', 'shots': '${data.root}/dynhamr/shot_idcs/${data.seq}.json'}
+/scratch/mthakur/manifold/data/dynhamr/cameras/me 3/shot-0 does not exist
+/scratch/mthakur/manifold/data/dynhamr/track_preds/me 3 does not exist
+/scratch/mthakur/manifold/data/dynhamr/shot_idcs/me 3.json does not exist
+SOURCES {'images': '/scratch/mthakur/manifold/data/images/me 3', 'cameras': '/scratch/mthakur/manifold/data/dynhamr/cameras/me 3/shot-0', 'tracks': '/scratch/mthakur/manifold/data/dynhamr/track_preds/me 3', 'shots': '/scratch/mthakur/manifold/data/dynhamr/shot_idcs/me 3.json'}
+/scratch/mthakur/manifold/data/dynhamr/cameras/me 3/shot-0 does not exist
+/scratch/mthakur/manifold/data/dynhamr/track_preds/me 3 does not exist
+/scratch/mthakur/manifold/data/dynhamr/shot_idcs/me 3.json does not exist
+DATA SOURCES {'images': '/scratch/mthakur/manifold/data/images/me 3', 'cameras': '/scratch/mthakur/manifold/data/dynhamr/cameras/me 3/shot-0', 'tracks': '/scratch/mthakur/manifold/data/dynhamr/track_preds/me 3', 'shots': '/scratch/mthakur/manifold/data/dynhamr/shot_idcs/me 3.json'}
+
+FOUND 340 FRAMES in /scratch/mthakur/manifold/data/images/me 3
+RUNNING HAMER ON /scratch/mthakur/manifold/data/images/me 3
+PROCESS MainProcess ()
+HAMER DIR /scratch/mthakur/manifold/models/dyn-hamr/third-party/hamer
+cd /scratch/mthakur/manifold/models/dyn-hamr/third-party/hamer; CUDA_VISIBLE_DEVICES=0 python -u run.py --img_folder '/scratch/mthakur/manifold/data/images/me 3' --res_folder '/scratch/mthakur/manifold/data/dynhamr/hamer_out/me 3/results/demo_me 3.pkl' --batch_size=48 --side_view --save_mesh --full_frame --type images --checkpoint /scratch/mthakur/manifold/models/dyn-hamr
+apex is not installed
+apex is not installed
+apex is not installed
+/usr/local/lib/python3.10/dist-packages/mmcv/cnn/bricks/transformer.py:27: UserWarning: Fail to import ``MultiScaleDeformableAttention`` from ``mmcv.ops.multi_scale_deform_attn``, You should install ``mmcv-full`` if you need this module. 
+  warnings.warn('Fail to import ``MultiScaleDeformableAttention`` from '
+args.checkpoint:  /scratch/mthakur/manifold/models/dyn-hamr /scratch/mthakur/manifold/models/dyn-hamr
+/usr/local/lib/python3.10/dist-packages/pytorch_lightning/utilities/migration/utils.py:49: PossibleUserWarning: The loaded checkpoint was produced with Lightning v2.0.3, which is newer than your current Lightning version: v1.9.5
+  rank_zero_warn(
+/scratch/mthakur/manifold/models/dyn-hamr/_DATA/data/mano_mean_params.npz CREATE_BODY_POSE: False
+DATA_DIR: /scratch/mthakur/manifold/models/dyn-hamr/_DATA/data/
+GENDER: neutral
+MEAN_PARAMS: /scratch/mthakur/manifold/models/dyn-hamr/_DATA/data/mano_mean_params.npz
+MODEL_PATH: /scratch/mthakur/manifold/models/dyn-hamr/_DATA/data/mano
+NUM_HAND_JOINTS: 15
+!!!!!!!!!! {'data_dir': '/scratch/mthakur/manifold/models/dyn-hamr/_DATA/data/', 'model_path': '/scratch/mthakur/manifold/models/dyn-hamr/_DATA/data/mano', 'gender': 'neutral', 'num_hand_joints': 15, 'mean_params': '/scratch/mthakur/manifold/models/dyn-hamr/_DATA/data/mano_mean_params.npz', 'create_body_pose': False}
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+MANO(
+  Gender: NEUTRAL
+  Number of joints: 16
+  Betas: 10
+  Number of PCA components: 6
+  Flat hand mean: False
+  (vertex_joint_selector): VertexJointSelector()
+)
+Using Detectron2 checkpoint: /home/mthakur/.cache/torch/hub/detectron2/model_final_f05665.pkl
+Use load_from_local loader
+The model and loaded state dict do not match exactly
+
+unexpected key in source state_dict: backbone.blocks.0.mlp.experts.0.weight, backbone.blocks.0.mlp.experts.0.bias, backbone.blocks.0.mlp.experts.1.weight, backbone.blocks.0.mlp.experts.1.bias, backbone.blocks.0.mlp.experts.2.weight, backbone.blocks.0.mlp.experts.2.bias, backbone.blocks.0.mlp.experts.3.weight, backbone.blocks.0.mlp.experts.3.bias, backbone.blocks.0.mlp.experts.4.weight, backbone.blocks.0.mlp.experts.4.bias, backbone.blocks.0.mlp.experts.5.weight, backbone.blocks.0.mlp.experts.5.bias, backbone.blocks.1.mlp.experts.0.weight, backbone.blocks.1.mlp.experts.0.bias, backbone.blocks.1.mlp.experts.1.weight, backbone.blocks.1.mlp.experts.1.bias, backbone.blocks.1.mlp.experts.2.weight, backbone.blocks.1.mlp.experts.2.bias, backbone.blocks.1.mlp.experts.3.weight, backbone.blocks.1.mlp.experts.3.bias, backbone.blocks.1.mlp.experts.4.weight, backbone.blocks.1.mlp.experts.4.bias, backbone.blocks.1.mlp.experts.5.weight, backbone.blocks.1.mlp.experts.5.bias, backbone.blocks.2.mlp.experts.0.weight, backbone.blocks.2.mlp.experts.0.bias, backbone.blocks.2.mlp.experts.1.weight, backbone.blocks.2.mlp.experts.1.bias, backbone.blocks.2.mlp.experts.2.weight, backbone.blocks.2.mlp.experts.2.bias, backbone.blocks.2.mlp.experts.3.weight, backbone.blocks.2.mlp.experts.3.bias, backbone.blocks.2.mlp.experts.4.weight, backbone.blocks.2.mlp.experts.4.bias, backbone.blocks.2.mlp.experts.5.weight, backbone.blocks.2.mlp.experts.5.bias, backbone.blocks.3.mlp.experts.0.weight, backbone.blocks.3.mlp.experts.0.bias, backbone.blocks.3.mlp.experts.1.weight, backbone.blocks.3.mlp.experts.1.bias, backbone.blocks.3.mlp.experts.2.weight, backbone.blocks.3.mlp.experts.2.bias, backbone.blocks.3.mlp.experts.3.weight, backbone.blocks.3.mlp.experts.3.bias, backbone.blocks.3.mlp.experts.4.weight, backbone.blocks.3.mlp.experts.4.bias, backbone.blocks.3.mlp.experts.5.weight, backbone.blocks.3.mlp.experts.5.bias, backbone.blocks.4.mlp.experts.0.weight, backbone.blocks.4.mlp.experts.0.bias, backbone.blocks.4.mlp.experts.1.weight, backbone.blocks.4.mlp.experts.1.bias, backbone.blocks.4.mlp.experts.2.weight, backbone.blocks.4.mlp.experts.2.bias, backbone.blocks.4.mlp.experts.3.weight, backbone.blocks.4.mlp.experts.3.bias, backbone.blocks.4.mlp.experts.4.weight, backbone.blocks.4.mlp.experts.4.bias, backbone.blocks.4.mlp.experts.5.weight, backbone.blocks.4.mlp.experts.5.bias, backbone.blocks.5.mlp.experts.0.weight, backbone.blocks.5.mlp.experts.0.bias, backbone.blocks.5.mlp.experts.1.weight, backbone.blocks.5.mlp.experts.1.bias, backbone.blocks.5.mlp.experts.2.weight, backbone.blocks.5.mlp.experts.2.bias, backbone.blocks.5.mlp.experts.3.weight, backbone.blocks.5.mlp.experts.3.bias, backbone.blocks.5.mlp.experts.4.weight, backbone.blocks.5.mlp.experts.4.bias, backbone.blocks.5.mlp.experts.5.weight, backbone.blocks.5.mlp.experts.5.bias, backbone.blocks.6.mlp.experts.0.weight, backbone.blocks.6.mlp.experts.0.bias, backbone.blocks.6.mlp.experts.1.weight, backbone.blocks.6.mlp.experts.1.bias, backbone.blocks.6.mlp.experts.2.weight, backbone.blocks.6.mlp.experts.2.bias, backbone.blocks.6.mlp.experts.3.weight, backbone.blocks.6.mlp.experts.3.bias, backbone.blocks.6.mlp.experts.4.weight, backbone.blocks.6.mlp.experts.4.bias, backbone.blocks.6.mlp.experts.5.weight, backbone.blocks.6.mlp.experts.5.bias, backbone.blocks.7.mlp.experts.0.weight, backbone.blocks.7.mlp.experts.0.bias, backbone.blocks.7.mlp.experts.1.weight, backbone.blocks.7.mlp.experts.1.bias, backbone.blocks.7.mlp.experts.2.weight, backbone.blocks.7.mlp.experts.2.bias, backbone.blocks.7.mlp.experts.3.weight, backbone.blocks.7.mlp.experts.3.bias, backbone.blocks.7.mlp.experts.4.weight, backbone.blocks.7.mlp.experts.4.bias, backbone.blocks.7.mlp.experts.5.weight, backbone.blocks.7.mlp.experts.5.bias, backbone.blocks.8.mlp.experts.0.weight, backbone.blocks.8.mlp.experts.0.bias, backbone.blocks.8.mlp.experts.1.weight, backbone.blocks.8.mlp.experts.1.bias, backbone.blocks.8.mlp.experts.2.weight, backbone.blocks.8.mlp.experts.2.bias, backbone.blocks.8.mlp.experts.3.weight, backbone.blocks.8.mlp.experts.3.bias, backbone.blocks.8.mlp.experts.4.weight, backbone.blocks.8.mlp.experts.4.bias, backbone.blocks.8.mlp.experts.5.weight, backbone.blocks.8.mlp.experts.5.bias, backbone.blocks.9.mlp.experts.0.weight, backbone.blocks.9.mlp.experts.0.bias, backbone.blocks.9.mlp.experts.1.weight, backbone.blocks.9.mlp.experts.1.bias, backbone.blocks.9.mlp.experts.2.weight, backbone.blocks.9.mlp.experts.2.bias, backbone.blocks.9.mlp.experts.3.weight, backbone.blocks.9.mlp.experts.3.bias, backbone.blocks.9.mlp.experts.4.weight, backbone.blocks.9.mlp.experts.4.bias, backbone.blocks.9.mlp.experts.5.weight, backbone.blocks.9.mlp.experts.5.bias, backbone.blocks.10.mlp.experts.0.weight, backbone.blocks.10.mlp.experts.0.bias, backbone.blocks.10.mlp.experts.1.weight, backbone.blocks.10.mlp.experts.1.bias, backbone.blocks.10.mlp.experts.2.weight, backbone.blocks.10.mlp.experts.2.bias, backbone.blocks.10.mlp.experts.3.weight, backbone.blocks.10.mlp.experts.3.bias, backbone.blocks.10.mlp.experts.4.weight, backbone.blocks.10.mlp.experts.4.bias, backbone.blocks.10.mlp.experts.5.weight, backbone.blocks.10.mlp.experts.5.bias, backbone.blocks.11.mlp.experts.0.weight, backbone.blocks.11.mlp.experts.0.bias, backbone.blocks.11.mlp.experts.1.weight, backbone.blocks.11.mlp.experts.1.bias, backbone.blocks.11.mlp.experts.2.weight, backbone.blocks.11.mlp.experts.2.bias, backbone.blocks.11.mlp.experts.3.weight, backbone.blocks.11.mlp.experts.3.bias, backbone.blocks.11.mlp.experts.4.weight, backbone.blocks.11.mlp.experts.4.bias, backbone.blocks.11.mlp.experts.5.weight, backbone.blocks.11.mlp.experts.5.bias, backbone.blocks.12.mlp.experts.0.weight, backbone.blocks.12.mlp.experts.0.bias, backbone.blocks.12.mlp.experts.1.weight, backbone.blocks.12.mlp.experts.1.bias, backbone.blocks.12.mlp.experts.2.weight, backbone.blocks.12.mlp.experts.2.bias, backbone.blocks.12.mlp.experts.3.weight, backbone.blocks.12.mlp.experts.3.bias, backbone.blocks.12.mlp.experts.4.weight, backbone.blocks.12.mlp.experts.4.bias, backbone.blocks.12.mlp.experts.5.weight, backbone.blocks.12.mlp.experts.5.bias, backbone.blocks.13.mlp.experts.0.weight, backbone.blocks.13.mlp.experts.0.bias, backbone.blocks.13.mlp.experts.1.weight, backbone.blocks.13.mlp.experts.1.bias, backbone.blocks.13.mlp.experts.2.weight, backbone.blocks.13.mlp.experts.2.bias, backbone.blocks.13.mlp.experts.3.weight, backbone.blocks.13.mlp.experts.3.bias, backbone.blocks.13.mlp.experts.4.weight, backbone.blocks.13.mlp.experts.4.bias, backbone.blocks.13.mlp.experts.5.weight, backbone.blocks.13.mlp.experts.5.bias, backbone.blocks.14.mlp.experts.0.weight, backbone.blocks.14.mlp.experts.0.bias, backbone.blocks.14.mlp.experts.1.weight, backbone.blocks.14.mlp.experts.1.bias, backbone.blocks.14.mlp.experts.2.weight, backbone.blocks.14.mlp.experts.2.bias, backbone.blocks.14.mlp.experts.3.weight, backbone.blocks.14.mlp.experts.3.bias, backbone.blocks.14.mlp.experts.4.weight, backbone.blocks.14.mlp.experts.4.bias, backbone.blocks.14.mlp.experts.5.weight, backbone.blocks.14.mlp.experts.5.bias, backbone.blocks.15.mlp.experts.0.weight, backbone.blocks.15.mlp.experts.0.bias, backbone.blocks.15.mlp.experts.1.weight, backbone.blocks.15.mlp.experts.1.bias, backbone.blocks.15.mlp.experts.2.weight, backbone.blocks.15.mlp.experts.2.bias, backbone.blocks.15.mlp.experts.3.weight, backbone.blocks.15.mlp.experts.3.bias, backbone.blocks.15.mlp.experts.4.weight, backbone.blocks.15.mlp.experts.4.bias, backbone.blocks.15.mlp.experts.5.weight, backbone.blocks.15.mlp.experts.5.bias, backbone.blocks.16.mlp.experts.0.weight, backbone.blocks.16.mlp.experts.0.bias, backbone.blocks.16.mlp.experts.1.weight, backbone.blocks.16.mlp.experts.1.bias, backbone.blocks.16.mlp.experts.2.weight, backbone.blocks.16.mlp.experts.2.bias, backbone.blocks.16.mlp.experts.3.weight, backbone.blocks.16.mlp.experts.3.bias, backbone.blocks.16.mlp.experts.4.weight, backbone.blocks.16.mlp.experts.4.bias, backbone.blocks.16.mlp.experts.5.weight, backbone.blocks.16.mlp.experts.5.bias, backbone.blocks.17.mlp.experts.0.weight, backbone.blocks.17.mlp.experts.0.bias, backbone.blocks.17.mlp.experts.1.weight, backbone.blocks.17.mlp.experts.1.bias, backbone.blocks.17.mlp.experts.2.weight, backbone.blocks.17.mlp.experts.2.bias, backbone.blocks.17.mlp.experts.3.weight, backbone.blocks.17.mlp.experts.3.bias, backbone.blocks.17.mlp.experts.4.weight, backbone.blocks.17.mlp.experts.4.bias, backbone.blocks.17.mlp.experts.5.weight, backbone.blocks.17.mlp.experts.5.bias, backbone.blocks.18.mlp.experts.0.weight, backbone.blocks.18.mlp.experts.0.bias, backbone.blocks.18.mlp.experts.1.weight, backbone.blocks.18.mlp.experts.1.bias, backbone.blocks.18.mlp.experts.2.weight, backbone.blocks.18.mlp.experts.2.bias, backbone.blocks.18.mlp.experts.3.weight, backbone.blocks.18.mlp.experts.3.bias, backbone.blocks.18.mlp.experts.4.weight, backbone.blocks.18.mlp.experts.4.bias, backbone.blocks.18.mlp.experts.5.weight, backbone.blocks.18.mlp.experts.5.bias, backbone.blocks.19.mlp.experts.0.weight, backbone.blocks.19.mlp.experts.0.bias, backbone.blocks.19.mlp.experts.1.weight, backbone.blocks.19.mlp.experts.1.bias, backbone.blocks.19.mlp.experts.2.weight, backbone.blocks.19.mlp.experts.2.bias, backbone.blocks.19.mlp.experts.3.weight, backbone.blocks.19.mlp.experts.3.bias, backbone.blocks.19.mlp.experts.4.weight, backbone.blocks.19.mlp.experts.4.bias, backbone.blocks.19.mlp.experts.5.weight, backbone.blocks.19.mlp.experts.5.bias, backbone.blocks.20.mlp.experts.0.weight, backbone.blocks.20.mlp.experts.0.bias, backbone.blocks.20.mlp.experts.1.weight, backbone.blocks.20.mlp.experts.1.bias, backbone.blocks.20.mlp.experts.2.weight, backbone.blocks.20.mlp.experts.2.bias, backbone.blocks.20.mlp.experts.3.weight, backbone.blocks.20.mlp.experts.3.bias, backbone.blocks.20.mlp.experts.4.weight, backbone.blocks.20.mlp.experts.4.bias, backbone.blocks.20.mlp.experts.5.weight, backbone.blocks.20.mlp.experts.5.bias, backbone.blocks.21.mlp.experts.0.weight, backbone.blocks.21.mlp.experts.0.bias, backbone.blocks.21.mlp.experts.1.weight, backbone.blocks.21.mlp.experts.1.bias, backbone.blocks.21.mlp.experts.2.weight, backbone.blocks.21.mlp.experts.2.bias, backbone.blocks.21.mlp.experts.3.weight, backbone.blocks.21.mlp.experts.3.bias, backbone.blocks.21.mlp.experts.4.weight, backbone.blocks.21.mlp.experts.4.bias, backbone.blocks.21.mlp.experts.5.weight, backbone.blocks.21.mlp.experts.5.bias, backbone.blocks.22.mlp.experts.0.weight, backbone.blocks.22.mlp.experts.0.bias, backbone.blocks.22.mlp.experts.1.weight, backbone.blocks.22.mlp.experts.1.bias, backbone.blocks.22.mlp.experts.2.weight, backbone.blocks.22.mlp.experts.2.bias, backbone.blocks.22.mlp.experts.3.weight, backbone.blocks.22.mlp.experts.3.bias, backbone.blocks.22.mlp.experts.4.weight, backbone.blocks.22.mlp.experts.4.bias, backbone.blocks.22.mlp.experts.5.weight, backbone.blocks.22.mlp.experts.5.bias, backbone.blocks.23.mlp.experts.0.weight, backbone.blocks.23.mlp.experts.0.bias, backbone.blocks.23.mlp.experts.1.weight, backbone.blocks.23.mlp.experts.1.bias, backbone.blocks.23.mlp.experts.2.weight, backbone.blocks.23.mlp.experts.2.bias, backbone.blocks.23.mlp.experts.3.weight, backbone.blocks.23.mlp.experts.3.bias, backbone.blocks.23.mlp.experts.4.weight, backbone.blocks.23.mlp.experts.4.bias, backbone.blocks.23.mlp.experts.5.weight, backbone.blocks.23.mlp.experts.5.bias, backbone.blocks.24.mlp.experts.0.weight, backbone.blocks.24.mlp.experts.0.bias, backbone.blocks.24.mlp.experts.1.weight, backbone.blocks.24.mlp.experts.1.bias, backbone.blocks.24.mlp.experts.2.weight, backbone.blocks.24.mlp.experts.2.bias, backbone.blocks.24.mlp.experts.3.weight, backbone.blocks.24.mlp.experts.3.bias, backbone.blocks.24.mlp.experts.4.weight, backbone.blocks.24.mlp.experts.4.bias, backbone.blocks.24.mlp.experts.5.weight, backbone.blocks.24.mlp.experts.5.bias, backbone.blocks.25.mlp.experts.0.weight, backbone.blocks.25.mlp.experts.0.bias, backbone.blocks.25.mlp.experts.1.weight, backbone.blocks.25.mlp.experts.1.bias, backbone.blocks.25.mlp.experts.2.weight, backbone.blocks.25.mlp.experts.2.bias, backbone.blocks.25.mlp.experts.3.weight, backbone.blocks.25.mlp.experts.3.bias, backbone.blocks.25.mlp.experts.4.weight, backbone.blocks.25.mlp.experts.4.bias, backbone.blocks.25.mlp.experts.5.weight, backbone.blocks.25.mlp.experts.5.bias, backbone.blocks.26.mlp.experts.0.weight, backbone.blocks.26.mlp.experts.0.bias, backbone.blocks.26.mlp.experts.1.weight, backbone.blocks.26.mlp.experts.1.bias, backbone.blocks.26.mlp.experts.2.weight, backbone.blocks.26.mlp.experts.2.bias, backbone.blocks.26.mlp.experts.3.weight, backbone.blocks.26.mlp.experts.3.bias, backbone.blocks.26.mlp.experts.4.weight, backbone.blocks.26.mlp.experts.4.bias, backbone.blocks.26.mlp.experts.5.weight, backbone.blocks.26.mlp.experts.5.bias, backbone.blocks.27.mlp.experts.0.weight, backbone.blocks.27.mlp.experts.0.bias, backbone.blocks.27.mlp.experts.1.weight, backbone.blocks.27.mlp.experts.1.bias, backbone.blocks.27.mlp.experts.2.weight, backbone.blocks.27.mlp.experts.2.bias, backbone.blocks.27.mlp.experts.3.weight, backbone.blocks.27.mlp.experts.3.bias, backbone.blocks.27.mlp.experts.4.weight, backbone.blocks.27.mlp.experts.4.bias, backbone.blocks.27.mlp.experts.5.weight, backbone.blocks.27.mlp.experts.5.bias, backbone.blocks.28.mlp.experts.0.weight, backbone.blocks.28.mlp.experts.0.bias, backbone.blocks.28.mlp.experts.1.weight, backbone.blocks.28.mlp.experts.1.bias, backbone.blocks.28.mlp.experts.2.weight, backbone.blocks.28.mlp.experts.2.bias, backbone.blocks.28.mlp.experts.3.weight, backbone.blocks.28.mlp.experts.3.bias, backbone.blocks.28.mlp.experts.4.weight, backbone.blocks.28.mlp.experts.4.bias, backbone.blocks.28.mlp.experts.5.weight, backbone.blocks.28.mlp.experts.5.bias, backbone.blocks.29.mlp.experts.0.weight, backbone.blocks.29.mlp.experts.0.bias, backbone.blocks.29.mlp.experts.1.weight, backbone.blocks.29.mlp.experts.1.bias, backbone.blocks.29.mlp.experts.2.weight, backbone.blocks.29.mlp.experts.2.bias, backbone.blocks.29.mlp.experts.3.weight, backbone.blocks.29.mlp.experts.3.bias, backbone.blocks.29.mlp.experts.4.weight, backbone.blocks.29.mlp.experts.4.bias, backbone.blocks.29.mlp.experts.5.weight, backbone.blocks.29.mlp.experts.5.bias, backbone.blocks.30.mlp.experts.0.weight, backbone.blocks.30.mlp.experts.0.bias, backbone.blocks.30.mlp.experts.1.weight, backbone.blocks.30.mlp.experts.1.bias, backbone.blocks.30.mlp.experts.2.weight, backbone.blocks.30.mlp.experts.2.bias, backbone.blocks.30.mlp.experts.3.weight, backbone.blocks.30.mlp.experts.3.bias, backbone.blocks.30.mlp.experts.4.weight, backbone.blocks.30.mlp.experts.4.bias, backbone.blocks.30.mlp.experts.5.weight, backbone.blocks.30.mlp.experts.5.bias, backbone.blocks.31.mlp.experts.0.weight, backbone.blocks.31.mlp.experts.0.bias, backbone.blocks.31.mlp.experts.1.weight, backbone.blocks.31.mlp.experts.1.bias, backbone.blocks.31.mlp.experts.2.weight, backbone.blocks.31.mlp.experts.2.bias, backbone.blocks.31.mlp.experts.3.weight, backbone.blocks.31.mlp.experts.3.bias, backbone.blocks.31.mlp.experts.4.weight, backbone.blocks.31.mlp.experts.4.bias, backbone.blocks.31.mlp.experts.5.weight, backbone.blocks.31.mlp.experts.5.bias
+
+start iteration.
+  0%|          | 0/340 [00:00<?, ?it/s]/usr/local/lib/python3.10/dist-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3190.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 5.361940383911133
+tid/tracked_ids/tracked_time [0] [0] [0]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  5.5387184619903564 hamer time:  0.17677807807922363
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6844260692596436
+tid/tracked_ids/tracked_time [0] [0] [0]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8426024913787842 hamer time:  0.15817642211914062
+person number:  1
+append left
+append right
+sort_idx [0 1] [0 1]
+right:  [0 1]
+[0 1]
+vit time: 0.7048325538635254
+tid/tracked_ids/tracked_time [0 1] [0, 1] [0, 0]
+length:  2 2
+pred_2d:  (2, 21, 3)
+all_bboxes:  (2, 4)
+one step time:  0.9868736267089844 hamer time:  0.282041072845459
+person number:  1
+append left
+append right
+sort_idx [0 1] [0 1]
+right:  [0 1]
+[0 1]
+vit time: 0.7115194797515869
+tid/tracked_ids/tracked_time [0 1] [0, 1] [0, 0]
+length:  2 2
+pred_2d:  (2, 21, 3)
+all_bboxes:  (2, 4)
+one step time:  0.9879164695739746 hamer time:  0.2763969898223877
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6843113899230957
+tid/tracked_ids/tracked_time [0 1] [0] [0, 1]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8369171619415283 hamer time:  0.15260577201843262
+person number:  1
+append left
+append right
+sort_idx [0 1] [0 1]
+right:  [0 1]
+[0 1]
+vit time: 0.6782238483428955
+tid/tracked_ids/tracked_time [0 1] [0, 1] [0, 0]
+length:  2 2
+pred_2d:  (2, 21, 3)
+all_bboxes:  (2, 4)
+one step time:  0.9723730087280273 hamer time:  0.29414916038513184
+person number:  1
+append left
+append right
+sort_idx [0 1] [0 1]
+right:  [0 1]
+[0 1]
+vit time: 0.7766671180725098
+tid/tracked_ids/tracked_time [0 1] [0, 1] [0, 0]
+length:  2 2
+pred_2d:  (2, 21, 3)
+all_bboxes:  (2, 4)
+one step time:  1.0538592338562012 hamer time:  0.2771921157836914
+person number:  1
+append left
+append right
+sort_idx [0 1] [0 1]
+right:  [0 1]
+[0 1]
+vit time: 0.735842227935791
+tid/tracked_ids/tracked_time [0 1] [0, 1] [0, 0]
+length:  2 2
+pred_2d:  (2, 21, 3)
+all_bboxes:  (2, 4)
+one step time:  1.0123941898345947 hamer time:  0.2765519618988037
+person number:  1
+no hand detected!!! [0, 1] [] [1, 1]
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6792247295379639
+tid/tracked_ids/tracked_time [0 1] [0] [0, 2]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8330063819885254 hamer time:  0.15378165245056152
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.7344846725463867
+tid/tracked_ids/tracked_time [0 1] [0] [0, 3]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8877532482147217 hamer time:  0.15326857566833496
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.7455339431762695
+tid/tracked_ids/tracked_time [0 1] [0] [0, 4]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.901508092880249 hamer time:  0.1559741497039795
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6680595874786377
+tid/tracked_ids/tracked_time [0 1] [0] [0, 5]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.822288990020752 hamer time:  0.15422940254211426
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.7083439826965332
+tid/tracked_ids/tracked_time [0 1] [0] [0, 6]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8618311882019043 hamer time:  0.1534872055053711
+person number:  1
+no hand detected!!! [0, 1] [] [1, 7]
+person number:  1
+no hand detected!!! [0, 1] [] [2, 8]
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.8293209075927734
+tid/tracked_ids/tracked_time [0 1] [0] [0, 9]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.9827694892883301 hamer time:  0.15344858169555664
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.7389307022094727
+tid/tracked_ids/tracked_time [0 1] [0] [0, 10]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8928349018096924 hamer time:  0.15390419960021973
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6984348297119141
+tid/tracked_ids/tracked_time [0 1] [0] [0, 11]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8576726913452148 hamer time:  0.15923786163330078
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6977605819702148
+tid/tracked_ids/tracked_time [0 1] [0] [0, 12]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.857081413269043 hamer time:  0.15932083129882812
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6808145046234131
+tid/tracked_ids/tracked_time [0 1] [0] [0, 13]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8347353935241699 hamer time:  0.15392088890075684
+  0%|          | 1/340 [00:05<31:17,  5.54s/it]  1%|          | 2/340 [00:06<15:38,  2.78s/it]  1%|          | 3/340 [00:07<11:00,  1.96s/it]  1%|          | 4/340 [00:08<08:49,  1.58s/it]  1%|▏         | 5/340 [00:09<07:18,  1.31s/it]  2%|▏         | 6/340 [00:10<06:39,  1.19s/it]  2%|▏         | 7/340 [00:11<06:22,  1.15s/it]  2%|▏         | 8/340 [00:12<06:06,  1.11s/it]  3%|▎         | 9/340 [00:12<05:20,  1.03it/s]  3%|▎         | 10/340 [00:13<05:05,  1.08it/s]  3%|▎         | 11/340 [00:14<05:01,  1.09it/s]  4%|▎         | 12/340 [00:15<04:58,  1.10it/s]  4%|▍         | 13/340 [00:16<04:49,  1.13it/s]  4%|▍         | 14/340 [00:17<04:46,  1.14it/s]  4%|▍         | 15/340 [00:17<04:28,  1.21it/s]  5%|▍         | 16/340 [00:18<04:14,  1.27it/s]  5%|▌         | 17/340 [00:19<04:32,  1.18it/s]  5%|▌         | 18/340 [00:20<04:36,  1.16it/s]  6%|▌         | 19/340 [00:21<04:35,  1.16it/s]  6%|▌         | 20/340 [00:22<04:34,  1.17it/s]  6%|▌         | 2person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.7027437686920166
+tid/tracked_ids/tracked_time [0 1] [0] [0, 14]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8574087619781494 hamer time:  0.1546649932861328
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6959829330444336
+tid/tracked_ids/tracked_time [0 1] [0] [0, 15]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.850339412689209 hamer time:  0.1543564796447754
+person number:  1
+no hand detected!!! [0, 1] [] [1, 16]
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.7137172222137451
+tid/tracked_ids/tracked_time [0 1] [0] [0, 17]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8684821128845215 hamer time:  0.15476489067077637
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6636686325073242
+tid/tracked_ids/tracked_time [0 1] [0] [0, 18]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8176534175872803 hamer time:  0.15398478507995605
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.704124927520752
+tid/tracked_ids/tracked_time [0 1] [0] [0, 19]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8588228225708008 hamer time:  0.15469789505004883
+person number:  1
+no hand detected!!! [0, 1] [] [1, 20]
+person number:  1
+no hand detected!!! [0, 1] [] [2, 21]
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 1.046339988708496
+tid/tracked_ids/tracked_time [0 1] [0] [0, 22]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  1.2003979682922363 hamer time:  0.15405797958374023
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.7753138542175293
+tid/tracked_ids/tracked_time [0 1] [0] [0, 23]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.928842306137085 hamer time:  0.15352845191955566
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.7704653739929199
+tid/tracked_ids/tracked_time [0 1] [0] [0, 24]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.9258499145507812 hamer time:  0.15538454055786133
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6961555480957031
+tid/tracked_ids/tracked_time [0 1] [0] [0, 25]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8499534130096436 hamer time:  0.15379786491394043
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6682608127593994
+tid/tracked_ids/tracked_time [0 1] [0] [0, 26]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8228788375854492 hamer time:  0.1546180248260498
+person number:  1
+no hand detected!!! [0, 1] [] [1, 27]
+person number:  1
+no hand detected!!! [0, 1] [] [2, 28]
+person number:  1
+no hand detected!!! [0, 1] [] [3, 29]
+person number:  1
+no hand detected!!! [0, 1] [] [4, 30]
+person number:  1
+no hand detected!!! [0, 1] [] [5, 31]
+person number:  1
+no hand detected!!! [0, 1] [] [6, 32]
+person number:  1
+no hand detected!!! [0, 1] [] [7, 33]
+1/340 [00:23<04:31,  1.17it/s]  6%|▋         | 22/340 [00:23<04:31,  1.17it/s]  7%|▋         | 23/340 [00:24<04:30,  1.17it/s]  7%|▋         | 24/340 [00:25<04:09,  1.27it/s]  7%|▋         | 25/340 [00:26<04:16,  1.23it/s]  8%|▊         | 26/340 [00:27<04:15,  1.23it/s]  8%|▊         | 27/340 [00:27<04:19,  1.21it/s]  8%|▊         | 28/340 [00:28<04:05,  1.27it/s]  9%|▊         | 29/340 [00:29<03:58,  1.31it/s]  9%|▉         | 30/340 [00:30<04:37,  1.12it/s]  9%|▉         | 31/340 [00:31<04:39,  1.10it/s]  9%|▉         | 32/340 [00:32<04:40,  1.10it/s] 10%|▉         | 33/340 [00:33<04:34,  1.12it/s] 10%|█         | 34/340 [00:34<04:26,  1.15it/s] 10%|█         | 35/340 [00:34<04:05,  1.24it/s] 11%|█         | 36/340 [00:35<03:53,  1.30it/s] 11%|█         | 37/340 [00:36<03:52,  1.30it/s] 11%|█         | 38/340 [00:36<03:42,  1.36it/s] 11%|█▏        | 39/340 [00:37<03:42,  1.35it/s] 12%|█▏        | 40/340 [00:38<03:42,  1.35it/s] 12%|█▏        |person number:  1
+append left
+append right
+sort_idx [0 1] [0 1]
+right:  [0 1]
+[0 1]
+vit time: 0.6983335018157959
+tid/tracked_ids/tracked_time [0 1] [0, 1] [0, 0]
+length:  2 2
+pred_2d:  (2, 21, 3)
+all_bboxes:  (2, 4)
+one step time:  0.9828734397888184 hamer time:  0.28453993797302246
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6718602180480957
+tid/tracked_ids/tracked_time [0 1] [0] [0, 1]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8277707099914551 hamer time:  0.15591049194335938
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6692202091217041
+tid/tracked_ids/tracked_time [0 1] [0] [0, 2]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8226706981658936 hamer time:  0.15345048904418945
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6754937171936035
+tid/tracked_ids/tracked_time [0 1] [0] [0, 3]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8300051689147949 hamer time:  0.1545114517211914
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6653287410736084
+tid/tracked_ids/tracked_time [0 1] [0] [0, 4]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.818817138671875 hamer time:  0.1534883975982666
+person number:  1
+no hand detected!!! [0, 1] [] [1, 5]
+person number:  1
+no hand detected!!! [0, 1] [] [2, 6]
+person number:  1
+no hand detected!!! [0, 1] [] [3, 7]
+person number:  1
+no hand detected!!! [0, 1] [] [4, 8]
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6618716716766357
+tid/tracked_ids/tracked_time [0 1] [0] [0, 9]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.816521167755127 hamer time:  0.1546494960784912
+person number:  1
+no hand detected!!! [0, 1] [] [1, 10]
+person number:  1
+no hand detected!!! [0, 1] [] [2, 11]
+person number:  1
+no hand detected!!! [0, 1] [] [3, 12]
+person number:  1
+no hand detected!!! [0, 1] [] [4, 13]
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.7019376754760742
+tid/tracked_ids/tracked_time [0 1] [0] [0, 14]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8576021194458008 hamer time:  0.15566444396972656
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6867048740386963
+tid/tracked_ids/tracked_time [0 1] [0] [0, 15]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8423283100128174 hamer time:  0.1556234359741211
+person number:  1
+no hand detected!!! [0, 1] [] [1, 16]
+person number:  1
+no hand detected!!! [0, 1] [] [2, 17]
+person number:  1
+no hand detected!!! [0, 1] [] [3, 18]
+ 41/340 [00:39<03:39,  1.36it/s] 12%|█▏        | 42/340 [00:40<04:01,  1.24it/s] 13%|█▎        | 43/340 [00:40<04:02,  1.23it/s] 13%|█▎        | 44/340 [00:41<04:01,  1.22it/s] 13%|█▎        | 45/340 [00:42<04:02,  1.22it/s] 14%|█▎        | 46/340 [00:43<04:01,  1.22it/s] 14%|█▍        | 47/340 [00:44<03:51,  1.27it/s] 14%|█▍        | 48/340 [00:44<03:41,  1.32it/s] 14%|█▍        | 49/340 [00:45<03:33,  1.36it/s] 15%|█▍        | 50/340 [00:46<03:27,  1.40it/s] 15%|█▌        | 51/340 [00:46<03:35,  1.34it/s] 15%|█▌        | 52/340 [00:47<03:28,  1.38it/s] 16%|█▌        | 53/340 [00:48<03:22,  1.42it/s] 16%|█▌        | 54/340 [00:48<03:21,  1.42it/s] 16%|█▌        | 55/340 [00:49<03:19,  1.43it/s] 16%|█▋        | 56/340 [00:50<03:32,  1.34it/s] 17%|█▋        | 57/340 [00:51<03:39,  1.29it/s] 17%|█▋        | 58/340 [00:51<03:28,  1.35it/s] 17%|█▋        | 59/340 [00:52<03:21,  1.39it/s] 18%|█▊        | 60/340 [00:53<03person number:  1
+no hand detected!!! [0, 1] [] [4, 19]
+person number:  1
+no hand detected!!! [0, 1] [] [5, 20]
+person number:  1
+no hand detected!!! [0, 1] [] [6, 21]
+person number:  1
+no hand detected!!! [0, 1] [] [7, 22]
+person number:  1
+no hand detected!!! [0, 1] [] [8, 23]
+person number:  1
+no hand detected!!! [0, 1] [] [9, 24]
+person number:  1
+no hand detected!!! [0, 1] [] [10, 25]
+person number:  1
+no hand detected!!! [0, 1] [] [11, 26]
+person number:  1
+no hand detected!!! [0, 1] [] [12, 27]
+person number:  1
+no hand detected!!! [0, 1] [] [13, 28]
+person number:  1
+no hand detected!!! [0, 1] [] [14, 29]
+person number:  1
+no hand detected!!! [0, 1] [] [15, 30]
+person number:  1
+no hand detected!!! [0, 1] [] [16, 31]
+person number:  1
+no hand detected!!! [0, 1] [] [17, 32]
+person number:  1
+no hand detected!!! [0, 1] [] [18, 33]
+person number:  1
+no hand detected!!! [0, 1] [] [19, 34]
+person number:  1
+no hand detected!!! [0, 1] [] [20, 35]
+person number:  1
+no hand detected!!! [0, 1] [] [21, 36]
+person number:  1
+no hand detected!!! [0, 1] [] [22, 37]
+:17,  1.42it/s] 18%|█▊        | 61/340 [00:53<03:12,  1.45it/s] 18%|█▊        | 62/340 [00:54<03:10,  1.46it/s] 19%|█▊        | 63/340 [00:55<03:10,  1.46it/s] 19%|█▉        | 64/340 [00:56<03:08,  1.47it/s] 19%|█▉        | 65/340 [00:56<03:05,  1.48it/s] 19%|█▉        | 66/340 [00:58<04:08,  1.10it/s] 20%|█▉        | 67/340 [00:58<03:49,  1.19it/s] 20%|██        | 68/340 [00:59<03:34,  1.27it/s] 20%|██        | 69/340 [01:00<03:27,  1.30it/s] 21%|██        | 70/340 [01:00<03:21,  1.34it/s] 21%|██        | 71/340 [01:01<03:19,  1.35it/s] 21%|██        | 72/340 [01:02<03:14,  1.38it/s] 21%|██▏       | 73/340 [01:03<03:12,  1.38it/s] 22%|██▏       | 74/340 [01:03<03:08,  1.41it/s] 22%|██▏       | 75/340 [01:04<03:06,  1.42it/s] 22%|██▏       | 76/340 [01:05<03:08,  1.40it/s] 23%|██▎       | 77/340 [01:05<03:05,  1.42it/s] 23%|██▎       | 78/340 [01:06<03:11,  1.37it/s] 23%|██▎       | 79/340 [01:07<03:06person number:  1
+no hand detected!!! [0, 1] [] [23, 38]
+person number:  1
+no hand detected!!! [0, 1] [] [24, 39]
+person number:  1
+no hand detected!!! [0, 1] [] [25, 40]
+person number:  1
+no hand detected!!! [0, 1] [] [26, 41]
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6730518341064453
+tid/tracked_ids/tracked_time [0 1] [0] [0, 42]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8337230682373047 hamer time:  0.16067123413085938
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6737031936645508
+tid/tracked_ids/tracked_time [0 1] [0] [0, 43]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.834625244140625 hamer time:  0.16092205047607422
+person number:  1
+no hand detected!!! [0, 1] [] [1, 44]
+person number:  1
+no hand detected!!! [0, 1] [] [2, 45]
+person number:  1
+no hand detected!!! [0, 1] [] [3, 46]
+person number:  1
+no hand detected!!! [0, 1] [] [4, 47]
+person number:  1
+no hand detected!!! [0, 1] [] [5, 48]
+person number:  1
+no hand detected!!! [0, 1] [] [6, 49]
+person number:  1
+no hand detected!!! [0, 1] [] [7, 50]
+person number:  1
+no hand detected!!! [0] [] [8, 51]
+person number:  1
+no hand detected!!! [0] [] [9]
+person number:  1
+no hand detected!!! [0] [] [10]
+person number:  1
+no hand detected!!! [0] [] [11]
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.7642889022827148
+tid/tracked_ids/tracked_time [0] [0] [0]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.9312801361083984 hamer time:  0.1669912338256836
+person number:  1
+no hand detected!!! [0] [] [1]
+,  1.40it/s] 24%|██▎       | 80/340 [01:07<03:02,  1.42it/s] 24%|██▍       | 81/340 [01:08<03:02,  1.42it/s] 24%|██▍       | 82/340 [01:09<03:00,  1.43it/s] 24%|██▍       | 83/340 [01:10<03:05,  1.39it/s] 25%|██▍       | 84/340 [01:10<03:13,  1.33it/s] 25%|██▌       | 85/340 [01:11<03:18,  1.28it/s] 25%|██▌       | 86/340 [01:12<03:15,  1.30it/s] 26%|██▌       | 87/340 [01:13<03:10,  1.33it/s] 26%|██▌       | 88/340 [01:13<03:05,  1.36it/s] 26%|██▌       | 89/340 [01:14<03:01,  1.38it/s] 26%|██▋       | 90/340 [01:15<02:57,  1.41it/s] 27%|██▋       | 91/340 [01:15<02:53,  1.43it/s] 27%|██▋       | 92/340 [01:16<02:50,  1.45it/s] 27%|██▋       | 93/340 [01:17<02:48,  1.47it/s] 28%|██▊       | 94/340 [01:17<02:47,  1.47it/s] 28%|██▊       | 95/340 [01:18<02:48,  1.46it/s] 28%|██▊       | 96/340 [01:19<02:46,  1.47it/s] 29%|██▊       | 97/340 [01:20<03:03,  1.32it/s] 29%|██▉       person number:  1
+no hand detected!!! [0] [] [2]
+person number:  1
+no hand detected!!! [0] [] [3]
+person number:  1
+no hand detected!!! [0] [] [4]
+person number:  1
+no hand detected!!! [0] [] [5]
+person number:  1
+no hand detected!!! [0] [] [6]
+person number:  1
+no hand detected!!! [0] [] [7]
+person number:  1
+no hand detected!!! [0] [] [8]
+person number:  1
+no hand detected!!! [0] [] [9]
+person number:  1
+no hand detected!!! [0] [] [10]
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6800532341003418
+tid/tracked_ids/tracked_time [0] [0] [0]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8338432312011719 hamer time:  0.15378999710083008
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6851661205291748
+tid/tracked_ids/tracked_time [0] [0] [0]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8454484939575195 hamer time:  0.16028237342834473
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6903493404388428
+tid/tracked_ids/tracked_time [0] [0] [0]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8428590297698975 hamer time:  0.1525096893310547
+person number:  1
+no hand detected!!! [0] [] [1]
+person number:  1
+no hand detected!!! [0] [] [2]
+person number:  1
+no hand detected!!! [0] [] [3]
+person number:  1
+no hand detected!!! [0] [] [4]
+person number:  1
+no hand detected!!! [0] [] [5]
+person number:  1
+no hand detected!!! [0] [] [6]
+| 98/340 [01:21<03:02,  1.33it/s] 29%|██▉       | 99/340 [01:21<02:56,  1.37it/s] 29%|██▉       | 100/340 [01:22<02:54,  1.37it/s] 30%|██▉       | 101/340 [01:23<02:50,  1.41it/s] 30%|███       | 102/340 [01:23<02:49,  1.40it/s] 30%|███       | 103/340 [01:24<02:47,  1.42it/s] 31%|███       | 104/340 [01:25<02:44,  1.43it/s] 31%|███       | 105/340 [01:25<02:42,  1.45it/s] 31%|███       | 106/340 [01:26<02:40,  1.45it/s] 31%|███▏      | 107/340 [01:27<02:40,  1.45it/s] 32%|███▏      | 108/340 [01:28<02:50,  1.36it/s] 32%|███▏      | 109/340 [01:28<02:57,  1.30it/s] 32%|███▏      | 110/340 [01:29<03:01,  1.27it/s] 33%|███▎      | 111/340 [01:30<02:53,  1.32it/s] 33%|███▎      | 112/340 [01:31<02:45,  1.37it/s] 33%|███▎      | 113/340 [01:31<02:43,  1.39it/s] 34%|███▎      | 114/340 [01:32<02:39,  1.42it/s] 34%|███▍      | 115/340 [01:33<02:40,  1.40it/s] 34%|███▍    person number:  1
+no hand detected!!! [0] [] [7]
+person number:  1
+no hand detected!!! [0] [] [8]
+person number:  1
+no hand detected!!! [0] [] [9]
+person number:  1
+no hand detected!!! [0] [] [10]
+person number:  1
+no hand detected!!! [0] [] [11]
+person number:  1
+no hand detected!!! [0] [] [12]
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6871328353881836
+tid/tracked_ids/tracked_time [0] [0] [0]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8410618305206299 hamer time:  0.1539289951324463
+person number:  1
+no hand detected!!! [0] [] [1]
+person number:  1
+no hand detected!!! [0] [] [2]
+person number:  1
+no hand detected!!! [0] [] [3]
+person number:  1
+no hand detected!!! [0] [] [4]
+person number:  1
+no hand detected!!! [0] [] [5]
+person number:  1
+no hand detected!!! [0] [] [6]
+person number:  1
+no hand detected!!! [0] [] [7]
+person number:  1
+no hand detected!!! [0] [] [8]
+person number:  1
+no hand detected!!! [0] [] [9]
+person number:  1
+no hand detected!!! [0] [] [10]
+person number:  1
+no hand detected!!! [0] [] [11]
+  | 116/340 [01:33<02:36,  1.43it/s] 34%|███▍      | 117/340 [01:34<02:35,  1.44it/s] 35%|███▍      | 118/340 [01:35<02:33,  1.45it/s] 35%|███▌      | 119/340 [01:35<02:32,  1.45it/s] 35%|███▌      | 120/340 [01:36<02:29,  1.47it/s] 36%|███▌      | 121/340 [01:37<02:27,  1.49it/s] 36%|███▌      | 122/340 [01:37<02:26,  1.49it/s] 36%|███▌      | 123/340 [01:38<02:36,  1.38it/s] 36%|███▋      | 124/340 [01:39<02:33,  1.41it/s] 37%|███▋      | 125/340 [01:40<02:29,  1.44it/s] 37%|███▋      | 126/340 [01:40<02:27,  1.45it/s] 37%|███▋      | 127/340 [01:41<02:29,  1.43it/s] 38%|███▊      | 128/340 [01:42<02:26,  1.45it/s] 38%|███▊      | 129/340 [01:42<02:24,  1.46it/s] 38%|███▊      | 130/340 [01:43<02:22,  1.47it/s] 39%|███▊      | 131/340 [01:44<02:21,  1.48it/s] 39%|███▉      | 132/340 [01:44<02:20,  1.48it/s] 39%|███▉      | 133/340 [01:45<02:25,  1.42it/s] person number:  1
+no hand detected!!! [0] [] [12]
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.673853874206543
+tid/tracked_ids/tracked_time [0] [0] [0]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8334238529205322 hamer time:  0.15956997871398926
+person number:  1
+no hand detected!!! [0] [] [1]
+person number:  1
+no hand detected!!! [0] [] [2]
+person number:  1
+no hand detected!!! [0] [] [3]
+person number:  1
+no hand detected!!! [0] [] [4]
+person number:  1
+no hand detected!!! [0] [] [5]
+person number:  1
+no hand detected!!! [0] [] [6]
+person number:  1
+no hand detected!!! [0] [] [7]
+person number:  1
+no hand detected!!! [0] [] [8]
+person number:  1
+no hand detected!!! [0] [] [9]
+person number:  1
+no hand detected!!! [0] [] [10]
+person number:  1
+no hand detected!!! [0] [] [11]
+person number:  1
+no hand detected!!! [0] [] [12]
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6820366382598877
+tid/tracked_ids/tracked_time [0] [0] [0]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8439614772796631 hamer time:  0.1619248390197754
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6809430122375488
+tid/tracked_ids/tracked_time [0] [0] [0]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8410000801086426 hamer time:  0.16005706787109375
+person number:  1
+no hand detected!!! [0] [] [1]
+39%|███▉      | 134/340 [01:46<02:24,  1.42it/s] 40%|███▉      | 135/340 [01:46<02:21,  1.45it/s] 40%|████      | 136/340 [01:47<02:29,  1.36it/s] 40%|████      | 137/340 [01:48<02:24,  1.40it/s] 41%|████      | 138/340 [01:49<02:22,  1.41it/s] 41%|████      | 139/340 [01:49<02:20,  1.43it/s] 41%|████      | 140/340 [01:50<02:18,  1.44it/s] 41%|████▏     | 141/340 [01:51<02:17,  1.44it/s] 42%|████▏     | 142/340 [01:51<02:17,  1.44it/s] 42%|████▏     | 143/340 [01:52<02:15,  1.45it/s] 42%|████▏     | 144/340 [01:53<02:13,  1.47it/s] 43%|████▎     | 145/340 [01:53<02:11,  1.48it/s] 43%|████▎     | 146/340 [01:54<02:10,  1.49it/s] 43%|████▎     | 147/340 [01:55<02:09,  1.49it/s] 44%|████▎     | 148/340 [01:55<02:08,  1.49it/s] 44%|████▍     | 149/340 [01:56<02:17,  1.38it/s] 44%|████▍     | 150/340 [01:57<02:24,  1.32it/s] 44%|████�person number:  1
+no hand detected!!! [0] [] [2]
+person number:  1
+no hand detected!!! [0] [] [3]
+person number:  1
+no hand detected!!! [0] [] [4]
+person number:  1
+no hand detected!!! [0] [] [5]
+person number:  1
+no hand detected!!! [0] [] [6]
+person number:  1
+no hand detected!!! [0] [] [7]
+person number:  1
+no hand detected!!! [0] [] [8]
+person number:  1
+no hand detected!!! [0] [] [9]
+person number:  1
+no hand detected!!! [0] [] [10]
+person number:  1
+no hand detected!!! [0] [] [11]
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.7129690647125244
+tid/tracked_ids/tracked_time [0] [0] [0]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.873448371887207 hamer time:  0.16047930717468262
+person number:  1
+no hand detected!!! [0] [] [1]
+person number:  1
+no hand detected!!! [0] [] [2]
+person number:  1
+no hand detected!!! [0] [] [3]
+person number:  1
+no hand detected!!! [0] [] [4]
+person number:  1
+no hand detected!!! [0] [] [5]
+person number:  1
+no hand detected!!! [0] [] [6]
+�     | 151/340 [01:58<02:18,  1.37it/s] 45%|████▍     | 152/340 [01:58<02:13,  1.41it/s] 45%|████▌     | 153/340 [01:59<02:10,  1.44it/s] 45%|████▌     | 154/340 [02:00<02:08,  1.45it/s] 46%|████▌     | 155/340 [02:01<02:08,  1.44it/s] 46%|████▌     | 156/340 [02:01<02:07,  1.45it/s] 46%|████▌     | 157/340 [02:02<02:05,  1.45it/s] 46%|████▋     | 158/340 [02:03<02:04,  1.46it/s] 47%|████▋     | 159/340 [02:03<02:03,  1.46it/s] 47%|████▋     | 160/340 [02:04<02:03,  1.46it/s] 47%|████▋     | 161/340 [02:05<02:01,  1.47it/s] 48%|████▊     | 162/340 [02:05<02:11,  1.36it/s] 48%|████▊     | 163/340 [02:06<02:08,  1.38it/s] 48%|████▊     | 164/340 [02:07<02:05,  1.41it/s] 49%|████▊     | 165/340 [02:07<02:01,  1.44it/s] 49%|████▉     | 166/340 [02:08<01:59,  1.46it/s] 49%|████▉     | 167/340 [02:09<01:57,  1.47it/s] 49%|████▉   person number:  1
+no hand detected!!! [0] [] [7]
+person number:  1
+no hand detected!!! [0] [] [8]
+person number:  1
+no hand detected!!! [0] [] [9]
+person number:  1
+no hand detected!!! [0] [] [10]
+person number:  1
+no hand detected!!! [0] [] [11]
+person number:  1
+no hand detected!!! [0] [] [12]
+person number:  1
+no hand detected!!! [0] [] [13]
+person number:  1
+no hand detected!!! [0] [] [14]
+person number:  1
+no hand detected!!! [0] [] [15]
+person number:  1
+no hand detected!!! [0] [] [16]
+person number:  1
+no hand detected!!! [0] [] [17]
+person number:  1
+no hand detected!!! [0] [] [18]
+person number:  1
+no hand detected!!! [0] [] [19]
+person number:  1
+no hand detected!!! [0] [] [20]
+person number:  1
+no hand detected!!! [0] [] [21]
+person number:  1
+no hand detected!!! [0] [] [22]
+person number:  1
+no hand detected!!! [0] [] [23]
+  | 168/340 [02:09<01:56,  1.48it/s] 50%|████▉     | 169/340 [02:10<01:55,  1.47it/s] 50%|█████     | 170/340 [02:11<01:55,  1.47it/s] 50%|█████     | 171/340 [02:12<01:54,  1.48it/s] 51%|█████     | 172/340 [02:12<01:53,  1.48it/s] 51%|█████     | 173/340 [02:13<01:52,  1.48it/s] 51%|█████     | 174/340 [02:14<01:53,  1.47it/s] 51%|█████▏    | 175/340 [02:14<01:51,  1.48it/s] 52%|█████▏    | 176/340 [02:15<01:50,  1.48it/s] 52%|█████▏    | 177/340 [02:16<01:50,  1.48it/s] 52%|█████▏    | 178/340 [02:16<01:49,  1.48it/s] 53%|█████▎    | 179/340 [02:17<01:48,  1.49it/s] 53%|█████▎    | 180/340 [02:18<01:48,  1.48it/s] 53%|█████▎    | 181/340 [02:18<01:48,  1.46it/s] 54%|█████▎    | 182/340 [02:19<01:49,  1.45it/s] 54%|█████▍    | 183/340 [02:20<01:48,  1.45it/s] 54%|█████▍    | 184/340 [02:20<01:47,  1.46it/s] 54%|�person number:  1
+no hand detected!!! [0] [] [24]
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6763527393341064
+tid/tracked_ids/tracked_time [0] [0] [0]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8303139209747314 hamer time:  0.153961181640625
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6618335247039795
+tid/tracked_ids/tracked_time [0] [0] [0]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8178458213806152 hamer time:  0.15601229667663574
+person number:  1
+no hand detected!!! [0] [] [1]
+person number:  1
+no hand detected!!! [0] [] [2]
+person number:  1
+no hand detected!!! [0] [] [3]
+person number:  1
+no hand detected!!! [0] [] [4]
+person number:  1
+no hand detected!!! [0] [] [5]
+person number:  1
+no hand detected!!! [0] [] [6]
+person number:  1
+no hand detected!!! [0] [] [7]
+person number:  1
+no hand detected!!! [0] [] [8]
+person number:  1
+no hand detected!!! [0] [] [9]
+person number:  1
+no hand detected!!! [0] [] [10]
+person number:  1
+no hand detected!!! [0] [] [11]
+person number:  1
+no hand detected!!! [0] [] [12]
+person number:  1
+no hand detected!!! [0] [] [13]
+�████▍    | 185/340 [02:21<01:45,  1.47it/s] 55%|█████▍    | 186/340 [02:22<01:44,  1.47it/s] 55%|█████▌    | 187/340 [02:23<01:50,  1.38it/s] 55%|█████▌    | 188/340 [02:23<01:54,  1.33it/s] 56%|█████▌    | 189/340 [02:24<01:50,  1.36it/s] 56%|█████▌    | 190/340 [02:25<01:47,  1.39it/s] 56%|█████▌    | 191/340 [02:25<01:44,  1.42it/s] 56%|█████▋    | 192/340 [02:26<01:45,  1.41it/s] 57%|█████▋    | 193/340 [02:27<01:43,  1.42it/s] 57%|█████▋    | 194/340 [02:27<01:41,  1.44it/s] 57%|█████▋    | 195/340 [02:28<01:41,  1.43it/s] 58%|█████▊    | 196/340 [02:29<01:40,  1.44it/s] 58%|█████▊    | 197/340 [02:30<01:39,  1.43it/s] 58%|█████▊    | 198/340 [02:30<01:38,  1.44it/s] 59%|█████▊    | 199/340 [02:31<01:37,  1.44it/s] 59%|█████▉    | 200/340 [02:32<01:36,  1.45it/s] 59%|█████▉    | 201/340 [0person number:  1
+no hand detected!!! [0] [] [14]
+person number:  1
+no hand detected!!! [0] [] [15]
+person number:  1
+no hand detected!!! [0] [] [16]
+person number:  1
+no hand detected!!! [0] [] [17]
+person number:  1
+no hand detected!!! [0] [] [18]
+person number:  1
+no hand detected!!! [0] [] [19]
+person number:  1
+no hand detected!!! [0] [] [20]
+person number:  1
+no hand detected!!! [0] [] [21]
+person number:  1
+no hand detected!!! [0] [] [22]
+person number:  1
+no hand detected!!! [0] [] [23]
+person number:  1
+no hand detected!!! [0] [] [24]
+person number:  1
+no hand detected!!! [0] [] [25]
+person number:  1
+no hand detected!!! [0] [] [26]
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6758730411529541
+tid/tracked_ids/tracked_time [0] [0] [0]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.8368008136749268 hamer time:  0.16092777252197266
+person number:  1
+no hand detected!!! [0] [] [1]
+person number:  1
+no hand detected!!! [0] [] [2]
+2:32<01:35,  1.45it/s] 59%|█████▉    | 202/340 [02:33<01:35,  1.45it/s] 60%|█████▉    | 203/340 [02:34<01:34,  1.44it/s] 60%|██████    | 204/340 [02:34<01:33,  1.45it/s] 60%|██████    | 205/340 [02:35<01:33,  1.45it/s] 61%|██████    | 206/340 [02:36<01:31,  1.46it/s] 61%|██████    | 207/340 [02:36<01:30,  1.47it/s] 61%|██████    | 208/340 [02:37<01:41,  1.30it/s] 61%|██████▏   | 209/340 [02:38<01:37,  1.35it/s] 62%|██████▏   | 210/340 [02:39<01:33,  1.38it/s] 62%|██████▏   | 211/340 [02:39<01:32,  1.39it/s] 62%|██████▏   | 212/340 [02:40<01:30,  1.41it/s] 63%|██████▎   | 213/340 [02:41<01:29,  1.42it/s] 63%|██████▎   | 214/340 [02:42<01:28,  1.42it/s] 63%|██████▎   | 215/340 [02:42<01:33,  1.34it/s] 64%|██████▎   | 216/340 [02:43<01:30,  1.37it/s] 64%|██████▍   | 217/340 [02:44<01:27,  1person number:  1
+no hand detected!!! [0] [] [3]
+person number:  1
+no hand detected!!! [0] [] [4]
+person number:  1
+no hand detected!!! [0] [] [5]
+person number:  1
+no hand detected!!! [0] [] [6]
+person number:  1
+no hand detected!!! [0] [] [7]
+person number:  1
+no hand detected!!! [0] [] [8]
+person number:  1
+no hand detected!!! [0] [] [9]
+person number:  1
+no hand detected!!! [0] [] [10]
+person number:  1
+no hand detected!!! [0] [] [11]
+person number:  1
+no hand detected!!! [0] [] [12]
+person number:  1
+no hand detected!!! [0] [] [13]
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6288373470306396
+tid/tracked_ids/tracked_time [0] [0] [0]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.7969510555267334 hamer time:  0.16811370849609375
+person number:  1
+no hand detected!!! [0] [] [1]
+person number:  1
+no hand detected!!! [0] [] [2]
+person number:  1
+no hand detected!!! [0] [] [3]
+person number:  1
+no hand detected!!! [0] [] [4]
+.40it/s] 64%|██████▍   | 218/340 [02:44<01:24,  1.45it/s] 64%|██████▍   | 219/340 [02:45<01:21,  1.49it/s] 65%|██████▍   | 220/340 [02:46<01:19,  1.52it/s] 65%|██████▌   | 221/340 [02:46<01:17,  1.54it/s] 65%|██████▌   | 222/340 [02:47<01:15,  1.55it/s] 66%|██████▌   | 223/340 [02:48<01:15,  1.55it/s] 66%|██████▌   | 224/340 [02:48<01:13,  1.57it/s] 66%|██████▌   | 225/340 [02:49<01:12,  1.60it/s] 66%|██████▋   | 226/340 [02:49<01:11,  1.58it/s] 67%|██████▋   | 227/340 [02:50<01:11,  1.59it/s] 67%|██████▋   | 228/340 [02:51<01:09,  1.60it/s] 67%|██████▋   | 229/340 [02:51<01:15,  1.48it/s] 68%|██████▊   | 230/340 [02:52<01:14,  1.48it/s] 68%|██████▊   | 231/340 [02:53<01:14,  1.46it/s] 68%|██████▊   | 232/340 [02:54<01:14,  1.46it/s] 69%|██████▊   | 233/340 [02:54<01:12,  1person number:  1
+no hand detected!!! [0] [] [5]
+person number:  1
+no hand detected!!! [0] [] [6]
+person number:  1
+no hand detected!!! [0] [] [7]
+person number:  1
+no hand detected!!! [0] [] [8]
+person number:  1
+no hand detected!!! [0] [] [9]
+person number:  1
+no hand detected!!! [0] [] [10]
+person number:  1
+no hand detected!!! [0] [] [11]
+person number:  1
+no hand detected!!! [0] [] [12]
+person number:  1
+no hand detected!!! [0] [] [13]
+person number:  1
+no hand detected!!! [0] [] [14]
+person number:  1
+no hand detected!!! [0] [] [15]
+person number:  1
+no hand detected!!! [0] [] [16]
+person number:  1
+no hand detected!!! [0] [] [17]
+person number:  1
+no hand detected!!! [0] [] [18]
+person number:  1
+no hand detected!!! [0] [] [19]
+person number:  1
+no hand detected!!! [0] [] [20]
+.47it/s] 69%|██████▉   | 234/340 [02:55<01:12,  1.47it/s] 69%|██████▉   | 235/340 [02:56<01:10,  1.48it/s] 69%|██████▉   | 236/340 [02:56<01:10,  1.47it/s] 70%|██████▉   | 237/340 [02:57<01:09,  1.48it/s] 70%|███████   | 238/340 [02:58<01:08,  1.48it/s] 70%|███████   | 239/340 [02:58<01:08,  1.48it/s] 71%|███████   | 240/340 [02:59<01:09,  1.44it/s] 71%|███████   | 241/340 [03:00<01:08,  1.44it/s] 71%|███████   | 242/340 [03:00<01:07,  1.45it/s] 71%|███████▏  | 243/340 [03:01<01:06,  1.45it/s] 72%|███████▏  | 244/340 [03:02<01:06,  1.44it/s] 72%|███████▏  | 245/340 [03:02<01:05,  1.45it/s] 72%|███████▏  | 246/340 [03:03<01:03,  1.48it/s] 73%|███████▎  | 247/340 [03:04<01:01,  1.51it/s] 73%|███████▎  | 248/340 [03:04<00:59,  1.54it/s] 73%|███████▎  | 249/340 [0person number:  1
+no hand detected!!! [0] [] [21]
+person number:  1
+no hand detected!!! [0] [] [22]
+person number:  1
+no hand detected!!! [0] [] [23]
+person number:  1
+no hand detected!!! [0] [] [24]
+person number:  1
+no hand detected!!! [0] [] [25]
+person number:  1
+no hand detected!!! [0] [] [26]
+person number:  1
+no hand detected!!! [0] [] [27]
+person number:  1
+no hand detected!!! [0] [] [28]
+person number:  1
+no hand detected!!! [0] [] [29]
+person number:  1
+no hand detected!!! [0] [] [30]
+person number:  1
+no hand detected!!! [0] [] [31]
+person number:  1
+no hand detected!!! [0] [] [32]
+person number:  1
+no hand detected!!! [0] [] [33]
+person number:  1
+no hand detected!!! [0] [] [34]
+person number:  1
+no hand detected!!! [0] [] [35]
+person number:  1
+no hand detected!!! [0] [] [36]
+3:05<00:58,  1.56it/s] 74%|███████▎  | 250/340 [03:06<00:57,  1.56it/s] 74%|███████▍  | 251/340 [03:06<00:56,  1.57it/s] 74%|███████▍  | 252/340 [03:07<00:55,  1.58it/s] 74%|███████▍  | 253/340 [03:08<00:55,  1.56it/s] 75%|███████▍  | 254/340 [03:08<00:54,  1.59it/s] 75%|███████▌  | 255/340 [03:09<00:53,  1.58it/s] 75%|███████▌  | 256/340 [03:10<00:58,  1.44it/s] 76%|███████▌  | 257/340 [03:10<00:55,  1.49it/s] 76%|███████▌  | 258/340 [03:11<00:53,  1.53it/s] 76%|███████▌  | 259/340 [03:11<00:52,  1.55it/s] 76%|███████▋  | 260/340 [03:12<00:51,  1.55it/s] 77%|███████▋  | 261/340 [03:13<00:50,  1.56it/s] 77%|███████▋  | 262/340 [03:13<00:49,  1.57it/s] 77%|███████▋  | 263/340 [03:14<00:48,  1.58it/s] 78%|███████▊  | 264/340 [03:15<00:47,  1.59it/s] 78%|██person number:  1
+no hand detected!!! [0] [] [37]
+person number:  1
+no hand detected!!! [0] [] [38]
+person number:  1
+no hand detected!!! [0] [] [39]
+person number:  1
+no hand detected!!! [0] [] [40]
+person number:  1
+no hand detected!!! [0] [] [41]
+person number:  1
+no hand detected!!! [0] [] [42]
+person number:  1
+no hand detected!!! [0] [] [43]
+person number:  1
+no hand detected!!! [0] [] [44]
+person number:  1
+no hand detected!!! [0] [] [45]
+person number:  1
+no hand detected!!! [0] [] [46]
+person number:  1
+no hand detected!!! [0] [] [47]
+person number:  1
+no hand detected!!! [0] [] [48]
+person number:  1
+no hand detected!!! [0] [] [49]
+person number:  1
+no hand detected!!! [0] [] [50]
+person number:  1
+no hand detected!!! [] [] [51]
+█████▊  | 265/340 [03:15<00:47,  1.59it/s] 78%|███████▊  | 266/340 [03:16<00:46,  1.59it/s] 79%|███████▊  | 267/340 [03:16<00:45,  1.61it/s] 79%|███████▉  | 268/340 [03:17<00:44,  1.62it/s] 79%|███████▉  | 269/340 [03:18<00:43,  1.61it/s] 79%|███████▉  | 270/340 [03:18<00:43,  1.60it/s] 80%|███████▉  | 271/340 [03:19<00:43,  1.60it/s] 80%|████████  | 272/340 [03:20<00:42,  1.60it/s] 80%|████████  | 273/340 [03:20<00:42,  1.58it/s] 81%|████████  | 274/340 [03:21<00:41,  1.59it/s] 81%|████████  | 275/340 [03:21<00:40,  1.59it/s] 81%|████████  | 276/340 [03:22<00:40,  1.59it/s] 81%|████████▏ | 277/340 [03:23<00:39,  1.58it/s] 82%|████████▏ | 278/340 [03:23<00:39,  1.58it/s] 82%|████████▏ | 279/340 [03:24<00:38,  1.58it/s] 82%|████████▏ | 280/person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+340 [03:25<00:38,  1.56it/s] 83%|████████▎ | 281/340 [03:25<00:37,  1.57it/s] 83%|████████▎ | 282/340 [03:26<00:36,  1.58it/s] 83%|████████▎ | 283/340 [03:27<00:35,  1.59it/s] 84%|████████▎ | 284/340 [03:27<00:35,  1.58it/s] 84%|████████▍ | 285/340 [03:28<00:34,  1.58it/s] 84%|████████▍ | 286/340 [03:28<00:34,  1.59it/s] 84%|████████▍ | 287/340 [03:29<00:33,  1.57it/s] 85%|████████▍ | 288/340 [03:30<00:33,  1.54it/s] 85%|████████▌ | 289/340 [03:30<00:33,  1.51it/s] 85%|████████▌ | 290/340 [03:31<00:33,  1.49it/s] 86%|████████▌ | 291/340 [03:32<00:33,  1.48it/s] 86%|████████▌ | 292/340 [03:33<00:32,  1.47it/s] 86%|████████▌ | 293/340 [03:33<00:32,  1.46it/s] 86%|████████▋ | 294/340 [03:34<00:31,  1.47it/s] 87%|████████▋ | 295/340 person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+no hand detected!!! [] [] []
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6307761669158936
+tid/tracked_ids/tracked_time [0] [0] [0]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.7822132110595703 hamer time:  0.15143704414367676
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6460216045379639
+tid/tracked_ids/tracked_time [0] [0] [0]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.7953941822052002 hamer time:  0.14937257766723633
+person number:  1
+no hand detected!!! [0] [] [1]
+[03:35<00:30,  1.46it/s] 87%|████████▋ | 296/340 [03:35<00:29,  1.47it/s] 87%|████████▋ | 297/340 [03:36<00:29,  1.47it/s] 88%|████████▊ | 298/340 [03:37<00:28,  1.48it/s] 88%|████████▊ | 299/340 [03:37<00:27,  1.47it/s] 88%|████████▊ | 300/340 [03:38<00:26,  1.48it/s] 89%|████████▊ | 301/340 [03:39<00:26,  1.49it/s] 89%|████████▉ | 302/340 [03:39<00:24,  1.52it/s] 89%|████████▉ | 303/340 [03:40<00:23,  1.55it/s] 89%|████████▉ | 304/340 [03:41<00:23,  1.52it/s] 90%|████████▉ | 305/340 [03:41<00:22,  1.53it/s] 90%|█████████ | 306/340 [03:42<00:22,  1.54it/s] 90%|█████████ | 307/340 [03:42<00:21,  1.55it/s] 91%|█████████ | 308/340 [03:43<00:21,  1.46it/s] 91%|█████████ | 309/340 [03:44<00:22,  1.39it/s] 91%|█████████ | 310/340 [03:person number:  1
+no hand detected!!! [0] [] [2]
+person number:  1
+no hand detected!!! [0] [] [3]
+person number:  1
+no hand detected!!! [0] [] [4]
+person number:  1
+no hand detected!!! [0] [] [5]
+person number:  1
+no hand detected!!! [0] [] [6]
+person number:  1
+no hand detected!!! [0] [] [7]
+person number:  1
+no hand detected!!! [0] [] [8]
+person number:  1
+no hand detected!!! [0] [] [9]
+person number:  1
+no hand detected!!! [0] [] [10]
+person number:  1
+no hand detected!!! [0] [] [11]
+person number:  1
+no hand detected!!! [0] [] [12]
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6316769123077393
+tid/tracked_ids/tracked_time [0] [0] [0]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.7896072864532471 hamer time:  0.1579303741455078
+person number:  1
+no hand detected!!! [0] [] [1]
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.6349036693572998
+tid/tracked_ids/tracked_time [0] [0] [0]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.7891969680786133 hamer time:  0.15429329872131348
+person number:  1
+append left
+sort_idx [0] [0]
+right:  [0]
+[0]
+vit time: 0.632366418838501
+tid/tracked_ids/tracked_time [0] [0] [0]
+length:  1 1
+pred_2d:  (1, 21, 3)
+all_bboxes:  (1, 4)
+one step time:  0.7886257171630859 hamer time:  0.15625929832458496
+45<00:20,  1.45it/s] 91%|█████████▏| 311/340 [03:45<00:19,  1.48it/s] 92%|█████████▏| 312/340 [03:46<00:18,  1.51it/s] 92%|█████████▏| 313/340 [03:47<00:17,  1.54it/s] 92%|█████████▏| 314/340 [03:47<00:16,  1.56it/s] 93%|█████████▎| 315/340 [03:48<00:15,  1.57it/s] 93%|█████████▎| 316/340 [03:48<00:15,  1.58it/s] 93%|█████████▎| 317/340 [03:49<00:14,  1.58it/s] 94%|█████████▎| 318/340 [03:50<00:14,  1.55it/s] 94%|█████████▍| 319/340 [03:50<00:13,  1.54it/s] 94%|█████████▍| 320/340 [03:51<00:13,  1.53it/s] 94%|█████████▍| 321/340 [03:52<00:12,  1.55it/s] 95%|█████████▍| 322/340 [03:52<00:12,  1.45it/s] 95%|█████████▌| 323/340 [03:53<00:11,  1.50it/s] 95%|█████████▌| 324/340 [03:54<00:11,  1.42it/s] 96%|██████person number:  1
+no hand detected!!! [0] [] [1]
+person number:  1
+no hand detected!!! [0] [] [2]
+person number:  1
+no hand detected!!! [0] [] [3]
+person number:  1
+no hand detected!!! [0] [] [4]
+person number:  1
+no hand detected!!! [0] [] [5]
+person number:  1
+no hand detected!!! [0] [] [6]
+person number:  1
+no hand detected!!! [0] [] [7]
+person number:  1
+no hand detected!!! [0] [] [8]
+person number:  1
+no hand detected!!! [0] [] [9]
+person number:  1
+no hand detected!!! [0] [] [10]
+person number:  1
+no hand detected!!! [0] [] [11]
+person number:  1
+no hand detected!!! [0] [] [12]
+person number:  1
+no hand detected!!! [0] [] [13]
+person number:  1
+no hand detected!!! [0] [] [14]
+███▌| 325/340 [03:55<00:10,  1.37it/s] 96%|█████████▌| 326/340 [03:55<00:09,  1.43it/s] 96%|█████████▌| 327/340 [03:56<00:08,  1.47it/s] 96%|█████████▋| 328/340 [03:57<00:08,  1.50it/s] 97%|█████████▋| 329/340 [03:57<00:07,  1.51it/s] 97%|█████████▋| 330/340 [03:58<00:06,  1.53it/s] 97%|█████████▋| 331/340 [03:58<00:05,  1.55it/s] 98%|█████████▊| 332/340 [03:59<00:05,  1.56it/s] 98%|█████████▊| 333/340 [04:00<00:04,  1.57it/s] 98%|█████████▊| 334/340 [04:00<00:03,  1.58it/s] 99%|█████████▊| 335/340 [04:01<00:03,  1.57it/s] 99%|█████████▉| 336/340 [04:02<00:02,  1.57it/s] 99%|█████████▉| 337/340 [04:02<00:01,  1.58it/s] 99%|█████████▉| 338/340 [04:03<00:01,  1.59it/s]100%|█████████▉| 339/340 [04:04<00:00,  1.60it/person number:  1
+no hand detected!!! [0] [] [15]
+s]100%|██████████| 340/340 [04:04<00:00,  1.60it/s]100%|██████████| 340/340 [04:04<00:00,  1.39it/s]
+save to  /scratch/mthakur/manifold/data/dynhamr/hamer_out/me 3/results /scratch/mthakur/manifold/data/dynhamr/hamer_out/me 3/results/demo_me 3.pkl
+rename /scratch/mthakur/manifold/data/dynhamr/hamer_out/me 3/results/demo_me 3.pkl into  /scratch/mthakur/manifold/data/dynhamr/hamer_out/me 3/me 3.pkl
+exporting sequence results in export_hamer.py...
+exporting hamer predictions from /scratch/mthakur/manifold/data/dynhamr/hamer_out/me 3/me 3.pkl to /scratch/mthakur/manifold/data/dynhamr/track_preds/me 3
+[0]
+0 0 [0] [0]
+[0]
+0 0 [0] [0]
+[0 1]
+0 0 [0 1] [0, 1]
+1 1 [0 1] [0, 1]
+[0 1]
+0 0 [0 1] [0, 1]
+1 1 [0 1] [0, 1]
+[0 1]
+0 0 [0 1] [0]
+[0 1]
+0 0 [0 1] [0, 1]
+1 1 [0 1] [0, 1]
+[0 1]
+0 0 [0 1] [0, 1]
+1 1 [0 1] [0, 1]
+[0 1]
+0 0 [0 1] [0, 1]
+1 1 [0 1] [0, 1]
+[0, 1]
+[0 1]
+0 0 [0 1] [0]
+[0 1]
+0 0 [0 1] [0]
+[0 1]
+0 0 [0 1] [0]
+[0 1]
+0 0 [0 1] [0]
+[0 1]
+0 0 [0 1] [0]
+[0, 1]
+[0, 1]
+[0 1]
+0 0 [0 1] [0]
+[0 1]
+0 0 [0 1] [0]
+[0 1]
+0 0 [0 1] [0]
+[0 1]
+0 0 [0 1] [0]
+[0 1]
+0 0 [0 1] [0]
+[0 1]
+0 0 [0 1] [0]
+[0 1]
+0 0 [0 1] [0]
+[0, 1]
+[0 1]
+0 0 [0 1] [0]
+[0 1]
+0 0 [0 1] [0]
+[0 1]
+0 0 [0 1] [0]
+[0, 1]
+[0, 1]
+[0 1]
+0 0 [0 1] [0]
+[0 1]
+0 0 [0 1] [0]
+[0 1]
+0 0 [0 1] [0]
+[0 1]
+0 0 [0 1] [0]
+[0 1]
+0 0 [0 1] [0]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0 1]
+0 0 [0 1] [0, 1]
+1 1 [0 1] [0, 1]
+[0 1]
+0 0 [0 1] [0]
+[0 1]
+0 0 [0 1] [0]
+[0 1]
+0 0 [0 1] [0]
+[0 1]
+0 0 [0 1] [0]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0 1]
+0 0 [0 1] [0]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0 1]
+0 0 [0 1] [0]
+[0 1]
+0 0 [0 1] [0]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0, 1]
+[0 1]
+0 0 [0 1] [0]
+[0 1]
+0 0 [0 1] [0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+0 0 [0] [0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+0 0 [0] [0]
+[0]
+0 0 [0] [0]
+[0]
+0 0 [0] [0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+0 0 [0] [0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+0 0 [0] [0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+0 0 [0] [0]
+[0]
+0 0 [0] [0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+0 0 [0] [0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+0 0 [0] [0]
+[0]
+0 0 [0] [0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+0 0 [0] [0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+0 0 [0] [0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+0 0 [0] [0]
+[0]
+0 0 [0] [0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+0 0 [0] [0]
+[0]
+[0]
+0 0 [0] [0]
+[0]
+0 0 [0] [0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+[0]
+exporting keypoints from /scratch/mthakur/manifold/data/dynhamr/hamer_out/me 3/me 3.pkl to /scratch/mthakur/manifold/data/dynhamr/track_preds/me 3
+exporting shot changes to /scratch/mthakur/manifold/data/dynhamr/shot_idcs/me 3.json
+RUNNING SLAM ON me 3
+[0] 0 (array([0]),) /scratch/mthakur/manifold/data/images/me 3 /scratch/mthakur/manifold/data/dynhamr/shot_idcs/me 3.json
+[(0, 340)]
+img_dir, map_dir, start, end, intrins_path /scratch/mthakur/manifold/data/images/me 3 /scratch/mthakur/manifold/data/dynhamr/cameras/me 3/shot-0 0 340 None
+/usr/bin/python /scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr/preproc/run_slam.py -i /scratch/mthakur/manifold/data/images/me 3 --map_dir /scratch/mthakur/manifold/data/dynhamr/cameras/me 3/shot-0 --disable_vis --end 340
+['/usr/bin/python', '/scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr/preproc/run_slam.py', '-i', '/scratch/mthakur/manifold/data/images/me 3', '--map_dir', '/scratch/mthakur/manifold/data/dynhamr/cameras/me 3/shot-0', '--disable_vis', '--end', '340']
+Wed Mar 18 00:37:37 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                    0 |
+| N/A   54C    P0             75W /  300W |     565MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A         3483090      C   /usr/bin/python                         556MiB |
++-----------------------------------------------------------------------------------------+
+CUDA COUNT = 1
+PROJ SRC /scratch/mthakur/manifold/models/dyn-hamr
+DROID SRC /scratch/mthakur/manifold/models/dyn-hamr/third-party/DROID-SLAM
+intrins shape torch.Size([340, 6]) num images 340
+/scratch/mthakur/manifold/models/dyn-hamr/_DATA/droid.pth
+0it [00:00, ?it/s]/usr/local/lib/python3.10/dist-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3190.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+8 keyframes in map
+################################
+1it [00:01,  1.67s/it]7it [00:01,  5.21it/s]13it [00:01, 10.67it/s]19it [00:01, 16.79it/s]25it [00:02, 23.29it/s]31it [00:02, 29.71it/s]37it [00:02, 35.80it/s]43it [00:02, 41.05it/s]49it [00:02, 45.50it/s]55it [00:02, 47.97it/s]61it [00:02, 50.93it/s]67it [00:02, 53.39it/s]73it [00:02, 54.95it/s]80it [00:03, 58.22it/s]90it [00:03, 69.90it/s]100it [00:03, 78.58it/s]110it [00:03, 83.62it/s]120it [00:03, 87.24it/s]131it [00:03, 91.36it/s]141it [00:03, 93.54it/s]151it [00:03, 94.96it/s]162it [00:03, 96.78it/s]172it [00:03, 97.63it/s]183it [00:04, 98.59it/s]194it [00:04, 99.09it/s]205it [00:04, 99.55it/s]215it [00:04, 99.66it/s]226it [00:04, 99.86it/s]237it [00:04, 99.89it/s]248it [00:04, 100.08it/s]259it [00:04, 100.50it/s]270it [00:04, 100.49it/s]281it [00:05, 100.75it/s]292it [00:05, 100.89it/s]303it [00:05, 101.09it/s]314it [00:05, 62.02it/s] 323it [00:05, 61.68it/s]331it [00:05, 60.18it/s]338it [00:06, 58.57it/s]340it [00:06, 55.93it/s]
+Global BA Iteration #1
+Global BA Iteration #2
+Global BA Iteration #3
+Global BA Iteration #4
+Global BA Iteration #5
+Global BA Iteration #6
+Global BA Iteration #7
+################################
+Global BA Iteration #1
+Global BA Iteration #2
+Global BA Iteration #3
+Global BA Iteration #4
+Global BA Iteration #5
+Global BA Iteration #6
+Global BA Iteration #7
+Global BA Iteration #8
+Global BA Iteration #9
+Global BA Iteration #10
+Global BA Iteration #11
+Global BA Iteration #12
+SAVING CAMERA INTRINS AND EXTRINS IN /scratch/mthakur/manifold/data/dynhamr/cameras/me 3/shot-0
+INTRINS tensor([1500., 1500.,  960.,  540., 1920., 1080.])
+8 keyframes in map
+c2w torch.Size([8, 4, 4])
+points torch.Size([971, 3])
+colors torch.Size([971, 3])
+saved 8 keyframes to /scratch/mthakur/manifold/data/dynhamr/cameras/me 3/shot-0
+frame, hand track, slam camera:  0.005666017532348633 288.49281644821167 15.64177131652832
+end of check_data_sources, time:  304.1402792930603
+FOUND 340/340 FRAMES FOR SHOT 0
+USING TOTAL 340 1920x1080 IMGS
+raw TRACK IDS and LENGTHS ['000', '001'] [56, 6]
+TRACK LENGTHS [] [56, 6]
+TRACK IDS []
+START 0 END 0
+SAVED TRACK INFO
+CUDA_VISIBLE_DEVICES 0
+Error executing job with overrides: ['data=video', 'run_opt=True', 'run_vis=True', 'run_prior=False', 'data.root=/scratch/mthakur/manifold/data', 'data.video_dir=images', 'data.seq=me 3', 'data.ext=mp4', 'data.src_path=/scratch/mthakur/manifold/data/images/me 3.mp4', 'data.start_idx=0', 'data.end_idx=-1', 'is_static=False', 'temporal_smooth=False', 'HMP.vid_path=/scratch/mthakur/manifold/data/images/me 3', 'optim.root.num_iters=40', 'optim.smooth.num_iters=60', 'log_root=/scratch/mthakur/manifold/outputs/dynhamr/logs']
+Traceback (most recent call last):
+  File "/scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr/run_opt.py", line 207, in <module>
+    main()
+  File "/usr/local/lib/python3.10/dist-packages/hydra/main.py", line 94, in decorated_main
+    _run_hydra(
+  File "/usr/local/lib/python3.10/dist-packages/hydra/_internal/utils.py", line 394, in _run_hydra
+    _run_app(
+  File "/usr/local/lib/python3.10/dist-packages/hydra/_internal/utils.py", line 457, in _run_app
+    run_and_report(
+  File "/usr/local/lib/python3.10/dist-packages/hydra/_internal/utils.py", line 223, in run_and_report
+    raise ex
+  File "/usr/local/lib/python3.10/dist-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/usr/local/lib/python3.10/dist-packages/hydra/_internal/utils.py", line 458, in <lambda>
+    lambda: hydra.run(
+  File "/usr/local/lib/python3.10/dist-packages/hydra/_internal/hydra.py", line 132, in run
+    _ = ret.return_value
+  File "/usr/local/lib/python3.10/dist-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+  File "/usr/local/lib/python3.10/dist-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+  File "/scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr/run_opt.py", line 198, in main
+    run_opt(cfg, dataset, out_dir, device)
+  File "/scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr/run_opt.py", line 75, in run_opt
+    loader = DataLoader(dataset, batch_size=B, shuffle=False)
+  File "/usr/local/lib/python3.10/dist-packages/torch/utils/data/dataloader.py", line 350, in __init__
+    batch_sampler = BatchSampler(sampler, batch_size, drop_last)
+  File "/usr/local/lib/python3.10/dist-packages/torch/utils/data/sampler.py", line 232, in __init__
+    raise ValueError("batch_size should be a positive integer value, "
+ValueError: batch_size should be a positive integer value, but got batch_size=0
+srun: error: gpu014: task 0: Exited with exit code 1
+srun: launch/slurm: _step_signal: Terminating StepId=9398005.0
+===============================================
+Job finished at: Wed Mar 18 00:37:53 CET 2026
+Execution took 0.09 hours
+Writing output to SLURM_logs/dynhamr-inference_036.out
+===============================================
