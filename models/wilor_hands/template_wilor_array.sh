@@ -23,8 +23,7 @@
 
 set -euo pipefail
 
-SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-MANIFEST="${SCRIPT_DIR}/../manifests/__MANIFEST_FILE__"
+MANIFEST="__MANIFEST_PATH__"
 TASK_ID="${SLURM_ARRAY_TASK_ID:-0}"
 
 if [[ ! -f "${MANIFEST}" ]]; then

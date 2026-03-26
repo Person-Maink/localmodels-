@@ -97,7 +97,7 @@ while IFS= read -r bucket_label; do
     sed \
         -e "s|__TIME__|$(escape_sed_replacement "${bucket_time}")|g" \
         -e "s|__ARRAY_SPEC__|$(escape_sed_replacement "${array_spec}")|g" \
-        -e "s|__MANIFEST_FILE__|$(escape_sed_replacement "$(basename "${manifest}")")|g" \
+        -e "s|__MANIFEST_PATH__|$(escape_sed_replacement "${manifest}")|g" \
         "${ARRAY_TEMPLATE}" > "${array_script}"
 
     echo "Submitting vipe bucket ${bucket_time} with ${task_count} videos"

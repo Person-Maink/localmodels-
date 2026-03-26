@@ -29,8 +29,7 @@ set -euo pipefail
 export HYDRA_FULL_ERROR=1
 export LD_LIBRARY_PATH=/cm/local/apps/gcc/10.2.0/lib64/libstdc++.so.6.0.28:$LD_LIBRARY_PATH
 
-SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-MANIFEST="${SCRIPT_DIR}/../manifests/__MANIFEST_FILE__"
+MANIFEST="__MANIFEST_PATH__"
 TASK_ID="${SLURM_ARRAY_TASK_ID:-0}"
 
 if [[ ! -f "${MANIFEST}" ]]; then
