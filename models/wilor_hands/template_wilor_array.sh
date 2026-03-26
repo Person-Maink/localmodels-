@@ -1,5 +1,4 @@
 #!/bin/bash
-set -euo pipefail
 
 # ================ SLURM SETUP ================
 # Available HPC Partitions:
@@ -21,6 +20,8 @@ set -euo pipefail
 #SBATCH --account=Education-EEMCS-MSc-DSAIT
 #SBATCH --array=__ARRAY_SPEC__
 #SBATCH --output=%x_%A_%a.bootstrap.out
+
+set -euo pipefail
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 MANIFEST="${SCRIPT_DIR}/../manifests/__MANIFEST_FILE__"
