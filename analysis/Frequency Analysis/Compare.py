@@ -10,6 +10,7 @@ from scipy.signal import butter, filtfilt, welch
 
 from _path_setup import PROJECT_ROOT  # ensures root imports work
 import FILENAME as CONFIG
+from mano_pickle import load_mano_pickle
 from npy_io import list_frame_folders, load_frame_records
 
 # NumPy legacy aliases for old pickle compatibility.
@@ -28,13 +29,13 @@ FPS = 30.0
 FILTER_ORDER = 3
 HIGHPASS_CUTOFF = 2.0
 LOWPASS_CUTOFF = 12.0
-DEFAULT_SLOT_NAMES = ("A", "B", "C")
+DEFAULT_SLOT_NAMES = ("A", "B", "C", "D")
+LINE_STYLES = ("-", "--", "-.", ":")
 
 
 @lru_cache(maxsize=1)
 def _load_j_regressor(mano_right_path):
-    with open(mano_right_path, "rb") as f:
-        mano = pickle.load(f, encoding="latin1")
+    mano = load_mano_pickle(mano_right_path)
     return mano["J_regressor"]
 
 
@@ -63,12 +64,13 @@ def _default_all_model_sources():
     return [
         getattr(CONFIG, "WILOR_ROOT", None),
         getattr(CONFIG, "HAMBA_ROOT", None),
+        getattr(CONFIG, "DYNHAMR_ROOT", None),
         getattr(CONFIG, "MEDIAPIPE_ROOT", None),
     ]
 
 
 def _default_all_model_labels():
-    return ["WILOR", "HAMBA", "MEDIAPIPE"]
+    return ["WILOR", "HAMBA", "DYNHAMR", "MEDIAPIPE"]
 
 
 def _source_kind(path_text):
@@ -291,7 +293,7 @@ def build_compare_figure(analysis_data, figsize_inches=(13, 11), dpi=100):
         label = entry["label"]
         result = entry["result"]
 
-        style = "-" if i == 0 else "--"
+        style = LINE_STYLES[i % len(LINE_STYLES)]
         color = f"C{i}"
         t = np.arange(len(result["magnitude"])) / FPS
 
@@ -346,7 +348,7 @@ def build_compare_figure(analysis_data, figsize_inches=(13, 11), dpi=100):
 
 def main():
     parser = argparse.ArgumentParser(description="Compare frequency analyses across configured sources.")
-    parser.add_argument("--all-models", action="store_true", help="Compare WiLoR, Hamba, and MediaPipe together.")
+    parser.add_argument("--all-models", action="store_true", help="Compare WiLoR, Hamba, DynHAMR, and MediaPipe together.")
     args = parser.parse_args()
 
     analysis_data = run_compare_analysis({"all_models": args.all_models})

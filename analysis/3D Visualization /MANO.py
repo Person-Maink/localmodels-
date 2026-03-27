@@ -8,6 +8,7 @@ from vedo import Mesh, Plotter, Text2D
 
 from _path_setup import PROJECT_ROOT  # ensures root imports work
 from FILENAME import MANO_RIGHT_PATH  
+from mano_pickle import load_mano_pickle
 
 
 RIGHT_COLOR = "crimson"
@@ -43,9 +44,7 @@ def _to_numpy_array(value, dtype=np.float32):
 
 def load_mano_template(path):
     apply_numpy_legacy_aliases()
-
-    with open(path, "rb") as f:
-        mano = pickle.load(f, encoding="latin1")
+    mano = load_mano_pickle(path)
 
     if "v_template" not in mano:
         raise KeyError(f"Missing 'v_template' in MANO file: {path}")

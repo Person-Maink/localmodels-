@@ -207,6 +207,15 @@ _MEDIAPIPE_COMP_CLIP = "120-2_clip_5_amplified_keypoints.csv"
 # _MEDIAPIPE_COMP_CLIP = "clip_2_amplified_keypoints.csv"
 # _MEDIAPIPE_COMP_CLIP = "clip_3_amplified_keypoints.csv"
 
+# DynHAMR normalized clip (comment in/out one line)
+_DYNHAMR_CLIP = "me 1"
+# _DYNHAMR_CLIP = "me 2"
+# _DYNHAMR_CLIP = "me 4"
+
+# DynHAMR comparison clip (comment in/out one line)
+_DYNHAMR_COMP_CLIP = "me 2"
+# _DYNHAMR_COMP_CLIP = "me 4"
+
 # ViPE pose file
 _VIPE_POSE_FILE = "120-2_clip_1.npz"
 # _VIPE_POSE_FILE = "120-2_clip_1_amplified.npz"
@@ -278,6 +287,9 @@ _WILOR_ROOT = _OUTPUTS_ROOT / "wilor" / _WILOR_CLIP / "meshes"
 _WILOR_COMP = _OUTPUTS_ROOT / "wilor" / _WILOR_COMP_CLIP / "meshes"
 _HAMBA_ROOT = _OUTPUTS_ROOT / "hamba" / _HAMBA_CLIP / "meshes"
 _HAMBA_COMP = _OUTPUTS_ROOT / "hamba" / _HAMBA_COMP_CLIP / "meshes"
+_DYNHAMR_ROOT = _OUTPUTS_ROOT / "dynhamr" / _DYNHAMR_CLIP / "meshes"
+_DYNHAMR_COMP = _OUTPUTS_ROOT / "dynhamr" / _DYNHAMR_COMP_CLIP / "meshes"
+_DYNHAMR_CAMERA_POSES = _OUTPUTS_ROOT / "dynhamr" / _DYNHAMR_CLIP / "camera_poses.npz"
 _MEDIAPIPE_ROOT = _OUTPUTS_ROOT / "mediapipe" / "keypoints" / _MEDIAPIPE_CLIP
 _MEDIAPIPE_COMP = _OUTPUTS_ROOT / "mediapipe" / "keypoints" / _MEDIAPIPE_COMP_CLIP
 _VIPE_ROOT = _OUTPUTS_ROOT / "vipe" / "pose"
@@ -298,6 +310,9 @@ _PATH_EXPORTS = {
     "WILOR_COMP": _WILOR_COMP,
     "HAMBA_ROOT": _HAMBA_ROOT,
     "HAMBA_COMP": _HAMBA_COMP,
+    "DYNHAMR_ROOT": _DYNHAMR_ROOT,
+    "DYNHAMR_COMP": _DYNHAMR_COMP,
+    "DYNHAMR_CAMERA_POSES": _DYNHAMR_CAMERA_POSES,
     "MEDIAPIPE_ROOT": _MEDIAPIPE_ROOT,
     "MEDIAPIPE_COMP": _MEDIAPIPE_COMP,
     "VIPE_ROOT": _VIPE_ROOT,
@@ -329,10 +344,12 @@ for _name, _value in _RAW_EXPORTS.items():
 # Generic model aliases (preferred by new scripts).
 MODEL_ROOT = WILOR_ROOT
 # MODEL_ROOT = HAMBA_ROOT
+# MODEL_ROOT = DYNHAMR_ROOT
 # MODEL_ROOT = MEDIAPIPE_ROOT
 
 # MODEL_COMP = WILOR_ROOT
 # MODEL_COMP = HAMBA_ROOT
+# MODEL_COMP = DYNHAMR_ROOT
 # MODEL_COMP = MEDIAPIPE_ROOT
 
 MODEL_COMP = None 

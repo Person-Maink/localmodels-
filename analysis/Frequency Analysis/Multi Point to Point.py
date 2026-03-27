@@ -10,6 +10,7 @@ from scipy.signal import butter, filtfilt, welch
 
 from _path_setup import PROJECT_ROOT  # ensures root imports work
 import FILENAME as CONFIG
+from mano_pickle import load_mano_pickle
 from npy_io import list_frame_folders, load_frame_records
 
 
@@ -31,6 +32,7 @@ FPS = 30.0
 SOURCE_STYLE = {
     "wilor": "-",
     "hamba": "--",
+    "dynhamr": "-.",
     "mediapipe": ":",
 }
 AXIS_ALPHA = {
@@ -46,8 +48,7 @@ EXTRA_MEDIAPIPE_PAIRS = []
 
 @lru_cache(maxsize=1)
 def _load_mano_assets(mano_right_path):
-    with open(mano_right_path, "rb") as f:
-        mano = pickle.load(f, encoding="latin1")
+    mano = load_mano_pickle(mano_right_path)
 
     j_reg = mano["J_regressor"]
     faces = np.asarray(mano["f"], dtype=np.int32)
@@ -201,6 +202,7 @@ def _resolve_sources(config_overrides):
     sources = {
         "wilor": _normalize_optional_path(config_overrides.get("wilor_source", getattr(CONFIG, "WILOR_ROOT", None))),
         "hamba": _normalize_optional_path(config_overrides.get("hamba_source", getattr(CONFIG, "HAMBA_ROOT", None))),
+        "dynhamr": _normalize_optional_path(config_overrides.get("dynhamr_source", getattr(CONFIG, "DYNHAMR_ROOT", None))),
         "mediapipe": _normalize_optional_path(config_overrides.get("mediapipe_source", getattr(CONFIG, "MEDIAPIPE_ROOT", None))),
     }
 
@@ -356,11 +358,12 @@ def run_multi_point_analysis(config_overrides=None):
 
     wilor_frames = _collect_model_frames(sources["wilor"], j_reg, hand_idx, wrist_joint_idx, n_verts)
     hamba_frames = _collect_model_frames(sources["hamba"], j_reg, hand_idx, wrist_joint_idx, n_verts)
+    dynhamr_frames = _collect_model_frames(sources["dynhamr"], j_reg, hand_idx, wrist_joint_idx, n_verts)
     mediapipe_df = pd.read_csv(sources["mediapipe"])
 
     entries = []
 
-    for family, frames in (("wilor", wilor_frames), ("hamba", hamba_frames)):
+    for family, frames in (("wilor", wilor_frames), ("hamba", hamba_frames), ("dynhamr", dynhamr_frames)):
         for pair in mano_pairs:
             region_a, region_b = mano_regions[pair]
             label = _pair_label("model", pair)

@@ -7,6 +7,7 @@ from vedo.applications import AnimationPlayer
 from _path_setup import PROJECT_ROOT  # ensures root imports work
 import FILENAME as CONFIG
 from FILENAME import HAND_IDX as DEFAULT_HAND_IDX, WRIST_JOINT_IDX
+from mano_pickle import load_mano_pickle
 from npy_io import list_frame_folders, load_frame_records
 
 np.bool = bool
@@ -74,9 +75,7 @@ def _color_for_hand(hand_id):
 
 
 def _load_frames_from_model(root_dir):
-    with open(CONFIG.MANO_RIGHT_PATH, "rb") as f:
-        mano = pickle.load(f, encoding="latin1")
-
+    mano = load_mano_pickle(CONFIG.MANO_RIGHT_PATH)
     j_reg = mano["J_regressor"]
     faces_right = np.asarray(mano["f"], dtype=np.int32)
 

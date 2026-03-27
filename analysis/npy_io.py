@@ -12,8 +12,10 @@ def list_frame_folders(root_dir):
 
 def load_wilor_record(npy_path):
     """
-    Parse one WiLoR inference record saved as:
+    Parse one model record saved as:
       np.save(path, {"verts": verts, "cam_t": cam_t, "right": is_right, ...})
+    or
+      np.save(path, {"verts_world": verts_world, "right": is_right, ...})
     """
     arr = np.load(npy_path, allow_pickle=True)
 
@@ -21,27 +23,50 @@ def load_wilor_record(npy_path):
         raise ValueError(f"Unsupported npy format: {npy_path}")
 
     item = arr.item()
-    if not isinstance(item, dict) or "verts" not in item:
-        raise ValueError(f"Missing dict/verts in: {npy_path}")
+    if not isinstance(item, dict) or ("verts" not in item and "verts_world" not in item):
+        raise ValueError(f"Missing dict/verts or dict/verts_world in: {npy_path}")
 
-    verts = np.asarray(item["verts"], dtype=np.float32)
     cam_t = np.asarray(item.get("cam_t", [0.0, 0.0, 0.0]), dtype=np.float32).reshape(3)
+    verts = item.get("verts", None)
+    verts_world = item.get("verts_world", None)
+
+    if verts is not None:
+        verts = np.asarray(verts, dtype=np.float32)
+    if verts_world is not None:
+        verts_world = np.asarray(verts_world, dtype=np.float32)
+
+    if verts_world is None:
+        if verts is None:
+            raise ValueError(f"Missing vertices in: {npy_path}")
+        verts_world = verts + cam_t.reshape(1, 3)
+    elif verts is None:
+        # Some normalized exports store only world-space vertices.
+        verts = verts_world.copy()
+
     right = int(float(np.asarray(item.get("right", -1)).item()))
     box_center = item.get("box_center", None)
     box_size = item.get("box_size", None)
+    frame_id = item.get("frame_id", None)
+    track_id = item.get("track_id", None)
 
     if box_center is not None:
         box_center = np.asarray(box_center, dtype=np.float32).reshape(2)
     if box_size is not None:
         box_size = float(np.asarray(box_size, dtype=np.float32).reshape(()))
+    if frame_id is not None:
+        frame_id = int(np.asarray(frame_id, dtype=np.int32).reshape(()))
+    if track_id is not None:
+        track_id = int(np.asarray(track_id, dtype=np.int32).reshape(()))
 
     return {
         "verts": verts,
         "cam_t": cam_t,
-        "verts_world": verts + cam_t.reshape(1, 3),
+        "verts_world": verts_world,
         "right": right,
         "box_center": box_center,
         "box_size": box_size,
+        "frame_id": frame_id,
+        "track_id": track_id,
         "path": npy_path,
     }
 

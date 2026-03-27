@@ -11,17 +11,29 @@ ANALYSIS_ROOT = Path(__file__).resolve().parent
 VIS_ROOT = ANALYSIS_ROOT / "3D Visualization "
 DEFAULT_OUTPUT_ROOT = Path(CONFIG.ANALYSIS_OUTPUT_DIR)
 OUTPUTS_ROOT = Path(CONFIG.OUTPUTS_ROOT)
+PROJECT_PYTHON = ANALYSIS_ROOT / ".venv" / "bin" / "python"
 
 CAMERA_SCRIPT = VIS_ROOT / "Camera.py"
 FREE_SCRIPT = VIS_ROOT / "Free.py"
 WRIST_GROUNDING_SCRIPT = VIS_ROOT / "Wrist Grounding.py"
 BOUNDING_BOXES_SCRIPT = VIS_ROOT / "Bounding Boxes.py"
 
-FAMILY_NAMES = ("wilor", "hamba", "vipe", "mediapipe")
+FAMILY_NAMES = ("wilor", "hamba", "dynhamr", "vipe", "mediapipe")
 
 
 def _quote(value):
     return repr(str(value))
+
+
+def _shell_launcher(wrapper_name):
+    return "\n".join(
+        [
+            "#!/usr/bin/env sh",
+            'SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"',
+            f'exec "{PROJECT_PYTHON}" "$SCRIPT_DIR/{wrapper_name}"',
+            "",
+        ]
+    )
 
 
 def _discover_model_clips(family):
@@ -79,7 +91,7 @@ def _has_bbox_metadata(frames_root):
     return False
 
 
-def _camera_cli_wrapper(frames_root=None, vipe_pose_file=None):
+def _camera_cli_wrapper(frames_root=None, vipe_pose_file=None, camera_poses_file=None):
     args = [repr(str(CAMERA_SCRIPT))]
     if frames_root is not None:
         args.extend(["'--frames_root'", _quote(frames_root)])
@@ -90,6 +102,11 @@ def _camera_cli_wrapper(frames_root=None, vipe_pose_file=None):
         args.extend(["'--vipe_pose_file'", _quote(vipe_pose_file)])
     else:
         args.extend(["'--vipe_pose_file'", "'None'"])
+
+    if camera_poses_file is not None:
+        args.extend(["'--camera_poses_file'", _quote(camera_poses_file)])
+    else:
+        args.extend(["'--camera_poses_file'", "'None'"])
 
     return "\n".join(
         [
@@ -165,6 +182,18 @@ def _build_family_launchers():
         if _has_bbox_metadata(meshes_root):
             launchers["hamba"][clip_name]["bounding_boxes"] = _bbox_cli_wrapper(meshes_root)
 
+    for clip_name, meshes_root in _discover_model_clips("dynhamr").items():
+        camera_poses_file = meshes_root.parent / "camera_poses.npz"
+        launchers["dynhamr"][clip_name] = {
+            "camera": _camera_cli_wrapper(
+                frames_root=None,
+                vipe_pose_file=None,
+                camera_poses_file=camera_poses_file if camera_poses_file.is_file() else None,
+            ),
+            "free": _config_injection_wrapper(FREE_SCRIPT, "FREE_SOURCE", meshes_root),
+            "wrist_grounding": _config_injection_wrapper(WRIST_GROUNDING_SCRIPT, "WRIST_GROUNDING_SOURCE", meshes_root),
+        }
+
     for clip_name, pose_file in _discover_vipe_clips().items():
         launchers["vipe"][clip_name] = {
             "camera": _camera_cli_wrapper(frames_root=None, vipe_pose_file=pose_file),
@@ -184,11 +213,21 @@ def _write_executable(path, content):
     path.chmod(0o755)
 
 
+def _render_clip_files(clip_dir, desired_files):
+    rendered = {}
+    for name, content in desired_files.items():
+        wrapper_path = clip_dir / f".{name}.py"
+        rendered[wrapper_path.name] = content
+        rendered[name] = _shell_launcher(wrapper_path.name)
+    return rendered
+
+
 def _sync_clip_dir(clip_dir, desired_files):
     clip_dir.mkdir(parents=True, exist_ok=True)
+    rendered_files = _render_clip_files(clip_dir, desired_files)
 
     existing_names = {path.name for path in clip_dir.iterdir()}
-    desired_names = set(desired_files)
+    desired_names = set(rendered_files)
 
     for stale_name in sorted(existing_names - desired_names):
         stale_path = clip_dir / stale_name
@@ -197,7 +236,7 @@ def _sync_clip_dir(clip_dir, desired_files):
         else:
             stale_path.unlink()
 
-    for name, content in desired_files.items():
+    for name, content in rendered_files.items():
         _write_executable(clip_dir / name, content)
 
 

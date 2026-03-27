@@ -139,6 +139,41 @@ def load_camera_file(camera_file):
     return cam_t, right
 
 
+def load_camera_poses_file(camera_poses_file):
+    camera_poses_file = Path(camera_poses_file)
+    data = np.load(camera_poses_file, allow_pickle=True)
+    if "poses_wc" not in data:
+        raise KeyError(f"'poses_wc' not found in {camera_poses_file}")
+
+    poses_wc = np.asarray(data["poses_wc"], dtype=np.float32)
+    if poses_wc.ndim != 3 or poses_wc.shape[1:] != (4, 4):
+        raise ValueError(f"Invalid poses_wc shape in {camera_poses_file}: {poses_wc.shape}")
+
+    right = np.asarray(data["right"], dtype=np.int32).reshape(-1) if "right" in data else None
+    frame_id = np.asarray(data["frame_id"], dtype=np.int32).reshape(-1) if "frame_id" in data else None
+    track_id = np.asarray(data["track_id"], dtype=np.int32).reshape(-1) if "track_id" in data else None
+    intrinsics = np.asarray(data["intrinsics"], dtype=np.float32) if "intrinsics" in data else None
+    data.close()
+
+    n = len(poses_wc)
+    if right is not None and len(right) != n:
+        raise ValueError(f"right length {len(right)} does not match poses_wc length {n} in {camera_poses_file}")
+    if frame_id is not None and len(frame_id) != n:
+        raise ValueError(f"frame_id length {len(frame_id)} does not match poses_wc length {n} in {camera_poses_file}")
+    if track_id is not None and len(track_id) != n:
+        raise ValueError(f"track_id length {len(track_id)} does not match poses_wc length {n} in {camera_poses_file}")
+    if intrinsics is not None and intrinsics.ndim not in {1, 2}:
+        raise ValueError(f"Invalid intrinsics shape in {camera_poses_file}: {intrinsics.shape}")
+
+    return {
+        "poses_wc": poses_wc,
+        "right": right,
+        "frame_id": frame_id,
+        "track_id": track_id,
+        "intrinsics": intrinsics,
+    }
+
+
 def parse_frame_index(path):
     for name in [path.name, path.parent.name]:
         m = re.match(r"frame_(\d+)$", name)
@@ -296,6 +331,7 @@ def _add_pose_track(plotter, poses, stride, frustum_scale, center_radius, fov_de
 def visualize_sources(
     vipe_poses=None,
     model_cam_t=None,
+    model_poses=None,
     model_right=None,
     model_hand="all",
     model_stride=5,
@@ -314,7 +350,9 @@ def visualize_sources(
         raise ModuleNotFoundError("vedo is required for visualization. Install it with: pip install vedo")
 
     has_vipe = vipe_poses is not None and len(vipe_poses) > 0
-    has_model = model_cam_t is not None and len(model_cam_t) > 0
+    has_model_cam_t = model_cam_t is not None and len(model_cam_t) > 0
+    has_model_poses = model_poses is not None and len(model_poses) > 0
+    has_model = has_model_cam_t or has_model_poses
 
     if not has_vipe and not has_model:
         raise ValueError("Both sources are empty/None. Provide at least one source.")
@@ -330,18 +368,25 @@ def visualize_sources(
     model_poses_local = None
     model_right_local = None
     if has_model:
-        model_cam_t = np.asarray(model_cam_t, dtype=np.float32).reshape(-1, 3)
-        model_poses_local = np.stack(
-            [cam_t_to_pose_wc(c, invert_cam_t=invert_cam_t) for c in model_cam_t],
-            axis=0,
-        )
+        if has_model_poses:
+            model_poses_local = np.asarray(model_poses, dtype=np.float32)
+            if model_poses_local.ndim != 3 or model_poses_local.shape[1:] != (4, 4):
+                raise ValueError(
+                    f"Invalid model pose shape: {model_poses_local.shape}, expected (N, 4, 4)."
+                )
+        else:
+            model_cam_t = np.asarray(model_cam_t, dtype=np.float32).reshape(-1, 3)
+            model_poses_local = np.stack(
+                [cam_t_to_pose_wc(c, invert_cam_t=invert_cam_t) for c in model_cam_t],
+                axis=0,
+            )
 
         if model_right is None:
-            model_right_local = np.full((len(model_cam_t),), -1, dtype=np.int32)
+            model_right_local = np.full((len(model_poses_local),), -1, dtype=np.int32)
         else:
             model_right_local = np.asarray(model_right, dtype=np.int32).reshape(-1)
-            if len(model_right_local) != len(model_cam_t):
-                raise ValueError("Length mismatch between model_cam_t and model_right.")
+            if len(model_right_local) != len(model_poses_local):
+                raise ValueError("Length mismatch between model poses and model_right.")
 
     if center_to_first_frame:
         if has_vipe:
@@ -422,6 +467,12 @@ def main():
         default=str(DEFAULT_MODEL_FRAMES_ROOT) if DEFAULT_MODEL_FRAMES_ROOT is not None else None,
         help="Frame-camera folder (e.g. model meshes/frame_*/...). Use 'None' to disable this source.",
     )
+    parser.add_argument(
+        "--camera_poses_file",
+        type=str,
+        default=None,
+        help="Explicit model camera-poses .npz file with poses_wc/right/frame_id arrays. Use 'None' to disable it.",
+    )
     parser.add_argument("--frame_dirs_glob", type=str, default="frame_*", help="Glob for frame folders.")
     parser.add_argument(
         "--file_glob",
@@ -447,10 +498,11 @@ def main():
 
     vipe_pose_path = _normalize_optional_path(args.vipe_pose_file)
     model_frames_root = _normalize_optional_path(args.frames_root)
+    camera_poses_path = _normalize_optional_path(args.camera_poses_file)
 
-    if vipe_pose_path is None and model_frames_root is None:
+    if vipe_pose_path is None and model_frames_root is None and camera_poses_path is None:
         raise ValueError(
-            "Both configured sources are None. Set at least one of VIPE_POSE_FILE or model frame root in FILENAME."
+            "All configured sources are None. Set at least one of VIPE_POSE_FILE, model frame root, or camera poses file."
         )
 
     vipe_poses = None
@@ -461,8 +513,14 @@ def main():
         print("ViPE source is None. Skipping ViPE visualization.")
 
     model_cam_t = None
+    model_poses = None
     model_right = None
-    if model_frames_root is not None:
+    if camera_poses_path is not None:
+        pose_data = load_camera_poses_file(camera_poses_path)
+        model_poses = pose_data["poses_wc"]
+        model_right = pose_data["right"]
+        print(f"Loaded {len(model_poses)} explicit model poses from: {camera_poses_path}")
+    elif model_frames_root is not None:
         cam_data = load_cameras_from_frames_root(
             frames_root=model_frames_root,
             frame_dirs_glob=args.frame_dirs_glob,
@@ -481,6 +539,7 @@ def main():
     visualize_sources(
         vipe_poses=vipe_poses,
         model_cam_t=model_cam_t,
+        model_poses=model_poses,
         model_right=model_right,
         model_hand=args.hand,
         model_stride=args.model_stride,

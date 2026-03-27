@@ -6,6 +6,7 @@ from vedo.applications import AnimationPlayer
 
 from _path_setup import PROJECT_ROOT  # ensures root imports work
 import FILENAME as CONFIG
+from mano_pickle import load_mano_pickle
 from npy_io import list_frame_folders, load_frame_records
 
 
@@ -79,9 +80,7 @@ def _load_faces_from_mano(mano_right_path):
         if not hasattr(np, name):
             setattr(np, name, value)
 
-    with open(mano_right_path, "rb") as f:
-        mano = pickle.load(f, encoding="latin1")
-
+    mano = load_mano_pickle(mano_right_path)
     faces = np.asarray(mano["f"], dtype=np.int32)
     if faces.ndim != 2 or faces.shape[1] != 3:
         raise RuntimeError(f"Invalid MANO face topology in {mano_right_path}: shape={faces.shape}")

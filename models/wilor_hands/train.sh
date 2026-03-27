@@ -1,5 +1,4 @@
 #!/bin/bash
-set -euo pipefail
 
 # ================ SLURM SETUP ================
 
@@ -21,6 +20,8 @@ set -euo pipefail
 #SBATCH --mem-per-gpu=32G
 #SBATCH --account=Education-EEMCS-MSc-DSAIT
 #SBATCH --output=%x.out
+
+set -euo pipefail
 
 # ================ OUTPUT FILES ================
 

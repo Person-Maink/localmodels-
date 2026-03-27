@@ -26,11 +26,14 @@ SCENARIOS = (
     ("wilor_vs_wilor_comp", "wilor_all", "wilor_comp"),
     ("mediapipe_vs_mediapipe_comp", "mediapipe_all", "mediapipe_comp"),
     ("wilor_vs_hamba", "wilor_all", "hamba_all"),
+    ("dynhamr_vs_wilor", "dynhamr_all", "wilor_all"),
+    ("dynhamr_vs_hamba", "dynhamr_all", "hamba_all"),
+    ("dynhamr_vs_mediapipe", "dynhamr_all", "mediapipe_all"),
     ("wilor_vs_mediapipe", "wilor_all", "mediapipe_all"),
     ("mediapipe_vs_hamba", "mediapipe_all", "hamba_all"),
 )
-TRIO_SCENARIO_ID = "wilor_vs_hamba_vs_mediapipe"
-SCENARIO_OPTIONS = tuple(scenario_id for scenario_id, _, _ in SCENARIOS) + (TRIO_SCENARIO_ID,)
+ALL_MODELS_SCENARIO_ID = "wilor_vs_hamba_vs_dynhamr_vs_mediapipe"
+SCENARIO_OPTIONS = tuple(scenario_id for scenario_id, _, _ in SCENARIOS) + (ALL_MODELS_SCENARIO_ID,)
 SAME_CLIP_COMP_SCENARIOS = {
     "hamba_vs_hamba_comp",
     "wilor_vs_wilor_comp",
@@ -38,6 +41,9 @@ SAME_CLIP_COMP_SCENARIOS = {
 }
 CROSS_MODEL_SAME_CLIP_SCENARIOS = {
     "wilor_vs_hamba",
+    "dynhamr_vs_wilor",
+    "dynhamr_vs_hamba",
+    "dynhamr_vs_mediapipe",
     "wilor_vs_mediapipe",
     "mediapipe_vs_hamba",
 }
@@ -61,12 +67,13 @@ class PairItem:
 
 
 @dataclass(frozen=True)
-class TrioItem:
+class AllModelsItem:
     scenario_id: str
     source_a: SourceItem
     source_b: SourceItem
     source_c: SourceItem
-    trio_id: str
+    source_d: SourceItem
+    group_id: str
 
 
 def _load_module(module_name, file_path):
@@ -105,9 +112,9 @@ def _parse_args():
         "--only-missing",
         action="store_true",
         default=True,
-        help="Run only pair/trio items whose expected output graph files are not both already present in --output-dir.",
+        help="Run only pair/4-way items whose expected output graph files are not both already present in --output-dir.",
     )
-    parser.add_argument("--max-pairs", type=int, default=None, help="Run only the first N discovered pair/trio items after deterministic ordering.")
+    parser.add_argument("--max-pairs", type=int, default=None, help="Run only the first N discovered pair/4-way items after deterministic ordering.")
     parser.add_argument(
         "--scenario",
         action="append",
@@ -118,7 +125,7 @@ def _parse_args():
         "--all-models",
         action="store_true",
         default=True,
-        help="Add same-clip WiLoR/Hamba/MediaPipe trio analyses on top of the existing pairwise runs.",
+        help="Add same-clip WiLoR/Hamba/DynHAMR/MediaPipe 4-way analyses on top of the existing pairwise runs.",
     )
     return parser.parse_args()
 
@@ -199,18 +206,19 @@ def _build_pair_id(scenario_id, source_a, source_b):
     return f"{scenario_id}__{_slug(source_a.clip_id)}__{_slug(source_b.clip_id)}__{digest}"
 
 
-def _build_trio_id(scenario_id, source_a, source_b, source_c):
-    payload = f"{scenario_id}|{source_a.path}|{source_b.path}|{source_c.path}"
+def _build_group_id(scenario_id, source_a, source_b, source_c, source_d):
+    payload = f"{scenario_id}|{source_a.path}|{source_b.path}|{source_c.path}|{source_d.path}"
     digest = hashlib.sha1(payload.encode("utf-8")).hexdigest()[:8]
     return (
         f"{scenario_id}__{_slug(source_a.clip_id)}__{_slug(source_b.clip_id)}__"
-        f"{_slug(source_c.clip_id)}__{digest}"
+        f"{_slug(source_c.clip_id)}__{_slug(source_d.clip_id)}__{digest}"
     )
 
 
 def _build_source_pools(outputs_root):
     hamba_all = _discover_model_family(outputs_root, "hamba")
     wilor_all = _discover_model_family(outputs_root, "wilor")
+    dynhamr_all = _discover_model_family(outputs_root, "dynhamr")
     mediapipe_all = _discover_mediapipe(outputs_root)
 
     pools = {
@@ -218,6 +226,8 @@ def _build_source_pools(outputs_root):
         "hamba_comp": [item for item in hamba_all if item.is_comp],
         "wilor_all": wilor_all,
         "wilor_comp": [item for item in wilor_all if item.is_comp],
+        "dynhamr_all": dynhamr_all,
+        "dynhamr_comp": [item for item in dynhamr_all if item.is_comp],
         "mediapipe_all": mediapipe_all,
         "mediapipe_comp": [item for item in mediapipe_all if item.is_comp],
     }
@@ -225,13 +235,14 @@ def _build_source_pools(outputs_root):
     discovery = {
         "hamba": {"all": len(pools["hamba_all"]), "comp": len(pools["hamba_comp"])},
         "wilor": {"all": len(pools["wilor_all"]), "comp": len(pools["wilor_comp"])},
+        "dynhamr": {"all": len(pools["dynhamr_all"]), "comp": len(pools["dynhamr_comp"])},
         "mediapipe": {"all": len(pools["mediapipe_all"]), "comp": len(pools["mediapipe_comp"])},
     }
 
     return pools, discovery
 
 
-def _build_all_model_trios(pools):
+def _build_all_model_groups(pools):
     wilor_by_canonical = {}
     for item in pools["wilor_all"]:
         wilor_by_canonical.setdefault(_canonical_clip_id(item.clip_id), []).append(item)
@@ -240,32 +251,50 @@ def _build_all_model_trios(pools):
     for item in pools["hamba_all"]:
         hamba_by_canonical.setdefault(_canonical_clip_id(item.clip_id), []).append(item)
 
+    dynhamr_by_canonical = {}
+    for item in pools["dynhamr_all"]:
+        dynhamr_by_canonical.setdefault(_canonical_clip_id(item.clip_id), []).append(item)
+
     mediapipe_by_canonical = {}
     for item in pools["mediapipe_all"]:
         mediapipe_by_canonical.setdefault(_canonical_clip_id(item.clip_id), []).append(item)
 
-    shared = sorted(set(wilor_by_canonical) & set(hamba_by_canonical) & set(mediapipe_by_canonical))
-    trios = []
+    shared = sorted(
+        set(wilor_by_canonical)
+        & set(hamba_by_canonical)
+        & set(dynhamr_by_canonical)
+        & set(mediapipe_by_canonical)
+    )
+    groups = []
     for canonical in shared:
         for source_a in wilor_by_canonical[canonical]:
             for source_b in hamba_by_canonical[canonical]:
-                for source_c in mediapipe_by_canonical[canonical]:
-                    trios.append(
-                        TrioItem(
-                            scenario_id=TRIO_SCENARIO_ID,
-                            source_a=source_a,
-                            source_b=source_b,
-                            source_c=source_c,
-                            trio_id=_build_trio_id(TRIO_SCENARIO_ID, source_a, source_b, source_c),
+                for source_c in dynhamr_by_canonical[canonical]:
+                    for source_d in mediapipe_by_canonical[canonical]:
+                        groups.append(
+                            AllModelsItem(
+                                scenario_id=ALL_MODELS_SCENARIO_ID,
+                                source_a=source_a,
+                                source_b=source_b,
+                                source_c=source_c,
+                                source_d=source_d,
+                                group_id=_build_group_id(
+                                    ALL_MODELS_SCENARIO_ID,
+                                    source_a,
+                                    source_b,
+                                    source_c,
+                                    source_d,
+                                ),
+                            )
                         )
-                    )
-    return trios
+
+    return groups
 
 
 def _build_scenarios_and_pairs(pools, requested_scenarios=None, include_all_models=False):
     allowed = {scenario_id for scenario_id, _, _ in SCENARIOS}
     if include_all_models:
-        allowed.add(TRIO_SCENARIO_ID)
+        allowed.add(ALL_MODELS_SCENARIO_ID)
 
     if requested_scenarios:
         unknown = sorted(set(requested_scenarios) - allowed)
@@ -282,7 +311,7 @@ def _build_scenarios_and_pairs(pools, requested_scenarios=None, include_all_mode
 
     scenario_rows = []
     pairs = []
-    trios = []
+    all_model_items = []
 
     for scenario_id, a_pool_name, b_pool_name in SCENARIOS:
         a_items = pools[a_pool_name]
@@ -336,9 +365,9 @@ def _build_scenarios_and_pairs(pools, requested_scenarios=None, include_all_mode
                 for source_b in matches:
                     pairs.append(
                         PairItem(
-                            scenario_id=scenario_id,
                             source_a=source_a,
                             source_b=source_b,
+                            scenario_id=scenario_id,
                             pair_id=_build_pair_id(scenario_id, source_a, source_b),
                         )
                     )
@@ -372,25 +401,27 @@ def _build_scenarios_and_pairs(pools, requested_scenarios=None, include_all_mode
                     )
 
     if include_all_models:
-        all_trios = _build_all_model_trios(pools)
+        all_groups = _build_all_model_groups(pools)
         scenario_rows.append(
             {
-                "scenario_id": TRIO_SCENARIO_ID,
+                "scenario_id": ALL_MODELS_SCENARIO_ID,
                 "source_a_pool": "wilor_all",
                 "source_b_pool": "hamba_all",
-                "source_c_pool": "mediapipe_all",
+                "source_c_pool": "dynhamr_all",
+                "source_d_pool": "mediapipe_all",
                 "source_a_count": len(pools["wilor_all"]),
                 "source_b_count": len(pools["hamba_all"]),
-                "source_c_count": len(pools["mediapipe_all"]),
-                "item_kind": "trios",
-                "item_count_total": len(all_trios),
-                "enabled": TRIO_SCENARIO_ID in enabled,
+                "source_c_count": len(pools["dynhamr_all"]),
+                "source_d_count": len(pools["mediapipe_all"]),
+                "item_kind": "all_models",
+                "item_count_total": len(all_groups),
+                "enabled": ALL_MODELS_SCENARIO_ID in enabled,
             }
         )
-        if TRIO_SCENARIO_ID in enabled:
-            trios = all_trios
+        if ALL_MODELS_SCENARIO_ID in enabled:
+            all_model_items = all_groups
 
-    return scenario_rows, pairs, trios
+    return scenario_rows, pairs, all_model_items
 
 
 def _entry_label(source):
@@ -398,7 +429,7 @@ def _entry_label(source):
 
 
 def _item_id(item):
-    return getattr(item, "pair_id", getattr(item, "trio_id", ""))
+    return getattr(item, "pair_id", getattr(item, "group_id", ""))
 
 
 def _make_row(item, analysis_name, entry):
@@ -458,22 +489,23 @@ def _summarize_entries(entries):
     return summarized
 
 
-def _print_discovery(discovery, scenario_rows, selected_pairs, selected_trios):
+def _print_discovery(discovery, scenario_rows, selected_pairs, selected_all_models):
     print("Discovery counts:")
-    for family in ("hamba", "wilor", "mediapipe"):
+    for family in ("hamba", "wilor", "dynhamr", "mediapipe"):
         counts = discovery[family]
         print(f"  {family}: all={counts['all']}, comp={counts['comp']}")
 
     print("Scenario matrix:")
     for row in scenario_rows:
         enabled = "enabled" if row["enabled"] else "disabled"
-        if row["item_kind"] == "trios":
+        if row["item_kind"] == "all_models":
             print(
                 f"  {row['scenario_id']}: "
                 f"{row['source_a_pool']}({row['source_a_count']}) x "
                 f"{row['source_b_pool']}({row['source_b_count']}) x "
-                f"{row['source_c_pool']}({row['source_c_count']}) -> "
-                f"{row['item_count_total']} trios [{enabled}]"
+                f"{row['source_c_pool']}({row['source_c_count']}) x "
+                f"{row['source_d_pool']}({row['source_d_count']}) -> "
+                f"{row['item_count_total']} 4-way groups [{enabled}]"
             )
         else:
             print(
@@ -484,7 +516,7 @@ def _print_discovery(discovery, scenario_rows, selected_pairs, selected_trios):
             )
 
     print(f"Selected pairs to process: {len(selected_pairs)}")
-    print(f"Selected trios to process: {len(selected_trios)}")
+    print(f"Selected 4-way groups to process: {len(selected_all_models)}")
 
 
 def _expected_pair_outputs(output_dir, pair):
@@ -494,14 +526,14 @@ def _expected_pair_outputs(output_dir, pair):
     )
 
 
-def _expected_trio_outputs(output_dir, trio):
+def _expected_all_model_outputs(output_dir, item):
     return (
-        output_dir / f"compare_all_models__{trio.trio_id}.png",
-        output_dir / f"point_to_point_all_models__{trio.trio_id}.png",
+        output_dir / f"compare_all_models__{item.group_id}.png",
+        output_dir / f"point_to_point_all_models__{item.group_id}.png",
     )
 
 
-def _filter_missing_items(output_dir, pairs, trios):
+def _filter_missing_items(output_dir, pairs, all_model_items):
     missing_pairs = []
     skipped_pairs = 0
     for pair in pairs:
@@ -511,16 +543,16 @@ def _filter_missing_items(output_dir, pairs, trios):
             continue
         missing_pairs.append(pair)
 
-    missing_trios = []
-    skipped_trios = 0
-    for trio in trios:
-        expected = _expected_trio_outputs(output_dir, trio)
+    missing_all_models = []
+    skipped_all_models = 0
+    for item in all_model_items:
+        expected = _expected_all_model_outputs(output_dir, item)
         if all(path.exists() for path in expected):
-            skipped_trios += 1
+            skipped_all_models += 1
             continue
-        missing_trios.append(trio)
+        missing_all_models.append(item)
 
-    return missing_pairs, missing_trios, skipped_pairs, skipped_trios
+    return missing_pairs, missing_all_models, skipped_pairs, skipped_all_models
 
 
 def main():
@@ -536,31 +568,33 @@ def main():
     figsize_inches = (args.width_px / args.dpi, args.height_px / args.dpi)
 
     pools, discovery = _build_source_pools(Path(CONFIG.OUTPUTS_ROOT))
-    scenario_rows, all_pairs, all_trios = _build_scenarios_and_pairs(pools, args.scenario, include_all_models=args.all_models)
+    scenario_rows, all_pairs, all_model_items = _build_scenarios_and_pairs(
+        pools, args.scenario, include_all_models=args.all_models
+    )
 
     selected_pairs = all_pairs
-    selected_trios = all_trios
+    selected_all_models = all_model_items
 
     skipped_existing_pairs = 0
-    skipped_existing_trios = 0
+    skipped_existing_all_models = 0
     if args.only_missing:
-        selected_pairs, selected_trios, skipped_existing_pairs, skipped_existing_trios = _filter_missing_items(
-            output_dir, selected_pairs, selected_trios
+        selected_pairs, selected_all_models, skipped_existing_pairs, skipped_existing_all_models = _filter_missing_items(
+            output_dir, selected_pairs, selected_all_models
         )
 
     if args.max_pairs is not None:
         selected_pairs = selected_pairs[: args.max_pairs]
-        selected_trios = selected_trios[: args.max_pairs]
+        selected_all_models = selected_all_models[: args.max_pairs]
 
     selected_counts = {}
     for pair in selected_pairs:
         selected_counts[pair.scenario_id] = selected_counts.get(pair.scenario_id, 0) + 1
-    for trio in selected_trios:
-        selected_counts[trio.scenario_id] = selected_counts.get(trio.scenario_id, 0) + 1
+    for item in selected_all_models:
+        selected_counts[item.scenario_id] = selected_counts.get(item.scenario_id, 0) + 1
     for row in scenario_rows:
         row["item_count_selected"] = int(selected_counts.get(row["scenario_id"], 0))
 
-    _print_discovery(discovery, scenario_rows, selected_pairs, selected_trios)
+    _print_discovery(discovery, scenario_rows, selected_pairs, selected_all_models)
 
     summary = {
         "run": {
@@ -578,14 +612,14 @@ def main():
         "discovery": discovery,
         "scenarios": scenario_rows,
         "pairs": [],
-        "trios": [],
+        "all_models": [],
         "totals": {
             "pairs_discovered": int(len(all_pairs)),
             "pairs_selected": int(len(selected_pairs)),
-            "trios_discovered": int(len(all_trios)),
-            "trios_selected": int(len(selected_trios)),
+            "all_models_discovered": int(len(all_model_items)),
+            "all_models_selected": int(len(selected_all_models)),
             "pairs_skipped_existing": int(skipped_existing_pairs),
-            "trios_skipped_existing": int(skipped_existing_trios),
+            "all_models_skipped_existing": int(skipped_existing_all_models),
             "analysis_success": 0,
             "analysis_failed": 0,
             "analysis_skipped": 0,
@@ -690,25 +724,27 @@ def main():
 
         summary["pairs"].append(pair_summary)
 
-    for idx, trio in enumerate(selected_trios, start=1):
-        print(f"[{idx}/{len(selected_trios)}] {trio.scenario_id} :: {trio.trio_id}")
+    for idx, item in enumerate(selected_all_models, start=1):
+        print(f"[{idx}/{len(selected_all_models)}] {item.scenario_id} :: {item.group_id}")
 
-        trio_summary = {
-            "scenario": trio.scenario_id,
-            "trio_id": trio.trio_id,
-            "source_a": asdict(trio.source_a),
-            "source_b": asdict(trio.source_b),
-            "source_c": asdict(trio.source_c),
+        item_summary = {
+            "scenario": item.scenario_id,
+            "group_id": item.group_id,
+            "source_a": asdict(item.source_a),
+            "source_b": asdict(item.source_b),
+            "source_c": asdict(item.source_c),
+            "source_d": asdict(item.source_d),
             "analyses": {},
         }
 
         compare_overrides = {
             "all_models": True,
-            "sources": [trio.source_a.path, trio.source_b.path, trio.source_c.path],
+            "sources": [item.source_a.path, item.source_b.path, item.source_c.path, item.source_d.path],
             "labels": [
-                _entry_label(trio.source_a),
-                _entry_label(trio.source_b),
-                _entry_label(trio.source_c),
+                _entry_label(item.source_a),
+                _entry_label(item.source_b),
+                _entry_label(item.source_c),
+                _entry_label(item.source_d),
             ],
         }
 
@@ -716,14 +752,14 @@ def main():
             compare_data = compare_module.run_compare_analysis(compare_overrides)
             compare_fig = compare_module.build_compare_figure(compare_data, figsize_inches=figsize_inches, dpi=args.dpi)
 
-            compare_image = output_dir / f"compare_all_models__{trio.trio_id}.png"
+            compare_image = output_dir / f"compare_all_models__{item.group_id}.png"
             compare_fig.savefig(compare_image, dpi=args.dpi, bbox_inches="tight")
             plt.close(compare_fig)
 
             for entry in compare_data["entries"]:
-                metric_rows.append(_make_row(trio, "compare", entry))
+                metric_rows.append(_make_row(item, "compare", entry))
 
-            trio_summary["analyses"]["compare"] = {
+            item_summary["analyses"]["compare"] = {
                 "status": "success",
                 "image": str(compare_image),
                 "entries": _summarize_entries(compare_data["entries"]),
@@ -732,7 +768,7 @@ def main():
         except Exception as exc:  # noqa: BLE001
             failures += 1
             summary["totals"]["analysis_failed"] += 1
-            trio_summary["analyses"]["compare"] = {
+            item_summary["analyses"]["compare"] = {
                 "status": "failed",
                 "error": str(exc),
                 "traceback": traceback.format_exc(limit=10),
@@ -740,11 +776,12 @@ def main():
 
         point_overrides = {
             "all_models": True,
-            "sources": [trio.source_a.path, trio.source_b.path, trio.source_c.path],
+            "sources": [item.source_a.path, item.source_b.path, item.source_c.path, item.source_d.path],
             "labels": [
-                _entry_label(trio.source_a),
-                _entry_label(trio.source_b),
-                _entry_label(trio.source_c),
+                _entry_label(item.source_a),
+                _entry_label(item.source_b),
+                _entry_label(item.source_c),
+                _entry_label(item.source_d),
             ],
         }
 
@@ -752,14 +789,14 @@ def main():
             point_data = point_module.run_point_to_point_analysis(point_overrides)
             point_fig = point_module.build_point_to_point_figure(point_data, figsize_inches=figsize_inches, dpi=args.dpi)
 
-            point_image = output_dir / f"point_to_point_all_models__{trio.trio_id}.png"
+            point_image = output_dir / f"point_to_point_all_models__{item.group_id}.png"
             point_fig.savefig(point_image, dpi=args.dpi, bbox_inches="tight")
             plt.close(point_fig)
 
             for entry in point_data["entries"]:
-                metric_rows.append(_make_row(trio, "point_to_point", entry))
+                metric_rows.append(_make_row(item, "point_to_point", entry))
 
-            trio_summary["analyses"]["point_to_point"] = {
+            item_summary["analyses"]["point_to_point"] = {
                 "status": "success",
                 "image": str(point_image),
                 "entries": _summarize_entries(point_data["entries"]),
@@ -768,13 +805,13 @@ def main():
         except Exception as exc:  # noqa: BLE001
             failures += 1
             summary["totals"]["analysis_failed"] += 1
-            trio_summary["analyses"]["point_to_point"] = {
+            item_summary["analyses"]["point_to_point"] = {
                 "status": "failed",
                 "error": str(exc),
                 "traceback": traceback.format_exc(limit=10),
             }
 
-        summary["trios"].append(trio_summary)
+        summary["all_models"].append(item_summary)
 
     _save_metrics_csv(metrics_path, metric_rows)
     with open(summary_path, "w", encoding="utf-8") as f:
@@ -788,7 +825,7 @@ def main():
         f"failed={summary['totals']['analysis_failed']}, "
         f"skipped={summary['totals']['analysis_skipped']}, "
         f"existing_pairs_skipped={summary['totals']['pairs_skipped_existing']}, "
-        f"existing_trios_skipped={summary['totals']['trios_skipped_existing']}"
+        f"existing_all_models_skipped={summary['totals']['all_models_skipped_existing']}"
     )
 
     return 1 if failures else 0
