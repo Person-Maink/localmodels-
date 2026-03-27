@@ -66,7 +66,7 @@ apptainer exec --nv \
     --bind ~/.cache/torch:/home/mthakur/.cache/torch \
     --bind ~/.cache/huggingface:/home/mthakur/.cache/huggingface \
     /scratch/mthakur/manifold/models/vipe/apptainer/template.sif \
-    bash -c '/opt/conda/bin/conda run -n vipe vipe infer "/scratch/mthakur/manifold/data/images/__VIDEO_FILE__" --output /scratch/mthakur/manifold/outputs/vipe/ --pipeline no_vda'
+    bash -c 'cd /scratch/mthakur/manifold/models/vipe && /opt/conda/bin/conda run -n vipe python run.py pipeline=no_vda streams=raw_mp4_stream streams.base_path="/scratch/mthakur/manifold/data/images/__VIDEO_FILE__" streams.frame_end=-1 pipeline.output.path=/scratch/mthakur/manifold/outputs/vipe/ pipeline.output.save_artifacts=true pipeline.output.save_viz=false'
 
 # apptainer exec --nv \
 #     --bind /scratch/mthakur/manifold/data/:/data/ \

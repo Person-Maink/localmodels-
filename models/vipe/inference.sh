@@ -87,7 +87,7 @@ apptainer exec --nv \
     --bind ~/.cache/torch:/home/mthakur/.cache/torch \
     --bind ~/.cache/huggingface:/home/mthakur/.cache/huggingface \
     /scratch/mthakur/manifold/models/vipe/apptainer/template.sif \
-    bash -c '/opt/conda/bin/conda run -n vipe vipe infer "data/120-2_clip_1.mp4" --output output/ --pipeline no_vda'
+    bash -c '/opt/conda/bin/conda run -n vipe python run.py pipeline=no_vda streams=raw_mp4_stream streams.base_path="data/120-2_clip_1.mp4" streams.frame_end=-1 pipeline.output.path=output/ pipeline.output.save_artifacts=true pipeline.output.save_viz=false'
     # bash -c 'HF_HUB_OFFLINE=1 \ /opt/conda/bin/conda run -n vipe vipe infer "data/120-2_clip_1.mp4" --output output/ --pipeline no_vda'
     # bash -c ' /opt/conda/bin/conda run -n vipe python -c "import torch;import vipe; print(torch.cuda.is_available(), torch.version.cuda)" '
 
