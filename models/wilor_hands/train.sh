@@ -12,12 +12,12 @@
 #   visual                 : Visualization jobs
 
 #SBATCH --job-name=wilor-train
-#SBATCH --partition=gpu-a100
-#SBATCH --time=08:00:00
+#SBATCH --partition=gpu-a100-small
+#SBATCH --time=00:10:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
-#SBATCH --mem-per-gpu=32G
+#SBATCH --mem-per-gpu=8G
 #SBATCH --account=Education-EEMCS-MSc-DSAIT
 #SBATCH --output=%x.out
 
