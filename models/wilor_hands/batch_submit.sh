@@ -36,6 +36,7 @@ fi
 shopt -s nullglob nocaseglob
 videos=("${VIDEO_DIR}"/*.mp4 "${VIDEO_DIR}"/*.avi "${VIDEO_DIR}"/*.mts "${VIDEO_DIR}"/*.mov)
 video_count=0
+submitted_count=0
 
 for video in "${videos[@]}"; do
     [[ -f "${video}" ]] || continue
@@ -61,8 +62,12 @@ for video in "${videos[@]}"; do
         -e "s|__TIME__|${escaped_time}|g" \
         "${TEMPLATE}" > "${job_script}"
 
-    submit_job_script "${job_script}"
     video_count=$((video_count + 1))
+    if ! submit_job_script "${job_script}"; then
+        echo "Failed to submit ${job_script}; continuing with remaining jobs" >&2
+        continue
+    fi
+    submitted_count=$((submitted_count + 1))
 done
 
 if (( video_count == 0 )); then
@@ -71,3 +76,4 @@ if (( video_count == 0 )); then
 fi
 
 echo "Prepared ${video_count} wilor job scripts in ${OUT_DIR}"
+echo "Submitted ${submitted_count} wilor jobs"
