@@ -1,0 +1,77 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%labels
+    Author REIT Team, Modified by Mayank Thakur
+    Description Mediapipe container (CPU, Python 3.10, UV)
+
+%help
+    Mediapipe Apptainer container using UV on CPU.
+    Usage:
+        apptainer shell container.sif
+        apptainer exec container.sif python script.py
+
+%environment
+    export LC_ALL=C
+    export PYTHONUNBUFFERED=1
+    export PATH="/.venv/bin:/root/.local/bin:$PATH"
+
+%files
+    /scratch/mthakur/manifold/models/mediapipe/main.py         /app/mediapipe/main.py
+    /scratch/mthakur/manifold/models/mediapipe/inference.py    /app/mediapipe/inference.py
+    /scratch/mthakur/manifold/models/mediapipe/loader.py       /app/mediapipe/loader.py
+    /scratch/mthakur/manifold/models/mediapipe/visualize.py    /app/mediapipe/visualize.py
+    /scratch/mthakur/manifold/models/mediapipe/pyproject.toml  /app/mediapipe/pyproject.toml
+    /scratch/mthakur/manifold/models/mediapipe/uv.lock         /app/mediapipe/uv.lock
+    /scratch/mthakur/manifold/models/mediapipe/README.md       /app/mediapipe/README.md
+
+%post
+    set -e
+
+    echo "=============================="
+    echo "Installing system dependencies"
+    echo "=============================="
+
+    apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        python3.10 \
+        python3-pip \
+        python3.10-venv \
+        build-essential \
+        curl \
+        git \
+        libgl1 \
+        libglib2.0-0 \
+        libsm6 \
+        libxext6 \
+        libxrender1
+
+    echo "===== Installing UV ====="
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    export PATH="/root/.local/bin:$PATH"
+
+    echo "===== Creating virtual environment ====="
+    uv venv --python 3.10
+
+    echo "===== Upgrading build tooling ====="
+    uv pip install --python /.venv/bin/python pip wheel setuptools packaging
+
+    echo "=============================="
+    echo "Installing Mediapipe dependencies"
+    echo "=============================="
+
+    cd /app/mediapipe
+    uv sync --frozen --python /.venv/bin/python --no-dev --no-install-project
+
+    echo "=============================="
+    echo "Build completed successfully"
+    echo "=============================="
+
+    apt-get clean && rm -rf /var/lib/apt/lists/* /root/.cache/uv
+
+%runscript
+    echo "=============================="
+    echo "Mediapipe Apptainer Container"
+    echo "=============================="
+    echo "Python: $(python --version)"
+    echo "Mediapipe: $(python -c 'import mediapipe as mp; print(getattr(mp, \"__version__\", \"unknown\"))')"
+    exec "$@"
