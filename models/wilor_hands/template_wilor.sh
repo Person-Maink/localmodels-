@@ -63,7 +63,7 @@ echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
 
-mkdir -p /scratch/mthakur/manifold/data/images/__NAME___frames
+mkdir -p "/scratch/mthakur/manifold/data/images/__NAME___frames"
 
 srun apptainer exec \
   --nv \
