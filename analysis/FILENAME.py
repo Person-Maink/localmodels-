@@ -300,7 +300,7 @@ base = str(_OUTPUTS_ROOT) + "/"
 
 # Export policy:
 # - Internal `_...` variables are the source of truth.
-# - Public exports are generated below with explicit type conversion.
+# - Public path exports stay as `Path` objects.
 # - Alias/config section after this block stays explicit for readability and compatibility.
 _PATH_EXPORTS = {
     "OUTPUTS_ROOT": _OUTPUTS_ROOT,
@@ -335,7 +335,7 @@ _RAW_EXPORTS = {
 }
 
 for _name, _value in _PATH_EXPORTS.items():
-    globals()[_name] = str(_value)
+    globals()[_name] = _value
 for _name, _value in _INT_EXPORTS.items():
     globals()[_name] = int(_value)
 for _name, _value in _RAW_EXPORTS.items():
@@ -381,4 +381,4 @@ WRIST_GROUNDING_SOURCE = MODEL_ROOT
 ANALYSIS_IMAGE_WIDTH_PX = 1920
 ANALYSIS_IMAGE_HEIGHT_PX = 1080
 ANALYSIS_IMAGE_DPI = 100
-ANALYSIS_OUTPUT_DIR = str(_OUTPUTS_ROOT / "analysis_images")
+ANALYSIS_OUTPUT_DIR = _OUTPUTS_ROOT / "analysis_images"

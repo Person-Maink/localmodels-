@@ -199,20 +199,31 @@ def _pair_label(kind, pair):
 
 
 def _resolve_sources(config_overrides):
+    explicit_sources = config_overrides.get("sources", None)
+    if explicit_sources is not None:
+        if isinstance(explicit_sources, dict):
+            sources = {name: _normalize_optional_path(path) for name, path in explicit_sources.items()}
+        else:
+            sources = {}
+            for item in explicit_sources:
+                if not isinstance(item, dict):
+                    raise ValueError("Explicit multi-point sources must be dict items with 'family' and 'path'.")
+                family = str(item.get("family", "")).strip().lower()
+                if not family:
+                    raise ValueError("Explicit multi-point source is missing a family name.")
+                sources[family] = _normalize_optional_path(item.get("path"))
+        sources = {name: path for name, path in sources.items() if path is not None}
+        if not sources:
+            raise ValueError("No valid explicit multi-point sources were provided.")
+        return sources
+
     sources = {
         "wilor": _normalize_optional_path(config_overrides.get("wilor_source", getattr(CONFIG, "WILOR_ROOT", None))),
         "hamba": _normalize_optional_path(config_overrides.get("hamba_source", getattr(CONFIG, "HAMBA_ROOT", None))),
         "dynhamr": _normalize_optional_path(config_overrides.get("dynhamr_source", getattr(CONFIG, "DYNHAMR_ROOT", None))),
         "mediapipe": _normalize_optional_path(config_overrides.get("mediapipe_source", getattr(CONFIG, "MEDIAPIPE_ROOT", None))),
     }
-
-    missing = [name for name, path in sources.items() if path is None]
-    if missing:
-        raise ValueError(
-            "Missing required source path(s): " + ", ".join(missing) + ". Set them in FILENAME.py or pass overrides."
-        )
-
-    return sources
+    return {name: path for name, path in sources.items() if path is not None}
 
 
 def _resolve_pair_lists(config_overrides):
@@ -328,6 +339,8 @@ def run_multi_point_analysis(config_overrides=None):
     overrides = config_overrides or {}
 
     sources = _resolve_sources(overrides)
+    if not sources:
+        raise ValueError("No multi-point sources resolved.")
     mano_pairs, mediapipe_pairs = _resolve_pair_lists(overrides)
     hand_idx = int(overrides.get("hand_idx", CONFIG.HAND_IDX))
     wrist_joint_idx = int(overrides.get("wrist_joint_idx", CONFIG.WRIST_JOINT_IDX))
@@ -356,14 +369,20 @@ def run_multi_point_analysis(config_overrides=None):
     for pair in mediapipe_pairs:
         _validate_mediapipe_pair(pair)
 
-    wilor_frames = _collect_model_frames(sources["wilor"], j_reg, hand_idx, wrist_joint_idx, n_verts)
-    hamba_frames = _collect_model_frames(sources["hamba"], j_reg, hand_idx, wrist_joint_idx, n_verts)
-    dynhamr_frames = _collect_model_frames(sources["dynhamr"], j_reg, hand_idx, wrist_joint_idx, n_verts)
-    mediapipe_df = pd.read_csv(sources["mediapipe"])
-
     entries = []
 
-    for family, frames in (("wilor", wilor_frames), ("hamba", hamba_frames), ("dynhamr", dynhamr_frames)):
+    model_families = [family for family in ("wilor", "hamba", "dynhamr") if family in sources]
+    media_pipe_enabled = "mediapipe" in sources
+    if not model_families and not media_pipe_enabled:
+        raise ValueError("Multi-point analysis needs at least one supported source family.")
+
+    model_frames_by_family = {
+        family: _collect_model_frames(sources[family], j_reg, hand_idx, wrist_joint_idx, n_verts)
+        for family in model_families
+    }
+    mediapipe_df = pd.read_csv(sources["mediapipe"]) if media_pipe_enabled else None
+
+    for family, frames in model_frames_by_family.items():
         for pair in mano_pairs:
             region_a, region_b = mano_regions[pair]
             label = _pair_label("model", pair)
@@ -371,6 +390,8 @@ def run_multi_point_analysis(config_overrides=None):
                 {
                     "source_family": family,
                     "kind": "model",
+                    "slot": label,
+                    "label": f"{family.upper()} {label}",
                     "source": sources[family],
                     "pair": pair,
                     "pair_label": label,
@@ -378,17 +399,21 @@ def run_multi_point_analysis(config_overrides=None):
                 }
             )
 
-    for pair in mediapipe_pairs:
-        entries.append(
-            {
-                "source_family": "mediapipe",
-                "kind": "mediapipe",
-                "source": sources["mediapipe"],
-                "pair": pair,
-                "pair_label": _pair_label("mediapipe", pair),
-                "result": _analyze_mediapipe_pair(mediapipe_df, hand_idx, pair, sources["mediapipe"]),
-            }
-        )
+    if media_pipe_enabled:
+        for pair in mediapipe_pairs:
+            label = _pair_label("mediapipe", pair)
+            entries.append(
+                {
+                    "source_family": "mediapipe",
+                    "kind": "mediapipe",
+                    "slot": label,
+                    "label": f"MEDIAPIPE {label}",
+                    "source": sources["mediapipe"],
+                    "pair": pair,
+                    "pair_label": label,
+                    "result": _analyze_mediapipe_pair(mediapipe_df, hand_idx, pair, sources["mediapipe"]),
+                }
+            )
 
     return {
         "analysis": "multi_point_to_point",

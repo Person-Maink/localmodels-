@@ -1,6 +1,8 @@
 import glob
 import os
 import re
+import sys
+import traceback
 from pathlib import Path
 
 import numpy as np
@@ -82,7 +84,9 @@ def load_frame_records(frame_dir, pattern="*_verts.npy"):
     for npy_path in npy_paths:
         try:
             records.append(load_wilor_record(npy_path))
-        except Exception:
+        except Exception as exc:
+            print(f"[npy_io] Failed to load {npy_path}: {exc}", file=sys.stderr)
+            traceback.print_exc()
             continue
     return records
 

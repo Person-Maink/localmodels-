@@ -3,7 +3,12 @@ from pathlib import Path
 
 import numpy as np
 
-from _path_setup import PROJECT_ROOT  # ensures root imports work
+from whim_io import (
+    DEFAULT_WHIM_TEST_VIDEO_DIR,
+    iter_whim_npy_paths,
+    load_whim_frame_items,
+    normalize_optional_path,
+)
 
 try:
     from vedo import Lines, Plotter, Sphere
@@ -14,41 +19,7 @@ except ModuleNotFoundError:
 RIGHT_COLOR = "crimson"
 LEFT_COLOR = "royalblue"
 UNKNOWN_COLOR = "gray"
-DEFAULT_VIDEO_DIR = PROJECT_ROOT.parent / "data" / "whim" / "test" / "anno" / "NXRHcCScubA"
-
-
-def _normalize_optional_path(value):
-    if value is None:
-        return None
-    text = str(value).strip()
-    if text.lower() in {"", "none", "null"}:
-        return None
-    return Path(text)
-
-
-def _to_numpy(value, dtype=np.float32):
-    if value is None:
-        return None
-    if isinstance(value, np.ndarray):
-        arr = value
-    elif hasattr(value, "detach"):
-        arr = value.detach().cpu().numpy()
-    elif hasattr(value, "numpy"):
-        arr = value.numpy()
-    else:
-        arr = np.asarray(value)
-    if dtype is not None:
-        arr = arr.astype(dtype, copy=False)
-    return arr
-
-
-def _to_scalar_int(value, default=-1):
-    if value is None:
-        return int(default)
-    arr = _to_numpy(value, dtype=np.float32)
-    if arr.size == 0:
-        return int(default)
-    return int(round(float(arr.reshape(-1)[0])))
+DEFAULT_VIDEO_DIR = DEFAULT_WHIM_TEST_VIDEO_DIR
 
 
 def _color_for_hand(side):
@@ -58,51 +29,15 @@ def _color_for_hand(side):
         return LEFT_COLOR
     return UNKNOWN_COLOR
 
-
-def _load_whim_frame_items(npy_path):
-    arr = np.load(npy_path, allow_pickle=True)
-    if not (isinstance(arr, np.ndarray) and arr.dtype == object):
-        raise ValueError(f"Unsupported WHIM npy format: {npy_path}")
-
-    items = arr.tolist()
-    if isinstance(items, dict):
-        items = [items]
-    if not isinstance(items, list):
-        raise ValueError(f"Unsupported WHIM object payload in: {npy_path}")
-
-    parsed = []
-    for item in items:
-        if not isinstance(item, dict):
-            continue
-        parsed.append(
-            {
-                "side": _to_scalar_int(item.get("side"), default=-1),
-                "trans": _to_numpy(item.get("trans"), dtype=np.float32),
-            }
-        )
-    return parsed
-
-
 def load_whim_camera_tracks(video_dir, frame_step=1, max_frames=None):
     video_dir = Path(video_dir)
-    if not video_dir.exists():
-        raise FileNotFoundError(f"WHIM video directory does not exist: {video_dir}")
-
-    npy_paths = sorted(video_dir.glob("*.npy"))
-    if not npy_paths:
-        raise RuntimeError(f"No .npy files found under: {video_dir}")
-
-    step = max(1, int(frame_step))
-    if step > 1:
-        npy_paths = npy_paths[::step]
-    if max_frames is not None:
-        npy_paths = npy_paths[: max(1, int(max_frames))]
+    npy_paths = iter_whim_npy_paths(video_dir, frame_step=frame_step, max_frames=max_frames)
 
     entries = []
     skipped_missing_trans = 0
 
     for npy_path in npy_paths:
-        hands = _load_whim_frame_items(npy_path)
+        hands = load_whim_frame_items(npy_path)
         if not hands:
             continue
 
@@ -274,7 +209,7 @@ def main():
     parser.add_argument("--no_invert_cam_t", dest="invert_cam_t", action="store_false")
     args = parser.parse_args()
 
-    video_dir = _normalize_optional_path(args.video_dir)
+    video_dir = normalize_optional_path(args.video_dir)
     if video_dir is None:
         raise ValueError("No WHIM video directory configured.")
 

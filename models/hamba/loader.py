@@ -9,7 +9,7 @@ from hamba.datasets.vitdet_dataset import ViTDetDataset
 def load_images_from_folder(
     folder,
     file_types=("*.jpg", "*.png", "*.jpeg"),
-    video_exts=(".mp4", ".mkv", ".mts", ".avi"),
+    video_exts=(".mp4", ".avi", ".mts", ".mov"),
 ):
     """Load image paths and extract video frames into <video>_frames folders."""
     folder = Path(folder)

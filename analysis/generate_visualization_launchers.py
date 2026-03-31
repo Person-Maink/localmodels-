@@ -5,12 +5,13 @@ from pathlib import Path
 
 import FILENAME as CONFIG
 from npy_io import discover_frame_files, load_wilor_record
+from whim_io import DEFAULT_WHIM_DATA_ROOT
 
 
 ANALYSIS_ROOT = Path(__file__).resolve().parent
 VIS_ROOT = ANALYSIS_ROOT / "3D Visualization "
 DEFAULT_OUTPUT_ROOT = Path(CONFIG.ANALYSIS_OUTPUT_DIR)
-OUTPUTS_ROOT = Path(CONFIG.OUTPUTS_ROOT)
+OUTPUTS_ROOT = CONFIG.OUTPUTS_ROOT
 PROJECT_PYTHON = ANALYSIS_ROOT / ".venv" / "bin" / "python"
 DISTROBOX_NAME = "ubuntu-nvidia"
 
@@ -22,8 +23,9 @@ WHIM_SCRIPT = VIS_ROOT / "WHIM.py"
 WHIM_CAMERA_SCRIPT = VIS_ROOT / "WHIM Camera.py"
 WHIM_FREE_SCRIPT = VIS_ROOT / "WHIM Free.py"
 WHIM_BOUNDING_BOXES_SCRIPT = VIS_ROOT / "WHIM Bounding Boxes.py"
+HAS_WHIM_COMBINED_SCRIPT = WHIM_SCRIPT.is_file()
 
-WHIM_DATA_ROOT = ANALYSIS_ROOT.parent / "data" / "whim"
+WHIM_DATA_ROOT = DEFAULT_WHIM_DATA_ROOT
 
 FAMILY_NAMES = ("wilor", "hamba", "dynhamr", "vipe", "mediapipe", "whim_train", "whim_test")
 
@@ -175,6 +177,7 @@ def _config_injection_wrapper(target_script, config_attr, source_path):
             "#!/usr/bin/env python3",
             "import importlib.util",
             "import sys",
+            "from pathlib import Path",
             "",
             f"ANALYSIS_ROOT = {_quote(ANALYSIS_ROOT)}",
             f"VIS_ROOT = {_quote(VIS_ROOT)}",
@@ -183,7 +186,7 @@ def _config_injection_wrapper(target_script, config_attr, source_path):
             "        sys.path.insert(0, path)",
             "",
             "import FILENAME as CONFIG",
-            f"CONFIG.{config_attr} = {_quote(source_path)}",
+            f"CONFIG.{config_attr} = Path({_quote(source_path)})",
             "",
             f"spec = importlib.util.spec_from_file_location('{module_name}', {_quote(target_script)})",
             "module = importlib.util.module_from_spec(spec)",
@@ -239,20 +242,24 @@ def _build_family_launchers():
         }
 
     for clip_name, video_dir in _discover_whim_clips("train").items():
-        launchers["whim_train"][clip_name] = {
+        clip_launchers = {
             "camera": _video_dir_cli_wrapper(WHIM_CAMERA_SCRIPT, video_dir),
             "free": _video_dir_cli_wrapper(WHIM_FREE_SCRIPT, video_dir),
             "bounding_boxes": _video_dir_cli_wrapper(WHIM_BOUNDING_BOXES_SCRIPT, video_dir),
-            "combined": _video_dir_cli_wrapper(WHIM_SCRIPT, video_dir),
         }
+        if HAS_WHIM_COMBINED_SCRIPT:
+            clip_launchers["combined"] = _video_dir_cli_wrapper(WHIM_SCRIPT, video_dir)
+        launchers["whim_train"][clip_name] = clip_launchers
 
     for clip_name, video_dir in _discover_whim_clips("test").items():
-        launchers["whim_test"][clip_name] = {
+        clip_launchers = {
             "camera": _video_dir_cli_wrapper(WHIM_CAMERA_SCRIPT, video_dir),
             "free": _video_dir_cli_wrapper(WHIM_FREE_SCRIPT, video_dir),
             "bounding_boxes": _video_dir_cli_wrapper(WHIM_BOUNDING_BOXES_SCRIPT, video_dir),
-            "combined": _video_dir_cli_wrapper(WHIM_SCRIPT, video_dir),
         }
+        if HAS_WHIM_COMBINED_SCRIPT:
+            clip_launchers["combined"] = _video_dir_cli_wrapper(WHIM_SCRIPT, video_dir)
+        launchers["whim_test"][clip_name] = clip_launchers
 
     return launchers
 

@@ -33,7 +33,7 @@ post:
 output:
   # Path to save results
   path: vipe_results/
-  skip_exists: false
+  skip_exists: true
 
   # Save artifacts and a info file
   save_artifacts: false

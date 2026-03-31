@@ -20,6 +20,8 @@ import torch
 
 from vipe.streams.base import ProcessedVideoStream, StreamList, VideoFrame, VideoStream
 
+SUPPORTED_VIDEO_EXTS = {".mp4", ".avi", ".mts", ".mov"}
+
 
 class RawMp4Stream(VideoStream):
     """
@@ -97,9 +99,15 @@ class RawMP4StreamList(StreamList):
         super().__init__()
         if Path(base_path).is_file():
             self.mp4_sequences = [Path(base_path)]
-            assert self.mp4_sequences[0].suffix == ".mp4", "Only mp4 files are accepted."
+            assert (
+                self.mp4_sequences[0].suffix.lower() in SUPPORTED_VIDEO_EXTS
+            ), f"Only {sorted(SUPPORTED_VIDEO_EXTS)} files are accepted."
         else:
-            self.mp4_sequences = sorted(list(Path(base_path).glob("*.mp4")))
+            self.mp4_sequences = sorted(
+                path
+                for path in Path(base_path).iterdir()
+                if path.is_file() and path.suffix.lower() in SUPPORTED_VIDEO_EXTS
+            )
         self.frame_range = range(frame_start, frame_end, frame_skip)
         self.cached = cached
 

@@ -91,7 +91,7 @@ echo "==============================================="
 
 PROJECT_ROOT="${PROJECT_ROOT:-/scratch/mthakur/manifold}"
 MODEL_ROOT="${MODEL_ROOT:-${PROJECT_ROOT}/models/wilor_hands}"
-DATA_ROOT="${DATA_ROOT:-${PROJECT_ROOT}/data}"
+DATA_ROOT="${DATA_ROOT:-${PROJECT_ROOT}/data/whim/training}"
 VIPE_OUTPUT_ROOT="${VIPE_OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/vipe}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/wilor_finetune}"
 

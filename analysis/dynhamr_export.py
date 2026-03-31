@@ -7,11 +7,11 @@ from dynhamr_io import export_latest_dynhamr_runs
 
 
 def _default_logs_root():
-    return Path(CONFIG.OUTPUTS_ROOT) / "dynhamr" / "logs" / "video-custom"
+    return CONFIG.OUTPUTS_ROOT / "dynhamr" / "logs" / "video-custom"
 
 
 def _default_output_root():
-    return Path(CONFIG.OUTPUTS_ROOT) / "dynhamr"
+    return CONFIG.OUTPUTS_ROOT / "dynhamr"
 
 
 def main():

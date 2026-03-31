@@ -5,6 +5,7 @@ import importlib.util
 import json
 import re
 import traceback
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -32,8 +33,18 @@ SCENARIOS = (
     ("wilor_vs_mediapipe", "wilor_all", "mediapipe_all"),
     ("mediapipe_vs_hamba", "mediapipe_all", "hamba_all"),
 )
+THREE_MODEL_SCENARIOS = (
+    ("wilor_vs_hamba_vs_dynhamr", ("wilor_all", "hamba_all", "dynhamr_all")),
+    ("wilor_vs_hamba_vs_mediapipe", ("wilor_all", "hamba_all", "mediapipe_all")),
+    ("wilor_vs_dynhamr_vs_mediapipe", ("wilor_all", "dynhamr_all", "mediapipe_all")),
+    ("hamba_vs_dynhamr_vs_mediapipe", ("hamba_all", "dynhamr_all", "mediapipe_all")),
+)
 ALL_MODELS_SCENARIO_ID = "wilor_vs_hamba_vs_dynhamr_vs_mediapipe"
-SCENARIO_OPTIONS = tuple(scenario_id for scenario_id, _, _ in SCENARIOS) + (ALL_MODELS_SCENARIO_ID,)
+SCENARIO_OPTIONS = (
+    tuple(scenario_id for scenario_id, _, _ in SCENARIOS)
+    + tuple(scenario_id for scenario_id, _ in THREE_MODEL_SCENARIOS)
+    + (ALL_MODELS_SCENARIO_ID,)
+)
 SAME_CLIP_COMP_SCENARIOS = {
     "hamba_vs_hamba_comp",
     "wilor_vs_wilor_comp",
@@ -47,6 +58,7 @@ CROSS_MODEL_SAME_CLIP_SCENARIOS = {
     "wilor_vs_mediapipe",
     "mediapipe_vs_hamba",
 }
+_ANALYSIS_MODULES = None
 
 
 @dataclass(frozen=True)
@@ -67,12 +79,9 @@ class PairItem:
 
 
 @dataclass(frozen=True)
-class AllModelsItem:
+class MultiModelsItem:
     scenario_id: str
-    source_a: SourceItem
-    source_b: SourceItem
-    source_c: SourceItem
-    source_d: SourceItem
+    sources: tuple[SourceItem, ...]
     group_id: str
 
 
@@ -86,6 +95,17 @@ def _load_module(module_name, file_path):
     return module
 
 
+def _get_analysis_modules():
+    global _ANALYSIS_MODULES
+    if _ANALYSIS_MODULES is None:
+        _ANALYSIS_MODULES = (
+            _load_module("freq_compare", THIS_DIR / "Compare.py"),
+            _load_module("freq_point_to_point", THIS_DIR / "Point to Point.py"),
+            _load_module("freq_multi_point_to_point", THIS_DIR / "Multi Point to Point.py"),
+        )
+    return _ANALYSIS_MODULES
+
+
 def _int_config(name, fallback):
     try:
         return int(getattr(CONFIG, name, fallback))
@@ -95,10 +115,10 @@ def _int_config(name, fallback):
 
 def _default_output_dir():
     raw = getattr(CONFIG, "ANALYSIS_OUTPUT_DIR", None)
-    if raw:
-        return Path(str(raw))
+    if raw is not None:
+        return Path(raw)
 
-    return Path(CONFIG.OUTPUTS_ROOT) / "analysis_images"
+    return CONFIG.OUTPUTS_ROOT / "analysis_images"
 
 
 def _parse_args():
@@ -115,6 +135,12 @@ def _parse_args():
         help="Run only pair/4-way items whose expected output graph files are not both already present in --output-dir.",
     )
     parser.add_argument("--max-pairs", type=int, default=None, help="Run only the first N discovered pair/4-way items after deterministic ordering.")
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=8,
+        help="Number of worker processes used after pair/group selection.",
+    )
     parser.add_argument(
         "--scenario",
         action="append",
@@ -206,13 +232,11 @@ def _build_pair_id(scenario_id, source_a, source_b):
     return f"{scenario_id}__{_slug(source_a.clip_id)}__{_slug(source_b.clip_id)}__{digest}"
 
 
-def _build_group_id(scenario_id, source_a, source_b, source_c, source_d):
-    payload = f"{scenario_id}|{source_a.path}|{source_b.path}|{source_c.path}|{source_d.path}"
+def _build_group_id(scenario_id, *sources):
+    payload = "|".join([scenario_id] + [source.path for source in sources])
     digest = hashlib.sha1(payload.encode("utf-8")).hexdigest()[:8]
-    return (
-        f"{scenario_id}__{_slug(source_a.clip_id)}__{_slug(source_b.clip_id)}__"
-        f"{_slug(source_c.clip_id)}__{_slug(source_d.clip_id)}__{digest}"
-    )
+    clip_slug = "__".join(_slug(source.clip_id) for source in sources)
+    return f"{scenario_id}__{clip_slug}__{digest}"
 
 
 def _build_source_pools(outputs_root):
@@ -242,51 +266,32 @@ def _build_source_pools(outputs_root):
     return pools, discovery
 
 
-def _build_all_model_groups(pools):
-    wilor_by_canonical = {}
-    for item in pools["wilor_all"]:
-        wilor_by_canonical.setdefault(_canonical_clip_id(item.clip_id), []).append(item)
+def _build_multi_model_groups(scenario_id, pool_names, pools):
+    grouped = []
+    for pool_name in pool_names:
+        items_by_canonical = {}
+        for item in pools[pool_name]:
+            items_by_canonical.setdefault(_canonical_clip_id(item.clip_id), []).append(item)
+        grouped.append(items_by_canonical)
 
-    hamba_by_canonical = {}
-    for item in pools["hamba_all"]:
-        hamba_by_canonical.setdefault(_canonical_clip_id(item.clip_id), []).append(item)
-
-    dynhamr_by_canonical = {}
-    for item in pools["dynhamr_all"]:
-        dynhamr_by_canonical.setdefault(_canonical_clip_id(item.clip_id), []).append(item)
-
-    mediapipe_by_canonical = {}
-    for item in pools["mediapipe_all"]:
-        mediapipe_by_canonical.setdefault(_canonical_clip_id(item.clip_id), []).append(item)
-
-    shared = sorted(
-        set(wilor_by_canonical)
-        & set(hamba_by_canonical)
-        & set(dynhamr_by_canonical)
-        & set(mediapipe_by_canonical)
-    )
+    shared = sorted(set.intersection(*(set(items_by_canonical) for items_by_canonical in grouped)))
     groups = []
     for canonical in shared:
-        for source_a in wilor_by_canonical[canonical]:
-            for source_b in hamba_by_canonical[canonical]:
-                for source_c in dynhamr_by_canonical[canonical]:
-                    for source_d in mediapipe_by_canonical[canonical]:
-                        groups.append(
-                            AllModelsItem(
-                                scenario_id=ALL_MODELS_SCENARIO_ID,
-                                source_a=source_a,
-                                source_b=source_b,
-                                source_c=source_c,
-                                source_d=source_d,
-                                group_id=_build_group_id(
-                                    ALL_MODELS_SCENARIO_ID,
-                                    source_a,
-                                    source_b,
-                                    source_c,
-                                    source_d,
-                                ),
-                            )
-                        )
+        source_lists = [items_by_canonical[canonical] for items_by_canonical in grouped]
+        stack = [([], 0)]
+        while stack:
+            chosen, depth = stack.pop()
+            if depth == len(source_lists):
+                groups.append(
+                    MultiModelsItem(
+                        scenario_id=scenario_id,
+                        sources=tuple(chosen),
+                        group_id=_build_group_id(scenario_id, *chosen),
+                    )
+                )
+                continue
+            for source in reversed(source_lists[depth]):
+                stack.append((chosen + [source], depth + 1))
 
     return groups
 
@@ -294,6 +299,7 @@ def _build_all_model_groups(pools):
 def _build_scenarios_and_pairs(pools, requested_scenarios=None, include_all_models=False):
     allowed = {scenario_id for scenario_id, _, _ in SCENARIOS}
     if include_all_models:
+        allowed.update(scenario_id for scenario_id, _ in THREE_MODEL_SCENARIOS)
         allowed.add(ALL_MODELS_SCENARIO_ID)
 
     if requested_scenarios:
@@ -401,7 +407,31 @@ def _build_scenarios_and_pairs(pools, requested_scenarios=None, include_all_mode
                     )
 
     if include_all_models:
-        all_groups = _build_all_model_groups(pools)
+        for scenario_id, pool_names in THREE_MODEL_SCENARIOS:
+            groups = _build_multi_model_groups(scenario_id, pool_names, pools)
+            scenario_rows.append(
+                {
+                    "scenario_id": scenario_id,
+                    "source_a_pool": pool_names[0],
+                    "source_b_pool": pool_names[1],
+                    "source_c_pool": pool_names[2],
+                    "source_a_count": len(pools[pool_names[0]]),
+                    "source_b_count": len(pools[pool_names[1]]),
+                    "source_c_count": len(pools[pool_names[2]]),
+                    "item_kind": "multi_models",
+                    "item_count_total": len(groups),
+                    "group_size": 3,
+                    "enabled": scenario_id in enabled,
+                }
+            )
+            if scenario_id in enabled:
+                all_model_items.extend(groups)
+
+        all_groups = _build_multi_model_groups(
+            ALL_MODELS_SCENARIO_ID,
+            ("wilor_all", "hamba_all", "dynhamr_all", "mediapipe_all"),
+            pools,
+        )
         scenario_rows.append(
             {
                 "scenario_id": ALL_MODELS_SCENARIO_ID,
@@ -413,13 +443,14 @@ def _build_scenarios_and_pairs(pools, requested_scenarios=None, include_all_mode
                 "source_b_count": len(pools["hamba_all"]),
                 "source_c_count": len(pools["dynhamr_all"]),
                 "source_d_count": len(pools["mediapipe_all"]),
-                "item_kind": "all_models",
+                "item_kind": "multi_models",
                 "item_count_total": len(all_groups),
+                "group_size": 4,
                 "enabled": ALL_MODELS_SCENARIO_ID in enabled,
             }
         )
         if ALL_MODELS_SCENARIO_ID in enabled:
-            all_model_items = all_groups
+            all_model_items.extend(all_groups)
 
     return scenario_rows, pairs, all_model_items
 
@@ -498,14 +529,17 @@ def _print_discovery(discovery, scenario_rows, selected_pairs, selected_all_mode
     print("Scenario matrix:")
     for row in scenario_rows:
         enabled = "enabled" if row["enabled"] else "disabled"
-        if row["item_kind"] == "all_models":
+        if row["item_kind"] == "multi_models":
+            group_size = int(row.get("group_size", 0))
+            pools_text = " x ".join(
+                f"{row[f'source_{slot}_pool']}({row[f'source_{slot}_count']})"
+                for slot in ("a", "b", "c", "d")
+                if row.get(f"source_{slot}_pool") is not None
+            )
             print(
                 f"  {row['scenario_id']}: "
-                f"{row['source_a_pool']}({row['source_a_count']}) x "
-                f"{row['source_b_pool']}({row['source_b_count']}) x "
-                f"{row['source_c_pool']}({row['source_c_count']}) x "
-                f"{row['source_d_pool']}({row['source_d_count']}) -> "
-                f"{row['item_count_total']} 4-way groups [{enabled}]"
+                f"{pools_text} -> "
+                f"{row['item_count_total']} {group_size}-way groups [{enabled}]"
             )
         else:
             print(
@@ -516,20 +550,22 @@ def _print_discovery(discovery, scenario_rows, selected_pairs, selected_all_mode
             )
 
     print(f"Selected pairs to process: {len(selected_pairs)}")
-    print(f"Selected 4-way groups to process: {len(selected_all_models)}")
+    print(f"Selected multi-model groups to process: {len(selected_all_models)}")
 
 
 def _expected_pair_outputs(output_dir, pair):
     return (
         output_dir / f"compare__{pair.pair_id}.png",
         output_dir / f"point_to_point__{pair.pair_id}.png",
+        output_dir / f"multi_point_to_point__{pair.pair_id}.png",
     )
 
 
-def _expected_all_model_outputs(output_dir, item):
+def _expected_multi_model_outputs(output_dir, item):
     return (
         output_dir / f"compare_all_models__{item.group_id}.png",
         output_dir / f"point_to_point_all_models__{item.group_id}.png",
+        output_dir / f"multi_point_to_point_all_models__{item.group_id}.png",
     )
 
 
@@ -546,7 +582,7 @@ def _filter_missing_items(output_dir, pairs, all_model_items):
     missing_all_models = []
     skipped_all_models = 0
     for item in all_model_items:
-        expected = _expected_all_model_outputs(output_dir, item)
+        expected = _expected_multi_model_outputs(output_dir, item)
         if all(path.exists() for path in expected):
             skipped_all_models += 1
             continue
@@ -555,19 +591,200 @@ def _filter_missing_items(output_dir, pairs, all_model_items):
     return missing_pairs, missing_all_models, skipped_pairs, skipped_all_models
 
 
+def _pair_payload(pair):
+    return {
+        "kind": "pair",
+        "scenario_id": pair.scenario_id,
+        "pair_id": pair.pair_id,
+        "source_a": asdict(pair.source_a),
+        "source_b": asdict(pair.source_b),
+    }
+
+
+def _all_models_payload(item):
+    return {
+        "kind": "all_models",
+        "scenario_id": item.scenario_id,
+        "group_id": item.group_id,
+        "sources": [asdict(source) for source in item.sources],
+    }
+
+
+def _runtime_item_from_payload(item_kind, item):
+    if item_kind == "pair":
+        return PairItem(
+            scenario_id=item["scenario_id"],
+            source_a=SourceItem(**item["source_a"]),
+            source_b=SourceItem(**item["source_b"]),
+            pair_id=item["pair_id"],
+        )
+    return MultiModelsItem(
+        scenario_id=item["scenario_id"],
+        sources=tuple(SourceItem(**source) for source in item["sources"]),
+        group_id=item["group_id"],
+    )
+
+
+def _run_worker_job(job):
+    compare_module, point_module, multi_point_module = _get_analysis_modules()
+
+    item_kind = job["item_kind"]
+    item = job["item"]
+    runtime_item = _runtime_item_from_payload(item_kind, item)
+    output_dir = Path(job["output_dir"])
+    figsize_inches = tuple(job["figsize_inches"])
+    dpi = int(job["dpi"])
+
+    metric_rows = []
+    failure_count = 0
+
+    if item_kind == "pair":
+        pair_sources = [runtime_item.source_a, runtime_item.source_b]
+        compare_overrides = {
+            "source_a": runtime_item.source_a.path,
+            "source_b": runtime_item.source_b.path,
+            "label_a": _entry_label(runtime_item.source_a),
+            "label_b": _entry_label(runtime_item.source_b),
+        }
+        point_overrides = dict(compare_overrides)
+        multi_point_overrides = {
+            "sources": [{"family": source.family, "path": source.path} for source in pair_sources],
+        }
+        item_summary = {
+            "scenario": runtime_item.scenario_id,
+            "pair_id": runtime_item.pair_id,
+            "source_a": item["source_a"],
+            "source_b": item["source_b"],
+            "analyses": {},
+        }
+        compare_image = output_dir / f"compare__{runtime_item.pair_id}.png"
+        point_image = output_dir / f"point_to_point__{runtime_item.pair_id}.png"
+        multi_point_image = output_dir / f"multi_point_to_point__{runtime_item.pair_id}.png"
+    else:
+        sources = list(runtime_item.sources)
+        labels = [_entry_label(source) for source in sources]
+        compare_overrides = {
+            "all_models": True,
+            "sources": [source.path for source in sources],
+            "labels": labels,
+        }
+        point_overrides = dict(compare_overrides)
+        multi_point_overrides = {
+            "sources": [{"family": source.family, "path": source.path} for source in sources],
+        }
+        item_summary = {
+            "scenario": runtime_item.scenario_id,
+            "group_id": runtime_item.group_id,
+            "sources": item["sources"],
+            "analyses": {},
+        }
+        compare_image = output_dir / f"compare_all_models__{runtime_item.group_id}.png"
+        point_image = output_dir / f"point_to_point_all_models__{runtime_item.group_id}.png"
+        multi_point_image = output_dir / f"multi_point_to_point_all_models__{runtime_item.group_id}.png"
+
+    try:
+        compare_data = compare_module.run_compare_analysis(compare_overrides)
+        compare_fig = compare_module.build_compare_figure(compare_data, figsize_inches=figsize_inches, dpi=dpi)
+        compare_fig.savefig(compare_image, dpi=dpi, bbox_inches="tight")
+        plt.close(compare_fig)
+
+        for entry in compare_data["entries"]:
+            metric_rows.append(_make_row(runtime_item, "compare", entry))
+
+        item_summary["analyses"]["compare"] = {
+            "status": "success",
+            "image": str(compare_image),
+            "entries": _summarize_entries(compare_data["entries"]),
+        }
+    except Exception as exc:  # noqa: BLE001
+        failure_count += 1
+        item_summary["analyses"]["compare"] = {
+            "status": "failed",
+            "error": str(exc),
+            "traceback": traceback.format_exc(limit=10),
+        }
+
+    try:
+        point_data = point_module.run_point_to_point_analysis(point_overrides)
+        point_fig = point_module.build_point_to_point_figure(point_data, figsize_inches=figsize_inches, dpi=dpi)
+        point_fig.savefig(point_image, dpi=dpi, bbox_inches="tight")
+        plt.close(point_fig)
+
+        for entry in point_data["entries"]:
+            metric_rows.append(_make_row(runtime_item, "point_to_point", entry))
+
+        item_summary["analyses"]["point_to_point"] = {
+            "status": "success",
+            "image": str(point_image),
+            "entries": _summarize_entries(point_data["entries"]),
+        }
+    except Exception as exc:  # noqa: BLE001
+        failure_count += 1
+        item_summary["analyses"]["point_to_point"] = {
+            "status": "failed",
+            "error": str(exc),
+            "traceback": traceback.format_exc(limit=10),
+        }
+
+    try:
+        multi_point_data = multi_point_module.run_multi_point_analysis(multi_point_overrides)
+        multi_point_fig = multi_point_module.build_multi_point_figure(
+            multi_point_data,
+            figsize_inches=figsize_inches,
+            dpi=dpi,
+        )
+        multi_point_fig.savefig(multi_point_image, dpi=dpi, bbox_inches="tight")
+        plt.close(multi_point_fig)
+
+        for entry in multi_point_data["entries"]:
+            metric_rows.append(_make_row(runtime_item, "multi_point_to_point", entry))
+
+        item_summary["analyses"]["multi_point_to_point"] = {
+            "status": "success",
+            "image": str(multi_point_image),
+            "entries": _summarize_entries(multi_point_data["entries"]),
+        }
+    except Exception as exc:  # noqa: BLE001
+        failure_count += 1
+        item_summary["analyses"]["multi_point_to_point"] = {
+            "status": "failed",
+            "error": str(exc),
+            "traceback": traceback.format_exc(limit=10),
+        }
+
+    success_count = sum(
+        1
+        for analysis in item_summary["analyses"].values()
+        if analysis.get("status") == "success"
+    )
+
+    return {
+        "item_kind": item_kind,
+        "sequence": int(job["sequence"]),
+        "scenario_id": item["scenario_id"],
+        "item_id": job["item_id"],
+        "summary": item_summary,
+        "metric_rows": metric_rows,
+        "analysis_success": int(success_count),
+        "analysis_failed": int(failure_count),
+    }
+
+
 def main():
     args = _parse_args()
     if args.width_px <= 0 or args.height_px <= 0 or args.dpi <= 0:
         raise ValueError("--width-px, --height-px, and --dpi must be positive integers.")
     if args.max_pairs is not None and args.max_pairs <= 0:
         raise ValueError("--max-pairs must be a positive integer when provided.")
+    if args.workers <= 0:
+        raise ValueError("--workers must be a positive integer.")
 
     output_dir = args.output_dir.expanduser().resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
 
     figsize_inches = (args.width_px / args.dpi, args.height_px / args.dpi)
 
-    pools, discovery = _build_source_pools(Path(CONFIG.OUTPUTS_ROOT))
+    pools, discovery = _build_source_pools(CONFIG.OUTPUTS_ROOT)
     scenario_rows, all_pairs, all_model_items = _build_scenarios_and_pairs(
         pools, args.scenario, include_all_models=args.all_models
     )
@@ -602,6 +819,7 @@ def main():
             "width_px": int(args.width_px),
             "height_px": int(args.height_px),
             "dpi": int(args.dpi),
+            "workers": int(args.workers),
             "output_dir": str(output_dir),
             "dry_run": bool(args.dry_run),
             "only_missing": bool(args.only_missing),
@@ -639,180 +857,72 @@ def main():
         print("Dry run complete.")
         return 0
 
-    compare_module = _load_module("freq_compare", THIS_DIR / "Compare.py")
-    point_module = _load_module("freq_point_to_point", THIS_DIR / "Point to Point.py")
-
     metric_rows = []
     failures = 0
-
+    jobs = []
     for idx, pair in enumerate(selected_pairs, start=1):
-        print(f"[{idx}/{len(selected_pairs)}] {pair.scenario_id} :: {pair.pair_id}")
-
-        pair_summary = {
-            "scenario": pair.scenario_id,
-            "pair_id": pair.pair_id,
-            "source_a": asdict(pair.source_a),
-            "source_b": asdict(pair.source_b),
-            "analyses": {},
-        }
-
-        compare_overrides = {
-            "source_a": pair.source_a.path,
-            "source_b": pair.source_b.path,
-            "label_a": _entry_label(pair.source_a),
-            "label_b": _entry_label(pair.source_b),
-        }
-
-        try:
-            compare_data = compare_module.run_compare_analysis(compare_overrides)
-            compare_fig = compare_module.build_compare_figure(compare_data, figsize_inches=figsize_inches, dpi=args.dpi)
-
-            compare_image = output_dir / f"compare__{pair.pair_id}.png"
-            compare_fig.savefig(compare_image, dpi=args.dpi, bbox_inches="tight")
-            plt.close(compare_fig)
-
-            for entry in compare_data["entries"]:
-                metric_rows.append(_make_row(pair, "compare", entry))
-
-            pair_summary["analyses"]["compare"] = {
-                "status": "success",
-                "image": str(compare_image),
-                "entries": _summarize_entries(compare_data["entries"]),
+        jobs.append(
+            {
+                "item_kind": "pair",
+                "sequence": idx,
+                "item_id": pair.pair_id,
+                "item": _pair_payload(pair),
+                "output_dir": str(output_dir),
+                "figsize_inches": figsize_inches,
+                "dpi": args.dpi,
             }
-            summary["totals"]["analysis_success"] += 1
-        except Exception as exc:  # noqa: BLE001
-            failures += 1
-            summary["totals"]["analysis_failed"] += 1
-            pair_summary["analyses"]["compare"] = {
-                "status": "failed",
-                "error": str(exc),
-                "traceback": traceback.format_exc(limit=10),
-            }
-
-        point_overrides = {
-            "source_a": pair.source_a.path,
-            "source_b": pair.source_b.path,
-            "label_a": _entry_label(pair.source_a),
-            "label_b": _entry_label(pair.source_b),
-        }
-
-        try:
-            point_data = point_module.run_point_to_point_analysis(point_overrides)
-            point_fig = point_module.build_point_to_point_figure(point_data, figsize_inches=figsize_inches, dpi=args.dpi)
-
-            point_image = output_dir / f"point_to_point__{pair.pair_id}.png"
-            point_fig.savefig(point_image, dpi=args.dpi, bbox_inches="tight")
-            plt.close(point_fig)
-
-            for entry in point_data["entries"]:
-                metric_rows.append(_make_row(pair, "point_to_point", entry))
-
-            pair_summary["analyses"]["point_to_point"] = {
-                "status": "success",
-                "image": str(point_image),
-                "entries": _summarize_entries(point_data["entries"]),
-            }
-            summary["totals"]["analysis_success"] += 1
-        except Exception as exc:  # noqa: BLE001
-            failures += 1
-            summary["totals"]["analysis_failed"] += 1
-            pair_summary["analyses"]["point_to_point"] = {
-                "status": "failed",
-                "error": str(exc),
-                "traceback": traceback.format_exc(limit=10),
-            }
-
-        summary["pairs"].append(pair_summary)
+        )
 
     for idx, item in enumerate(selected_all_models, start=1):
-        print(f"[{idx}/{len(selected_all_models)}] {item.scenario_id} :: {item.group_id}")
-
-        item_summary = {
-            "scenario": item.scenario_id,
-            "group_id": item.group_id,
-            "source_a": asdict(item.source_a),
-            "source_b": asdict(item.source_b),
-            "source_c": asdict(item.source_c),
-            "source_d": asdict(item.source_d),
-            "analyses": {},
-        }
-
-        compare_overrides = {
-            "all_models": True,
-            "sources": [item.source_a.path, item.source_b.path, item.source_c.path, item.source_d.path],
-            "labels": [
-                _entry_label(item.source_a),
-                _entry_label(item.source_b),
-                _entry_label(item.source_c),
-                _entry_label(item.source_d),
-            ],
-        }
-
-        try:
-            compare_data = compare_module.run_compare_analysis(compare_overrides)
-            compare_fig = compare_module.build_compare_figure(compare_data, figsize_inches=figsize_inches, dpi=args.dpi)
-
-            compare_image = output_dir / f"compare_all_models__{item.group_id}.png"
-            compare_fig.savefig(compare_image, dpi=args.dpi, bbox_inches="tight")
-            plt.close(compare_fig)
-
-            for entry in compare_data["entries"]:
-                metric_rows.append(_make_row(item, "compare", entry))
-
-            item_summary["analyses"]["compare"] = {
-                "status": "success",
-                "image": str(compare_image),
-                "entries": _summarize_entries(compare_data["entries"]),
+        jobs.append(
+            {
+                "item_kind": "all_models",
+                "sequence": idx,
+                "item_id": item.group_id,
+                "item": _all_models_payload(item),
+                "output_dir": str(output_dir),
+                "figsize_inches": figsize_inches,
+                "dpi": args.dpi,
             }
-            summary["totals"]["analysis_success"] += 1
-        except Exception as exc:  # noqa: BLE001
-            failures += 1
-            summary["totals"]["analysis_failed"] += 1
-            item_summary["analyses"]["compare"] = {
-                "status": "failed",
-                "error": str(exc),
-                "traceback": traceback.format_exc(limit=10),
-            }
+        )
 
-        point_overrides = {
-            "all_models": True,
-            "sources": [item.source_a.path, item.source_b.path, item.source_c.path, item.source_d.path],
-            "labels": [
-                _entry_label(item.source_a),
-                _entry_label(item.source_b),
-                _entry_label(item.source_c),
-                _entry_label(item.source_d),
-            ],
-        }
+    pair_results = []
+    all_model_results = []
+    total_jobs = len(jobs)
 
-        try:
-            point_data = point_module.run_point_to_point_analysis(point_overrides)
-            point_fig = point_module.build_point_to_point_figure(point_data, figsize_inches=figsize_inches, dpi=args.dpi)
+    with ProcessPoolExecutor(max_workers=args.workers) as executor:
+        future_to_job = {executor.submit(_run_worker_job, job): job for job in jobs}
+        completed = 0
+        for future in as_completed(future_to_job):
+            job = future_to_job[future]
+            completed += 1
+            print(f"[{completed}/{total_jobs}] {job['item']['scenario_id']} :: {job['item_id']}")
 
-            point_image = output_dir / f"point_to_point_all_models__{item.group_id}.png"
-            point_fig.savefig(point_image, dpi=args.dpi, bbox_inches="tight")
-            plt.close(point_fig)
+            result = future.result()
+            metric_rows.extend(result["metric_rows"])
+            failures += int(result["analysis_failed"])
+            summary["totals"]["analysis_success"] += int(result["analysis_success"])
+            summary["totals"]["analysis_failed"] += int(result["analysis_failed"])
 
-            for entry in point_data["entries"]:
-                metric_rows.append(_make_row(item, "point_to_point", entry))
+            if result["item_kind"] == "pair":
+                pair_results.append(result)
+            else:
+                all_model_results.append(result)
 
-            item_summary["analyses"]["point_to_point"] = {
-                "status": "success",
-                "image": str(point_image),
-                "entries": _summarize_entries(point_data["entries"]),
-            }
-            summary["totals"]["analysis_success"] += 1
-        except Exception as exc:  # noqa: BLE001
-            failures += 1
-            summary["totals"]["analysis_failed"] += 1
-            item_summary["analyses"]["point_to_point"] = {
-                "status": "failed",
-                "error": str(exc),
-                "traceback": traceback.format_exc(limit=10),
-            }
+    pair_results.sort(key=lambda result: result["sequence"])
+    all_model_results.sort(key=lambda result: result["sequence"])
+    summary["pairs"] = [result["summary"] for result in pair_results]
+    summary["all_models"] = [result["summary"] for result in all_model_results]
 
-        summary["all_models"].append(item_summary)
-
+    metric_rows.sort(
+        key=lambda row: (
+            row["scenario"],
+            row["pair_id"],
+            row["analysis"],
+            row["slot"],
+            row["label"],
+        )
+    )
     _save_metrics_csv(metrics_path, metric_rows)
     with open(summary_path, "w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2)
