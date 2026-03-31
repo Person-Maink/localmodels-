@@ -18,8 +18,14 @@ CAMERA_SCRIPT = VIS_ROOT / "Camera.py"
 FREE_SCRIPT = VIS_ROOT / "Free.py"
 WRIST_GROUNDING_SCRIPT = VIS_ROOT / "Wrist Grounding.py"
 BOUNDING_BOXES_SCRIPT = VIS_ROOT / "Bounding Boxes.py"
+WHIM_SCRIPT = VIS_ROOT / "WHIM.py"
+WHIM_CAMERA_SCRIPT = VIS_ROOT / "WHIM Camera.py"
+WHIM_FREE_SCRIPT = VIS_ROOT / "WHIM Free.py"
+WHIM_BOUNDING_BOXES_SCRIPT = VIS_ROOT / "WHIM Bounding Boxes.py"
 
-FAMILY_NAMES = ("wilor", "hamba", "dynhamr", "vipe", "mediapipe")
+WHIM_DATA_ROOT = ANALYSIS_ROOT.parent / "data" / "whim"
+
+FAMILY_NAMES = ("wilor", "hamba", "dynhamr", "vipe", "mediapipe", "whim_train", "whim_test")
 
 
 def _quote(value):
@@ -73,6 +79,18 @@ def _discover_mediapipe_clips():
         if not csv_path.is_file() or csv_path.name.startswith(".~lock."):
             continue
         clips[csv_path.name[: -len(suffix)]] = csv_path.resolve()
+    return clips
+
+
+def _discover_whim_clips(split):
+    split_root = WHIM_DATA_ROOT / split / "anno"
+    clips = {}
+    if not split_root.exists():
+        return clips
+
+    for video_dir in sorted(split_root.iterdir(), key=lambda path: path.name):
+        if video_dir.is_dir():
+            clips[video_dir.name] = video_dir.resolve()
     return clips
 
 
@@ -130,6 +148,20 @@ def _bbox_cli_wrapper(frames_root):
             "import sys",
             "",
             f"ARGS = [sys.executable, {_quote(BOUNDING_BOXES_SCRIPT)}, '--frames_root', {_quote(frames_root)}]",
+            "raise SystemExit(subprocess.call(ARGS))",
+            "",
+        ]
+    )
+
+
+def _video_dir_cli_wrapper(target_script, video_dir):
+    return "\n".join(
+        [
+            "#!/usr/bin/env python3",
+            "import subprocess",
+            "import sys",
+            "",
+            f"ARGS = [sys.executable, {_quote(target_script)}, '--video-dir', {_quote(video_dir)}]",
             "raise SystemExit(subprocess.call(ARGS))",
             "",
         ]
@@ -204,6 +236,22 @@ def _build_family_launchers():
         launchers["mediapipe"][clip_name] = {
             "free": _config_injection_wrapper(FREE_SCRIPT, "FREE_SOURCE", csv_path),
             "wrist_grounding": _config_injection_wrapper(WRIST_GROUNDING_SCRIPT, "WRIST_GROUNDING_SOURCE", csv_path),
+        }
+
+    for clip_name, video_dir in _discover_whim_clips("train").items():
+        launchers["whim_train"][clip_name] = {
+            "camera": _video_dir_cli_wrapper(WHIM_CAMERA_SCRIPT, video_dir),
+            "free": _video_dir_cli_wrapper(WHIM_FREE_SCRIPT, video_dir),
+            "bounding_boxes": _video_dir_cli_wrapper(WHIM_BOUNDING_BOXES_SCRIPT, video_dir),
+            "combined": _video_dir_cli_wrapper(WHIM_SCRIPT, video_dir),
+        }
+
+    for clip_name, video_dir in _discover_whim_clips("test").items():
+        launchers["whim_test"][clip_name] = {
+            "camera": _video_dir_cli_wrapper(WHIM_CAMERA_SCRIPT, video_dir),
+            "free": _video_dir_cli_wrapper(WHIM_FREE_SCRIPT, video_dir),
+            "bounding_boxes": _video_dir_cli_wrapper(WHIM_BOUNDING_BOXES_SCRIPT, video_dir),
+            "combined": _video_dir_cli_wrapper(WHIM_SCRIPT, video_dir),
         }
 
     return launchers
