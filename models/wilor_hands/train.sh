@@ -13,7 +13,7 @@
 
 #SBATCH --job-name=wilor-train
 #SBATCH --partition=gpu-a100-small
-#SBATCH --time=00:10:00
+#SBATCH --time=01:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
@@ -79,7 +79,6 @@ echo "Job Name:       $SLURM_JOB_NAME"
 echo "Partition:      $SLURM_JOB_PARTITION"
 echo "Node List:      $SLURM_JOB_NODELIST"
 echo "CPUs per task:  $SLURM_CPUS_PER_TASK"
-echo "Memory per CPU: $SLURM_MEM_PER_CPU"
 echo "GPUs per task:  $SLURM_GPUS_PER_TASK"
 echo "Memory per GPU: $SLURM_MEM_PER_GPU"
 echo "Submit dir:     $SLURM_SUBMIT_DIR"

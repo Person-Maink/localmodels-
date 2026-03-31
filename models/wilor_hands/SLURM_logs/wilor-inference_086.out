@@ -1,0 +1,116 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Tue Mar 31 15:59:56 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:2C:00.0 Off |                   On |
+| N/A   58C    P0             99W /  300W |   17921MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0   11   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9491165
+Job Name:       wilor-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 24576
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Tue Mar 31 15:59:57 CEST 2026
+===============================================
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+Loading  ./pretrained_models/wilor_final.ckpt
+Lightning automatically upgraded your loaded checkpoint from v1.8.1 to v2.0.9. To apply the upgrade to your files permanently, run `python -m pytorch_lightning.utilities.upgrade_checkpoint --file pretrained_models/wilor_final.ckpt`
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+[WARN] [120-2_clip_1] Failed: Frame folder not found: ../../data/images/120-2_clip_1_frames. Skipping.
+[WARN] [120-2_clip_1_amplified] Failed: Frame folder not found: ../../data/images/120-2_clip_1_amplified_frames. Skipping.
+[WARN] [120-2_clip_2] Failed: Frame folder not found: ../../data/images/120-2_clip_2_frames. Skipping.
+[WARN] [120-2_clip_2_amplified] Failed: Frame folder not found: ../../data/images/120-2_clip_2_amplified_frames. Skipping.
+[WARN] [120-2_clip_3] Failed: Frame folder not found: ../../data/images/120-2_clip_3_frames. Skipping.
+[WARN] [120-2_clip_3_amplified] Failed: Frame folder not found: ../../data/images/120-2_clip_3_amplified_frames. Skipping.
+[WARN] [120-2_clip_4] Failed: Frame folder not found: ../../data/images/120-2_clip_4_frames. Skipping.
+[WARN] [120-2_clip_4_amplified] Failed: Frame folder not found: ../../data/images/120-2_clip_4_amplified_frames. Skipping.
+[WARN] [120-2_clip_5] Failed: Frame folder not found: ../../data/images/120-2_clip_5_frames. Skipping.
+[WARN] [120-2_clip_5_amplified] Failed: Frame folder not found: ../../data/images/120-2_clip_5_amplified_frames. Skipping.
+[WARN] [120-2_clip_6] Failed: Frame folder not found: ../../data/images/120-2_clip_6_frames. Skipping.
+[WARN] [120-2_clip_7] Failed: Frame folder not found: ../../data/images/120-2_clip_7_frames. Skipping.
+[WARN] [120-2_clip_7_amplified] Failed: Frame folder not found: ../../data/images/120-2_clip_7_amplified_frames. Skipping.
+[WARN] [124-6 DBS uit] ViPE pose file missing: ../../outputs/wilor/../vipe/pose/124-6 DBS uit.npz. Skipping.
+[WARN] [163 (2) FU] ViPE pose file missing: ../../outputs/wilor/../vipe/pose/163 (2) FU.npz. Skipping.
+[WARN] [clip_1] Failed: Frame folder not found: ../../data/images/clip_1_frames. Skipping.
+[WARN] [clip_1_amplified] Failed: Frame folder not found: ../../data/images/clip_1_amplified_frames. Skipping.
+[WARN] [clip_2] Failed: Frame folder not found: ../../data/images/clip_2_frames. Skipping.
+[WARN] [clip_2_amplified] Failed: Frame folder not found: ../../data/images/clip_2_amplified_frames. Skipping.
+[WARN] [clip_3] Failed: Frame folder not found: ../../data/images/clip_3_frames. Skipping.
+[WARN] [clip_3_amplified] Failed: Frame folder not found: ../../data/images/clip_3_amplified_frames. Skipping.
+[WARN] [clip_4] Failed: Frame folder not found: ../../data/images/clip_4_frames. Skipping.
+[WARN] [me 1] Failed: Frame folder not found: ../../data/images/me 1_frames. Skipping.
+[WARN] [me 2] Failed: Frame folder not found: ../../data/images/me 2_frames. Skipping.
+[WARN] [me 3] Failed: Frame folder not found: ../../data/images/me 3_frames. Skipping.
+[WARN] [me 4] Failed: Frame folder not found: ../../data/images/me 4_frames. Skipping.
+[INFO] Completed. Videos processed: 0/26. Mesh files written: 0, visualizations written: 0
+[WARN] Skipped 26 video(s):
+[WARN] - 120-2_clip_1: Frame folder not found: ../../data/images/120-2_clip_1_frames
+[WARN] - 120-2_clip_1_amplified: Frame folder not found: ../../data/images/120-2_clip_1_amplified_frames
+[WARN] - 120-2_clip_2: Frame folder not found: ../../data/images/120-2_clip_2_frames
+[WARN] - 120-2_clip_2_amplified: Frame folder not found: ../../data/images/120-2_clip_2_amplified_frames
+[WARN] - 120-2_clip_3: Frame folder not found: ../../data/images/120-2_clip_3_frames
+[WARN] - 120-2_clip_3_amplified: Frame folder not found: ../../data/images/120-2_clip_3_amplified_frames
+[WARN] - 120-2_clip_4: Frame folder not found: ../../data/images/120-2_clip_4_frames
+[WARN] - 120-2_clip_4_amplified: Frame folder not found: ../../data/images/120-2_clip_4_amplified_frames
+[WARN] - 120-2_clip_5: Frame folder not found: ../../data/images/120-2_clip_5_frames
+[WARN] - 120-2_clip_5_amplified: Frame folder not found: ../../data/images/120-2_clip_5_amplified_frames
+[WARN] - 120-2_clip_6: Frame folder not found: ../../data/images/120-2_clip_6_frames
+[WARN] - 120-2_clip_7: Frame folder not found: ../../data/images/120-2_clip_7_frames
+[WARN] - 120-2_clip_7_amplified: Frame folder not found: ../../data/images/120-2_clip_7_amplified_frames
+[WARN] - 124-6 DBS uit: ViPE pose file missing: ../../outputs/wilor/../vipe/pose/124-6 DBS uit.npz
+[WARN] - 163 (2) FU: ViPE pose file missing: ../../outputs/wilor/../vipe/pose/163 (2) FU.npz
+[WARN] - clip_1: Frame folder not found: ../../data/images/clip_1_frames
+[WARN] - clip_1_amplified: Frame folder not found: ../../data/images/clip_1_amplified_frames
+[WARN] - clip_2: Frame folder not found: ../../data/images/clip_2_frames
+[WARN] - clip_2_amplified: Frame folder not found: ../../data/images/clip_2_amplified_frames
+[WARN] - clip_3: Frame folder not found: ../../data/images/clip_3_frames
+[WARN] - clip_3_amplified: Frame folder not found: ../../data/images/clip_3_amplified_frames
+[WARN] - clip_4: Frame folder not found: ../../data/images/clip_4_frames
+[WARN] - me 1: Frame folder not found: ../../data/images/me 1_frames
+[WARN] - me 2: Frame folder not found: ../../data/images/me 2_frames
+[WARN] - me 3: Frame folder not found: ../../data/images/me 3_frames
+[WARN] - me 4: Frame folder not found: ../../data/images/me 4_frames
+===============================================
+Job finished at: Tue Mar 31 16:00:10 CEST 2026
+Execution took 0.00 hours
+Writing output to SLURM_logs/wilor-inference_086.out
+===============================================

@@ -1,0 +1,69 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/12.9
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Tue Mar 31 16:57:43 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                    0 |
+| N/A   34C    P0             43W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9491400
+Job Name:       vipe-inference
+Partition:      gpu-a100
+Node List:      gpu019
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 65536
+Submit dir:     /scratch/mthakur/manifold/models/vipe
+Work dir:       /scratch/mthakur/manifold/models/vipe
+Job started at: Tue Mar 31 16:57:43 CEST 2026
+===============================================
+2026-03-31 16:58:07,343 - vipe - INFO - Processing 7S9q1kAVmc0 (1 / 1)
+
+Caching:   0%|          | 0/50 [00:00<?, ?it/s]Caching:  12%|█▏        | 6/50 [00:00<00:00, 56.58it/s]Caching:  32%|███▏      | 16/50 [00:00<00:00, 80.61it/s]Caching:  52%|█████▏    | 26/50 [00:00<00:00, 88.73it/s]Caching:  72%|███████▏  | 36/50 [00:00<00:00, 91.61it/s]Caching:  92%|█████████▏| 46/50 [00:00<00:00, 92.88it/s]Caching: 100%|██████████| 50/50 [00:00<00:00, 88.73it/s]
+Caching:   0%|          | 0/50 [00:00<?, ?it/s]Caching:  18%|█▊        | 9/50 [00:00<00:00, 81.09it/s]Caching:  36%|███▌      | 18/50 [00:00<00:00, 52.47it/s]Caching:  48%|████▊     | 24/50 [00:00<00:00, 42.85it/s]Caching:  58%|█████▊    | 29/50 [00:00<00:00, 39.52it/s]Caching:  76%|███████▌  | 38/50 [00:00<00:00, 51.46it/s]Caching:  88%|████████▊ | 44/50 [00:00<00:00, 50.23it/s]Caching: 100%|██████████| 50/50 [00:01<00:00, 45.70it/s]Caching: 100%|██████████| 50/50 [00:01<00:00, 47.50it/s]
+Error executing job with overrides: ['pipeline=no_vda', 'streams=raw_mp4_stream', 'streams.base_path=/scratch/mthakur/manifold/data/images/7S9q1kAVmc0.mp4', 'streams.frame_end=-1', 'pipeline.output.path=/scratch/mthakur/manifold/outputs/vipe/', 'pipeline.output.save_artifacts=true', 'pipeline.output.save_viz=false']
+Traceback (most recent call last):
+  File "/scratch/mthakur/manifold/models/vipe/run.py", line 23, in run
+    pipeline.run(video_stream)
+  File "/scratch/mthakur/manifold/models/vipe/vipe/pipeline/default.py", line 124, in run
+    slam_output = slam_pipeline.run(slam_streams, rig=slam_rig, camera_type=self.camera_type)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/scratch/mthakur/manifold/models/vipe/vipe/slam/system.py", line 246, in run
+    self._build_components()
+  File "/scratch/mthakur/manifold/models/vipe/vipe/slam/system.py", line 122, in _build_components
+    self.metric_depth = make_depth_model(self.config.keyframe_depth)
+  File "/scratch/mthakur/manifold/models/vipe/vipe/priors/depth/__init__.py", line 33, in make_depth_model
+    return UniDepth2Model(type=model_sub)
+TypeError: UniDepth2Model.__init__() got an unexpected keyword argument 'type'
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+
+ERROR conda.cli.main_run:execute(124): `conda run python run.py pipeline=no_vda streams=raw_mp4_stream streams.base_path=/scratch/mthakur/manifold/data/images/7S9q1kAVmc0.mp4 streams.frame_end=-1 pipeline.output.path=/scratch/mthakur/manifold/outputs/vipe/ pipeline.output.save_artifacts=true pipeline.output.save_viz=false` failed. (See above for error)
+===============================================
+Job finished at: Tue Mar 31 16:58:29 CEST 2026
+Execution took 0.01 hours
+Writing output to SLURM_logs/vipe-inference_241.out
+===============================================
