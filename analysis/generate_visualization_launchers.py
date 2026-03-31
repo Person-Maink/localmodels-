@@ -12,6 +12,7 @@ VIS_ROOT = ANALYSIS_ROOT / "3D Visualization "
 DEFAULT_OUTPUT_ROOT = Path(CONFIG.ANALYSIS_OUTPUT_DIR)
 OUTPUTS_ROOT = Path(CONFIG.OUTPUTS_ROOT)
 PROJECT_PYTHON = ANALYSIS_ROOT / ".venv" / "bin" / "python"
+DISTROBOX_NAME = "ubuntu-nvidia"
 
 CAMERA_SCRIPT = VIS_ROOT / "Camera.py"
 FREE_SCRIPT = VIS_ROOT / "Free.py"
@@ -30,7 +31,7 @@ def _shell_launcher(wrapper_name):
         [
             "#!/usr/bin/env sh",
             'SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"',
-            f'exec "{PROJECT_PYTHON}" "$SCRIPT_DIR/{wrapper_name}"',
+            f'exec /usr/bin/env distrobox enter {DISTROBOX_NAME} -- "{PROJECT_PYTHON}" "$SCRIPT_DIR/{wrapper_name}"',
             "",
         ]
     )

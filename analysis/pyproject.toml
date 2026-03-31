@@ -8,5 +8,6 @@ dependencies = [
     "chumpy>=0.70",
     "pandas>=2.3.3",
     "scikit-learn>=1.6.1",
+    "torch>=2.8.0",
     "vedo>=2025.5.4",
 ]
