@@ -130,6 +130,8 @@ Thumbs.db
 *.jpg
 *.zip
 **/*.tar.gz.1
+*.mp4
+*.part
 
 # Project-specific files
 playground.py
