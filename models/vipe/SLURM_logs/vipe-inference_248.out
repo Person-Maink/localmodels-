@@ -6,7 +6,7 @@ Currently Loaded Modules:
 
  
 
-Tue Mar 31 16:59:10 2026       
+Tue Mar 31 17:01:19 2026       
 +-----------------------------------------------------------------------------------------+
 | NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
 +-----------------------------------------+------------------------+----------------------+
@@ -14,8 +14,8 @@ Tue Mar 31 16:59:10 2026
 | Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
 |                                         |                        |               MIG M. |
 |=========================================+========================+======================|
-|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                    0 |
-| N/A   34C    P0             43W /  300W |       0MiB /  81920MiB |      0%      Default |
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:2C:00.0 Off |                    0 |
+| N/A   45C    P0             49W /  300W |       0MiB /  81920MiB |      0%      Default |
 |                                         |                        |             Disabled |
 +-----------------------------------------+------------------------+----------------------+
 
@@ -27,23 +27,23 @@ Tue Mar 31 16:59:10 2026
 |  No running processes found                                                             |
 +-----------------------------------------------------------------------------------------+
 ================ SLURM JOB INFO ================
-Job ID:         9491402
+Job ID:         9491409
 Job Name:       vipe-inference
 Partition:      gpu-a100
-Node List:      gpu019
+Node List:      gpu015
 CPUs per task:  2
 Memory per CPU: 
 GPUs per task:  1
 Memory per GPU: 65536
 Submit dir:     /scratch/mthakur/manifold/models/vipe
 Work dir:       /scratch/mthakur/manifold/models/vipe
-Job started at: Tue Mar 31 16:59:10 CEST 2026
+Job started at: Tue Mar 31 17:01:19 CEST 2026
 ===============================================
-2026-03-31 16:59:16,699 - vipe - INFO - Processing bxZtXdVvfpc (1 / 1)
+2026-03-31 17:01:23,904 - vipe - INFO - Processing Ipe9xJCfuTM (1 / 1)
 
-Caching:   0%|          | 0/23 [00:00<?, ?it/s]Caching:  13%|█▎        | 3/23 [00:00<00:00, 23.44it/s]Caching:  26%|██▌       | 6/23 [00:00<00:00, 23.79it/s]Caching:  39%|███▉      | 9/23 [00:00<00:00, 23.87it/s]Caching:  52%|█████▏    | 12/23 [00:00<00:00, 23.97it/s]Caching:  65%|██████▌   | 15/23 [00:00<00:00, 23.82it/s]Caching:  78%|███████▊  | 18/23 [00:00<00:00, 23.61it/s]Caching:  91%|█████████▏| 21/23 [00:00<00:00, 24.80it/s]Caching: 100%|██████████| 23/23 [00:00<00:00, 25.23it/s]
-Caching:   0%|          | 0/23 [00:00<?, ?it/s]Caching:  22%|██▏       | 5/23 [00:00<00:00, 45.72it/s]Caching:  43%|████▎     | 10/23 [00:00<00:00, 45.06it/s]Caching:  65%|██████▌   | 15/23 [00:00<00:00, 45.39it/s]Caching:  87%|████████▋ | 20/23 [00:00<00:00, 45.64it/s]Caching: 100%|██████████| 23/23 [00:00<00:00, 45.41it/s]
-Error executing job with overrides: ['pipeline=no_vda', 'streams=raw_mp4_stream', 'streams.base_path=/scratch/mthakur/manifold/data/images/bxZtXdVvfpc.mp4', 'streams.frame_end=-1', 'pipeline.output.path=/scratch/mthakur/manifold/outputs/vipe/', 'pipeline.output.save_artifacts=true', 'pipeline.output.save_viz=false']
+Caching:   0%|          | 0/29 [00:00<?, ?it/s]Caching:  24%|██▍       | 7/29 [00:00<00:00, 68.60it/s]Caching:  52%|█████▏    | 15/29 [00:00<00:00, 70.68it/s]Caching:  79%|███████▉  | 23/29 [00:00<00:00, 66.39it/s]Caching: 100%|██████████| 29/29 [00:00<00:00, 65.92it/s]
+Caching:   0%|          | 0/29 [00:00<?, ?it/s]Caching:  24%|██▍       | 7/29 [00:00<00:00, 61.07it/s]Caching:  48%|████▊     | 14/29 [00:00<00:00, 52.55it/s]Caching:  72%|███████▏  | 21/29 [00:00<00:00, 56.05it/s]Caching:  97%|█████████▋| 28/29 [00:00<00:00, 57.65it/s]Caching: 100%|██████████| 29/29 [00:00<00:00, 57.10it/s]
+Error executing job with overrides: ['pipeline=no_vda', 'streams=raw_mp4_stream', 'streams.base_path=/scratch/mthakur/manifold/data/images/Ipe9xJCfuTM.mp4', 'streams.frame_end=-1', 'pipeline.output.path=/scratch/mthakur/manifold/outputs/vipe/', 'pipeline.output.save_artifacts=true', 'pipeline.output.save_viz=false']
 Traceback (most recent call last):
   File "/scratch/mthakur/manifold/models/vipe/run.py", line 23, in run
     pipeline.run(video_stream)
@@ -61,9 +61,9 @@ TypeError: UniDepth2Model.__init__() got an unexpected keyword argument 'type'
 
 Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
 
-ERROR conda.cli.main_run:execute(124): `conda run python run.py pipeline=no_vda streams=raw_mp4_stream streams.base_path=/scratch/mthakur/manifold/data/images/bxZtXdVvfpc.mp4 streams.frame_end=-1 pipeline.output.path=/scratch/mthakur/manifold/outputs/vipe/ pipeline.output.save_artifacts=true pipeline.output.save_viz=false` failed. (See above for error)
+ERROR conda.cli.main_run:execute(124): `conda run python run.py pipeline=no_vda streams=raw_mp4_stream streams.base_path=/scratch/mthakur/manifold/data/images/Ipe9xJCfuTM.mp4 streams.frame_end=-1 pipeline.output.path=/scratch/mthakur/manifold/outputs/vipe/ pipeline.output.save_artifacts=true pipeline.output.save_viz=false` failed. (See above for error)
 ===============================================
-Job finished at: Tue Mar 31 17:00:37 CEST 2026
-Execution took 0.02 hours
-Writing output to SLURM_logs/vipe-inference_243.out
+Job finished at: Tue Mar 31 17:01:46 CEST 2026
+Execution took 0.01 hours
+Writing output to SLURM_logs/vipe-inference_248.out
 ===============================================

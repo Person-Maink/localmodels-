@@ -1,0 +1,112 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1       6) python/3.10.13
+
+ 
+
+Tue Mar 31 18:00:29 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:98:00.0 Off |                    0 |
+| N/A   42C    P0             46W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9491493
+Job Name:       dynhamr-inference
+Partition:      gpu-a100
+Node List:      gpu019
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 24576
+Submit dir:     /scratch/mthakur/manifold/models/dyn-hamr
+Work dir:       /scratch/mthakur/manifold/models/dyn-hamr
+Job started at: Tue Mar 31 18:00:29 CEST 2026
+===============================================
+Using video: /scratch/mthakur/manifold/data/images/Y1mNu5iFwMg.mp4
+Using local Detectron2 checkpoint: /home/mthakur/.cache/torch/hub/detectron2/model_final_f05665.pkl
+/usr/local/lib/python3.10/dist-packages/scipy/__init__.py:146: UserWarning: A NumPy version >=1.17.3 and <1.25.0 is required for this version of SciPy (detected version 2.2.6
+  warnings.warn(f"A NumPy version >={np_minversion} and <{np_maxversion}"
+
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.2.6 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+Traceback (most recent call last):  File "/scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr/run_opt.py", line 12, in <module>
+    from data import get_dataset_from_cfg, expand_source_paths
+  File "/scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr/data/__init__.py", line 1, in <module>
+    from .dataset import *
+  File "/scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr/data/dataset.py", line 18, in <module>
+    from geometry.camera import invert_camera
+  File "/scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr/geometry/__init__.py", line 2, in <module>
+    from . import mesh
+  File "/scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr/geometry/mesh.py", line 3, in <module>
+    import trimesh
+  File "/usr/local/lib/python3.10/dist-packages/trimesh/__init__.py", line 12, in <module>
+    from . import (
+  File "/usr/local/lib/python3.10/dist-packages/trimesh/bounds.py", line 3, in <module>
+    from . import convex, geometry, grouping, nsphere, transformations, util
+  File "/usr/local/lib/python3.10/dist-packages/trimesh/convex.py", line 16, in <module>
+    from . import triangles, util
+  File "/usr/local/lib/python3.10/dist-packages/trimesh/triangles.py", line 15, in <module>
+    from .points import point_plane_distance
+  File "/usr/local/lib/python3.10/dist-packages/trimesh/points.py", line 16, in <module>
+    from .geometry import plane_transform
+  File "/usr/local/lib/python3.10/dist-packages/trimesh/geometry.py", line 8, in <module>
+    import scipy.sparse
+  File "/usr/local/lib/python3.10/dist-packages/scipy/sparse/__init__.py", line 267, in <module>
+    from ._csr import *
+  File "/usr/local/lib/python3.10/dist-packages/scipy/sparse/_csr.py", line 10, in <module>
+    from ._sparsetools import (csr_tocsc, csr_tobsr, csr_count_blocks,
+AttributeError: _ARRAY_API not found
+Traceback (most recent call last):
+  File "/scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr/run_opt.py", line 12, in <module>
+    from data import get_dataset_from_cfg, expand_source_paths
+  File "/scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr/data/__init__.py", line 1, in <module>
+    from .dataset import *
+  File "/scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr/data/dataset.py", line 18, in <module>
+    from geometry.camera import invert_camera
+  File "/scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr/geometry/__init__.py", line 2, in <module>
+    from . import mesh
+  File "/scratch/mthakur/manifold/models/dyn-hamr/dyn-hamr/geometry/mesh.py", line 3, in <module>
+    import trimesh
+  File "/usr/local/lib/python3.10/dist-packages/trimesh/__init__.py", line 12, in <module>
+    from . import (
+  File "/usr/local/lib/python3.10/dist-packages/trimesh/bounds.py", line 3, in <module>
+    from . import convex, geometry, grouping, nsphere, transformations, util
+  File "/usr/local/lib/python3.10/dist-packages/trimesh/convex.py", line 22, in <module>
+    from scipy.spatial import ConvexHull
+  File "/usr/local/lib/python3.10/dist-packages/scipy/spatial/__init__.py", line 102, in <module>
+    from ._kdtree import *
+  File "/usr/local/lib/python3.10/dist-packages/scipy/spatial/_kdtree.py", line 5, in <module>
+    from ._ckdtree import cKDTree, cKDTreeNode
+  File "_ckdtree.pyx", line 1, in init scipy.spatial._ckdtree
+ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject
+srun: error: gpu019: task 0: Exited with exit code 1
+srun: launch/slurm: _step_signal: Terminating StepId=9491493.0
+===============================================
+Job finished at: Tue Mar 31 18:00:32 CEST 2026
+Execution took 0.00 hours
+Writing output to SLURM_logs/dynhamr-inference_050.out
+===============================================
