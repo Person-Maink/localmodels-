@@ -2,11 +2,15 @@
 # https://github.com/z-x-yang/Segment-and-Track-Anything
 # Licensed under the AGPL-3.0 License. See THIRD_PARTY_LICENSES.md for details.
 
+from pathlib import Path
+
 import numpy as np
 import PIL
 import torch
 
 from torchvision.ops import box_convert
+
+from vipe.utils.model_assets import require_model_asset
 
 from .groundingdino.config import config
 from .groundingdino.datasets import transforms as T
@@ -19,13 +23,21 @@ class Detector:
     def __init__(self, device):
         args = config
         args.device = device
+        bert_dir = require_model_asset(
+            "vipe/huggingface/bert-base-uncased",
+            "GroundingDINO text encoder snapshot",
+            env_var="VIPE_BERT_BASE_UNCASED_DIR",
+        )
+        args.text_encoder_type = str(bert_dir)
         self.deivce = device
         self.gd = build_grounding_dino(args)
 
-        checkpoint = torch.hub.load_state_dict_from_url(
-            "https://huggingface.co/ShilongLiu/GroundingDINO/resolve/main/groundingdino_swint_ogc.pth",
-            map_location="cpu",
+        checkpoint_path = require_model_asset(
+            "vipe/track_anything/groundingdino_swint_ogc.pth",
+            "GroundingDINO checkpoint",
+            env_var="VIPE_GROUNDINGDINO_CKPT",
         )
+        checkpoint = torch.load(Path(checkpoint_path), map_location="cpu")
         self.gd.load_state_dict(clean_state_dict(checkpoint["model"]), strict=False)
         self.gd.eval()
 

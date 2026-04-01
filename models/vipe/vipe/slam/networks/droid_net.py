@@ -27,6 +27,7 @@ import torch.nn.functional as F
 
 from vipe.ext import droid_net_ext
 from vipe.ext.scatter import scatter_mean
+from vipe.utils.model_assets import require_model_asset
 
 
 class CorrSampler(torch.autograd.Function):
@@ -528,17 +529,11 @@ class DroidNet(nn.Module):
 
     def load_weights(self):
         """load trained model weights"""
-        import gdown
-
-        # Download ckpt if needed.
-        ckpt_path = Path(torch.hub.get_dir()) / "droid_slam" / "droid.pth"
-        if not ckpt_path.exists():
-            ckpt_path.parent.mkdir(parents=True, exist_ok=True)
-            gdown.download(
-                "https://drive.google.com/file/d/1PpqVt1H4maBa_GbPJp4NwxRsd9jk-elh/view",
-                output=str(ckpt_path),
-                fuzzy=True,
-            )
+        ckpt_path = require_model_asset(
+            "vipe/droid_slam/droid.pth",
+            "DROID-SLAM checkpoint",
+            env_var="VIPE_DROID_SLAM_CKPT",
+        )
 
         state_dict = OrderedDict(
             [(k.replace("module.", ""), v) for (k, v) in torch.load(ckpt_path, weights_only=True).items()]

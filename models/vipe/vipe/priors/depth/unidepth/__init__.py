@@ -13,12 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from pathlib import Path
 from typing import Literal
 
 import torch
 
 from vipe.utils.misc import unpack_optional
 from vipe.utils.cameras import CameraType
+from vipe.utils.model_assets import require_model_asset
 
 from ..base import DepthEstimationInput, DepthEstimationModel, DepthEstimationResult, DepthType
 from .models.unidepthv2.unidepthv2 import Pinhole, UniDepthV2
@@ -26,8 +28,12 @@ from .models.unidepthv2.unidepthv2 import Pinhole, UniDepthV2
 class UniDepth2Model(DepthEstimationModel):
     def __init__(self, typeL: Literal["s", "b", "l"] = "l") -> None:
         super().__init__()
-        print(typeL)
-        self.model = UniDepthV2.from_pretrained(f"lpiccinelli/unidepth-v2-vit{typeL}14")
+        model_dir = require_model_asset(
+            f"vipe/huggingface/unidepth-v2-vit{typeL}14",
+            f"UniDepth v2 vit{typeL}14 snapshot",
+            env_var="VIPE_UNIDEPTH_MODEL_DIR",
+        )
+        self.model = UniDepthV2.from_pretrained(str(Path(model_dir)))
         self.model.interpolation_mode = "bilinear"
         self.model = self.model.cuda().eval()
 

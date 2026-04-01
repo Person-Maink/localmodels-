@@ -30,7 +30,7 @@ def make_depth_model(model: str):
     elif model_name == "unidepth":
         from .unidepth import UniDepth2Model
 
-        return UniDepth2Model(type=model_sub)
+        return UniDepth2Model(typeL=model_sub)
 
     elif model_name == "moge":
         from .moge import MogeModel

@@ -170,6 +170,11 @@ if [[ ! -f "${CFG_PATH}" ]]; then
   exit 1
 fi
 
+if [[ "${TRAIN_MODE}" == "distill" && ! -f "${DETECTOR_PATH}" ]]; then
+  echo "Detector weights not found: ${DETECTOR_PATH}" >&2
+  exit 1
+fi
+
 # ================ COMMAND BUILD ================
 
 case "$TRAIN_MODE" in
@@ -297,14 +302,6 @@ APPTAINER_ARGS=(
   --nv
   --bind /scratch:/scratch
 )
-
-if [[ -d "${HOME}/.cache/torch" ]]; then
-  APPTAINER_ARGS+=(--bind "${HOME}/.cache/torch:/home/mthakur/.cache/torch")
-fi
-
-if [[ -d "${HOME}/.cache/huggingface" ]]; then
-  APPTAINER_ARGS+=(--bind "${HOME}/.cache/huggingface:/home/mthakur/.cache/huggingface")
-fi
 
 srun apptainer "${APPTAINER_ARGS[@]}" "${APPTAINER_IMAGE}" "${PYTHON_CMD[@]}"
 

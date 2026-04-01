@@ -30,7 +30,11 @@ DEFAULT_CHECKPOINT=f'{CACHE_DIR_HAMBA}/hamba_ckpts/checkpoints/hamba.ckpt'
 def load_hamba(checkpoint_path=DEFAULT_CHECKPOINT):
     from pathlib import Path
     from ..configs import get_config
-    model_cfg = str(Path(checkpoint_path).parent.parent / 'model_config.yaml')
+    checkpoint_path = Path(checkpoint_path)
+    model_cfg_path = checkpoint_path.parent.parent / 'model_config.yaml'
+    if not model_cfg_path.exists():
+        model_cfg_path = Path(__file__).resolve().parents[1] / 'model_config.yaml'
+    model_cfg = str(model_cfg_path)
     model_cfg = get_config(model_cfg, update_cachedir=True)
 
     # Override some config values, to crop bbox correctly
@@ -56,5 +60,5 @@ def load_hamba(checkpoint_path=DEFAULT_CHECKPOINT):
         model_cfg.freeze()
 
     print("checkpoint_path: ", checkpoint_path)
-    model = HAMBA.load_from_checkpoint(checkpoint_path, strict=False, cfg=model_cfg)
+    model = HAMBA.load_from_checkpoint(str(checkpoint_path), strict=False, cfg=model_cfg)
     return model, model_cfg

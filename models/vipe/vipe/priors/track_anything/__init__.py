@@ -4,11 +4,11 @@
 
 from pathlib import Path
 
-import gdown
 import numpy as np
 import torch
 
 from vipe.streams.base import VideoFrame
+from vipe.utils.model_assets import require_model_asset
 
 from .seg_tracker import SegTracker
 
@@ -21,22 +21,17 @@ class TrackAnythingPipeline:
         sam_run_gap: int = 10,
     ) -> None:
         # Prepare checkpoints.
-        sam_ckpt_path = Path(torch.hub.get_dir()) / "sam" / "sam_vit_b_01ec64.pth"
-        if not sam_ckpt_path.exists():
-            sam_ckpt_path.parent.mkdir(parents=True, exist_ok=True)
-            torch.hub.download_url_to_file(
-                "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth",
-                dst=str(sam_ckpt_path),
-            )
+        sam_ckpt_path = require_model_asset(
+            "vipe/track_anything/sam_vit_b_01ec64.pth",
+            "Segment Anything checkpoint",
+            env_var="VIPE_SAM_CKPT",
+        )
 
-        aot_ckpt_path = Path(torch.hub.get_dir()) / "aot" / "R50_DeAOTL_PRE_YTB_DAV.pth"
-        if not aot_ckpt_path.exists():
-            aot_ckpt_path.parent.mkdir(parents=True, exist_ok=True)
-            gdown.download(
-                "https://drive.google.com/file/d/1QoChMkTVxdYZ_eBlZhK2acq9KMQZccPJ/view",
-                output=str(aot_ckpt_path),
-                fuzzy=True,
-            )
+        aot_ckpt_path = require_model_asset(
+            "vipe/track_anything/R50_DeAOTL_PRE_YTB_DAV.pth",
+            "Track Anything AOT checkpoint",
+            env_var="VIPE_AOT_CKPT",
+        )
 
         self.threshold_args = {
             "box_threshold": 0.35,

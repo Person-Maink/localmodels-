@@ -14,8 +14,6 @@ from vitpose_model import ViTPoseModel
 
 
 DEFAULT_HAMBA_CHECKPOINT = "ckpts/hamba/checkpoints/hamba.ckpt"
-# DEFAULT_DETECTRON2_CHECKPOINT = "~/.cache/torch/hub/checkpoints/model_final_f05665.pkl"
-DEFAULT_DETECTRON2_CHECKPOINT = "/home/mthakur/.cache/torch/hub/detectron2/model_final_f05665.pkl"
 
 
 PERSON_DET_THRESHOLD = 0.5
@@ -36,6 +34,15 @@ def _require_file(path_str: str, description: str) -> Path:
     if not path.exists():
         raise FileNotFoundError(f"{description} not found at: {path}")
     return path
+
+
+def _detectron2_checkpoint_path() -> str:
+    override = os.environ.get("HAMBA_DETECTRON2_CKPT") or os.environ.get("DETECTRON2_CKPT")
+    if override:
+        return override
+
+    model_assets_root = Path(os.environ.get("MODEL_ASSETS_ROOT", Path(__file__).resolve().parent.parent / "model_assets"))
+    return str(model_assets_root / "common" / "detectron2" / "model_final_f05665.pkl")
 
 
 def _empty_hand_outputs() -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -59,7 +66,7 @@ def init_runtime(device: str = "cuda") -> Runtime:
     model, model_cfg = load_hamba(DEFAULT_HAMBA_CHECKPOINT)
     model = model.to(torch_device).eval()
 
-    _require_file(DEFAULT_DETECTRON2_CHECKPOINT, "Detectron2 checkpoint")
+    detectron2_ckpt = _require_file(_detectron2_checkpoint_path(), "Detectron2 checkpoint")
     from detectron2.config import LazyConfig
     import hamba
 
@@ -67,7 +74,7 @@ def init_runtime(device: str = "cuda") -> Runtime:
 
     cfg_path = Path(hamba.__file__).parent / "configs" / "cascade_mask_rcnn_vitdet_h_75ep.py"
     detectron2_cfg = LazyConfig.load(str(cfg_path))
-    detectron2_cfg.train.init_checkpoint = str(DEFAULT_DETECTRON2_CHECKPOINT)
+    detectron2_cfg.train.init_checkpoint = str(detectron2_ckpt)
     for i in range(3):
         detectron2_cfg.model.roi_heads.box_predictors[i].test_score_thresh = 0.1
     detector = DefaultPredictor_Lazy(detectron2_cfg)

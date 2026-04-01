@@ -18,6 +18,7 @@ import torch
 from einops import rearrange
 
 from vipe.utils.misc import unpack_optional
+from vipe.utils.model_assets import model_assets_root
 
 from ..base import DepthEstimationInput, DepthEstimationModel, DepthEstimationResult, DepthType
 from .priorda import PriorDepthAnything
@@ -30,7 +31,13 @@ class PriorDAModel(DepthEstimationModel):
 
     def __init__(self) -> None:
         super().__init__()
-        self.model = PriorDepthAnything(device="cuda")
+        priorda_root = model_assets_root() / "vipe" / "priorda"
+        self.model = PriorDepthAnything(
+            device="cuda",
+            fmde_dir=str(priorda_root),
+            cmde_dir=str(priorda_root),
+            ckpt_dir=str(priorda_root),
+        )
 
     @property
     def depth_type(self) -> DepthType:
