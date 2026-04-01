@@ -13,7 +13,7 @@
 
 #SBATCH --job-name=dynhamr-inference
 #SBATCH --partition=gpu-a100
-#SBATCH --time=00:12:39
+#SBATCH --time=01:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
@@ -66,6 +66,7 @@ echo "==============================================="
 
 PROJECT_ROOT="/scratch/mthakur/manifold"
 MODEL_ROOT="${PROJECT_ROOT}/models/dyn-hamr"
+MODEL_ASSETS_ROOT="${MODEL_ASSETS_ROOT:-${PROJECT_ROOT}/models/model_assets}"
 DATA_ROOT="${PROJECT_ROOT}/data"
 OUTPUT_ROOT="${PROJECT_ROOT}/outputs/dynhamr"
 LOG_ROOT="${OUTPUT_ROOT}/logs"
@@ -80,7 +81,7 @@ START_IDX="${START_IDX:-0}"
 END_IDX="${END_IDX:--1}"
 ROOT_ITERS="${ROOT_ITERS:-40}"
 SMOOTH_ITERS="${SMOOTH_ITERS:-60}"
-DETECTRON2_CKPT="${DETECTRON2_CKPT:-/home/mthakur/.cache/torch/hub/detectron2/model_final_f05665.pkl}"
+DETECTRON2_CKPT="${DETECTRON2_CKPT:-${MODEL_ASSETS_ROOT}/common/detectron2/model_final_f05665.pkl}"
 
 export APPTAINER_IMAGE="${MODEL_ROOT}/apptainer/template.sif"
 
@@ -94,18 +95,16 @@ if [[ ! -f "${VIDEO_PATH}" ]]; then
 fi
 
 echo "Using video: ${VIDEO_PATH}"
-if [[ -f "${DETECTRON2_CKPT}" ]]; then
-  echo "Using local Detectron2 checkpoint: ${DETECTRON2_CKPT}"
-  export APPTAINERENV_HAMER_DETECTRON2_CKPT="${DETECTRON2_CKPT}"
-else
-  echo "Local Detectron2 checkpoint not found at ${DETECTRON2_CKPT}; HaMeR will try downloading." >&2
-  unset APPTAINERENV_HAMER_DETECTRON2_CKPT
+if [[ ! -f "${DETECTRON2_CKPT}" ]]; then
+  echo "Detectron2 checkpoint not found: ${DETECTRON2_CKPT}" >&2
+  exit 1
 fi
+echo "Using local Detectron2 checkpoint: ${DETECTRON2_CKPT}"
+export APPTAINERENV_HAMER_DETECTRON2_CKPT="${DETECTRON2_CKPT}"
+export APPTAINERENV_MODEL_ASSETS_ROOT="${MODEL_ASSETS_ROOT}"
 
 srun apptainer exec \
   --nv \
-  --bind ~/.cache/torch:/home/mthakur/.cache/torch \
-  --bind ~/.cache/huggingface:/home/mthakur/.cache/huggingface \
   --bind /scratch:/scratch \
   "${APPTAINER_IMAGE}" \
   python -u "${MODEL_ROOT}/dyn-hamr/run_opt.py" \
@@ -115,17 +114,17 @@ srun apptainer exec \
   "run_prior=${RUN_PRIOR}" \
   "data.root=${DATA_ROOT}" \
   "data.video_dir=${VIDEO_DIR}" \
-  "data.seq=${VIDEO_NAME}" \
+  "data.seq='${VIDEO_NAME}'" \
   "data.ext=${VIDEO_EXT}" \
-  "data.src_path=${VIDEO_PATH}" \
+  "data.src_path='${VIDEO_PATH}'" \
   "data.start_idx=${START_IDX}" \
   "data.end_idx=${END_IDX}" \
   "is_static=${IS_STATIC}" \
   "temporal_smooth=${TEMPORAL_SMOOTH}" \
-  "HMP.vid_path=${HMP_FRAME_DIR}" \
+  "HMP.vid_path='${HMP_FRAME_DIR}'" \
   "optim.root.num_iters=${ROOT_ITERS}" \
   "optim.smooth.num_iters=${SMOOTH_ITERS}" \
-  "log_root=${LOG_ROOT}"
+  "log_root='${LOG_ROOT}'"
 
 echo "==============================================="
 end_time=$(date +%s)

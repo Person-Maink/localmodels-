@@ -1,0 +1,63 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/12.9
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Wed Apr  1 16:32:35 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:2C:00.0 Off |                    0 |
+| N/A   41C    P0             46W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9500404
+Job Name:       vipe-inference
+Partition:      gpu-a100
+Node List:      gpu017
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 65536
+Submit dir:     /scratch/mthakur/manifold/models/vipe
+Work dir:       /scratch/mthakur/manifold/models/vipe
+Job started at: Wed Apr  1 16:32:36 CEST 2026
+===============================================
+Error executing job with overrides: ['pipeline=no_vda', 'streams=raw_mp4_stream', 'streams.base_path=/scratch/mthakur/manifold/data/images/7S9q1kAVmc0.mp4', 'streams.frame_end=-1', 'pipeline.output.path=/scratch/mthakur/manifold/outputs/vipe/', 'pipeline.output.save_artifacts=true', 'pipeline.output.save_viz=false']
+Traceback (most recent call last):
+  File "/scratch/mthakur/manifold/models/vipe/run.py", line 10, in run
+    stream_list = StreamList.make(args.streams)
+  File "/scratch/mthakur/manifold/models/vipe/vipe/streams/base.py", line 521, in make
+    return getattr(module, class_name)(**config)
+  File "/scratch/mthakur/manifold/models/vipe/vipe/streams/raw_mp4_stream.py", line 106, in __init__
+    self.mp4_sequences = sorted(
+  File "/scratch/mthakur/manifold/models/vipe/vipe/streams/raw_mp4_stream.py", line 106, in <genexpr>
+    self.mp4_sequences = sorted(
+  File "/opt/conda/envs/vipe/lib/python3.10/pathlib.py", line 1017, in iterdir
+    for name in self._accessor.listdir(self):
+FileNotFoundError: [Errno 2] No such file or directory: '/scratch/mthakur/manifold/data/images/7S9q1kAVmc0.mp4'
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+
+ERROR conda.cli.main_run:execute(124): `conda run python run.py pipeline=no_vda streams=raw_mp4_stream streams.base_path=/scratch/mthakur/manifold/data/images/7S9q1kAVmc0.mp4 streams.frame_end=-1 pipeline.output.path=/scratch/mthakur/manifold/outputs/vipe/ pipeline.output.save_artifacts=true pipeline.output.save_viz=false` failed. (See above for error)
+===============================================
+Job finished at: Wed Apr  1 16:33:20 CEST 2026
+Execution took 0.01 hours
+Writing output to SLURM_logs/vipe-inference_263.out
+===============================================

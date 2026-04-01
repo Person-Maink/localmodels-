@@ -1,0 +1,102 @@
+
+The following have been reloaded with a version change:
+  1) python/3.10.12 => python/3.10.13
+
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) python/3.10.13   7) cuda/12.9
+  2) DefaultModules   4) 2024r1       6) py-pip/23.1.2
+
+ 
+
+Wed Apr  1 14:43:42 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                    0 |
+| N/A   43C    P0             46W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9500224
+Job Name:       vipe-inference
+Partition:      gpu-a100
+Node List:      gpu018
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 65536
+Submit dir:     /scratch/mthakur/manifold/models/vipe
+Work dir:       /scratch/mthakur/manifold/models/vipe
+Job started at: Wed Apr  1 14:43:42 CEST 2026
+===============================================
+2026-04-01 14:44:11,885 - vipe - INFO - Processing _Ce7G35GIqA (1 / 1)
+
+Error executing job with overrides: ['pipeline=no_vda', 'streams=raw_mp4_stream', 'streams.base_path=/scratch/mthakur/manifold/data/images/_Ce7G35GIqA.mp4', 'streams.frame_end=-1', 'pipeline.output.path=/scratch/mthakur/manifold/outputs/vipe/', 'pipeline.output.save_artifacts=true', 'pipeline.output.save_viz=false']
+Traceback (most recent call last):
+  File "/scratch/mthakur/manifold/models/vipe/run.py", line 22, in run
+    pipeline = make_pipeline(args.pipeline)
+  File "/scratch/mthakur/manifold/models/vipe/vipe/pipeline/__init__.py", line 78, in make_pipeline
+    pipeline_cls = make_pipeline_cls(config)
+  File "/scratch/mthakur/manifold/models/vipe/vipe/pipeline/__init__.py", line 72, in make_pipeline_cls
+    module = importlib.import_module(module_path)
+  File "/opt/conda/envs/vipe/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/scratch/mthakur/manifold/models/vipe/vipe/pipeline/default.py", line 40, in <module>
+    from .processors import (
+  File "/scratch/mthakur/manifold/models/vipe/vipe/pipeline/processors.py", line 28, in <module>
+    from vipe.priors.track_anything import TrackAnythingPipeline
+  File "/scratch/mthakur/manifold/models/vipe/vipe/priors/track_anything/__init__.py", line 13, in <module>
+    from .seg_tracker import SegTracker
+  File "/scratch/mthakur/manifold/models/vipe/vipe/priors/track_anything/seg_tracker.py", line 8, in <module>
+    from .detector import Detector
+  File "/scratch/mthakur/manifold/models/vipe/vipe/priors/track_anything/detector.py", line 17, in <module>
+    from .groundingdino.models import build_model as build_grounding_dino
+  File "/scratch/mthakur/manifold/models/vipe/vipe/priors/track_anything/groundingdino/models/__init__.py", line 8, in <module>
+    from .main import build_groundingdino
+  File "/scratch/mthakur/manifold/models/vipe/vipe/priors/track_anything/groundingdino/models/main/__init__.py", line 15, in <module>
+    from .groundingdino import build_groundingdino
+  File "/scratch/mthakur/manifold/models/vipe/vipe/priors/track_anything/groundingdino/models/main/groundingdino.py", line 25, in <module>
+    from ...util import get_tokenlizer
+  File "/scratch/mthakur/manifold/models/vipe/vipe/priors/track_anything/groundingdino/util/get_tokenlizer.py", line 3, in <module>
+    from transformers import AutoTokenizer, BertModel, RobertaModel
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/transformers/__init__.py", line 26, in <module>
+    from . import dependency_versions_check
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/transformers/dependency_versions_check.py", line 57, in <module>
+    require_version_core(deps[pkg])
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/transformers/utils/versions.py", line 117, in require_version_core
+    return require_version(requirement, hint)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/transformers/utils/versions.py", line 111, in require_version
+    _compare_versions(op, got_ver, want_ver, requirement, pkg, hint)
+  File "/opt/conda/envs/vipe/lib/python3.10/site-packages/transformers/utils/versions.py", line 44, in _compare_versions
+    raise ImportError(
+ImportError: huggingface-hub>=0.24.0,<1.0 is required for a normal functioning of this module, but found huggingface-hub==1.8.0.
+Try: `pip install transformers -U` or `pip install -e '.[dev]'` if you're working with git main
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+
+ERROR conda.cli.main_run:execute(124): `conda run python run.py pipeline=no_vda streams=raw_mp4_stream streams.base_path=/scratch/mthakur/manifold/data/images/_Ce7G35GIqA.mp4 streams.frame_end=-1 pipeline.output.path=/scratch/mthakur/manifold/outputs/vipe/ pipeline.output.save_artifacts=true pipeline.output.save_viz=false` failed. (See above for error)
+===============================================
+Job finished at: Wed Apr  1 14:44:57 CEST 2026
+Execution took 0.02 hours
+Writing output to SLURM_logs/vipe-inference_262.out
+===============================================
