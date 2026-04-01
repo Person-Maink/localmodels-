@@ -75,7 +75,7 @@ VIDEO_NAME="__NAME__"
 VIDEO_EXT="__VIDEO_EXT__"
 IS_STATIC="${IS_STATIC:-False}"
 RUN_PRIOR="${RUN_PRIOR:-False}"
-RUN_VIS="${RUN_VIS:-True}"
+RUN_VIS="${RUN_VIS:-False}"
 TEMPORAL_SMOOTH="${TEMPORAL_SMOOTH:-False}"
 START_IDX="${START_IDX:-0}"
 END_IDX="${END_IDX:--1}"
@@ -100,6 +100,14 @@ if [[ ! -f "${DETECTRON2_CKPT}" ]]; then
   exit 1
 fi
 echo "Using local Detectron2 checkpoint: ${DETECTRON2_CKPT}"
+if [[ "${RUN_VIS}" == "True" ]]; then
+  echo "Dyn-HaMR mode: optimization + visualization"
+else
+  echo "Dyn-HaMR mode: optimization only"
+  echo "Visualization outputs are disabled by default. Set RUN_VIS=True to restore rendered videos and meshes."
+fi
+echo "Dyn-HaMR artifacts will be written under: ${LOG_ROOT}"
+echo "Expected core outputs include *_results.npz, cameras.json, and track_info.json."
 export APPTAINERENV_HAMER_DETECTRON2_CKPT="${DETECTRON2_CKPT}"
 export APPTAINERENV_MODEL_ASSETS_ROOT="${MODEL_ASSETS_ROOT}"
 
@@ -134,4 +142,5 @@ hours=$(printf "%.2f" "$(echo "$elapsed/3600" | bc -l)")
 echo "Job finished at: $(date)"
 echo "Execution took $hours hours"
 echo "Writing output to $outfile"
+echo "Dyn-HaMR artifacts root: ${LOG_ROOT}"
 echo "==============================================="

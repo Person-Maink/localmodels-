@@ -142,7 +142,11 @@ To run the optimization pipeline for fitting on arbitrary RGB-(D) videos, please
 ```
 python run_opt.py data=video run_opt=True data.seq=demo1 is_static=<True of False>
 ```
-By default, the camera parameters will be predicted during the process and assumes a moving camera (`is_static=False`). If your video is recorded with a static camera, you can add `is_static=True` for more stable optimization. The result will be saved to `outputs/logs/video-custom/<DATE>/<VIDEO_NAME>-<tracklet>-shot-<shot_id>-<start_frame_id>-<end_frame_id>`. After optimization, you can specify the output log dir and visualize the results by running the following command:
+By default, the camera parameters will be predicted during the process and assumes a moving camera (`is_static=False`). If your video is recorded with a static camera, you can add `is_static=True` for more stable optimization. The result will be saved to `outputs/logs/video-custom/<DATE>/<VIDEO_NAME>-<tracklet>-shot-<shot_id>-<start_frame_id>-<end_frame_id>`. A common lightweight workflow is to run optimization only, inspect the saved `*_results.npz`, `cameras.json`, and `track_info.json`, and then visualize later only when needed:
+```
+python run_opt.py data=video run_opt=True run_vis=False data.seq=demo1 is_static=<True of False>
+```
+After optimization, you can specify the output log dir and visualize the results by running the following command:
 ```
 python run_vis.py --log_root <LOG_ROOT>
 ```
@@ -150,7 +154,7 @@ This will visualize all log subdirectories and save the rendered videos and imag
 ```
 python -u run_opt.py data=video run_opt=True run_vis=True is_static=<True of False>
 ```
-As a multi-stage pipeline, you can customize the optimization process. Add `is_static=True` for static camera videos. Adding `run_prior=True` can activate the motion prior in stage III. Please note that in the current version, each motion chunk size needs to be set to 128 to be compatible with the original setting of HMP only when the prior module is activated.
+In this repo's SLURM launchers, visualization is disabled by default so batch runs only produce the optimization artifacts unless you explicitly set `RUN_VIS=True`. As a multi-stage pipeline, you can customize the optimization process. Add `is_static=True` for static camera videos. Adding `run_prior=True` can activate the motion prior in stage III. Please note that in the current version, each motion chunk size needs to be set to 128 to be compatible with the original setting of HMP only when the prior module is activated.
 
 ### Blender Addon
 Coming soon.
