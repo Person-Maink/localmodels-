@@ -32,3 +32,8 @@ cd ../..
 cd third-party/HaMeR
 pip install -e .[all]
 pip install -v -e third-party/ViTPose
+
+# final hard pin so later installs cannot silently move NumPy/SciPy forward
+pip install --force-reinstall --no-deps \
+    numpy==1.22.4 scipy==1.8.1 contourpy==1.0.7 matplotlib==3.5.3 \
+    opencv-python==4.6.0.66 scikit-image==0.19.3 pandas==1.4.0

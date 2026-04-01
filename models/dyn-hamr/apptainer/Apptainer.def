@@ -160,6 +160,32 @@ From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
         --index-url https://download.pytorch.org/whl/cu117
 
     echo "=============================="
+    echo "Final hard pin for binary-compatible scientific stack"
+    echo "=============================="
+
+    uv pip install --system --force-reinstall --no-deps --no-build-isolation \
+        numpy==1.22.4 \
+        scipy==1.8.1 \
+        contourpy==1.0.7 \
+        matplotlib==3.5.3 \
+        opencv-python==4.6.0.66 \
+        scikit-image==0.19.3 \
+        pandas==1.4.0
+
+    echo "=============================="
+    echo "Validating final runtime package versions"
+    echo "=============================="
+
+    python - <<'PY'
+import numpy
+import scipy
+import trimesh
+print("FINAL numpy", numpy.__version__)
+print("FINAL scipy", scipy.__version__)
+print("FINAL trimesh", trimesh.__version__)
+PY
+
+    echo "=============================="
     echo "Build completed successfully"
     echo "=============================="
 

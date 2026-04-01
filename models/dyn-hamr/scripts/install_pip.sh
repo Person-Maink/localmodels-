@@ -66,3 +66,17 @@ $PWD/.dynhamr/bin/pip install mediapipe==0.10.9  protobuf==3.20.3
 
 # install pytorch AGAIN because it's overwritten???
 $PWD/.dynhamr/bin/pip install torch==1.13.0 torchvision==0.14.0 --index-url https://download.pytorch.org/whl/cu117
+
+# final hard pin so later installs cannot silently move NumPy/SciPy forward
+$PWD/.dynhamr/bin/pip install --force-reinstall --no-deps \
+    numpy==1.22.4 scipy==1.8.1 contourpy==1.0.7 matplotlib==3.5.3 \
+    opencv-python==4.6.0.66 scikit-image==0.19.3 pandas==1.4.0
+
+$PWD/.dynhamr/bin/python - <<'PY'
+import numpy
+import scipy
+import trimesh
+print("FINAL numpy", numpy.__version__)
+print("FINAL scipy", scipy.__version__)
+print("FINAL trimesh", trimesh.__version__)
+PY
