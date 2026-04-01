@@ -4,6 +4,7 @@ import argparse
 import concurrent.futures
 import json
 import math
+import shutil
 import sys
 import threading
 import time
@@ -249,8 +250,22 @@ def should_retry_with_next_format(exc: Exception) -> bool:
     return any(marker in message for marker in retry_markers)
 
 
-def fallback_format_selectors(spec: VideoSpec) -> list[str]:
-    bounded_mp4 = (
+def has_ffmpeg() -> bool:
+    return shutil.which("ffmpeg") is not None
+
+
+def fallback_format_selectors(spec: VideoSpec, *, allow_merge: bool) -> list[str]:
+    selectors = [
+        "best[ext=mp4]"
+        f"[height<={spec.height}]"
+        f"[width<={spec.width}]",
+        "best[ext=mp4]",
+        "best",
+    ]
+    if not allow_merge:
+        return selectors
+
+    bounded_mp4_merge = (
         "bestvideo[ext=mp4]"
         f"[height<={spec.height}]"
         f"[width<={spec.width}]"
@@ -259,9 +274,9 @@ def fallback_format_selectors(spec: VideoSpec) -> list[str]:
         f"[height<={spec.height}]"
         f"[width<={spec.width}]"
     )
-    return [
-        bounded_mp4,
-        "best[ext=mp4]/bestvideo[ext=mp4]+bestaudio[ext=m4a]/best",
+    return selectors + [
+        bounded_mp4_merge,
+        "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best",
         "bestvideo+bestaudio/best",
     ]
 
@@ -359,6 +374,7 @@ def download_video(
         shared_opts["cookiefile"] = str(cookie_file)
     if download_archive is not None:
         shared_opts["download_archive"] = str(download_archive)
+    ffmpeg_available = has_ffmpeg()
 
     info = extract_info_with_fallback(
         spec.url,
@@ -407,7 +423,7 @@ def download_video(
             if not should_retry_with_next_format(exc):
                 raise
     else:
-        for selector in fallback_format_selectors(spec):
+        for selector in fallback_format_selectors(spec, allow_merge=ffmpeg_available):
             download_opts = dict(shared_opts)
             download_opts.update(
                 {
