@@ -1,0 +1,31 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current   2) DefaultModules   3) gcc/11.3.0   4) 2024r1
+
+ 
+
+================ SLURM JOB INFO ================
+Job ID:         9492858
+Job Name:       mediapipe-inference
+Partition:      compute-p2
+Node List:      cmp250
+CPUs per task:  8
+Memory per CPU: 2048
+Submit dir:     /scratch/mthakur/manifold/models/mediapipe
+Work dir:       /scratch/mthakur/manifold/models/mediapipe
+Video file:     06kKvQp4SfM.mp4
+Job started at: Tue Mar 31 19:30:29 CEST 2026
+===============================================
+
+Processing: 06kKvQp4SfM.mp4
+Keypoints already exist. Skipping inference: /scratch/mthakur/manifold/outputs/mediapipe/keypoints/06kKvQp4SfM_keypoints.csv
+Overlay video saved to: /scratch/mthakur/manifold/outputs/mediapipe/visualizations/06kKvQp4SfM_overlay.mp4
+Saved visualization: /scratch/mthakur/manifold/outputs/mediapipe/visualizations/06kKvQp4SfM_overlay.mp4
+
+All videos processed.
+===============================================
+Job finished at: Tue Mar 31 19:31:13 CEST 2026
+Execution took 0.01 hours
+Writing output to SLURM_logs/mediapipe-inference_001.out
+===============================================

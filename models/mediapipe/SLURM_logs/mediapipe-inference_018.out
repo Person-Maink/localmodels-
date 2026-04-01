@@ -1,0 +1,37 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current   2) DefaultModules   3) gcc/11.3.0   4) 2024r1
+
+ 
+
+================ SLURM JOB INFO ================
+Job ID:         9492876
+Job Name:       mediapipe-inference
+Partition:      compute-p2
+Node List:      cmp220
+CPUs per task:  8
+Memory per CPU: 2048
+Submit dir:     /scratch/mthakur/manifold/models/mediapipe
+Work dir:       /scratch/mthakur/manifold/models/mediapipe
+Video file:     OiAlJIaWOBg.mp4
+Job started at: Tue Mar 31 19:41:48 CEST 2026
+===============================================
+
+Processing: OiAlJIaWOBg.mp4
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1774978910.757737 2868010 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1774978910.780784 2868010 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+/scratch/mthakur/manifold/models/mediapipe/.venv/lib/python3.9/site-packages/google/protobuf/symbol_database.py:55: UserWarning: SymbolDatabase.GetPrototype() is deprecated. Please use message_factory.GetMessageClass() instead. SymbolDatabase.GetPrototype() will be removed soon.
+  warnings.warn('SymbolDatabase.GetPrototype() is deprecated. Please '
+Saved CSV: /scratch/mthakur/manifold/outputs/mediapipe/keypoints/OiAlJIaWOBg_keypoints.csv
+Overlay video saved to: /scratch/mthakur/manifold/outputs/mediapipe/visualizations/OiAlJIaWOBg_overlay.mp4
+Saved visualization: /scratch/mthakur/manifold/outputs/mediapipe/visualizations/OiAlJIaWOBg_overlay.mp4
+
+All videos processed.
+===============================================
+Job finished at: Tue Mar 31 19:49:24 CEST 2026
+Execution took 0.13 hours
+Writing output to SLURM_logs/mediapipe-inference_018.out
+===============================================

@@ -11,7 +11,7 @@
 
 #SBATCH --job-name=mediapipe-inference
 #SBATCH --partition=compute-p2
-#SBATCH --time=__TIME__
+#SBATCH --time=01:13:48
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem-per-cpu=2G
@@ -43,7 +43,7 @@ echo "CPUs per task:  $SLURM_CPUS_PER_TASK"
 echo "Memory per CPU: $SLURM_MEM_PER_CPU"
 echo "Submit dir:     $SLURM_SUBMIT_DIR"
 echo "Work dir:       $(pwd)"
-echo "Video file:     __VIDEO_FILE__"
+echo "Video file:     NXRHcCScubA.mp4"
 echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
@@ -52,8 +52,8 @@ srun apptainer exec \
   --bind /scratch:/scratch \
   /scratch/mthakur/manifold/models/mediapipe/apptainer/template.sif \
   bash -lc '.venv/bin/python3 /scratch/mthakur/manifold/models/mediapipe/main.py \
-    --video "__NAME__" \
-    --video_file "__VIDEO_FILE__" \
+    --video "NXRHcCScubA" \
+    --video_file "NXRHcCScubA.mp4" \
     --video_folder /scratch/mthakur/manifold/data/images \
     --output_folder /scratch/mthakur/manifold/outputs/mediapipe \
     --target_fps 30'
