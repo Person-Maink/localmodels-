@@ -137,6 +137,21 @@
       "status": "ready"
     },
     {
+      "id": "wilor_vitpose_backbone",
+      "destination": "wilor_hands/training_data/vitpose_backbone.pth",
+      "source_type": "extract_archive",
+      "extract_from": {
+        "source_type": "gdrive",
+        "url": "https://drive.google.com/uc?id=1BuKEc9qoBVgF8ApTTgAKRFVvDagWHPt7",
+        "filename": "hamer_training_data_part1.tar.gz"
+      },
+      "archive_member": "hamer_training_data/vitpose_backbone.pth",
+      "used_by": [
+        "wilor_hands"
+      ],
+      "status": "ready"
+    },
+    {
       "id": "common_detectron2",
       "destination": "model_assets/common/detectron2/model_final_f05665.pkl",
       "source_type": "url",

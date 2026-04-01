@@ -55,7 +55,7 @@ From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
 
     curl -LsSf https://astral.sh/uv/install.sh | sh
     export PATH="/root/.local/bin:$PATH"
-    uv pip install --system setuptools wheel
+    uv pip install --system setuptools wheel numpy==1.22.4
 
     echo "=============================="
     echo "Installing PyTorch (CUDA 11.7)"

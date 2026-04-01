@@ -40,7 +40,7 @@ exec >"$outfile" 2>&1
 
 module load 2024r1
 module load cuda/11.7
-module load python/3.10.13
+# module load python/3.10.13
 
 # ================ CODE EXECUTION ================
 

@@ -66,6 +66,24 @@ print_command() {
   printf '\n'
 }
 
+strip_wrapping_quotes() {
+  local value="${1:-}"
+  value="${value%\"}"
+  value="${value#\"}"
+  value="${value%\'}"
+  value="${value#\'}"
+  printf '%s' "$value"
+}
+
+resolve_model_root_path() {
+  local value="$1"
+  if [[ "$value" = /* ]]; then
+    printf '%s' "$value"
+  else
+    printf '%s' "${CFG_MODEL_ROOT}/${value}"
+  fi
+}
+
 # ================ JOB INFO ================
 
 echo "Loaded modules:"
@@ -105,6 +123,7 @@ APPTAINER_IMAGE="${APPTAINER_IMAGE:-${MODEL_ROOT}/apptainer/template.sif}"
 # ================ TRAINING CONFIG ================
 
 TRAIN_MODE="${TRAIN_MODE:-distill}"        # distill | supervised
+INIT_MODE="${INIT_MODE:-checkpoint}"       # checkpoint | fresh
 TRAIN_SCOPE="${TRAIN_SCOPE:-refine_net}"   # camera_head | refine_net | full
 CAMERA_LOSS_WEIGHT="${CAMERA_LOSS_WEIGHT:-0.01}"
 LR="${LR:-1e-5}"
@@ -136,6 +155,24 @@ SHUFFLE="${SHUFFLE:-true}"
 MOCAP_FILE="${MOCAP_FILE:-}"
 ADVERSARIAL_WEIGHT="${ADVERSARIAL_WEIGHT:-0.0}"
 
+case "$INIT_MODE" in
+  checkpoint|fresh) ;;
+  *)
+    echo "Unsupported INIT_MODE='${INIT_MODE}'. Use 'checkpoint' or 'fresh'." >&2
+    exit 1
+    ;;
+esac
+
+if [[ "$INIT_MODE" == "fresh" && "$TRAIN_MODE" == "distill" ]]; then
+  echo "INIT_MODE=fresh is only supported when TRAIN_MODE=supervised." >&2
+  exit 1
+fi
+
+if [[ "$INIT_MODE" == "fresh" && "$TRAIN_SCOPE" != "full" ]]; then
+  echo "INIT_MODE=fresh requires TRAIN_SCOPE=full; overriding '${TRAIN_SCOPE}' to 'full'."
+  TRAIN_SCOPE="full"
+fi
+
 if [[ -z "${RUN_NAME:-}" ]]; then
   if [[ "$TRAIN_MODE" == "distill" ]]; then
     if is_true "$ALL_VIDEOS"; then
@@ -160,14 +197,51 @@ if [[ ! -f "${APPTAINER_IMAGE}" ]]; then
   exit 1
 fi
 
-if [[ ! -f "${CHECKPOINT}" ]]; then
+if [[ ! -f "${CFG_PATH}" ]]; then
+  echo "Model config not found: ${CFG_PATH}" >&2
+  exit 1
+fi
+
+CFG_DIR="$(cd "$(dirname "${CFG_PATH}")" && pwd -P)"
+if [[ "$(basename "${CFG_DIR}")" == "pretrained_models" ]]; then
+  CFG_MODEL_ROOT="$(cd "${CFG_DIR}/.." && pwd -P)"
+else
+  CFG_MODEL_ROOT="${CFG_DIR}"
+fi
+
+BACKBONE_PRETRAINED_PATH=""
+MANO_DIR="${MANO_DIR:-${CFG_MODEL_ROOT}/mano_data}"
+MANO_RIGHT_PATH="${MANO_RIGHT_PATH:-${MANO_DIR}/MANO_RIGHT.pkl}"
+MANO_MEAN_PARAMS_PATH="${MANO_MEAN_PARAMS_PATH:-${MANO_DIR}/mano_mean_params.npz}"
+
+if [[ "$INIT_MODE" == "checkpoint" && ! -f "${CHECKPOINT}" ]]; then
   echo "Checkpoint not found: ${CHECKPOINT}" >&2
   exit 1
 fi
 
-if [[ ! -f "${CFG_PATH}" ]]; then
-  echo "Model config not found: ${CFG_PATH}" >&2
-  exit 1
+if [[ "$INIT_MODE" == "fresh" ]]; then
+  cfg_backbone_pretrained="$(sed -n 's/^[[:space:]]*PRETRAINED_WEIGHTS:[[:space:]]*//p' "${CFG_PATH}" | head -n 1)"
+  cfg_backbone_pretrained="$(strip_wrapping_quotes "${cfg_backbone_pretrained}")"
+  if [[ -z "${cfg_backbone_pretrained}" ]]; then
+    echo "MODEL.BACKBONE.PRETRAINED_WEIGHTS is not set in ${CFG_PATH}." >&2
+    exit 1
+  fi
+  BACKBONE_PRETRAINED_PATH="$(resolve_model_root_path "${cfg_backbone_pretrained}")"
+
+  if [[ ! -f "${BACKBONE_PRETRAINED_PATH}" ]]; then
+    echo "Backbone pretrained weights not found: ${BACKBONE_PRETRAINED_PATH}" >&2
+    exit 1
+  fi
+
+  if [[ ! -f "${MANO_RIGHT_PATH}" ]]; then
+    echo "MANO right-hand model not found: ${MANO_RIGHT_PATH}" >&2
+    exit 1
+  fi
+
+  if [[ ! -f "${MANO_MEAN_PARAMS_PATH}" ]]; then
+    echo "MANO mean params not found: ${MANO_MEAN_PARAMS_PATH}" >&2
+    exit 1
+  fi
 fi
 
 if [[ "${TRAIN_MODE}" == "distill" && ! -f "${DETECTOR_PATH}" ]]; then
@@ -237,7 +311,7 @@ case "$TRAIN_MODE" in
 
     PYTHON_CMD=(
       python -u "${MODEL_ROOT}/finetune_wilor_supervised.py"
-      --checkpoint "${CHECKPOINT}"
+      --init_mode "${INIT_MODE}"
       --cfg_path "${CFG_PATH}"
       --dataset_file "${DATASET_FILE}"
       --img_dir "${IMG_DIR}"
@@ -258,6 +332,10 @@ case "$TRAIN_MODE" in
       --seed "${SEED}"
       --adversarial_weight "${ADVERSARIAL_WEIGHT}"
     )
+
+    if [[ "$INIT_MODE" == "checkpoint" ]]; then
+      PYTHON_CMD+=(--checkpoint "${CHECKPOINT}")
+    fi
 
     if [[ "$SAMPLE_LIMIT" != "0" ]]; then
       PYTHON_CMD+=(--sample_limit "${SAMPLE_LIMIT}")
@@ -289,8 +367,14 @@ echo "Project root:    ${PROJECT_ROOT}"
 echo "Model root:      ${MODEL_ROOT}"
 echo "Output dir:      ${RUN_OUTPUT_DIR}"
 echo "Train mode:      ${TRAIN_MODE}"
+echo "Init mode:       ${INIT_MODE}"
 echo "Train scope:     ${TRAIN_SCOPE}"
-echo "Checkpoint:      ${CHECKPOINT}"
+if [[ "$INIT_MODE" == "checkpoint" ]]; then
+  echo "Checkpoint:      ${CHECKPOINT}"
+else
+  echo "Checkpoint:      <fresh init>"
+  echo "Backbone init:   ${BACKBONE_PRETRAINED_PATH}"
+fi
 echo "Pose dir:        ${POSE_DIR}"
 echo "Intrinsics dir:  ${INTRINSICS_DIR}"
 print_command "${PYTHON_CMD[@]}"

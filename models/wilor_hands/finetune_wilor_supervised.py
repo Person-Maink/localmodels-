@@ -18,7 +18,7 @@ from finetune_wilor_common import (
     seed_everything,
     set_optional_loss_weight,
 )
-from wilor.models import load_wilor
+from wilor.models import build_wilor, load_wilor
 from wilor.utils import recursive_to
 
 
@@ -26,7 +26,14 @@ def make_argparser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Supervised WiLoR fine-tuning with optional ViPE camera supervision."
     )
-    parser.add_argument("--checkpoint", type=str, default="./pretrained_models/wilor_final.ckpt")
+    parser.add_argument(
+        "--init_mode",
+        type=str,
+        choices=["checkpoint", "fresh"],
+        default="checkpoint",
+        help="Use an existing WiLoR checkpoint or initialize a fresh model with backbone pretraining.",
+    )
+    parser.add_argument("--checkpoint", type=str, default=None)
     parser.add_argument("--cfg_path", type=str, default="./pretrained_models/model_config.yaml")
     parser.add_argument("--dataset_file", type=str, required=True)
     parser.add_argument("--img_dir", type=str, required=True)
@@ -64,7 +71,21 @@ def main(args: argparse.Namespace) -> None:
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    student, _ = load_wilor(args.checkpoint, args.cfg_path)
+    if args.init_mode == "checkpoint":
+        if not args.checkpoint:
+            raise ValueError("--checkpoint must be provided when --init_mode=checkpoint.")
+        student, _ = load_wilor(args.checkpoint, args.cfg_path)
+    else:
+        if args.checkpoint:
+            print(f"Ignoring checkpoint because init_mode=fresh: {args.checkpoint}")
+        if args.train_scope != "full":
+            print(
+                f"INIT_MODE=fresh requires full-model training; overriding train_scope "
+                f"from '{args.train_scope}' to 'full'."
+            )
+            args.train_scope = "full"
+        student, _ = build_wilor(args.cfg_path)
+
     set_optional_loss_weight(student.cfg, "CAMERA_T_FULL", args.camera_loss_weight)
     set_optional_loss_weight(student.cfg, "ADVERSARIAL", args.adversarial_weight if args.mocap_file else 0.0)
     student = student.to(device)
@@ -123,6 +144,9 @@ def main(args: argparse.Namespace) -> None:
     best_loss = float("inf")
 
     print(f"Device: {device}")
+    print(f"Init mode: {args.init_mode}")
+    if args.init_mode == "fresh":
+        print(f"Backbone init: {student.cfg.MODEL.BACKBONE.PRETRAINED_WEIGHTS}")
     print(f"Training samples: {len(dataset)}")
     print(f"Train scope: {args.train_scope}")
     print(f"Trainable params: {count_trainable_parameters(student):,}")
