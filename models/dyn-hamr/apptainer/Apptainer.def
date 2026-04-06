@@ -65,8 +65,8 @@ From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
     export VIRTUAL_ENV=/opt/dynhamr-venv
     export PATH="${VIRTUAL_ENV}/bin:/root/.local/bin:$PATH"
     export UV_PYTHON="${VIRTUAL_ENV}/bin/python"
-    python -m pip install --upgrade pip setuptools wheel
-    uv pip install --python "${UV_PYTHON}" setuptools wheel numpy==1.22.4
+    python -m pip install --upgrade pip "setuptools<81" wheel packaging
+    uv pip install --python "${UV_PYTHON}" "setuptools<81" wheel packaging numpy==1.22.4
 
     echo "=============================="
     echo "Installing PyTorch (CUDA 11.7)"
@@ -74,6 +74,9 @@ From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
 
     uv pip install --python "${UV_PYTHON}" torch==1.13.0 torchvision==0.14.0 --no-build-isolation \
         --index-url https://download.pytorch.org/whl/cu117
+
+    # torch-scatter's legacy build path still imports pkg_resources.
+    uv pip install --python "${UV_PYTHON}" "setuptools<81" packaging --no-build-isolation
 
     uv pip install --python "${UV_PYTHON}" torch-scatter --no-build-isolation \
         -f https://data.pyg.org/whl/torch-1.13.0+cu117.html
