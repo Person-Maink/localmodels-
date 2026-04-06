@@ -27,6 +27,7 @@ From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
 
     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         python3.10 \
+        python3.10-venv \
         python3-pip \
         build-essential \
         ninja-build \
@@ -60,7 +61,7 @@ From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
     echo "Creating isolated Dyn-HaMR Python environment"
     echo "=============================="
 
-    python -m venv /opt/dynhamr-venv
+    python3.10 -m venv /opt/dynhamr-venv
     export VIRTUAL_ENV=/opt/dynhamr-venv
     export PATH="${VIRTUAL_ENV}/bin:/root/.local/bin:$PATH"
     export UV_PYTHON="${VIRTUAL_ENV}/bin/python"
