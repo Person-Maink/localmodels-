@@ -55,16 +55,26 @@ From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
 
     curl -LsSf https://astral.sh/uv/install.sh | sh
     export PATH="/root/.local/bin:$PATH"
-    uv pip install --system setuptools wheel numpy==1.22.4
+
+    echo "=============================="
+    echo "Creating isolated Dyn-HaMR Python environment"
+    echo "=============================="
+
+    python -m venv /opt/dynhamr-venv
+    export VIRTUAL_ENV=/opt/dynhamr-venv
+    export PATH="${VIRTUAL_ENV}/bin:/root/.local/bin:$PATH"
+    export UV_PYTHON="${VIRTUAL_ENV}/bin/python"
+    python -m pip install --upgrade pip setuptools wheel
+    uv pip install --python "${UV_PYTHON}" setuptools wheel numpy==1.22.4
 
     echo "=============================="
     echo "Installing PyTorch (CUDA 11.7)"
     echo "=============================="
 
-    uv pip install --system torch==1.13.0 torchvision==0.14.0 --no-build-isolation \
+    uv pip install --python "${UV_PYTHON}" torch==1.13.0 torchvision==0.14.0 --no-build-isolation \
         --index-url https://download.pytorch.org/whl/cu117
 
-    uv pip install --system torch-scatter --no-build-isolation \
+    uv pip install --python "${UV_PYTHON}" torch-scatter --no-build-isolation \
         -f https://data.pyg.org/whl/torch-1.13.0+cu117.html
 
     echo "=============================="
@@ -72,13 +82,13 @@ From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
     echo "=============================="
 
     cd /app
-    uv pip install --system .
+    uv pip install --python "${UV_PYTHON}" .
 
     echo "=============================="
     echo "Installing requirements"
     echo "=============================="
 
-    uv pip install --system -r /app/requirements.txt --no-build-isolation
+    uv pip install --python "${UV_PYTHON}" -r /app/requirements.txt --no-build-isolation
 
     echo "=============================="
     echo "Installing DROID-SLAM"
@@ -92,15 +102,15 @@ From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
     echo "=============================="
 
     cd /app/third-party/hamer
-    uv pip install --system .[all] --no-build-isolation
-    uv pip install --system -v third-party/ViTPose --no-build-isolation
+    uv pip install --python "${UV_PYTHON}" .[all] --no-build-isolation
+    uv pip install --python "${UV_PYTHON}" -v third-party/ViTPose --no-build-isolation
 
     echo "=============================="
     echo "Pinning Lightning for Torch 1.13"
     echo "=============================="
 
     # torch._dynamo exists only in torch>=2.0; keep Lightning on the 1.x line.
-    uv pip install --system \
+    uv pip install --python "${UV_PYTHON}" \
         pytorch-lightning==1.9.5 \
         torchmetrics==0.11.4 \
         lightning-utilities==0.11.9 \
@@ -110,7 +120,7 @@ From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
     echo "Fixing Numpy"
     echo "=============================="
 
-    uv pip install --system \
+    uv pip install --python "${UV_PYTHON}" \
         numpy==1.22.4 --no-build-isolation
 
     echo "=============================="
@@ -118,13 +128,13 @@ From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
     echo "=============================="
 
     cd /app/third-party/manopth
-    uv pip install --system .
+    uv pip install --python "${UV_PYTHON}" .
 
     echo "=============================="
     echo "Applying pinned broken deps"
     echo "=============================="
 
-    uv pip install --system \
+    uv pip install --python "${UV_PYTHON}" \
         contourpy==1.0.7 \
         matplotlib==3.5.3 \
         opencv-python==4.6.0.66 \
@@ -136,34 +146,34 @@ From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
     echo "Installing missing utilities"
     echo "=============================="
 
-    uv pip install --system loguru arguments future consoleprinter plyfile --no-build-isolation
+    uv pip install --python "${UV_PYTHON}" loguru arguments future consoleprinter plyfile --no-build-isolation
 
     echo "=============================="
     echo "Installing human_body_prior"
     echo "=============================="
 
     cd /app/third-party/human_body_prior
-    uv pip install --system -r requirements.txt --no-deps --no-build-isolation
+    uv pip install --python "${UV_PYTHON}" -r requirements.txt --no-deps --no-build-isolation
     python setup.py develop
 
     echo "=============================="
     echo "Installing MediaPipe + protobuf"
     echo "=============================="
 
-    uv pip install --system mediapipe==0.10.9 protobuf==3.20.3 --no-build-isolation
+    uv pip install --python "${UV_PYTHON}" mediapipe==0.10.9 protobuf==3.20.3 --no-build-isolation
 
     echo "=============================="
     echo "Reinstalling PyTorch last (safety)"
     echo "=============================="
 
-    uv pip install --system torch==1.13.0 torchvision==0.14.0 --no-build-isolation \
+    uv pip install --python "${UV_PYTHON}" torch==1.13.0 torchvision==0.14.0 --no-build-isolation \
         --index-url https://download.pytorch.org/whl/cu117
 
     echo "=============================="
     echo "Final hard pin for binary-compatible scientific stack"
     echo "=============================="
 
-    uv pip install --system --force-reinstall --no-deps --no-build-isolation \
+    uv pip install --python "${UV_PYTHON}" --force-reinstall --no-deps --no-build-isolation \
         numpy==1.22.4 \
         scipy==1.8.1 \
         contourpy==1.0.7 \
@@ -177,9 +187,11 @@ From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
     echo "=============================="
 
     python - <<'PY'
+import sys
 import numpy
 import scipy
 import trimesh
+print("FINAL python", sys.executable)
 print("FINAL numpy", numpy.__version__)
 print("FINAL scipy", scipy.__version__)
 print("FINAL trimesh", trimesh.__version__)
@@ -194,7 +206,9 @@ PY
 %environment
     export LC_ALL=C
     export PYTHONUNBUFFERED=1
-    export PATH="/root/.local/bin:$PATH"
+    export VIRTUAL_ENV=/opt/dynhamr-venv
+    export PATH="/opt/dynhamr-venv/bin:/root/.local/bin:$PATH"
+    export PYTHONNOUSERSITE=1
     export PYOPENGL_PLATFORM=egl
     export EGL_DEVICE_ID=0
 
@@ -202,5 +216,6 @@ PY
     echo "=============================="
     echo "Dyn-HaMR Apptainer Container"
     echo "=============================="
+    echo "Python path: $(which python)"
     echo "Python: $(python --version)"
     exec "$@"

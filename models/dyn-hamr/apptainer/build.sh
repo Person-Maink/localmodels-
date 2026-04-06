@@ -134,12 +134,15 @@ validate_runtime_image() {
     echo "========================================="
 
     apptainer exec "${container_file}" python - <<'PY'
+import sys
 import numpy
 import scipy
 import trimesh
+print("SIF python", sys.executable)
 print("SIF numpy", numpy.__version__)
 print("SIF scipy", scipy.__version__)
 print("SIF trimesh", trimesh.__version__)
+assert sys.executable.startswith("/opt/dynhamr-venv/"), sys.executable
 assert numpy.__version__ == "1.22.4", numpy.__version__
 assert scipy.__version__ == "1.8.1", scipy.__version__
 PY

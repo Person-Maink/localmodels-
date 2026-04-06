@@ -82,9 +82,9 @@ run_test() {
 run_test "Python availability" \
     "apptainer exec ${CONTAINER_FILE} which python"
 
-# Test 2: Check Python version
-run_test "Python version" \
-    "apptainer exec ${CONTAINER_FILE} python --version"
+# Test 2: Check that the isolated Dyn-HaMR venv is the runtime interpreter
+run_test "Dyn-HaMR venv interpreter" \
+    "apptainer exec ${CONTAINER_FILE} python -c \"import sys; print(sys.executable); assert sys.executable.startswith('/opt/dynhamr-venv/')\""
 
 # Test 3: Validate the scientific stack used by Dyn-HaMR
 run_test "Dyn-HaMR runtime stack" \
