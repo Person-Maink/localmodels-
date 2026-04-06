@@ -18,9 +18,29 @@ if [[ -z "${NAME:-}" ]]; then
     exit 1
 fi
 
-# Check if container file exists
-if [[ ! -f "${NAME}.sif" ]]; then
-    echo "Error: Container file ${NAME}.sif not found" >&2
+resolve_container_file() {
+    local newest_versioned=""
+
+    if [[ $# -gt 0 && -n "$1" ]]; then
+        echo "$1"
+        return
+    fi
+
+    if compgen -G "${NAME}-*.sif" > /dev/null; then
+        newest_versioned=$(ls -1t "${NAME}"-*.sif 2>/dev/null | head -n 1)
+    fi
+    if [[ -n "${newest_versioned}" ]]; then
+        echo "${newest_versioned}"
+        return
+    fi
+
+    echo "${NAME}.sif"
+}
+
+CONTAINER_FILE="$(resolve_container_file "${1:-}")"
+
+if [[ ! -f "${CONTAINER_FILE}" ]]; then
+    echo "Error: Container file ${CONTAINER_FILE} not found" >&2
     echo "Please run build.sh first to create the container" >&2
     exit 1
 fi
@@ -32,7 +52,7 @@ if ! command -v apptainer &> /dev/null; then
 fi
 
 echo "========================================="
-echo "Testing container: ${NAME}.sif"
+echo "Testing container: ${CONTAINER_FILE}"
 echo "========================================="
 echo ""
 
@@ -58,37 +78,25 @@ run_test() {
     echo ""
 }
 
-# Test 1: Check if Python is available and from conda environment
+# Test 1: Check if Python is available
 run_test "Python availability" \
-    "apptainer exec ${NAME}.sif which python"
+    "apptainer exec ${CONTAINER_FILE} which python"
 
 # Test 2: Check Python version
 run_test "Python version" \
-    "apptainer exec ${NAME}.sif python --version"
+    "apptainer exec ${CONTAINER_FILE} python --version"
 
-# Test 3: Check if conda environment is activated
-run_test "Conda environment activation" \
-    "apptainer exec ${NAME}.sif bash -c 'echo \$CONDA_DEFAULT_ENV' | grep -q 'apptainer'"
+# Test 3: Validate the scientific stack used by Dyn-HaMR
+run_test "Dyn-HaMR runtime stack" \
+    "apptainer exec ${CONTAINER_FILE} python -c \"import numpy, scipy, trimesh; print('numpy', numpy.__version__); print('scipy', scipy.__version__); print('trimesh', trimesh.__version__); assert numpy.__version__ == '1.22.4'; assert scipy.__version__ == '1.8.1'\""
 
-# Test 4: Find jupyter-lab
-run_test "JupyterLab availability" \
-    "apptainer exec ${NAME}.sif which jupyter-lab"
+# Test 4: Check PyTorch availability
+run_test "PyTorch availability" \
+    "apptainer exec ${CONTAINER_FILE} python -c \"import torch; print(torch.__version__)\""
 
-# Test 5: Check JupyterLab version
-run_test "JupyterLab version" \
-    "apptainer exec ${NAME}.sif jupyter-lab --version"
-
-# Test 6: Export conda environment (for verification)
-echo "Exporting conda environment for verification..."
-if apptainer exec "${NAME}.sif" conda env export --no-builds > environment_export.yml; then
-    echo "✓ Environment exported to: environment_export.yml"
-    echo ""
-    ((TESTS_PASSED++))
-else
-    echo "✗ Failed to export environment" >&2
-    echo ""
-    ((TESTS_FAILED++))
-fi
+# Test 5: Smoke-test Dyn-HaMR imports that used to fail
+run_test "Dyn-HaMR import smoke test" \
+    "apptainer exec ${CONTAINER_FILE} python -c \"import numpy, scipy, trimesh, torch; print('import smoke test ok')\""
 
 # Print summary
 echo "========================================="
@@ -105,4 +113,3 @@ else
     echo "Some tests failed. Please review the output above." >&2
     exit 1
 fi
-

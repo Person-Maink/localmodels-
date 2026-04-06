@@ -125,12 +125,46 @@ export BUILD_GIT_DIRTY="${GIT_DIRTY}"
 export BUILD_GIT_TAG="${GIT_TAG}"
 export BUILD_DATE="${BUILD_DATE}"
 
+validate_runtime_image() {
+    local container_file="$1"
+
+    echo ""
+    echo "========================================="
+    echo "Validating built SIF runtime: ${container_file}"
+    echo "========================================="
+
+    apptainer exec "${container_file}" python - <<'PY'
+import numpy
+import scipy
+import trimesh
+print("SIF numpy", numpy.__version__)
+print("SIF scipy", scipy.__version__)
+print("SIF trimesh", trimesh.__version__)
+assert numpy.__version__ == "1.22.4", numpy.__version__
+assert scipy.__version__ == "1.8.1", scipy.__version__
+PY
+}
+
 # Build the container
 if apptainer build "${CONTAINER_FILE}" Apptainer.def 2>&1 | tee build.log; then
+    if ! validate_runtime_image "${CONTAINER_FILE}" 2>&1 | tee -a build.log; then
+        echo ""
+        echo "=========================================" >&2
+        echo "Build produced a SIF, but runtime validation failed." >&2
+        echo "The finalized image does not have the expected NumPy/SciPy stack." >&2
+        echo "Check build.log for the runtime validation output." >&2
+        echo "=========================================" >&2
+        rm -f .build_info
+        exit 1
+    fi
+
+    ln -sfn "${CONTAINER_FILE}" "${NAME}.sif"
+
     echo ""
     echo "========================================="
     echo "Build completed successfully!"
     echo "Container: ${CONTAINER_FILE}"
+    echo "Alias: ${NAME}.sif -> ${CONTAINER_FILE}"
     echo "Log file: build.log"
     echo "End time: $(date)"
     echo ""
