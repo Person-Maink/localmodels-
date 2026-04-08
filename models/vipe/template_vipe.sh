@@ -65,6 +65,9 @@ PROJECT_ROOT="/scratch/mthakur/manifold"
 MODEL_ROOT="${PROJECT_ROOT}/models/vipe"
 MODEL_ASSETS_ROOT="${MODEL_ASSETS_ROOT:-${PROJECT_ROOT}/models/model_assets}"
 APPTAINER_IMAGE="${MODEL_ROOT}/apptainer/template.sif"
+CHUNK_SECONDS="${CHUNK_SECONDS:-600}"
+FRAME_SKIP="${FRAME_SKIP:-1}"
+SAVE_VIZ="${SAVE_VIZ:-False}"
 
 REQUIRED_ASSETS=(
   "${MODEL_ASSETS_ROOT}/vipe/droid_slam/droid.pth"
@@ -92,7 +95,7 @@ export APPTAINERENV_TRANSFORMERS_OFFLINE=1
 apptainer exec --nv \
     --bind /scratch:/scratch \
     "${APPTAINER_IMAGE}" \
-    bash -c 'cd /scratch/mthakur/manifold/models/vipe && /opt/conda/bin/conda run -n vipe python run.py pipeline=no_vda streams=raw_mp4_stream streams.base_path="/scratch/mthakur/manifold/data/images/__VIDEO_FILE__" streams.frame_end=-1 pipeline.output.path=/scratch/mthakur/manifold/outputs/vipe/ pipeline.output.skip_exists=true pipeline.output.save_artifacts=true pipeline.output.save_viz=false'
+    bash -c "cd /scratch/mthakur/manifold/models/vipe && /opt/conda/bin/conda run -n vipe python run_chunked.py --video /scratch/mthakur/manifold/data/images/__VIDEO_FILE__ --output /scratch/mthakur/manifold/outputs/vipe/ --pipeline no_vda --chunk-seconds ${CHUNK_SECONDS} --frame-skip ${FRAME_SKIP} --skip-existing true --save-viz ${SAVE_VIZ}"
 
 echo "==============================================="
 end_time=$(date +%s)

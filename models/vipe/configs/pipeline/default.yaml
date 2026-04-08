@@ -35,7 +35,10 @@ output:
   path: vipe_results/
   skip_exists: true
 
-  # Save artifacts and a info file
+  # Save minimal camera artifacts needed by downstream tasks
+  save_camera_artifacts: true
+
+  # Save bulky artifacts such as rgb/depth/masks and a info file
   save_artifacts: false
 
   # Save reconstruction from SLAM

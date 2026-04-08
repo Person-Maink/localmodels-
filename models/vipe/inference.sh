@@ -85,6 +85,9 @@ PROJECT_ROOT="/scratch/mthakur/manifold"
 MODEL_ROOT="${PROJECT_ROOT}/models/vipe"
 MODEL_ASSETS_ROOT="${MODEL_ASSETS_ROOT:-${PROJECT_ROOT}/models/model_assets}"
 APPTAINER_IMAGE="${MODEL_ROOT}/apptainer/template.sif"
+CHUNK_SECONDS="${CHUNK_SECONDS:-600}"
+FRAME_SKIP="${FRAME_SKIP:-1}"
+SAVE_VIZ="${SAVE_VIZ:-False}"
 
 REQUIRED_ASSETS=(
   "${MODEL_ASSETS_ROOT}/vipe/droid_slam/droid.pth"
@@ -113,7 +116,7 @@ apptainer exec --nv \
     --bind /scratch/mthakur/manifold/data/:/data/ \
     --bind /scratch/mthakur/manifold/outputs/vipe/:/output/ \
     "${APPTAINER_IMAGE}" \
-    bash -c 'cd /scratch/mthakur/manifold/models/vipe && /opt/conda/bin/conda run -n vipe python run.py pipeline=no_vda streams=raw_mp4_stream streams.base_path="data/120-2_clip_1.mp4" streams.frame_end=-1 pipeline.output.path=output/ pipeline.output.skip_exists=true pipeline.output.save_artifacts=true pipeline.output.save_viz=false'
+    bash -c "cd /scratch/mthakur/manifold/models/vipe && /opt/conda/bin/conda run -n vipe python run_chunked.py --video /scratch/mthakur/manifold/data/images/120-2_clip_1.mp4 --output /scratch/mthakur/manifold/outputs/vipe/ --pipeline no_vda --chunk-seconds ${CHUNK_SECONDS} --frame-skip ${FRAME_SKIP} --skip-existing true --save-viz ${SAVE_VIZ}"
     # bash -c 'HF_HUB_OFFLINE=1 \ /opt/conda/bin/conda run -n vipe vipe infer "data/120-2_clip_1.mp4" --output output/ --pipeline no_vda'
     # bash -c ' /opt/conda/bin/conda run -n vipe python -c "import torch;import vipe; print(torch.cuda.is_available(), torch.version.cuda)" '
 

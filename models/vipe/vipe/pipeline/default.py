@@ -19,6 +19,7 @@ import pickle
 
 from pathlib import Path
 
+import numpy as np
 import torch
 
 from omegaconf import DictConfig
@@ -58,6 +59,33 @@ class DefaultAnnotationPipeline(Pipeline):
         self.out_path = Path(self.out_cfg.path)
         self.out_path.mkdir(exist_ok=True, parents=True)
         self.camera_type = CameraType(self.init_cfg.camera_type)
+        self.save_camera_artifacts = bool(self.out_cfg.get("save_camera_artifacts", True))
+        self.skip_exists = bool(self.out_cfg.get("skip_exists", False))
+
+    def should_filter(self, stream_name: str) -> bool:
+        if not self.skip_exists:
+            return False
+
+        artifact_path = io.ArtifactPath(self.out_path, stream_name)
+        required_paths: list[Path] = []
+        if self.save_camera_artifacts:
+            required_paths.extend([artifact_path.pose_path, artifact_path.intrinsics_path])
+        if self.out_cfg.save_artifacts:
+            required_paths.extend(
+                [
+                    artifact_path.rgb_path,
+                    artifact_path.depth_path,
+                    artifact_path.mask_path,
+                    artifact_path.mask_phrase_path,
+                    artifact_path.meta_info_path,
+                ]
+            )
+        if self.out_cfg.save_viz:
+            required_paths.append(artifact_path.meta_vis_path)
+        if self.out_cfg.save_slam_map:
+            required_paths.append(artifact_path.slam_map_path)
+
+        return len(required_paths) > 0 and all(path.exists() for path in required_paths)
 
     def _add_init_processors(self, video_stream: VideoStream) -> ProcessedVideoStream:
         init_processors: list[StreamProcessor] = []
@@ -127,21 +155,38 @@ class DefaultAnnotationPipeline(Pipeline):
             annotate_output.payload = slam_output
             return annotate_output
 
-        output_streams = [
-            self._add_post_processors(view_idx, slam_stream, slam_output).cache("depth", online=True)
-            for view_idx, slam_stream in enumerate(slam_streams)
-        ]
+        if self.save_camera_artifacts:
+            for view_idx, (slam_stream, artifact_path) in enumerate(zip(slam_streams, artifact_paths)):
+                frame_inds = np.array([frame_data.raw_frame_idx for frame_data in slam_stream], dtype=np.int64)
+                io.save_camera_artifacts_from_slam_output(
+                    artifact_path,
+                    slam_output,
+                    frame_inds=frame_inds,
+                    view_idx=view_idx,
+                    camera_type=self.camera_type,
+                )
+
+        output_streams = None
+        if self.out_cfg.save_artifacts or self.out_cfg.save_viz:
+            output_streams = [
+                self._add_post_processors(view_idx, slam_stream, slam_output).cache("depth", online=True)
+                for view_idx, slam_stream in enumerate(slam_streams)
+            ]
 
         # Dumping artifacts for all views in the streams
-        for output_stream, artifact_path in zip(output_streams, artifact_paths):
-            artifact_path.meta_info_path.parent.mkdir(exist_ok=True, parents=True)
+        for view_idx, artifact_path in enumerate(artifact_paths):
             if self.out_cfg.save_artifacts:
+                assert output_streams is not None
+                output_stream = output_streams[view_idx]
+                artifact_path.meta_info_path.parent.mkdir(exist_ok=True, parents=True)
                 logger.info(f"Saving artifacts to {artifact_path}")
                 io.save_artifacts(artifact_path, output_stream)
                 with artifact_path.meta_info_path.open("wb") as f:
                     pickle.dump({"ba_residual": slam_output.ba_residual}, f)
 
             if self.out_cfg.save_viz:
+                assert output_streams is not None
+                output_stream = output_streams[view_idx]
                 save_projection_video(
                     artifact_path.meta_vis_path,
                     output_stream,

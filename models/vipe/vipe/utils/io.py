@@ -145,25 +145,102 @@ class ArtifactPath:
         return self.base_path / "vipe_aux_vis" / f"{self.artifact_name}_traj.mp4"
 
 
+def write_pose_artifact(path: Path, frame_inds: np.ndarray, pose_data: np.ndarray) -> None:
+    frame_inds = np.asarray(frame_inds, dtype=np.int64)
+    pose_data = np.asarray(pose_data, dtype=np.float32)
+    if frame_inds.ndim != 1 or pose_data.ndim != 3 or pose_data.shape[1:] != (4, 4):
+        raise ValueError(
+            f"Unexpected pose artifact shapes for {path}: inds={frame_inds.shape}, data={pose_data.shape}"
+        )
+    if frame_inds.shape[0] != pose_data.shape[0]:
+        raise ValueError(
+            f"Pose artifact length mismatch for {path}: inds={frame_inds.shape[0]}, data={pose_data.shape[0]}"
+        )
+    if frame_inds.size == 0:
+        return
+
+    order = np.argsort(frame_inds)
+    path.parent.mkdir(exist_ok=True, parents=True)
+    np.savez(path, data=pose_data[order], inds=frame_inds[order])
+
+
+def write_intrinsics_artifact(
+    intr_path: Path,
+    camera_type_path: Path,
+    frame_inds: np.ndarray,
+    intrinsics_data: np.ndarray,
+    camera_types: list[CameraType] | None = None,
+) -> None:
+    frame_inds = np.asarray(frame_inds, dtype=np.int64)
+    intrinsics_data = np.asarray(intrinsics_data, dtype=np.float32)
+    if frame_inds.ndim != 1 or intrinsics_data.ndim != 2:
+        raise ValueError(
+            f"Unexpected intrinsics artifact shapes for {intr_path}: inds={frame_inds.shape}, data={intrinsics_data.shape}"
+        )
+    if frame_inds.shape[0] != intrinsics_data.shape[0]:
+        raise ValueError(
+            f"Intrinsics artifact length mismatch for {intr_path}: inds={frame_inds.shape[0]}, data={intrinsics_data.shape[0]}"
+        )
+    if frame_inds.size == 0:
+        return
+
+    order = np.argsort(frame_inds)
+    intr_path.parent.mkdir(exist_ok=True, parents=True)
+    np.savez(intr_path, data=intrinsics_data[order], inds=frame_inds[order])
+
+    if camera_types is None:
+        camera_types = [CameraType.PINHOLE] * frame_inds.shape[0]
+    elif len(camera_types) != frame_inds.shape[0]:
+        raise ValueError(
+            f"Camera type length mismatch for {camera_type_path}: inds={frame_inds.shape[0]}, camera_types={len(camera_types)}"
+        )
+
+    camera_type_path.parent.mkdir(exist_ok=True, parents=True)
+    with camera_type_path.open("w") as f:
+        for frame_idx, camera_type_data in zip(frame_inds[order], np.asarray(camera_types, dtype=object)[order]):
+            f.write(f"{int(frame_idx)}: {camera_type_data.name}\n")
+
+
+def save_camera_artifacts_from_slam_output(
+    out_path: ArtifactPath,
+    slam_output: "SLAMOutput",
+    frame_inds: np.ndarray,
+    view_idx: int = 0,
+    camera_type: CameraType = CameraType.PINHOLE,
+) -> None:
+    trajectory = slam_output.get_view_trajectory(view_idx).matrix().cpu().numpy().astype(np.float32)
+    if trajectory.shape[0] != len(frame_inds):
+        raise ValueError(
+            f"Trajectory/frame index mismatch for {out_path}: trajectory={trajectory.shape[0]}, frame_inds={len(frame_inds)}"
+        )
+
+    intrinsics = slam_output.intrinsics[view_idx].cpu().numpy().astype(np.float32)
+    intrinsics_per_frame = np.repeat(intrinsics[None], len(frame_inds), axis=0)
+    camera_types = [camera_type] * len(frame_inds)
+
+    write_pose_artifact(out_path.pose_path, frame_inds, trajectory)
+    write_intrinsics_artifact(
+        out_path.intrinsics_path,
+        out_path.camera_type_path,
+        frame_inds,
+        intrinsics_per_frame,
+        camera_types,
+    )
+
+
 def save_pose_artifacts(out_path: ArtifactPath, cached_final_stream: VideoStream, gt: bool = False) -> None:
     # Save OpenCV cam2world matrices as 4x4 matrix in npz file
-    if gt:
-        pose_list = cached_final_stream.get_gt_stream_attribute(FrameAttribute.POSE)
-        path = out_path.eval_gt_pose_path
-    else:
-        pose_list = cached_final_stream.get_stream_attribute(FrameAttribute.POSE)
-        path = out_path.pose_path
+    path = out_path.eval_gt_pose_path if gt else out_path.pose_path
 
     pose_list = [
-        (frame_idx, pose_data.matrix().cpu().numpy())
-        for frame_idx, pose_data in enumerate(pose_list)
-        if pose_data is not None
+        (frame_data.raw_frame_idx, frame_data.pose.matrix().cpu().numpy())
+        for frame_data in cached_final_stream
+        if frame_data.pose is not None
     ]
     if len(pose_list) > 0:
         pose_data = np.stack([pose for _, pose in pose_list], axis=0)
         pose_inds = np.array([frame_idx for frame_idx, _ in pose_list])
-        path.parent.mkdir(exist_ok=True, parents=True)
-        np.savez(path, data=pose_data, inds=pose_inds)
+        write_pose_artifact(path, pose_inds, pose_data)
 
 
 def read_pose_artifacts(npz_file_path: Path) -> tuple[np.ndarray, SE3]:
@@ -184,38 +261,32 @@ def read_pose_artifacts_benchmark(npz_file_path: Path) -> dict:
 
 def save_intrinsics_artifacts(out_path: ArtifactPath, cached_final_stream: VideoStream, gt: bool = False) -> None:
     # Save intrinsics as [fx, fy, cx, cy] in npz file
-    if gt:
-        intrinsics_list = cached_final_stream.get_gt_stream_attribute(FrameAttribute.INTRINSICS)
-        camera_type_list = cached_final_stream.get_gt_stream_attribute(FrameAttribute.CAMERA_TYPE)
-        intr_path = out_path.eval_gt_intrinsics_path
-        camera_type_path = out_path.eval_gt_camera_type_path
-    else:
-        intrinsics_list = cached_final_stream.get_stream_attribute(FrameAttribute.INTRINSICS)
-        camera_type_list = cached_final_stream.get_stream_attribute(FrameAttribute.CAMERA_TYPE)
-        intr_path = out_path.intrinsics_path
-        camera_type_path = out_path.camera_type_path
+    intr_path = out_path.eval_gt_intrinsics_path if gt else out_path.intrinsics_path
+    camera_type_path = out_path.eval_gt_camera_type_path if gt else out_path.camera_type_path
 
     intrinsics_list = [
-        (frame_idx, intr_data.cpu().numpy())
-        for frame_idx, intr_data in enumerate(intrinsics_list)
-        if intr_data is not None
+        (frame_data.raw_frame_idx, frame_data.intrinsics.cpu().numpy())
+        for frame_data in cached_final_stream
+        if frame_data.intrinsics is not None
     ]
     if len(intrinsics_list) > 0:
         intrinsics_data = np.stack([intrinsics for _, intrinsics in intrinsics_list], axis=0)
         intrinsics_inds = np.array([frame_idx for frame_idx, _ in intrinsics_list])
-        intr_path.parent.mkdir(exist_ok=True, parents=True)
-        np.savez(intr_path, data=intrinsics_data, inds=intrinsics_inds)
 
     camera_type_list = [
-        (frame_idx, camera_type_data)
-        for frame_idx, camera_type_data in enumerate(camera_type_list)
-        if camera_type_data is not None
+        (frame_data.raw_frame_idx, frame_data.camera_type)
+        for frame_data in cached_final_stream
+        if frame_data.camera_type is not None
     ]
-    if len(camera_type_list) > 0:
-        camera_type_path.parent.mkdir(exist_ok=True, parents=True)
-        with camera_type_path.open("w") as f:
-            for frame_idx, camera_type_data in camera_type_list:
-                f.write(f"{frame_idx}: {camera_type_data.name}\n")
+    if len(intrinsics_list) > 0:
+        camera_types = [camera_type_data for _, camera_type_data in camera_type_list]
+        write_intrinsics_artifact(
+            intr_path,
+            camera_type_path,
+            intrinsics_inds,
+            intrinsics_data,
+            camera_types if len(camera_types) == len(intrinsics_list) else None,
+        )
 
 
 def read_intrinsics_artifacts(
@@ -341,14 +412,8 @@ def read_instance_phrases(instance_phrase_path: Path) -> dict[int, str]:
 
 def save_artifacts(out_path: ArtifactPath, cached_final_stream: VideoStream) -> None:
     """
-    Save each attribute independently.
+    Save the bulky artifact set.
     """
-
-    # Save OpenCV cam2world matrices as 4x4 matrix in npz file
-    save_pose_artifacts(out_path, cached_final_stream)
-
-    # Save intrinsics as [fx, fy, cx, cy] in npz file
-    save_intrinsics_artifacts(out_path, cached_final_stream)
 
     # Save original RGB as H264-encoded video.
     save_rgb_artifacts(out_path, cached_final_stream)
