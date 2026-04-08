@@ -101,6 +101,8 @@ RUN_VIS="${RUN_VIS:-False}"
 TEMPORAL_SMOOTH="${TEMPORAL_SMOOTH:-False}"
 START_IDX="${START_IDX:-0}"
 END_IDX="${END_IDX:--1}"
+CHUNK_SECONDS="${CHUNK_SECONDS:-600}"
+SKIP_EXISTING_CHUNKS="${SKIP_EXISTING_CHUNKS:-True}"
 ROOT_ITERS="${ROOT_ITERS:-40}"
 SMOOTH_ITERS="${SMOOTH_ITERS:-60}"
 DETECTRON2_CKPT="${DETECTRON2_CKPT:-${MODEL_ASSETS_ROOT}/common/detectron2/model_final_f05665.pkl}"
@@ -129,6 +131,14 @@ else
   echo "Dyn-HaMR mode: optimization only"
   echo "Visualization outputs are disabled by default. Set RUN_VIS=True to restore rendered videos and meshes."
 fi
+if [[ "${CHUNK_SECONDS}" =~ ^-?[0-9]+$ ]] && (( CHUNK_SECONDS > 0 )); then
+  echo "Dyn-HaMR chunking: processing up to ${CHUNK_SECONDS} seconds per optimization slice."
+else
+  echo "Dyn-HaMR chunking: disabled; the requested frame interval will run as one slice."
+fi
+if [[ "${SKIP_EXISTING_CHUNKS}" =~ ^([Tt][Rr][Uu][Ee]|[Yy][Ee]?[Ss]|[Oo][Nn]|1)$ ]]; then
+  echo "Completed Dyn-HaMR chunk outputs will be reused when found."
+fi
 echo "Dyn-HaMR artifacts will be written under: ${LOG_ROOT}"
 echo "Expected core outputs include *_results.npz, cameras.json, and track_info.json."
 export APPTAINERENV_HAMER_DETECTRON2_CKPT="${DETECTRON2_CKPT}"
@@ -138,24 +148,24 @@ srun apptainer exec\
   --nv\
   --bind /scratch:/scratch \
   "${APPTAINER_IMAGE}"\
-  python -u "${MODEL_ROOT}/dyn-hamr/run_opt.py" \
-  data=video \
-  run_opt=True \
-  "run_vis=${RUN_VIS}" \
-  "run_prior=${RUN_PRIOR}" \
-  "data.root=${DATA_ROOT}" \
-  "data.video_dir=${VIDEO_DIR}" \
-  "data.seq='${VIDEO_NAME}'" \
-  "data.ext=${VIDEO_EXT}" \
-  "data.src_path='${VIDEO_PATH}'" \
-  "data.start_idx=${START_IDX}" \
-  "data.end_idx=${END_IDX}" \
-  "is_static=${IS_STATIC}" \
-  "temporal_smooth=${TEMPORAL_SMOOTH}" \
-  "HMP.vid_path='${HMP_FRAME_DIR}'" \
-  "optim.root.num_iters=${ROOT_ITERS}" \
-  "optim.smooth.num_iters=${SMOOTH_ITERS}" \
-  "log_root='${LOG_ROOT}'"
+  python -u "${MODEL_ROOT}/run_chunked.py" \
+  --video "${VIDEO_PATH}" \
+  --data-root "${DATA_ROOT}" \
+  --video-dir "${VIDEO_DIR}" \
+  --video-name "${VIDEO_NAME}" \
+  --video-ext "${VIDEO_EXT}" \
+  --log-root "${LOG_ROOT}" \
+  --hmp-frame-dir "${HMP_FRAME_DIR}" \
+  --run-vis "${RUN_VIS}" \
+  --run-prior "${RUN_PRIOR}" \
+  --is-static "${IS_STATIC}" \
+  --temporal-smooth "${TEMPORAL_SMOOTH}" \
+  --start-idx "${START_IDX}" \
+  --end-idx "${END_IDX}" \
+  --chunk-seconds "${CHUNK_SECONDS}" \
+  --root-iters "${ROOT_ITERS}" \
+  --smooth-iters "${SMOOTH_ITERS}" \
+  --skip-existing "${SKIP_EXISTING_CHUNKS}"
 
 echo "==============================================="
 end_time=$(date +%s)

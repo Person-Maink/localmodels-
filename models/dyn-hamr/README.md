@@ -155,6 +155,7 @@ This will visualize all log subdirectories and save the rendered videos and imag
 python -u run_opt.py data=video run_opt=True run_vis=True is_static=<True of False>
 ```
 In this repo's SLURM launchers, visualization is disabled by default so batch runs only produce the optimization artifacts unless you explicitly set `RUN_VIS=True`. As a multi-stage pipeline, you can customize the optimization process. Add `is_static=True` for static camera videos. Adding `run_prior=True` can activate the motion prior in stage III. Please note that in the current version, each motion chunk size needs to be set to 128 to be compatible with the original setting of HMP only when the prior module is activated.
+For long videos, this repo's `inference.sh` and generated SLURM jobs now split the requested interval into sequential 10-minute slices by default (`CHUNK_SECONDS=600`) before calling `run_opt.py`. That keeps per-run memory bounded while preserving the normal Dyn-HaMR output structure for each slice. Set `CHUNK_SECONDS=0` if you explicitly want the whole requested interval to run as one slice.
 
 ### Blender Addon
 Coming soon.
