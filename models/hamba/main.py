@@ -143,7 +143,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--visualize",
         action=argparse.BooleanOptionalAction,
-        default=True,
+        default=False,
         help="Generate visualization overlays.",
     )
     parser.add_argument(

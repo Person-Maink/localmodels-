@@ -131,8 +131,23 @@ if __name__ == "__main__":
     parser.add_argument("--output_folder", type=str, default="../../outputs/wilor/", help="Folder for results.")
     parser.add_argument("--rescale_factor", type=float, default=2.0, help="BBox padding scale.")
     parser.add_argument("--video", type=str, default=None, help="Video name to process (expects <video>_frames folder).")
-    parser.add_argument("--visualize", action="store_true", default=True, help="Generate visualization overlays.")
-    parser.add_argument("--save_mesh", action="store_true", default=True, help="Save mesh reconstructions (.obj).")
-    parser.add_argument("--use_gpu", action="store_true", default=True, help="Use CUDA if available.")
+    parser.add_argument(
+        "--visualize",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Generate visualization overlays.",
+    )
+    parser.add_argument(
+        "--save_mesh",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Save mesh reconstructions (.npy).",
+    )
+    parser.add_argument(
+        "--use_gpu",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Use CUDA if available.",
+    )
     args = parser.parse_args()
     main(args)

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # ================ SLURM SETUP ================
 
@@ -21,28 +22,26 @@
 #SBATCH --account=Education-EEMCS-MSc-DSAIT
 #SBATCH --output=%x.out
 
-# ================ ENV VARIABLES ================
-
 export HYDRA_FULL_ERROR=1
 export LD_LIBRARY_PATH=/cm/local/apps/gcc/10.2.0/lib64/libstdc++.so.6.0.28:$LD_LIBRARY_PATH
-
-# ================ OUTPUT FILES ================
 
 base_name="${SLURM_JOB_NAME}"
 dir="SLURM_logs"
 mkdir -p "$dir"
 count=$(printf "%03d" $(($(ls "$dir" 2>/dev/null | grep -c "^${base_name}_[0-9]\+\.out$") + 1)))
 outfile="${dir}/${base_name}_${count}.out"
-
 exec >"$outfile" 2>&1
-
-# ================ SLURM SETUP ================
 
 module load 2024r1
 module load cuda/11.7
-# module load python/3.10.13
 
-# ================ CODE EXECUTION ================
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+MODEL_DIR=$(cd "${SCRIPT_DIR}/.." && pwd)
+COMMON_SH="${MODEL_DIR}/../common/inference_common.sh"
+PROJECT_ROOT="/scratch/mthakur/manifold"
+MODEL_ROOT="${PROJECT_ROOT}/models/dyn-hamr"
+
+source "${COMMON_SH}"
 
 echo "Loaded modules:"
 module list 2>&1
@@ -64,85 +63,97 @@ echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
 
-PROJECT_ROOT="/scratch/mthakur/manifold"
-MODEL_ROOT="${PROJECT_ROOT}/models/dyn-hamr"
 MODEL_ASSETS_ROOT="${MODEL_ASSETS_ROOT:-${PROJECT_ROOT}/models/model_assets}"
-DATA_ROOT="${PROJECT_ROOT}/data"
-OUTPUT_ROOT="${PROJECT_ROOT}/outputs/dynhamr"
-LOG_ROOT="${OUTPUT_ROOT}/logs"
-VIDEO_DIR="images"
-VIDEO_NAME="__NAME__"
-VIDEO_EXT="__VIDEO_EXT__"
-IS_STATIC="${IS_STATIC:-False}"
-RUN_PRIOR="${RUN_PRIOR:-False}"
-RUN_VIS="${RUN_VIS:-False}"
-TEMPORAL_SMOOTH="${TEMPORAL_SMOOTH:-False}"
+OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/dynhamr}"
+LOG_ROOT="${LOG_ROOT:-${OUTPUT_ROOT}/logs}"
+VIDEO_DIR="${VIDEO_DIR:-${PROJECT_ROOT}/data/images}"
+VIDEO_NAME="${VIDEO_NAME:-__NAME__}"
+VIDEO_EXT="${VIDEO_EXT:-__VIDEO_EXT__}"
+VIDEO_FILE="${VIDEO_FILE:-${VIDEO_NAME}.${VIDEO_EXT}}"
+IS_STATIC="${IS_STATIC:-false}"
+RUN_PRIOR="${RUN_PRIOR:-false}"
+RUN_VIS="${RUN_VIS:-false}"
+TEMPORAL_SMOOTH="${TEMPORAL_SMOOTH:-false}"
 START_IDX="${START_IDX:-0}"
 END_IDX="${END_IDX:--1}"
 CHUNK_SECONDS="${CHUNK_SECONDS:-600}"
-SKIP_EXISTING_CHUNKS="${SKIP_EXISTING_CHUNKS:-True}"
+SKIP_EXISTING_CHUNKS="${SKIP_EXISTING_CHUNKS:-true}"
+OVERWRITE="${OVERWRITE:-false}"
+KEEP_TEMP_FRAMES="${KEEP_TEMP_FRAMES:-false}"
 ROOT_ITERS="${ROOT_ITERS:-40}"
 SMOOTH_ITERS="${SMOOTH_ITERS:-60}"
+TEMP_PARENT="${TEMP_ROOT:-$(pick_temp_root)}"
 DETECTRON2_CKPT="${DETECTRON2_CKPT:-${MODEL_ASSETS_ROOT}/common/detectron2/model_final_f05665.pkl}"
+APPTAINER_IMAGE="${APPTAINER_IMAGE:-${MODEL_ROOT}/apptainer/template.sif}"
 
-export APPTAINER_IMAGE="${MODEL_ROOT}/apptainer/template.sif"
-
-mkdir -p "${OUTPUT_ROOT}" "${LOG_ROOT}"
-
-VIDEO_PATH="${DATA_ROOT}/${VIDEO_DIR}/${VIDEO_NAME}.${VIDEO_EXT}"
-HMP_FRAME_DIR="${DATA_ROOT}/images/${VIDEO_NAME}"
-if [[ ! -f "${VIDEO_PATH}" ]]; then
-  echo "Video not found: ${VIDEO_PATH}" >&2
+if ! VIDEO_PATH=$(resolve_video_path "${VIDEO_DIR}" "${VIDEO_NAME}" "${VIDEO_FILE}"); then
+  echo "Could not resolve a supported video under ${VIDEO_DIR} for VIDEO_NAME='${VIDEO_NAME}' VIDEO_FILE='${VIDEO_FILE}'" >&2
   exit 1
 fi
 
-echo "Using video: ${VIDEO_PATH}"
+VIDEO_PATH=$(cd "$(dirname "${VIDEO_PATH}")" && pwd)/$(basename "${VIDEO_PATH}")
+VIDEO_STEM="$(basename "${VIDEO_PATH%.*}")"
+MARKER_PATH="$(completion_marker_path "${OUTPUT_ROOT}" "${VIDEO_STEM}")"
+
 if [[ ! -f "${DETECTRON2_CKPT}" ]]; then
   echo "Detectron2 checkpoint not found: ${DETECTRON2_CKPT}" >&2
   exit 1
 fi
-echo "Using local Detectron2 checkpoint: ${DETECTRON2_CKPT}"
-if [[ "${RUN_VIS}" == "True" ]]; then
+if [[ ! -f "${APPTAINER_IMAGE}" ]]; then
+  echo "Apptainer image not found: ${APPTAINER_IMAGE}" >&2
+  exit 1
+fi
+
+if [[ -f "${MARKER_PATH}" ]] && ! is_truthy "${OVERWRITE}"; then
+  echo "Skipping ${VIDEO_STEM}: completion marker already exists at ${MARKER_PATH}"
+  exit 0
+fi
+
+mkdir -p "${OUTPUT_ROOT}" "${LOG_ROOT}" "${TEMP_PARENT}"
+
+if is_truthy "${RUN_VIS}"; then
   echo "Dyn-HaMR mode: optimization + visualization"
 else
   echo "Dyn-HaMR mode: optimization only"
-  echo "Visualization outputs are disabled by default. Set RUN_VIS=True to restore rendered videos and meshes."
+  echo "Visualization outputs are disabled by default. Set RUN_VIS=true to restore rendered outputs."
 fi
-if [[ "${CHUNK_SECONDS}" =~ ^-?[0-9]+$ ]] && (( CHUNK_SECONDS > 0 )); then
-  echo "Dyn-HaMR chunking: processing up to ${CHUNK_SECONDS} seconds per optimization slice."
-else
-  echo "Dyn-HaMR chunking: disabled; the requested frame interval will run as one slice."
-fi
-if [[ "${SKIP_EXISTING_CHUNKS}" =~ ^([Tt][Rr][Uu][Ee]|[Yy][Ee]?[Ss]|[Oo][Nn]|1)$ ]]; then
-  echo "Completed Dyn-HaMR chunk outputs will be reused when found."
-fi
-echo "Dyn-HaMR artifacts will be written under: ${LOG_ROOT}"
-echo "Expected core outputs include *_results.npz, cameras.json, and track_info.json."
+echo "Dyn-HaMR artifacts root: ${LOG_ROOT}"
+echo "Dyn-HaMR completion marker: ${MARKER_PATH}"
+echo "Dyn-HaMR temp parent: ${TEMP_PARENT}"
+
 export APPTAINERENV_HAMER_DETECTRON2_CKPT="${DETECTRON2_CKPT}"
 export APPTAINERENV_MODEL_ASSETS_ROOT="${MODEL_ASSETS_ROOT}"
+
+cmd=(
+  python -u "${MODEL_ROOT}/run_chunked.py"
+  --video "${VIDEO_PATH}"
+  --video-name "${VIDEO_STEM}"
+  --video-ext "${VIDEO_EXT}"
+  --log-root "${LOG_ROOT}"
+  --temp-parent "${TEMP_PARENT}"
+  --run-vis "${RUN_VIS}"
+  --run-prior "${RUN_PRIOR}"
+  --is-static "${IS_STATIC}"
+  --temporal-smooth "${TEMPORAL_SMOOTH}"
+  --start-idx "${START_IDX}"
+  --end-idx "${END_IDX}"
+  --chunk-seconds "${CHUNK_SECONDS}"
+  --root-iters "${ROOT_ITERS}"
+  --smooth-iters "${SMOOTH_ITERS}"
+  --skip-existing "${SKIP_EXISTING_CHUNKS}"
+  --overwrite "${OVERWRITE}"
+)
+
+if is_truthy "${KEEP_TEMP_FRAMES}"; then
+  cmd+=(--keep-temp-data)
+fi
 
 srun apptainer exec \
   --nv \
   --bind /scratch:/scratch \
+  --bind "${TEMP_PARENT}:${TEMP_PARENT}" \
   "${APPTAINER_IMAGE}" \
-  python -u "${MODEL_ROOT}/run_chunked.py" \
-  --video "${VIDEO_PATH}" \
-  --data-root "${DATA_ROOT}" \
-  --video-dir "${VIDEO_DIR}" \
-  --video-name "${VIDEO_NAME}" \
-  --video-ext "${VIDEO_EXT}" \
-  --log-root "${LOG_ROOT}" \
-  --hmp-frame-dir "${HMP_FRAME_DIR}" \
-  --run-vis "${RUN_VIS}" \
-  --run-prior "${RUN_PRIOR}" \
-  --is-static "${IS_STATIC}" \
-  --temporal-smooth "${TEMPORAL_SMOOTH}" \
-  --start-idx "${START_IDX}" \
-  --end-idx "${END_IDX}" \
-  --chunk-seconds "${CHUNK_SECONDS}" \
-  --root-iters "${ROOT_ITERS}" \
-  --smooth-iters "${SMOOTH_ITERS}" \
-  --skip-existing "${SKIP_EXISTING_CHUNKS}"
+  "${cmd[@]}"
 
 echo "==============================================="
 end_time=$(date +%s)

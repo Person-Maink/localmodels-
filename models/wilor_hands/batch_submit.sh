@@ -2,11 +2,14 @@
 set -euo pipefail
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+COMMON_SH="${SCRIPT_DIR}/../common/inference_common.sh"
+source "${COMMON_SH}"
 
 VIDEO_DIR="${VIDEO_DIR:-${SCRIPT_DIR}/../../data/images}"
 TEMPLATE="${TEMPLATE:-${SCRIPT_DIR}/template_wilor.sh}"
 OUT_DIR="${OUT_DIR:-${SCRIPT_DIR}/generated_jobs}"
 LOG_DIR="${LOG_DIR:-${SCRIPT_DIR}/SLURM_logs}"
+OUTPUT_ROOT="${OUTPUT_ROOT:-${SCRIPT_DIR}/../../outputs/wilor}"
 RECENT_LOG_COUNT="${RECENT_LOG_COUNT:-12}"
 RECENT_TIME_MARGIN_HOURS="${RECENT_TIME_MARGIN_HOURS:-1.0}"
 MAX_PARTITION_TIME="${MAX_PARTITION_TIME:-04:00:00}"
@@ -90,6 +93,7 @@ shopt -s nullglob nocaseglob
 videos=("${VIDEO_DIR}"/*.mp4 "${VIDEO_DIR}"/*.avi "${VIDEO_DIR}"/*.mts "${VIDEO_DIR}"/*.mov)
 video_count=0
 submitted_count=0
+skipped_count=0
 observed_floor_seconds=0
 
 if OBSERVED_FLOOR_SECONDS=$(recent_log_time_floor); then
@@ -112,6 +116,13 @@ for video in "${videos[@]}"; do
 
     filename=$(basename "${video}")
     name="${filename%.*}"
+    marker_path="$(completion_marker_path "${OUTPUT_ROOT}" "${name}")"
+
+    if [[ -f "${marker_path}" ]] && ! is_truthy "${OVERWRITE:-false}"; then
+        echo "Skipping ${video}: completion marker already exists at ${marker_path}"
+        skipped_count=$((skipped_count + 1))
+        continue
+    fi
 
     if ! TIME_FMT=$("${PYTHON_BIN}" "${SCRIPT_DIR}/estimate_time.py" "${video}"); then
         echo "Skipping ${video}: failed to estimate runtime with ${PYTHON_BIN}"
@@ -154,3 +165,4 @@ fi
 
 echo "Prepared ${video_count} wilor job scripts in ${OUT_DIR}"
 echo "Submitted ${submitted_count} wilor jobs"
+echo "Skipped ${skipped_count} completed wilor videos"

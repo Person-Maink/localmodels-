@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # ================ SLURM SETUP ================
 # Available HPC Partitions:
@@ -25,13 +26,18 @@ dir="SLURM_logs"
 mkdir -p "$dir"
 count=$(printf "%03d" $(($(ls "$dir" 2>/dev/null | grep -c "^${base_name}_[0-9]\\+\\.out$") + 1)))
 outfile="${dir}/${base_name}_${count}.out"
-
 exec >"$outfile" 2>&1
 
-# ================ SLURM SETUP ================
 module load 2024r1
 
-# ================ CODE EXECUTION ================
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+MODEL_DIR="${SCRIPT_DIR}"
+COMMON_SH="${MODEL_DIR}/../common/inference_common.sh"
+PROJECT_ROOT="/scratch/mthakur/manifold"
+MODEL_ROOT="${PROJECT_ROOT}/models/mediapipe"
+
+source "${COMMON_SH}"
+
 echo "Loaded modules:"
 module list 2>&1
 
@@ -48,44 +54,76 @@ echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
 
-VIDEO_DIR="${VIDEO_DIR:-/scratch/mthakur/manifold/data/images}"
+VIDEO_DIR="${VIDEO_DIR:-${PROJECT_ROOT}/data/images}"
 VIDEO_NAME="${VIDEO_NAME:-}"
 VIDEO_FILE="${VIDEO_FILE:-}"
-OUTPUT_ROOT="${OUTPUT_ROOT:-/scratch/mthakur/manifold/outputs/mediapipe}"
+OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/mediapipe}"
 TARGET_FPS="${TARGET_FPS:-30}"
-VISUALIZE="${VISUALIZE:-true}"
-APPTAINER_IMAGE="${APPTAINER_IMAGE:-/scratch/mthakur/manifold/models/mediapipe/apptainer/template.sif}"
+VISUALIZE="${VISUALIZE:-false}"
+OVERWRITE="${OVERWRITE:-false}"
+APPTAINER_IMAGE="${APPTAINER_IMAGE:-${MODEL_ROOT}/apptainer/template.sif}"
 
 if [[ -z "${VIDEO_NAME}" && -z "${VIDEO_FILE}" ]]; then
-    echo "Set VIDEO_NAME or VIDEO_FILE before submitting this script." >&2
+    echo "Set VIDEO_NAME or VIDEO_FILE before running Mediapipe inference." >&2
     exit 1
 fi
 
-visualize_flag="--visualize"
-if [[ ! "${VISUALIZE}" =~ ^([Tt][Rr][Uu][Ee]|[Yy][Ee]?[Ss]|[Oo][Nn]|1)$ ]]; then
-    visualize_flag="--no-visualize"
+if ! VIDEO_PATH=$(resolve_video_path "${VIDEO_DIR}" "${VIDEO_NAME}" "${VIDEO_FILE}"); then
+    echo "Could not resolve a supported video under ${VIDEO_DIR} for VIDEO_NAME='${VIDEO_NAME}' VIDEO_FILE='${VIDEO_FILE}'" >&2
+    exit 1
 fi
 
-cmd=(
-  python main.py
-  --video_folder "${VIDEO_DIR}"
-  --output_folder "${OUTPUT_ROOT}"
-  --target_fps "${TARGET_FPS}"
-  "${visualize_flag}"
+VIDEO_PATH=$(cd "$(dirname "${VIDEO_PATH}")" && pwd)/$(basename "${VIDEO_PATH}")
+VIDEO_STEM="$(basename "${VIDEO_PATH%.*}")"
+VIDEO_FILE_BASENAME="$(basename "${VIDEO_PATH}")"
+MARKER_PATH="$(completion_marker_path "${OUTPUT_ROOT}" "${VIDEO_STEM}")"
+CSV_PATH="${OUTPUT_ROOT}/keypoints/${VIDEO_STEM}_keypoints.csv"
+VIDEO_OUTPUT_PATH="${OUTPUT_ROOT}/visualizations/${VIDEO_STEM}_overlay.mp4"
+
+if [[ ! -f "${APPTAINER_IMAGE}" ]]; then
+    echo "Apptainer image not found: ${APPTAINER_IMAGE}" >&2
+    exit 1
+fi
+
+if [[ -f "${MARKER_PATH}" ]] && ! is_truthy "${OVERWRITE}"; then
+    echo "Skipping ${VIDEO_STEM}: completion marker already exists at ${MARKER_PATH}"
+    exit 0
+fi
+
+if is_truthy "${OVERWRITE}" || [[ ! -f "${MARKER_PATH}" ]]; then
+    rm -f "${CSV_PATH}" "${VIDEO_OUTPUT_PATH}" "${MARKER_PATH}"
+fi
+
+visualize_flag="--no-visualize"
+if is_truthy "${VISUALIZE}"; then
+    visualize_flag="--visualize"
+fi
+
+container_cmd=$(cat <<EOF
+set -euo pipefail
+cd $(printf '%q' "${MODEL_ROOT}")
+if [[ -x .venv/bin/python3 ]]; then
+  PYTHON_BIN=.venv/bin/python3
+else
+  PYTHON_BIN=python
+fi
+"\${PYTHON_BIN}" main.py --video_folder $(printf '%q' "${VIDEO_DIR}") --video $(printf '%q' "${VIDEO_STEM}") --video_file $(printf '%q' "${VIDEO_FILE_BASENAME}") --output_folder $(printf '%q' "${OUTPUT_ROOT}") --target_fps $(printf '%q' "${TARGET_FPS}") ${visualize_flag}
+EOF
 )
 
-if [[ -n "${VIDEO_NAME}" ]]; then
-    cmd+=(--video "${VIDEO_NAME}")
-fi
-
-if [[ -n "${VIDEO_FILE}" ]]; then
-    cmd+=(--video_file "${VIDEO_FILE}")
-fi
+echo "Mediapipe video: ${VIDEO_PATH}"
+echo "Mediapipe output root: ${OUTPUT_ROOT}"
+echo "Mediapipe completion marker: ${MARKER_PATH}"
 
 srun apptainer exec \
   --bind /scratch:/scratch \
   "${APPTAINER_IMAGE}" \
-  bash -lc "cd /scratch/mthakur/manifold/models/mediapipe && $(printf '%q ' "${cmd[@]}")"
+  bash -lc "${container_cmd}"
+
+if ! is_truthy "${VISUALIZE}"; then
+    rm -f "${VIDEO_OUTPUT_PATH}"
+fi
+write_simple_completion_marker "${MARKER_PATH}" "mediapipe" "${VIDEO_STEM}" "${CSV_PATH}"
 
 echo "==============================================="
 end_time=$(date +%s)
@@ -95,4 +133,5 @@ hours=$(printf "%.2f" "$(echo "$elapsed/3600" | bc -l)")
 echo "Job finished at: $(date)"
 echo "Execution took $hours hours"
 echo "Writing output to $outfile"
+echo "Retained Mediapipe outputs: ${CSV_PATH}"
 echo "==============================================="

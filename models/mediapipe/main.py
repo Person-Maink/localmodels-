@@ -39,7 +39,7 @@ def parse_args():
     parser.add_argument(
         "--visualize",
         action=argparse.BooleanOptionalAction,
-        default=True,
+        default=False,
         help="Whether to overlay joints and save visualization videos.",
     )
     parser.add_argument(
@@ -61,12 +61,10 @@ def format_available_videos(video_folder):
 def run_video(video_path, output_root, target_fps, visualize):
     base_name = video_path.stem
     keypoints_dir = output_root / "keypoints"
-    visualizations_dir = output_root / "visualizations"
     keypoints_dir.mkdir(parents=True, exist_ok=True)
-    visualizations_dir.mkdir(parents=True, exist_ok=True)
 
     out_csv = keypoints_dir / f"{base_name}_keypoints.csv"
-    out_video = visualizations_dir / f"{base_name}_overlay.mp4"
+    out_video = output_root / "visualizations" / f"{base_name}_overlay.mp4"
 
     print(f"\nProcessing: {video_path.name}")
 
@@ -79,6 +77,7 @@ def run_video(video_path, output_root, target_fps, visualize):
         print(f"Saved CSV: {out_csv}")
 
     if visualize:
+        out_video.parent.mkdir(parents=True, exist_ok=True)
         overlay_hand_pose(str(video_path), str(out_csv), str(out_video))
         print(f"Saved visualization: {out_video}")
 

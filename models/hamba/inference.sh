@@ -1,7 +1,7 @@
 #!/bin/bash
+set -euo pipefail
 
 # ================ SLURM SETUP ================
-
 # Available HPC Partitions:
 #   compute / compute-p1   : CPU jobs (48 CPUs, 185 GB RAM, Phase 1)
 #   compute-p2             : CPU jobs (64 CPUs, 250 GB RAM, Phase 2)
@@ -22,47 +22,28 @@
 #SBATCH --output=%x.out
 
 # ================ OUTPUT FILES ================
-
-# compute a small incremental index based on existing files
 base_name="${SLURM_JOB_NAME}"
 dir="SLURM_logs"
 mkdir -p "$dir"
 count=$(printf "%03d" $(($(ls "$dir" 2>/dev/null | grep -c "^${base_name}_[0-9]\+\.out$") + 1)))
 outfile="${dir}/${base_name}_${count}.out"
-
-# redirect stdout and stderr
 exec >"$outfile" 2>&1
 
 # ================ SLURM SETUP ================
-
-# Load modules:
 module load 2024r1
-# module load miniconda3
 module load cuda/11.7
-# module load openmpi/4.1.6
-# module load python/3.10.13
-# module load py-torch/1.12.1
-# module load gcc/11.3.0
-# module load py-pip
-# module load py-numpy
-# module load py-pyyaml
-# module load py-tqdm
-# module load ffmpeg
 
-# ================ CODE EXECUTION ================
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+MODEL_DIR="${SCRIPT_DIR}"
+COMMON_SH="${MODEL_DIR}/../common/inference_common.sh"
+PROJECT_ROOT="/scratch/mthakur/manifold"
+MODEL_ROOT="${PROJECT_ROOT}/models/hamba"
+COMMON_PY="${PROJECT_ROOT}/models/common/extract_video_frames.py"
 
-## Use this simple command to check that your sbatch
-## settings are working (it should show the GPU that you requested)
+source "${COMMON_SH}"
 
-# source /scratch/mthakur/Dyn-HaMR/.dynhamr/bin/activate
-# echo "Activated environment: $VIRTUAL_ENV"
-# echo "Python version:"
-#  /scratch/mthakur/Dyn-HaMR/.dynhamr/bin/python3.10 --version
 echo "Loaded modules:"
 module list 2>&1
-
-# echo "Loaded Python Libraries"
-#  /scratch/mthakur/Dyn-HaMR/.dynhamr/bin/pip freeze 2>&1
 
 nvidia-smi
 
@@ -81,20 +62,103 @@ echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
 
+VIDEO_DIR="${VIDEO_DIR:-${PROJECT_ROOT}/data/images}"
+VIDEO_NAME="${VIDEO_NAME:-}"
+VIDEO_FILE="${VIDEO_FILE:-}"
+OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/hamba}"
+APPTAINER_IMAGE="${APPTAINER_IMAGE:-${MODEL_ROOT}/apptainer/template.sif}"
+OVERWRITE="${OVERWRITE:-false}"
+KEEP_TEMP_FRAMES="${KEEP_TEMP_FRAMES:-false}"
+VISUALIZE="${VISUALIZE:-false}"
+SAVE_MESH="${SAVE_MESH:-true}"
+USE_GPU="${USE_GPU:-true}"
+TEMP_PARENT="${TEMP_ROOT:-$(pick_temp_root)}"
+
+if [[ -z "${VIDEO_NAME}" && -z "${VIDEO_FILE}" ]]; then
+    echo "Set VIDEO_NAME or VIDEO_FILE before running Hamba inference." >&2
+    exit 1
+fi
+
+if ! VIDEO_PATH=$(resolve_video_path "${VIDEO_DIR}" "${VIDEO_NAME}" "${VIDEO_FILE}"); then
+    echo "Could not resolve a supported video under ${VIDEO_DIR} for VIDEO_NAME='${VIDEO_NAME}' VIDEO_FILE='${VIDEO_FILE}'" >&2
+    exit 1
+fi
+
+VIDEO_PATH=$(cd "$(dirname "${VIDEO_PATH}")" && pwd)/$(basename "${VIDEO_PATH}")
+VIDEO_STEM="$(basename "${VIDEO_PATH%.*}")"
+MARKER_PATH="$(completion_marker_path "${OUTPUT_ROOT}" "${VIDEO_STEM}")"
+VIDEO_OUTPUT_DIR="${OUTPUT_ROOT}/${VIDEO_STEM}"
+VIDEO_OUTPUT_FILE="${OUTPUT_ROOT}/videos/${VIDEO_STEM}.mp4"
+
+if [[ ! -f "${APPTAINER_IMAGE}" ]]; then
+    echo "Apptainer image not found: ${APPTAINER_IMAGE}" >&2
+    exit 1
+fi
+
+if [[ -f "${MARKER_PATH}" ]] && ! is_truthy "${OVERWRITE}"; then
+    echo "Skipping ${VIDEO_STEM}: completion marker already exists at ${MARKER_PATH}"
+    exit 0
+fi
+
+if is_truthy "${OVERWRITE}" || [[ ! -f "${MARKER_PATH}" ]]; then
+    rm -rf "${VIDEO_OUTPUT_DIR}"
+    rm -f "${VIDEO_OUTPUT_FILE}"
+    rm -f "${MARKER_PATH}"
+fi
+
+mkdir -p "${OUTPUT_ROOT}"
+mkdir -p "${TEMP_PARENT}"
+TEMP_WORKDIR=$(mktemp -d "${TEMP_PARENT%/}/hamba_${VIDEO_STEM}.XXXXXX")
+TEMP_FRAME_DIR="${TEMP_WORKDIR}/${VIDEO_STEM}_frames"
+
+cleanup_temp() {
+    if is_truthy "${KEEP_TEMP_FRAMES}"; then
+        echo "Keeping temporary Hamba frames at ${TEMP_WORKDIR}"
+        return
+    fi
+    rm -rf "${TEMP_WORKDIR}"
+}
+trap cleanup_temp EXIT
+
+visualize_flag="--no-visualize"
+if is_truthy "${VISUALIZE}"; then
+    visualize_flag="--visualize"
+fi
+
+save_mesh_flag="--save_mesh"
+if ! is_truthy "${SAVE_MESH}"; then
+    save_mesh_flag="--no-save_mesh"
+fi
+
+gpu_flag="--use_gpu"
+if ! is_truthy "${USE_GPU}"; then
+    gpu_flag="--no-use_gpu"
+fi
+
+container_cmd=$(cat <<EOF
+set -euo pipefail
+cd $(printf '%q' "${MODEL_ROOT}")
+python $(printf '%q' "${COMMON_PY}") --video $(printf '%q' "${VIDEO_PATH}") --output-dir $(printf '%q' "${TEMP_FRAME_DIR}")
+python main.py --image_folder $(printf '%q' "${TEMP_FRAME_DIR}") --output_folder $(printf '%q' "${OUTPUT_ROOT}") ${visualize_flag} ${save_mesh_flag} ${gpu_flag}
+EOF
+)
+
+echo "Hamba video: ${VIDEO_PATH}"
+echo "Hamba output root: ${OUTPUT_ROOT}"
+echo "Hamba completion marker: ${MARKER_PATH}"
+echo "Hamba temp frame dir: ${TEMP_FRAME_DIR}"
+
 srun apptainer exec \
   --nv \
   --bind /scratch:/scratch \
-  /scratch/mthakur/manifold/models/hamba/apptainer/template.sif \
-  python main.py
-  # python demo.py --checkpoint ckpts/hamba/checkpoints/hamba.ckpt --img_folder example_data --out_folder ./demo_out/example_data/ --full_frame
-  # python demo.py --checkpoint ckpts/hamba.ckpt --img_folder /scratch/mthakur/manifold/data/images/ --out_folder /demo_out/ --full_frame
+  --bind "${TEMP_PARENT}:${TEMP_PARENT}" \
+  "${APPTAINER_IMAGE}" \
+  bash -lc "${container_cmd}"
 
-# srun apptainer exec\
-#   --nv\
-#   --bind "/scratch/mthakur/DROID-SLAM/data/sfm_bench/rgb:/app/DROID-SLAM/data/sfm_bench/rgb"\
-#   --bind "/scratch/mthakur/DROID-SLAM/calib/eth.txt:/app/DROID-SLAM/calib/eth.txt"\
-#   "/scratch/mthakur/DROID-SLAM/apptainer/template.sif"\
-#   python demo.py --imagedir=data/sfm_bench/rgb --calib=calib/eth.txt --save_path=saved_output --reconstruction_path my_reconstruction.pth
+rm -rf "${VIDEO_OUTPUT_DIR}/visualizations"
+rm -f "${VIDEO_OUTPUT_FILE}"
+write_simple_completion_marker "${MARKER_PATH}" "hamba" "${VIDEO_STEM}" "${VIDEO_OUTPUT_DIR}/meshes"
+
 echo "==============================================="
 end_time=$(date +%s)
 elapsed=$(( end_time - start_time ))
@@ -103,4 +167,5 @@ hours=$(printf "%.2f" "$(echo "$elapsed/3600" | bc -l)")
 echo "Job finished at: $(date)"
 echo "Execution took $hours hours"
 echo "Writing output to $outfile"
+echo "Retained Hamba outputs: ${VIDEO_OUTPUT_DIR}/meshes"
 echo "==============================================="

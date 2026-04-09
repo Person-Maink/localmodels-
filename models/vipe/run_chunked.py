@@ -1,6 +1,9 @@
 import argparse
+import json
+import shutil
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 import cv2
@@ -47,6 +50,41 @@ def camera_outputs_exist(output_root: Path, artifact_name: str) -> bool:
 
 def chunk_root(output_root: Path, artifact_name: str, chunk_start: int, chunk_end: int) -> Path:
     return output_root / "_chunks" / artifact_name / f"{chunk_start:09d}_{chunk_end:09d}"
+
+
+def completion_marker_path(output_root: Path, artifact_name: str) -> Path:
+    return output_root / "_completed" / f"{artifact_name}.json"
+
+
+def remove_if_exists(path: Path) -> None:
+    if path.is_dir():
+        shutil.rmtree(path, ignore_errors=True)
+    elif path.exists():
+        path.unlink()
+
+
+def clear_video_outputs(output_root: Path, artifact_name: str) -> None:
+    remove_if_exists(output_root / "pose" / f"{artifact_name}.npz")
+    remove_if_exists(output_root / "intrinsics" / f"{artifact_name}.npz")
+    remove_if_exists(output_root / "intrinsics" / f"{artifact_name}_camera.txt")
+    remove_if_exists(output_root / "_chunks" / artifact_name)
+    remove_if_exists(completion_marker_path(output_root, artifact_name))
+
+
+def write_completion_marker(output_root: Path, artifact_name: str) -> None:
+    marker_path = completion_marker_path(output_root, artifact_name)
+    marker_path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "model": "vipe",
+        "video": artifact_name,
+        "completed_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "retained_paths": [
+            str(output_root / "pose" / f"{artifact_name}.npz"),
+            str(output_root / "intrinsics" / f"{artifact_name}.npz"),
+            str(output_root / "intrinsics" / f"{artifact_name}_camera.txt"),
+        ],
+    }
+    marker_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
 
 
 def run_chunk(
@@ -142,16 +180,22 @@ def main() -> None:
     parser.add_argument("--frame-skip", type=int, default=1)
     parser.add_argument("--skip-existing", type=str_to_bool, default=True)
     parser.add_argument("--save-viz", type=str_to_bool, default=False)
+    parser.add_argument("--overwrite", type=str_to_bool, default=False)
     args = parser.parse_args()
 
     model_root = Path(__file__).resolve().parent
     video_path = args.video.resolve()
     output_root = args.output.resolve()
     artifact_name = video_path.stem
+    marker_path = completion_marker_path(output_root, artifact_name)
 
-    if args.skip_existing and camera_outputs_exist(output_root, artifact_name):
-        print(f"Skipping {artifact_name}: final pose/intrinsics already exist under {output_root}")
+    if marker_path.exists() and not args.overwrite:
+        print(f"Skipping {artifact_name}: completion marker already exists at {marker_path}")
         return
+
+    if args.overwrite:
+        print(f"Overwrite requested for {artifact_name}; clearing retained outputs under {output_root}")
+        clear_video_outputs(output_root, artifact_name)
 
     fps, total_frames = video_metadata(video_path)
     frame_end = total_frames if args.frame_end == -1 else min(args.frame_end, total_frames)
@@ -185,6 +229,8 @@ def main() -> None:
         )
 
     merge_chunk_outputs(output_root, artifact_name, chunks)
+    remove_if_exists(output_root / "_chunks" / artifact_name)
+    write_completion_marker(output_root, artifact_name)
     print(f"Merged pose/intrinsics for {artifact_name} into {output_root}")
 
 
