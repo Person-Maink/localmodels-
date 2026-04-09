@@ -1,5 +1,4 @@
 #!/bin/bash
-set -euo pipefail
 # ================ SLURM SETUP ================
 # Available HPC Partitions:
 #   compute / compute-p1   : CPU jobs (48 CPUs, 185 GB RAM, Phase 1)
@@ -18,6 +17,7 @@ set -euo pipefail
 #SBATCH --mem-per-cpu=2G
 #SBATCH --account=Education-EEMCS-MSc-DSAIT
 #SBATCH --output=%x.out
+set -euo pipefail
 
 # ================ OUTPUT FILES ================
 base_name="${SLURM_JOB_NAME}"
@@ -29,11 +29,9 @@ exec >"$outfile" 2>&1
 
 module load 2024r1
 
-SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-MODEL_DIR=$(cd "${SCRIPT_DIR}/.." && pwd)
-COMMON_SH="${MODEL_DIR}/../common/inference_common.sh"
 PROJECT_ROOT="/scratch/mthakur/manifold"
 MODEL_ROOT="${PROJECT_ROOT}/models/mediapipe"
+COMMON_SH="${PROJECT_ROOT}/models/common/inference_common.sh"
 
 source "${COMMON_SH}"
 

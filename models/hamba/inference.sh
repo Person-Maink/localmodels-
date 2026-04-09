@@ -33,12 +33,10 @@ exec >"$outfile" 2>&1
 module load 2024r1
 module load cuda/11.7
 
-SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-MODEL_DIR="${SCRIPT_DIR}"
-COMMON_SH="${MODEL_DIR}/../common/inference_common.sh"
 PROJECT_ROOT="/scratch/mthakur/manifold"
 MODEL_ROOT="${PROJECT_ROOT}/models/hamba"
 COMMON_PY="${PROJECT_ROOT}/models/common/extract_video_frames.py"
+COMMON_SH="${PROJECT_ROOT}/models/common/inference_common.sh"
 
 source "${COMMON_SH}"
 

@@ -1,6 +1,4 @@
 #!/bin/bash
-set -euo pipefail
-
 # ================ SLURM SETUP ================
 
 # Available HPC Partitions:
@@ -21,6 +19,7 @@ set -euo pipefail
 #SBATCH --mem-per-gpu=24G
 #SBATCH --account=Education-EEMCS-MSc-DSAIT
 #SBATCH --output=%x.out
+set -euo pipefail
 
 export HYDRA_FULL_ERROR=1
 export LD_LIBRARY_PATH=/cm/local/apps/gcc/10.2.0/lib64/libstdc++.so.6.0.28:$LD_LIBRARY_PATH
@@ -35,11 +34,9 @@ exec >"$outfile" 2>&1
 module load 2024r1
 module load cuda/11.7
 
-SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-MODEL_DIR=$(cd "${SCRIPT_DIR}/.." && pwd)
-COMMON_SH="${MODEL_DIR}/../common/inference_common.sh"
 PROJECT_ROOT="/scratch/mthakur/manifold"
 MODEL_ROOT="${PROJECT_ROOT}/models/dyn-hamr"
+COMMON_SH="${PROJECT_ROOT}/models/common/inference_common.sh"
 
 source "${COMMON_SH}"
 
