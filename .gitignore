@@ -119,6 +119,7 @@ Thumbs.db
 *checkpoints*
 *_DATA
 **/_DATA/
+**/model_assets/
 
 # Large generated data/assets
 *.npy

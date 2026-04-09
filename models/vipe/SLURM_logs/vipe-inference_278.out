@@ -1,0 +1,48 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/12.9
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Wed Apr  8 20:40:35 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:AE:00.0 Off |                    0 |
+| N/A   57C    P0             55W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9563034
+Job Name:       vipe-inference
+Partition:      gpu-a100
+Node List:      gpu012
+CPUs per task:  2
+Memory per CPU: 
+GPUs per task:  1
+Memory per GPU: 65536
+Submit dir:     /scratch/mthakur/manifold/models/vipe
+Work dir:       /scratch/mthakur/manifold/models/vipe
+Job started at: Wed Apr  8 20:40:35 CEST 2026
+===============================================
+Skipping lhHkJ3InQOE: final pose/intrinsics already exist under /scratch/mthakur/manifold/outputs/vipe
+
+===============================================
+Job finished at: Wed Apr  8 20:40:39 CEST 2026
+Execution took 0.00 hours
+Writing output to SLURM_logs/vipe-inference_278.out
+===============================================

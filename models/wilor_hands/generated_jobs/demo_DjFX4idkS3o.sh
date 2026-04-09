@@ -11,7 +11,7 @@
 
 #SBATCH --job-name=wilor-inference
 #SBATCH --partition=gpu-a100-small
-#SBATCH --time=02:38:22
+#SBATCH --time=03:13:12
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1

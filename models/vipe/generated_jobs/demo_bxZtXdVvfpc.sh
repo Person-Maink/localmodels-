@@ -13,7 +13,7 @@
 
 #SBATCH --job-name=vipe-inference
 #SBATCH --partition=gpu-a100
-#SBATCH --time=00:26:52
+#SBATCH --time=01:04:12
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
@@ -61,20 +61,41 @@ echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
 
+PROJECT_ROOT="/scratch/mthakur/manifold"
+MODEL_ROOT="${PROJECT_ROOT}/models/vipe"
+MODEL_ASSETS_ROOT="${MODEL_ASSETS_ROOT:-${PROJECT_ROOT}/models/model_assets}"
+APPTAINER_IMAGE="${MODEL_ROOT}/apptainer/template.sif"
+CHUNK_SECONDS="${CHUNK_SECONDS:-600}"
+FRAME_SKIP="${FRAME_SKIP:-1}"
+SAVE_VIZ="${SAVE_VIZ:-False}"
+
+REQUIRED_ASSETS=(
+  "${MODEL_ASSETS_ROOT}/vipe/droid_slam/droid.pth"
+  "${MODEL_ASSETS_ROOT}/vipe/geocalib/pinhole.tar"
+  "${MODEL_ASSETS_ROOT}/vipe/track_anything/sam_vit_b_01ec64.pth"
+  "${MODEL_ASSETS_ROOT}/vipe/track_anything/R50_DeAOTL_PRE_YTB_DAV.pth"
+  "${MODEL_ASSETS_ROOT}/vipe/track_anything/groundingdino_swint_ogc.pth"
+  "${MODEL_ASSETS_ROOT}/vipe/huggingface/bert-base-uncased"
+  "${MODEL_ASSETS_ROOT}/vipe/huggingface/unidepth-v2-vitl14"
+  "${MODEL_ASSETS_ROOT}/vipe/priorda/depth_anything_v2_vitb.pth"
+  "${MODEL_ASSETS_ROOT}/vipe/priorda/prior_depth_anything_vitb.pth"
+)
+
+for asset in "${REQUIRED_ASSETS[@]}"; do
+  if [[ ! -e "${asset}" ]]; then
+    echo "Required ViPE asset not found: ${asset}" >&2
+    exit 1
+  fi
+done
+
+export APPTAINERENV_MODEL_ASSETS_ROOT="${MODEL_ASSETS_ROOT}"
+export APPTAINERENV_HF_HUB_OFFLINE=1
+export APPTAINERENV_TRANSFORMERS_OFFLINE=1
+
 apptainer exec --nv \
     --bind /scratch:/scratch \
-    --bind ~/.cache/torch:/home/mthakur/.cache/torch \
-    --bind ~/.cache/huggingface:/home/mthakur/.cache/huggingface \
-    /scratch/mthakur/manifold/models/vipe/apptainer/template.sif \
-    bash -c 'cd /scratch/mthakur/manifold/models/vipe && /opt/conda/bin/conda run -n vipe python run.py pipeline=no_vda streams=raw_mp4_stream streams.base_path="/scratch/mthakur/manifold/data/images/bxZtXdVvfpc.mp4" streams.frame_end=-1 pipeline.output.path=/scratch/mthakur/manifold/outputs/vipe/ pipeline.output.save_artifacts=true pipeline.output.save_viz=false'
-
-# apptainer exec --nv \
-#     --bind /scratch/mthakur/manifold/data/:/data/ \
-#     --bind /scratch/mthakur/manifold/outputs/vipe/:/output/ \
-#     --bind ~/.cache/torch:/home/mthakur/.cache/torch \
-#     --bind ~/.cache/huggingface:/home/mthakur/.cache/huggingface \
-#     /scratch/mthakur/manifold/models/vipe/apptainer/template.sif \
-#     bash -c '/opt/conda/bin/conda run -n vipe vipe infer "data/bxZtXdVvfpc.mp4" --output /output/ --pipeline no_vda'
+    "${APPTAINER_IMAGE}" \
+    bash -c "cd /scratch/mthakur/manifold/models/vipe && /opt/conda/bin/conda run -n vipe python run_chunked.py --video /scratch/mthakur/manifold/data/images/bxZtXdVvfpc.mp4 --output /scratch/mthakur/manifold/outputs/vipe/ --pipeline no_vda --chunk-seconds ${CHUNK_SECONDS} --frame-skip ${FRAME_SKIP} --skip-existing true --save-viz ${SAVE_VIZ}"
 
 echo "==============================================="
 end_time=$(date +%s)

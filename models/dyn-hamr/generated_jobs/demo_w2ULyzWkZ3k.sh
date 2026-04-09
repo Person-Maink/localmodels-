@@ -40,7 +40,7 @@ exec >"$outfile" 2>&1
 
 module load 2024r1
 module load cuda/11.7
-module load python/3.10.13
+# module load python/3.10.13
 
 # ================ CODE EXECUTION ================
 
@@ -66,6 +66,7 @@ echo "==============================================="
 
 PROJECT_ROOT="/scratch/mthakur/manifold"
 MODEL_ROOT="${PROJECT_ROOT}/models/dyn-hamr"
+MODEL_ASSETS_ROOT="${MODEL_ASSETS_ROOT:-${PROJECT_ROOT}/models/model_assets}"
 DATA_ROOT="${PROJECT_ROOT}/data"
 OUTPUT_ROOT="${PROJECT_ROOT}/outputs/dynhamr"
 LOG_ROOT="${OUTPUT_ROOT}/logs"
@@ -74,13 +75,15 @@ VIDEO_NAME="w2ULyzWkZ3k"
 VIDEO_EXT="mp4"
 IS_STATIC="${IS_STATIC:-False}"
 RUN_PRIOR="${RUN_PRIOR:-False}"
-RUN_VIS="${RUN_VIS:-True}"
+RUN_VIS="${RUN_VIS:-False}"
 TEMPORAL_SMOOTH="${TEMPORAL_SMOOTH:-False}"
 START_IDX="${START_IDX:-0}"
 END_IDX="${END_IDX:--1}"
+CHUNK_SECONDS="${CHUNK_SECONDS:-600}"
+SKIP_EXISTING_CHUNKS="${SKIP_EXISTING_CHUNKS:-True}"
 ROOT_ITERS="${ROOT_ITERS:-40}"
 SMOOTH_ITERS="${SMOOTH_ITERS:-60}"
-DETECTRON2_CKPT="${DETECTRON2_CKPT:-/home/mthakur/.cache/torch/hub/detectron2/model_final_f05665.pkl}"
+DETECTRON2_CKPT="${DETECTRON2_CKPT:-${MODEL_ASSETS_ROOT}/common/detectron2/model_final_f05665.pkl}"
 
 export APPTAINER_IMAGE="${MODEL_ROOT}/apptainer/template.sif"
 
@@ -94,38 +97,52 @@ if [[ ! -f "${VIDEO_PATH}" ]]; then
 fi
 
 echo "Using video: ${VIDEO_PATH}"
-if [[ -f "${DETECTRON2_CKPT}" ]]; then
-  echo "Using local Detectron2 checkpoint: ${DETECTRON2_CKPT}"
-  export APPTAINERENV_HAMER_DETECTRON2_CKPT="${DETECTRON2_CKPT}"
-else
-  echo "Local Detectron2 checkpoint not found at ${DETECTRON2_CKPT}; HaMeR will try downloading." >&2
-  unset APPTAINERENV_HAMER_DETECTRON2_CKPT
+if [[ ! -f "${DETECTRON2_CKPT}" ]]; then
+  echo "Detectron2 checkpoint not found: ${DETECTRON2_CKPT}" >&2
+  exit 1
 fi
+echo "Using local Detectron2 checkpoint: ${DETECTRON2_CKPT}"
+if [[ "${RUN_VIS}" == "True" ]]; then
+  echo "Dyn-HaMR mode: optimization + visualization"
+else
+  echo "Dyn-HaMR mode: optimization only"
+  echo "Visualization outputs are disabled by default. Set RUN_VIS=True to restore rendered videos and meshes."
+fi
+if [[ "${CHUNK_SECONDS}" =~ ^-?[0-9]+$ ]] && (( CHUNK_SECONDS > 0 )); then
+  echo "Dyn-HaMR chunking: processing up to ${CHUNK_SECONDS} seconds per optimization slice."
+else
+  echo "Dyn-HaMR chunking: disabled; the requested frame interval will run as one slice."
+fi
+if [[ "${SKIP_EXISTING_CHUNKS}" =~ ^([Tt][Rr][Uu][Ee]|[Yy][Ee]?[Ss]|[Oo][Nn]|1)$ ]]; then
+  echo "Completed Dyn-HaMR chunk outputs will be reused when found."
+fi
+echo "Dyn-HaMR artifacts will be written under: ${LOG_ROOT}"
+echo "Expected core outputs include *_results.npz, cameras.json, and track_info.json."
+export APPTAINERENV_HAMER_DETECTRON2_CKPT="${DETECTRON2_CKPT}"
+export APPTAINERENV_MODEL_ASSETS_ROOT="${MODEL_ASSETS_ROOT}"
 
 srun apptainer exec \
   --nv \
-  --bind ~/.cache/torch:/home/mthakur/.cache/torch \
-  --bind ~/.cache/huggingface:/home/mthakur/.cache/huggingface \
   --bind /scratch:/scratch \
   "${APPTAINER_IMAGE}" \
-  python -u "${MODEL_ROOT}/dyn-hamr/run_opt.py" \
-  data=video \
-  run_opt=True \
-  "run_vis=${RUN_VIS}" \
-  "run_prior=${RUN_PRIOR}" \
-  "data.root=${DATA_ROOT}" \
-  "data.video_dir=${VIDEO_DIR}" \
-  "data.seq='${VIDEO_NAME}'" \
-  "data.ext=${VIDEO_EXT}" \
-  "data.src_path='${VIDEO_PATH}'" \
-  "data.start_idx=${START_IDX}" \
-  "data.end_idx=${END_IDX}" \
-  "is_static=${IS_STATIC}" \
-  "temporal_smooth=${TEMPORAL_SMOOTH}" \
-  "HMP.vid_path='${HMP_FRAME_DIR}'" \
-  "optim.root.num_iters=${ROOT_ITERS}" \
-  "optim.smooth.num_iters=${SMOOTH_ITERS}" \
-  "log_root='${LOG_ROOT}'"
+  python -u "${MODEL_ROOT}/run_chunked.py" \
+  --video "${VIDEO_PATH}" \
+  --data-root "${DATA_ROOT}" \
+  --video-dir "${VIDEO_DIR}" \
+  --video-name "${VIDEO_NAME}" \
+  --video-ext "${VIDEO_EXT}" \
+  --log-root "${LOG_ROOT}" \
+  --hmp-frame-dir "${HMP_FRAME_DIR}" \
+  --run-vis "${RUN_VIS}" \
+  --run-prior "${RUN_PRIOR}" \
+  --is-static "${IS_STATIC}" \
+  --temporal-smooth "${TEMPORAL_SMOOTH}" \
+  --start-idx "${START_IDX}" \
+  --end-idx "${END_IDX}" \
+  --chunk-seconds "${CHUNK_SECONDS}" \
+  --root-iters "${ROOT_ITERS}" \
+  --smooth-iters "${SMOOTH_ITERS}" \
+  --skip-existing "${SKIP_EXISTING_CHUNKS}"
 
 echo "==============================================="
 end_time=$(date +%s)
@@ -135,4 +152,5 @@ hours=$(printf "%.2f" "$(echo "$elapsed/3600" | bc -l)")
 echo "Job finished at: $(date)"
 echo "Execution took $hours hours"
 echo "Writing output to $outfile"
+echo "Dyn-HaMR artifacts root: ${LOG_ROOT}"
 echo "==============================================="
