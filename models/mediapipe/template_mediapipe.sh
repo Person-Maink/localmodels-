@@ -22,7 +22,6 @@ set -euo pipefail
 # ================ OUTPUT FILES ================
 base_name="${SLURM_JOB_NAME}"
 dir="SLURM_logs"
-mkdir -p "$dir"
 count=$(printf "%03d" $(($(ls "$dir" 2>/dev/null | grep -c "^${base_name}_[0-9]\\+\\.out$") + 1)))
 outfile="${dir}/${base_name}_${count}.out"
 exec >"$outfile" 2>&1
@@ -44,7 +43,6 @@ echo "Job Name:       $SLURM_JOB_NAME"
 echo "Partition:      $SLURM_JOB_PARTITION"
 echo "Node List:      $SLURM_JOB_NODELIST"
 echo "CPUs per task:  $SLURM_CPUS_PER_TASK"
-echo "Memory per CPU: $SLURM_MEM_PER_CPU"
 echo "Submit dir:     $SLURM_SUBMIT_DIR"
 echo "Work dir:       $(pwd)"
 echo "Video file:     __VIDEO_FILE__"
