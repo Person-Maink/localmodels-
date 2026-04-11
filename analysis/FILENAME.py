@@ -381,4 +381,4 @@ WRIST_GROUNDING_SOURCE = MODEL_ROOT
 ANALYSIS_IMAGE_WIDTH_PX = 1920
 ANALYSIS_IMAGE_HEIGHT_PX = 1080
 ANALYSIS_IMAGE_DPI = 100
-ANALYSIS_OUTPUT_DIR = _OUTPUTS_ROOT / "analysis_images"
+ANALYSIS_OUTPUT_DIR = "/home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/analysis/analysis_images"

@@ -11,8 +11,8 @@ OUT_DIR="${OUT_DIR:-${SCRIPT_DIR}/generated_jobs}"
 LOG_DIR="${LOG_DIR:-${SCRIPT_DIR}/SLURM_logs}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-${SCRIPT_DIR}/../../outputs/wilor}"
 RECENT_LOG_COUNT="${RECENT_LOG_COUNT:-12}"
-RECENT_TIME_MARGIN_HOURS="${RECENT_TIME_MARGIN_HOURS:-1.0}"
-MAX_PARTITION_TIME="${MAX_PARTITION_TIME:-04:00:00}"
+RECENT_TIME_MARGIN_HOURS="${RECENT_TIME_MARGIN_HOURS:-1.5}"
+MAX_PARTITION_TIME="${MAX_PARTITION_TIME:-08:00:00}"
 
 escape_sed_replacement() {
     printf '%s\n' "$1" | sed 's/[\\&|]/\\&/g'
@@ -62,16 +62,24 @@ if not logs:
 
 pattern = re.compile(r"Execution took ([0-9]+(?:\.[0-9]+)?) hours")
 hours = []
+time_limited = False
 for path in logs[-recent_count:]:
     text = path.read_text(encoding="utf-8", errors="ignore")
     matches = pattern.findall(text)
     if matches:
         hours.append(float(matches[-1]))
+    if "DUE TO TIME LIMIT" in text:
+        time_limited = True
 
-if not hours:
+if not hours and not time_limited:
     raise SystemExit(0)
 
-estimated_seconds = int(round((max(hours) + margin_hours) * 3600))
+base_hours = max(hours) if hours else 0.0
+if time_limited:
+    # If recent jobs are hitting the old 4h wall, push new submissions well past it.
+    base_hours = max(base_hours, 4.0)
+
+estimated_seconds = int(round((base_hours + margin_hours) * 3600))
 print(estimated_seconds)
 PY
 }

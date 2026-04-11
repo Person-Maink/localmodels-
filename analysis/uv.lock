@@ -9,7 +9,7 @@ resolution-markers = [
 ]
 
 [[package]]
-name = "analysis"
+name = "analysis-code"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

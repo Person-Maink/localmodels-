@@ -105,7 +105,7 @@ if [[ -x .venv/bin/python3 ]]; then
 else
   PYTHON_BIN=python
 fi
-"\${PYTHON_BIN}" main.py --video_folder $(printf '%q' "${VIDEO_DIR}") --video $(printf '%q' "${VIDEO_STEM}") --video_file $(printf '%q' "${VIDEO_FILE_BASENAME}") --output_folder $(printf '%q' "${OUTPUT_ROOT}") --target_fps $(printf '%q' "${TARGET_FPS}") ${visualize_flag}
+"\${PYTHON_BIN}" main.py --video_folder=$(printf '%q' "${VIDEO_DIR}") --video=$(printf '%q' "${VIDEO_STEM}") --video_file=$(printf '%q' "${VIDEO_FILE_BASENAME}") --output_folder=$(printf '%q' "${OUTPUT_ROOT}") --target_fps=$(printf '%q' "${TARGET_FPS}") ${visualize_flag}
 EOF
 )
 

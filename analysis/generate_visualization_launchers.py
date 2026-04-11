@@ -337,7 +337,8 @@ def main():
     parser.add_argument(
         "--output-root",
         type=Path,
-        default=DEFAULT_OUTPUT_ROOT,
+        # default=DEFAULT_OUTPUT_ROOT,
+        default="/home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/analysis/launchers/",
         help="Root directory for generated visualization launchers.",
     )
     args = parser.parse_args()

@@ -15,27 +15,19 @@ from finetune_wilor_common import (
     choose_device,
     configure_trainable_scope,
     count_trainable_parameters,
+    discover_videos,
+    evaluate_distillation,
+    filter_videos_with_vipe_artifacts,
     format_loss_dict,
     infinite_loader,
-    load_images_from_folder,
     load_detector,
     save_wilor_checkpoint,
     seed_everything,
     set_optional_loss_weight,
+    split_samples_by_frame,
 )
 from wilor.models import load_wilor
 from wilor.utils import recursive_to
-
-
-def discover_videos(image_folder: str) -> list[str]:
-    frame_paths = [Path(path) for path in load_images_from_folder(image_folder)]
-    return sorted(
-        {
-            frame_path.parent.name[: -len("_frames")]
-            for frame_path in frame_paths
-            if frame_path.parent.name.endswith("_frames")
-        }
-    )
 
 
 def make_argparser() -> argparse.ArgumentParser:
@@ -52,6 +44,12 @@ def make_argparser() -> argparse.ArgumentParser:
     parser.add_argument("--video", action="append", dest="videos", default=[])
     parser.add_argument("--all_videos", action="store_true", help="Use every *_frames directory under image_folder.")
     parser.add_argument("--sample_limit", type=int, default=0, help="Limit the number of frames used to build the dataset.")
+    parser.add_argument(
+        "--validation_split",
+        type=float,
+        default=0.15,
+        help="Fraction of unique frames reserved for validation, e.g. 0.15 for 15%%.",
+    )
     parser.add_argument("--detection_cache", type=str, default=None)
     parser.add_argument("--detection_conf", type=float, default=0.3)
     parser.add_argument("--rescale_factor", type=float, default=2.0)
@@ -82,6 +80,35 @@ def main(args: argparse.Namespace) -> None:
         video_names = sorted(set(args.videos))
     if not video_names:
         raise ValueError("No videos selected. Pass --video ... or use --all_videos.")
+
+    valid_video_names, missing_vipe_artifacts = filter_videos_with_vipe_artifacts(
+        video_names,
+        args.pose_dir,
+        args.intrinsics_dir,
+    )
+    if missing_vipe_artifacts:
+        if args.all_videos:
+            print(
+                f"Skipping {len(missing_vipe_artifacts)} discovered video(s) without matching "
+                "ViPE pose/intrinsics artifacts:"
+            )
+            for video_name, missing_paths in sorted(missing_vipe_artifacts.items()):
+                print(f"  - {video_name}: missing {', '.join(missing_paths)}")
+            video_names = valid_video_names
+        else:
+            missing_lines = [
+                f"{video_name}: missing {', '.join(missing_paths)}"
+                for video_name, missing_paths in sorted(missing_vipe_artifacts.items())
+            ]
+            raise ValueError(
+                "The following requested video(s) do not have matching ViPE pose/intrinsics artifacts:\n"
+                + "\n".join(missing_lines)
+            )
+
+    if not video_names:
+        raise ValueError(
+            "No videos remain after filtering for matching ViPE pose/intrinsics artifacts."
+        )
 
     student, _ = load_wilor(args.checkpoint, args.cfg_path)
     teacher = copy.deepcopy(student)
@@ -114,14 +141,42 @@ def main(args: argparse.Namespace) -> None:
     if not samples:
         raise RuntimeError("No detector samples were generated for fine-tuning.")
 
-    dataset = DetectedVideoHandDataset(student.cfg, samples, rescale_factor=args.rescale_factor)
-    dataloader = DataLoader(
-        dataset,
+    train_samples, val_samples, split_stats = split_samples_by_frame(
+        samples,
+        validation_split=args.validation_split,
+        seed=args.seed,
+    )
+    if not train_samples:
+        raise RuntimeError(
+            "Validation split left no training samples. Reduce --validation_split or provide more frames."
+        )
+
+    train_dataset = DetectedVideoHandDataset(
+        student.cfg,
+        train_samples,
+        rescale_factor=args.rescale_factor,
+    )
+    train_dataloader = DataLoader(
+        train_dataset,
         batch_size=args.batch_size,
         shuffle=False,
         num_workers=args.num_workers,
         drop_last=False,
     )
+    val_dataloader = None
+    if val_samples:
+        val_dataset = DetectedVideoHandDataset(
+            student.cfg,
+            val_samples,
+            rescale_factor=args.rescale_factor,
+        )
+        val_dataloader = DataLoader(
+            val_dataset,
+            batch_size=args.batch_size,
+            shuffle=False,
+            num_workers=args.num_workers,
+            drop_last=False,
+        )
 
     trainable_params = configure_trainable_scope(student, args.train_scope)
     if not trainable_params:
@@ -129,14 +184,26 @@ def main(args: argparse.Namespace) -> None:
 
     optimizer = torch.optim.AdamW(trainable_params, lr=args.lr, weight_decay=args.weight_decay)
     scaler = torch.cuda.amp.GradScaler(enabled=args.amp and device.type == "cuda")
-    batch_iter = infinite_loader(dataloader)
+    batch_iter = infinite_loader(train_dataloader)
     metrics_path = output_dir / "metrics.jsonl"
 
-    best_loss = float("inf")
+    best_metric = float("inf")
+    best_metric_name = "val_loss_total" if val_dataloader is not None else "train_loss_total"
 
     print(f"Device: {device}")
     print(f"Videos: {', '.join(video_names)}")
-    print(f"Training samples: {len(dataset)}")
+    print(
+        f"Frames: total={split_stats['total_frames']} "
+        f"train={split_stats['train_frames']} val={split_stats['val_frames']}"
+    )
+    print(
+        f"Samples: total={split_stats['total_samples']} "
+        f"train={split_stats['train_samples']} val={split_stats['val_samples']}"
+    )
+    if args.validation_split > 0.0 and val_dataloader is None:
+        print(
+            "Validation split requested, but there were not enough frames to reserve a validation set."
+        )
     print(f"Train scope: {args.train_scope}")
     print(f"Trainable params: {count_trainable_parameters(student):,}")
 
@@ -162,27 +229,63 @@ def main(args: argparse.Namespace) -> None:
             optimizer.step()
 
         loss_value = float(loss.detach().item())
-        if loss_value < best_loss:
-            best_loss = loss_value
+        should_log = step % args.log_every == 0 or step == 1 or step == args.max_steps
+
+        if val_dataloader is None and loss_value < best_metric:
+            best_metric = loss_value
             save_wilor_checkpoint(
                 output_dir / "best.ckpt",
                 student,
                 optimizer,
                 step,
                 epoch=0,
-                extra={"finetune_args": vars(args), "best_loss": best_loss},
+                extra={
+                    "finetune_args": vars(args),
+                    "best_metric": best_metric,
+                    "best_metric_name": best_metric_name,
+                },
             )
 
-        if step % args.log_every == 0 or step == 1 or step == args.max_steps:
-            metrics = format_loss_dict(student_output["losses"])
-            metrics.update({"step": step, "loss_total": loss_value})
-            append_metrics(metrics_path, metrics)
+        if should_log:
+            train_metrics = format_loss_dict(student_output["losses"])
+            train_metrics.update({"step": step, "split": "train", "loss_total": loss_value})
+            append_metrics(metrics_path, train_metrics)
             print(
                 f"[step {step:05d}] loss={loss_value:.4f} "
-                f"cam={metrics.get('loss_camera_t_full', 0.0):.4f} "
-                f"kp2d={metrics.get('loss_keypoints_2d', 0.0):.4f} "
-                f"kp3d={metrics.get('loss_keypoints_3d', 0.0):.4f}"
+                f"cam={train_metrics.get('loss_camera_t_full', 0.0):.4f} "
+                f"kp2d={train_metrics.get('loss_keypoints_2d', 0.0):.4f} "
+                f"kp3d={train_metrics.get('loss_keypoints_3d', 0.0):.4f}"
             )
+            if val_dataloader is not None:
+                val_metrics = evaluate_distillation(
+                    student,
+                    teacher,
+                    val_dataloader,
+                    device=device,
+                    amp=scaler.is_enabled(),
+                )
+                val_metrics.update({"step": step, "split": "val"})
+                append_metrics(metrics_path, val_metrics)
+                print(
+                    f"             val_loss={val_metrics.get('loss_total', 0.0):.4f} "
+                    f"val_cam={val_metrics.get('loss_camera_t_full', 0.0):.4f} "
+                    f"val_kp2d={val_metrics.get('loss_keypoints_2d', 0.0):.4f} "
+                    f"val_kp3d={val_metrics.get('loss_keypoints_3d', 0.0):.4f}"
+                )
+                if val_metrics["loss_total"] < best_metric:
+                    best_metric = val_metrics["loss_total"]
+                    save_wilor_checkpoint(
+                        output_dir / "best.ckpt",
+                        student,
+                        optimizer,
+                        step,
+                        epoch=0,
+                        extra={
+                            "finetune_args": vars(args),
+                            "best_metric": best_metric,
+                            "best_metric_name": best_metric_name,
+                        },
+                    )
 
         if step % args.save_every == 0 or step == args.max_steps:
             save_wilor_checkpoint(
@@ -191,10 +294,14 @@ def main(args: argparse.Namespace) -> None:
                 optimizer,
                 step,
                 epoch=0,
-                extra={"finetune_args": vars(args), "best_loss": best_loss},
+                extra={
+                    "finetune_args": vars(args),
+                    "best_metric": best_metric,
+                    "best_metric_name": best_metric_name,
+                },
             )
 
-    print(f"Finished fine-tuning. Best loss: {best_loss:.4f}")
+    print(f"Finished fine-tuning. Best {best_metric_name}: {best_metric:.4f}")
     print(f"Saved checkpoints under: {output_dir}")
 
 

@@ -4,7 +4,7 @@ import random
 import re
 import sys
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional
+from typing import Any, Dict, Hashable, Iterable, List, Optional, Sequence
 
 import cv2
 import numpy as np
@@ -15,6 +15,7 @@ from ultralytics import YOLO
 
 from loader import load_images_from_folder
 from wilor.datasets.vitdet_dataset import ViTDetDataset
+from wilor.utils import recursive_to
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -34,6 +35,44 @@ def choose_device(use_gpu: bool = True) -> torch.device:
     if use_gpu and torch.cuda.is_available():
         return torch.device("cuda")
     return torch.device("cpu")
+
+
+def discover_videos(image_folder: str) -> List[str]:
+    frame_paths = [Path(path) for path in load_images_from_folder(image_folder)]
+    return sorted(
+        {
+            frame_path.parent.name[: -len("_frames")]
+            for frame_path in frame_paths
+            if frame_path.parent.name.endswith("_frames")
+        }
+    )
+
+
+def filter_videos_with_vipe_artifacts(
+    video_names: Sequence[str],
+    pose_dir: str,
+    intrinsics_dir: str,
+) -> tuple[List[str], Dict[str, List[str]]]:
+    pose_root = Path(pose_dir)
+    intrinsics_root = Path(intrinsics_dir)
+    valid_videos: List[str] = []
+    missing_artifacts: Dict[str, List[str]] = {}
+
+    for video_name in sorted(set(video_names)):
+        missing_paths = []
+        pose_path = pose_root / f"{video_name}.npz"
+        intrinsics_path = intrinsics_root / f"{video_name}.npz"
+        if not pose_path.exists():
+            missing_paths.append(str(pose_path))
+        if not intrinsics_path.exists():
+            missing_paths.append(str(intrinsics_path))
+
+        if missing_paths:
+            missing_artifacts[video_name] = missing_paths
+        else:
+            valid_videos.append(video_name)
+
+    return valid_videos, missing_artifacts
 
 
 def parse_frame_index(frame_name: str, pattern: str = r"(\d+)$") -> int:
@@ -161,13 +200,22 @@ def build_detection_samples(
 ) -> List[Dict]:
     if detection_cache_path and Path(detection_cache_path).exists():
         with open(detection_cache_path, "r", encoding="utf-8") as handle:
-            return json.load(handle)
+            cached_samples = json.load(handle)
+        selected_videos = set(video_names)
+        if not selected_videos:
+            return cached_samples
+        return [
+            sample
+            for sample in cached_samples
+            if sample.get("video_name") in selected_videos
+        ]
 
     all_frame_paths = load_images_from_folder(image_folder)
+    selected_videos = set(video_names)
     selected_frame_paths = [
         Path(img_path)
         for img_path in all_frame_paths
-        if Path(img_path).parent.name.replace("_frames", "") in set(video_names)
+        if Path(img_path).parent.name.replace("_frames", "") in selected_videos
     ]
     selected_frame_paths = sorted(selected_frame_paths)
     if sample_limit > 0:
@@ -221,6 +269,68 @@ def build_detection_samples(
             json.dump(samples, handle)
 
     return samples
+
+
+def get_sample_frame_key(sample: Dict[str, Any]) -> Hashable:
+    if "video_name" in sample and "frame_idx" in sample:
+        return str(sample["video_name"]), int(sample["frame_idx"])
+
+    frame_path = sample.get("img_path_rel") or sample.get("imgname_rel")
+    if frame_path is None:
+        frame_path = sample.get("img_path") or sample.get("imgname")
+    if frame_path is None:
+        raise KeyError("Sample does not contain a usable frame identifier.")
+    return str(frame_path)
+
+
+def split_samples_by_frame(
+    samples: Sequence[Dict[str, Any]],
+    validation_split: float,
+    seed: int,
+) -> tuple[List[Dict[str, Any]], List[Dict[str, Any]], Dict[str, int | float]]:
+    if not 0.0 <= validation_split < 1.0:
+        raise ValueError(
+            f"validation_split must be in [0.0, 1.0). Received {validation_split}."
+        )
+
+    if not samples:
+        return [], [], {
+            "validation_split": validation_split,
+            "total_frames": 0,
+            "train_frames": 0,
+            "val_frames": 0,
+            "total_samples": 0,
+            "train_samples": 0,
+            "val_samples": 0,
+        }
+
+    unique_frame_keys = sorted({get_sample_frame_key(sample) for sample in samples}, key=str)
+    val_frame_count = int(round(len(unique_frame_keys) * validation_split))
+    if validation_split > 0.0 and len(unique_frame_keys) > 1:
+        val_frame_count = max(1, val_frame_count)
+        val_frame_count = min(val_frame_count, len(unique_frame_keys) - 1)
+    else:
+        val_frame_count = 0
+
+    shuffled_frame_keys = list(unique_frame_keys)
+    random.Random(seed).shuffle(shuffled_frame_keys)
+    val_frame_keys = set(shuffled_frame_keys[:val_frame_count])
+
+    train_samples: List[Dict[str, Any]] = []
+    val_samples: List[Dict[str, Any]] = []
+    for sample in samples:
+        target = val_samples if get_sample_frame_key(sample) in val_frame_keys else train_samples
+        target.append(sample)
+
+    return train_samples, val_samples, {
+        "validation_split": validation_split,
+        "total_frames": len(unique_frame_keys),
+        "train_frames": len(unique_frame_keys) - len(val_frame_keys),
+        "val_frames": len(val_frame_keys),
+        "total_samples": len(samples),
+        "train_samples": len(train_samples),
+        "val_samples": len(val_samples),
+    }
 
 
 class DetectedVideoHandDataset(Dataset):
@@ -448,3 +558,56 @@ def format_loss_dict(losses: Dict[str, torch.Tensor]) -> Dict[str, float]:
         key: float(value.detach().item()) if isinstance(value, torch.Tensor) else float(value)
         for key, value in losses.items()
     }
+
+
+def evaluate_distillation(
+    student: torch.nn.Module,
+    teacher: torch.nn.Module,
+    dataloader: Iterable,
+    device: torch.device,
+    amp: bool = True,
+) -> Dict[str, float]:
+    autocast_enabled = amp and device.type == "cuda"
+    was_student_training = student.training
+    was_teacher_training = teacher.training
+    student.eval()
+    teacher.eval()
+
+    total_samples = 0
+    total_batches = 0
+    metric_sums: Dict[str, float] = {}
+
+    with torch.no_grad():
+        for batch in dataloader:
+            batch = recursive_to(batch, device)
+            with torch.cuda.amp.autocast(enabled=autocast_enabled):
+                teacher_output = teacher.forward_step(batch, train=False)
+                supervision_batch = build_teacher_supervision_batch(batch, teacher_output)
+                student_output = student.forward_step(batch, train=False)
+                loss = student.compute_loss(supervision_batch, student_output, train=False)
+
+            batch_size = int(batch["img"].shape[0])
+            batch_metrics = format_loss_dict(student_output["losses"])
+            batch_metrics["loss_total"] = float(loss.detach().item())
+            if "camera_target_used_fallback" in batch:
+                batch_metrics["camera_target_fallback_rate"] = float(
+                    batch["camera_target_used_fallback"].float().mean().item()
+                )
+
+            total_samples += batch_size
+            total_batches += 1
+            for key, value in batch_metrics.items():
+                metric_sums[key] = metric_sums.get(key, 0.0) + float(value) * batch_size
+
+    student.train(was_student_training)
+    teacher.train(was_teacher_training)
+
+    if total_samples == 0:
+        return {"num_samples": 0.0, "num_batches": 0.0}
+
+    averaged_metrics = {
+        key: value / total_samples for key, value in metric_sums.items()
+    }
+    averaged_metrics["num_samples"] = float(total_samples)
+    averaged_metrics["num_batches"] = float(total_batches)
+    return averaged_metrics

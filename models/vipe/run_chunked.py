@@ -30,8 +30,22 @@ def video_metadata(video_path: Path) -> tuple[float, int]:
     return fps, total_frames
 
 
-def chunk_bounds(frame_start: int, frame_end: int, frame_skip: int, fps: float, chunk_seconds: int) -> list[tuple[int, int]]:
+def align_chunk_frames(chunk_frames: int, frame_skip: int) -> int:
+    aligned = (chunk_frames // frame_skip) * frame_skip
+    return max(frame_skip, aligned)
+
+
+def chunk_bounds(
+    frame_start: int,
+    frame_end: int,
+    frame_skip: int,
+    fps: float,
+    chunk_seconds: int,
+    max_chunk_frames: int,
+) -> list[tuple[int, int]]:
     chunk_frames = max(frame_skip, int(round(fps * chunk_seconds)))
+    if max_chunk_frames > 0:
+        chunk_frames = min(chunk_frames, align_chunk_frames(max_chunk_frames, frame_skip))
     bounds: list[tuple[int, int]] = []
     start = frame_start
     while start < frame_end:
@@ -69,6 +83,23 @@ def clear_video_outputs(output_root: Path, artifact_name: str) -> None:
     remove_if_exists(output_root / "intrinsics" / f"{artifact_name}_camera.txt")
     remove_if_exists(output_root / "_chunks" / artifact_name)
     remove_if_exists(completion_marker_path(output_root, artifact_name))
+
+
+def split_chunk(frame_start: int, frame_end: int, frame_skip: int) -> tuple[tuple[int, int], tuple[int, int]] | None:
+    chunk_frames = frame_end - frame_start
+    if chunk_frames <= frame_skip:
+        return None
+
+    midpoint = frame_start + (chunk_frames // 2)
+    midpoint = frame_start + align_chunk_frames(midpoint - frame_start, frame_skip)
+    if midpoint <= frame_start:
+        midpoint = frame_start + frame_skip
+    if midpoint >= frame_end:
+        midpoint = frame_end - frame_skip
+    if midpoint <= frame_start or midpoint >= frame_end:
+        return None
+
+    return (frame_start, midpoint), (midpoint, frame_end)
 
 
 def write_completion_marker(output_root: Path, artifact_name: str) -> None:
@@ -114,6 +145,93 @@ def run_chunk(
         f"pipeline.output.save_viz={'true' if save_viz else 'false'}",
     ]
     subprocess.run(cmd, cwd=model_root, check=True)
+
+
+def process_chunk(
+    model_root: Path,
+    video_path: Path,
+    output_root: Path,
+    pipeline: str,
+    frame_start: int,
+    frame_end: int,
+    frame_skip: int,
+    save_viz: bool,
+    skip_existing: bool,
+    min_chunk_frames: int,
+    depth: int = 0,
+) -> list[tuple[int, int]]:
+    artifact_name = video_path.stem
+    current_chunk_root = chunk_root(output_root, artifact_name, frame_start, frame_end)
+    chunk_frames = frame_end - frame_start
+    indent = "  " * depth
+
+    if skip_existing and camera_outputs_exist(current_chunk_root, artifact_name):
+        print(f"{indent}Skipping chunk [{frame_start}, {frame_end}) for {artifact_name}: outputs already exist")
+        return [(frame_start, frame_end)]
+
+    remove_if_exists(current_chunk_root)
+    print(f"{indent}Running chunk [{frame_start}, {frame_end}) for {artifact_name} ({chunk_frames} frames)")
+
+    try:
+        run_chunk(
+            model_root=model_root,
+            video_path=video_path,
+            output_root=output_root,
+            pipeline=pipeline,
+            frame_start=frame_start,
+            frame_end=frame_end,
+            frame_skip=frame_skip,
+            save_viz=save_viz,
+        )
+        return [(frame_start, frame_end)]
+    except subprocess.CalledProcessError as exc:
+        remove_if_exists(current_chunk_root)
+        split_bounds = split_chunk(frame_start, frame_end, frame_skip)
+        if chunk_frames <= min_chunk_frames or split_bounds is None:
+            print(
+                f"{indent}Chunk [{frame_start}, {frame_end}) for {artifact_name} failed with exit code "
+                f"{exc.returncode} and cannot be split further."
+            )
+            raise
+
+        left_bounds, right_bounds = split_bounds
+        print(
+            f"{indent}Chunk [{frame_start}, {frame_end}) for {artifact_name} failed with exit code "
+            f"{exc.returncode}; retrying as [{left_bounds[0]}, {left_bounds[1]}) and "
+            f"[{right_bounds[0]}, {right_bounds[1]})."
+        )
+        processed_chunks: list[tuple[int, int]] = []
+        processed_chunks.extend(
+            process_chunk(
+                model_root=model_root,
+                video_path=video_path,
+                output_root=output_root,
+                pipeline=pipeline,
+                frame_start=left_bounds[0],
+                frame_end=left_bounds[1],
+                frame_skip=frame_skip,
+                save_viz=save_viz,
+                skip_existing=skip_existing,
+                min_chunk_frames=min_chunk_frames,
+                depth=depth + 1,
+            )
+        )
+        processed_chunks.extend(
+            process_chunk(
+                model_root=model_root,
+                video_path=video_path,
+                output_root=output_root,
+                pipeline=pipeline,
+                frame_start=right_bounds[0],
+                frame_end=right_bounds[1],
+                frame_skip=frame_skip,
+                save_viz=save_viz,
+                skip_existing=skip_existing,
+                min_chunk_frames=min_chunk_frames,
+                depth=depth + 1,
+            )
+        )
+        return processed_chunks
 
 
 def merge_chunk_outputs(output_root: Path, artifact_name: str, chunks: list[tuple[int, int]]) -> None:
@@ -174,7 +292,9 @@ def main() -> None:
     parser.add_argument("--video", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--pipeline", default="no_vda")
-    parser.add_argument("--chunk-seconds", type=int, default=600)
+    parser.add_argument("--chunk-seconds", type=int, default=300)
+    parser.add_argument("--max-chunk-frames", type=int, default=960)
+    parser.add_argument("--min-chunk-frames", type=int, default=256)
     parser.add_argument("--frame-start", type=int, default=0)
     parser.add_argument("--frame-end", type=int, default=-1)
     parser.add_argument("--frame-skip", type=int, default=1)
@@ -203,32 +323,43 @@ def main() -> None:
         raise ValueError(
             f"Invalid frame range for {video_path}: start={args.frame_start}, end={frame_end}, total={total_frames}"
         )
-
-    chunks = chunk_bounds(args.frame_start, frame_end, args.frame_skip, fps, args.chunk_seconds)
-    print(
-        f"Processing {artifact_name} in {len(chunks)} chunk(s) of up to {args.chunk_seconds} seconds "
-        f"from frame {args.frame_start} to {frame_end}."
-    )
-
-    for chunk_start, chunk_end in chunks:
-        current_chunk_root = chunk_root(output_root, artifact_name, chunk_start, chunk_end)
-        if args.skip_existing and camera_outputs_exist(current_chunk_root, artifact_name):
-            print(f"Skipping chunk [{chunk_start}, {chunk_end}) for {artifact_name}: outputs already exist")
-            continue
-
-        print(f"Running chunk [{chunk_start}, {chunk_end}) for {artifact_name}")
-        run_chunk(
-            model_root=model_root,
-            video_path=video_path,
-            output_root=output_root,
-            pipeline=args.pipeline,
-            frame_start=chunk_start,
-            frame_end=chunk_end,
-            frame_skip=args.frame_skip,
-            save_viz=args.save_viz,
+    if args.min_chunk_frames < args.frame_skip:
+        raise ValueError(
+            f"min_chunk_frames must be at least frame_skip: min_chunk_frames={args.min_chunk_frames}, "
+            f"frame_skip={args.frame_skip}"
         )
 
-    merge_chunk_outputs(output_root, artifact_name, chunks)
+    chunks = chunk_bounds(
+        args.frame_start,
+        frame_end,
+        args.frame_skip,
+        fps,
+        args.chunk_seconds,
+        args.max_chunk_frames,
+    )
+    print(
+        f"Processing {artifact_name} in {len(chunks)} chunk(s) of up to {args.chunk_seconds} seconds "
+        f"and {args.max_chunk_frames} frames from frame {args.frame_start} to {frame_end}."
+    )
+
+    processed_chunks: list[tuple[int, int]] = []
+    for chunk_start, chunk_end in chunks:
+        processed_chunks.extend(
+            process_chunk(
+                model_root=model_root,
+                video_path=video_path,
+                output_root=output_root,
+                pipeline=args.pipeline,
+                frame_start=chunk_start,
+                frame_end=chunk_end,
+                frame_skip=args.frame_skip,
+                save_viz=args.save_viz,
+                skip_existing=args.skip_existing,
+                min_chunk_frames=args.min_chunk_frames,
+            )
+        )
+
+    merge_chunk_outputs(output_root, artifact_name, processed_chunks)
     remove_if_exists(output_root / "_chunks" / artifact_name)
     write_completion_marker(output_root, artifact_name)
     print(f"Merged pose/intrinsics for {artifact_name} into {output_root}")

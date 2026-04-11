@@ -17,7 +17,7 @@ set -euo pipefail
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
-#SBATCH --mem-per-gpu=40G
+#SBATCH --mem-per-gpu=80G
 #SBATCH --account=Education-EEMCS-MSc-DSAIT
 #SBATCH --output=%x.out
 
@@ -64,7 +64,9 @@ VIDEO_FILE="${VIDEO_FILE:-}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/vipe}"
 MODEL_ASSETS_ROOT="${MODEL_ASSETS_ROOT:-${PROJECT_ROOT}/models/model_assets}"
 APPTAINER_IMAGE="${APPTAINER_IMAGE:-${MODEL_ROOT}/apptainer/template.sif}"
-CHUNK_SECONDS="${CHUNK_SECONDS:-600}"
+CHUNK_SECONDS="${CHUNK_SECONDS:-300}"
+MAX_CHUNK_FRAMES="${MAX_CHUNK_FRAMES:-960}"
+MIN_CHUNK_FRAMES="${MIN_CHUNK_FRAMES:-256}"
 FRAME_SKIP="${FRAME_SKIP:-1}"
 SAVE_VIZ="${SAVE_VIZ:-false}"
 SKIP_EXISTING="${SKIP_EXISTING:-true}"
@@ -122,7 +124,7 @@ echo "ViPE output root: ${OUTPUT_ROOT}"
 echo "ViPE completion marker: ${MARKER_PATH}"
 
 container_cmd=$(cat <<EOF
-cd $(printf '%q' "${MODEL_ROOT}") && /opt/conda/bin/conda run -n vipe python run_chunked.py --video $(printf '%q' "${VIDEO_PATH}") --output $(printf '%q' "${OUTPUT_ROOT}") --pipeline no_vda --chunk-seconds $(printf '%q' "${CHUNK_SECONDS}") --frame-skip $(printf '%q' "${FRAME_SKIP}") --skip-existing $(printf '%q' "${SKIP_EXISTING}") --save-viz $(printf '%q' "${SAVE_VIZ}") --overwrite $(printf '%q' "${OVERWRITE}")
+cd $(printf '%q' "${MODEL_ROOT}") && /opt/conda/bin/conda run -n vipe python run_chunked.py --video $(printf '%q' "${VIDEO_PATH}") --output $(printf '%q' "${OUTPUT_ROOT}") --pipeline no_vda --chunk-seconds $(printf '%q' "${CHUNK_SECONDS}") --max-chunk-frames $(printf '%q' "${MAX_CHUNK_FRAMES}") --min-chunk-frames $(printf '%q' "${MIN_CHUNK_FRAMES}") --frame-skip $(printf '%q' "${FRAME_SKIP}") --skip-existing $(printf '%q' "${SKIP_EXISTING}") --save-viz $(printf '%q' "${SAVE_VIZ}") --overwrite $(printf '%q' "${OVERWRITE}")
 EOF
 )
 

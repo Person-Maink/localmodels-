@@ -12,8 +12,8 @@ set -euo pipefail
 #   visual                 : Visualization jobs
 
 #SBATCH --job-name=wilor-inference
-#SBATCH --partition=gpu-a100-small
-#SBATCH --time=01:15:00
+#SBATCH --partition=gpu-a100
+#SBATCH --time=06:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1

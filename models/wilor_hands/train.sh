@@ -84,6 +84,84 @@ resolve_model_root_path() {
   fi
 }
 
+list_candidate_videos() {
+  local image_root="$1"
+  local entry=""
+  local video_name=""
+  local -a candidates=()
+
+  shopt -s nullglob
+  for entry in "${image_root}"/*_frames; do
+    [[ -d "$entry" ]] || continue
+    video_name="$(basename "$entry")"
+    candidates+=("${video_name%_frames}")
+  done
+
+  for entry in "${image_root}"/*; do
+    [[ -f "$entry" ]] || continue
+    case "${entry##*.}" in
+      mp4|MP4|avi|AVI|mts|MTS|mov|MOV)
+        video_name="$(basename "$entry")"
+        candidates+=("${video_name%.*}")
+        ;;
+    esac
+  done
+  shopt -u nullglob
+
+  if (( ${#candidates[@]} == 0 )); then
+    return 0
+  fi
+
+  printf '%s\n' "${candidates[@]}" | awk '!seen[$0]++'
+}
+
+pick_random_eligible_distill_video() {
+  local image_root="$1"
+  local pose_dir="$2"
+  local intrinsics_dir="$3"
+  local requested_video="${4:-}"
+  local found_requested="false"
+  local video_name=""
+  local -a eligible_videos=()
+
+  if [[ -n "$requested_video" ]]; then
+    while IFS= read -r video_name; do
+      if [[ "$video_name" == "$requested_video" ]]; then
+        found_requested="true"
+        break
+      fi
+    done < <(list_candidate_videos "$image_root")
+    if [[ "$found_requested" != "true" ]]; then
+      echo "Requested VIDEO_NAME was not found under ${image_root}: ${requested_video}" >&2
+      return 1
+    fi
+    if [[ ! -f "${pose_dir}/${requested_video}.npz" ]]; then
+      echo "Requested VIDEO_NAME is missing a ViPE pose file: ${pose_dir}/${requested_video}.npz" >&2
+      return 1
+    fi
+    if [[ ! -f "${intrinsics_dir}/${requested_video}.npz" ]]; then
+      echo "Requested VIDEO_NAME is missing a ViPE intrinsics file: ${intrinsics_dir}/${requested_video}.npz" >&2
+      return 1
+    fi
+    printf '%s' "$requested_video"
+    return 0
+  fi
+
+  while IFS= read -r video_name; do
+    [[ -z "$video_name" ]] && continue
+    if [[ -f "${pose_dir}/${video_name}.npz" && -f "${intrinsics_dir}/${video_name}.npz" ]]; then
+      eligible_videos+=("$video_name")
+    fi
+  done < <(list_candidate_videos "$image_root")
+
+  if (( ${#eligible_videos[@]} == 0 )); then
+    echo "No eligible videos were found under ${image_root} with matching ViPE pose and intrinsics files." >&2
+    return 1
+  fi
+
+  printf '%s\n' "${eligible_videos[@]}" | shuf -n 1
+}
+
 # ================ JOB INFO ================
 
 echo "Loaded modules:"
@@ -122,7 +200,7 @@ APPTAINER_IMAGE="${APPTAINER_IMAGE:-${MODEL_ROOT}/apptainer/template.sif}"
 
 # ================ TRAINING CONFIG ================
 
-TRAIN_MODE="${TRAIN_MODE:-distill}"        # distill | supervised
+TRAIN_MODE="${TRAIN_MODE:-distill}"        # distill | supervised | test
 INIT_MODE="${INIT_MODE:-checkpoint}"       # checkpoint | fresh
 TRAIN_SCOPE="${TRAIN_SCOPE:-refine_net}"   # camera_head | refine_net | full
 CAMERA_LOSS_WEIGHT="${CAMERA_LOSS_WEIGHT:-0.01}"
@@ -130,18 +208,19 @@ LR="${LR:-1e-5}"
 WEIGHT_DECAY="${WEIGHT_DECAY:-1e-4}"
 BATCH_SIZE="${BATCH_SIZE:-8}"
 NUM_WORKERS="${NUM_WORKERS:-4}"
-MAX_STEPS="${MAX_STEPS:-2000}"
-LOG_EVERY="${LOG_EVERY:-25}"
-SAVE_EVERY="${SAVE_EVERY:-250}"
+MAX_STEPS="${MAX_STEPS:-}"
+LOG_EVERY="${LOG_EVERY:-}"
+SAVE_EVERY="${SAVE_EVERY:-}"
 SEED="${SEED:-42}"
 RESCALE_FACTOR="${RESCALE_FACTOR:-2.0}"
 USE_GPU="${USE_GPU:-true}"
 AMP="${AMP:-true}"
-SAMPLE_LIMIT="${SAMPLE_LIMIT:-0}"
+SAMPLE_LIMIT="${SAMPLE_LIMIT:-}"
+VALIDATION_SPLIT="${VALIDATION_SPLIT:-0.15}"
 
 # Distillation-specific inputs
 IMAGE_FOLDER="${IMAGE_FOLDER:-${DATA_ROOT}/images}"
-VIDEO_NAME="${VIDEO_NAME:-clip_2}"
+VIDEO_NAME="${VIDEO_NAME:-}"
 ALL_VIDEOS="${ALL_VIDEOS:-false}"
 DETECTION_CONF="${DETECTION_CONF:-0.3}"
 DETECTION_CACHE="${DETECTION_CACHE:-}"
@@ -163,7 +242,15 @@ case "$INIT_MODE" in
     ;;
 esac
 
-if [[ "$INIT_MODE" == "fresh" && "$TRAIN_MODE" == "distill" ]]; then
+case "$TRAIN_MODE" in
+  distill|supervised|test) ;;
+  *)
+    echo "Unsupported TRAIN_MODE='${TRAIN_MODE}'. Use 'distill', 'supervised', or 'test'." >&2
+    exit 1
+    ;;
+esac
+
+if [[ "$INIT_MODE" == "fresh" && "$TRAIN_MODE" != "supervised" ]]; then
   echo "INIT_MODE=fresh is only supported when TRAIN_MODE=supervised." >&2
   exit 1
 fi
@@ -172,25 +259,6 @@ if [[ "$INIT_MODE" == "fresh" && "$TRAIN_SCOPE" != "full" ]]; then
   echo "INIT_MODE=fresh requires TRAIN_SCOPE=full; overriding '${TRAIN_SCOPE}' to 'full'."
   TRAIN_SCOPE="full"
 fi
-
-if [[ -z "${RUN_NAME:-}" ]]; then
-  if [[ "$TRAIN_MODE" == "distill" ]]; then
-    if is_true "$ALL_VIDEOS"; then
-      RUN_NAME="distill_all_videos"
-    else
-      RUN_NAME="distill_${VIDEO_NAME}"
-    fi
-  else
-    if [[ -n "$DATASET_FILE" ]]; then
-      RUN_NAME="supervised_$(basename "${DATASET_FILE%.*}")"
-    else
-      RUN_NAME="supervised_run"
-    fi
-  fi
-fi
-RUN_OUTPUT_DIR="${RUN_OUTPUT_DIR:-${OUTPUT_ROOT}/${RUN_NAME}}"
-
-mkdir -p "${OUTPUT_ROOT}" "${RUN_OUTPUT_DIR}"
 
 if [[ ! -f "${APPTAINER_IMAGE}" ]]; then
   echo "Apptainer image not found: ${APPTAINER_IMAGE}" >&2
@@ -244,15 +312,66 @@ if [[ "$INIT_MODE" == "fresh" ]]; then
   fi
 fi
 
-if [[ "${TRAIN_MODE}" == "distill" && ! -f "${DETECTOR_PATH}" ]]; then
+if [[ "${TRAIN_MODE}" != "supervised" && ! -f "${DETECTOR_PATH}" ]]; then
   echo "Detector weights not found: ${DETECTOR_PATH}" >&2
   exit 1
 fi
 
+case "$TRAIN_MODE" in
+  distill)
+    if ! is_true "$ALL_VIDEOS" && [[ -z "$VIDEO_NAME" ]]; then
+      VIDEO_NAME="clip_2"
+    fi
+    : "${MAX_STEPS:=10000}"
+    : "${LOG_EVERY:=25}"
+    : "${SAVE_EVERY:=250}"
+    : "${SAMPLE_LIMIT:=0}"
+    ;;
+  supervised)
+    : "${MAX_STEPS:=10000}"
+    : "${LOG_EVERY:=25}"
+    : "${SAVE_EVERY:=250}"
+    : "${SAMPLE_LIMIT:=0}"
+    ;;
+  test)
+    if is_true "$ALL_VIDEOS"; then
+      echo "TRAIN_MODE=test uses a single video; ignoring ALL_VIDEOS=${ALL_VIDEOS}."
+    fi
+    ALL_VIDEOS=false
+    VIDEO_NAME="$(pick_random_eligible_distill_video "$IMAGE_FOLDER" "$POSE_DIR" "$INTRINSICS_DIR" "$VIDEO_NAME")"
+    : "${MAX_STEPS:=100}"
+    : "${LOG_EVERY:=10}"
+    : "${SAVE_EVERY:=50}"
+    : "${SAMPLE_LIMIT:=64}"
+    echo "Test mode selected video: ${VIDEO_NAME}"
+    ;;
+esac
+
+if [[ -z "${RUN_NAME:-}" ]]; then
+  if [[ "$TRAIN_MODE" == "distill" ]]; then
+    if is_true "$ALL_VIDEOS"; then
+      RUN_NAME="distill_all_videos"
+    else
+      RUN_NAME="distill_${VIDEO_NAME}"
+    fi
+  elif [[ "$TRAIN_MODE" == "test" ]]; then
+    RUN_NAME="test_${VIDEO_NAME}"
+  else
+    if [[ -n "$DATASET_FILE" ]]; then
+      RUN_NAME="supervised_$(basename "${DATASET_FILE%.*}")"
+    else
+      RUN_NAME="supervised_run"
+    fi
+  fi
+fi
+RUN_OUTPUT_DIR="${RUN_OUTPUT_DIR:-${OUTPUT_ROOT}/${RUN_NAME}}"
+
+mkdir -p "${OUTPUT_ROOT}" "${RUN_OUTPUT_DIR}"
+
 # ================ COMMAND BUILD ================
 
 case "$TRAIN_MODE" in
-  distill)
+  distill|test)
     if [[ -z "$DETECTION_CACHE" ]]; then
       if is_true "$ALL_VIDEOS"; then
         DETECTION_CACHE="${RUN_OUTPUT_DIR}/detections_all_videos.json"
@@ -273,6 +392,7 @@ case "$TRAIN_MODE" in
       --output_dir "${RUN_OUTPUT_DIR}"
       --train_scope "${TRAIN_SCOPE}"
       --camera_loss_weight "${CAMERA_LOSS_WEIGHT}"
+      --validation_split "${VALIDATION_SPLIT}"
       --lr "${LR}"
       --weight_decay "${WEIGHT_DECAY}"
       --batch_size "${BATCH_SIZE}"
@@ -350,10 +470,6 @@ case "$TRAIN_MODE" in
     fi
     ;;
 
-  *)
-    echo "Unsupported TRAIN_MODE='${TRAIN_MODE}'. Use 'distill' or 'supervised'." >&2
-    exit 1
-    ;;
 esac
 
 append_bool_flag "use_gpu" "${USE_GPU}"
@@ -369,11 +485,23 @@ echo "Output dir:      ${RUN_OUTPUT_DIR}"
 echo "Train mode:      ${TRAIN_MODE}"
 echo "Init mode:       ${INIT_MODE}"
 echo "Train scope:     ${TRAIN_SCOPE}"
+echo "Max steps:       ${MAX_STEPS}"
+echo "Log every:       ${LOG_EVERY}"
+echo "Save every:      ${SAVE_EVERY}"
+echo "Sample limit:    ${SAMPLE_LIMIT}"
+echo "Validation split:${VALIDATION_SPLIT}"
 if [[ "$INIT_MODE" == "checkpoint" ]]; then
   echo "Checkpoint:      ${CHECKPOINT}"
 else
   echo "Checkpoint:      <fresh init>"
   echo "Backbone init:   ${BACKBONE_PRETRAINED_PATH}"
+fi
+if [[ "$TRAIN_MODE" == "distill" || "$TRAIN_MODE" == "test" ]]; then
+  if is_true "$ALL_VIDEOS"; then
+    echo "Videos:          all discovered videos"
+  else
+    echo "Video:           ${VIDEO_NAME}"
+  fi
 fi
 echo "Pose dir:        ${POSE_DIR}"
 echo "Intrinsics dir:  ${INTRINSICS_DIR}"
