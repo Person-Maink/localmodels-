@@ -1,0 +1,84 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/12.9
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Sat Apr 11 07:14:02 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:AE:00.0 Off |                    0 |
+| N/A   53C    P0             77W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9587131
+Job Name:       vipe-inference
+Partition:      gpu-a100
+Node List:      gpu017
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 65536
+Submit dir:     /scratch/mthakur/manifold/models/vipe
+Work dir:       /scratch/mthakur/manifold/models/vipe
+Job started at: Sat Apr 11 07:14:03 CEST 2026
+===============================================
+ViPE video: /scratch/mthakur/manifold/data/images/Jv5DjxNK4xI.mp4
+ViPE output root: /scratch/mthakur/manifold/outputs/vipe
+ViPE completion marker: /scratch/mthakur/manifold/outputs/vipe/_completed/Jv5DjxNK4xI.json
+Processing Jv5DjxNK4xI in 2 chunk(s) of up to 600 seconds from frame 0 to 20197.
+Running chunk [0, 18000) for Jv5DjxNK4xI
+2026-04-11 07:14:08,412 - vipe - INFO - Processing Jv5DjxNK4xI (1 / 1)
+2026-04-11 07:14:12,766 - vipe.streams.base - WARNING - Iterator is exhausted -- expecting total frames = 18000, stopped at 0
+
+[av1 @ 0x55555d1220c0] Your platform doesn't support hardware accelerated AV1 decoding.
+[av1 @ 0x55555d1220c0] Failed to get pixel format.
+[av1 @ 0x55555d1220c0] Get current frame error
+Error executing job with overrides: ['pipeline=no_vda', 'streams=raw_mp4_stream', 'streams.base_path=/scratch/mthakur/manifold/data/images/Jv5DjxNK4xI.mp4', 'streams.frame_start=0', 'streams.frame_end=18000', 'streams.frame_skip=1', 'pipeline.output.path=/scratch/mthakur/manifold/outputs/vipe/_chunks/Jv5DjxNK4xI/000000000_000018000', 'pipeline.output.skip_exists=true', 'pipeline.output.save_camera_artifacts=true', 'pipeline.output.save_artifacts=false', 'pipeline.output.save_viz=false']
+Traceback (most recent call last):
+  File "/scratch/mthakur/manifold/models/vipe/run.py", line 23, in run
+    pipeline.run(video_stream)
+  File "/scratch/mthakur/manifold/models/vipe/vipe/pipeline/default.py", line 147, in run
+    slam_streams: list[VideoStream] = [
+  File "/scratch/mthakur/manifold/models/vipe/vipe/pipeline/default.py", line 148, in <listcomp>
+    self._add_init_processors(video_stream).cache("process", online=True) for video_stream in video_streams
+  File "/scratch/mthakur/manifold/models/vipe/vipe/pipeline/default.py", line 100, in _add_init_processors
+    init_processors.append(GeoCalibIntrinsicsProcessor(video_stream, camera_type=self.camera_type))
+  File "/scratch/mthakur/manifold/models/vipe/vipe/pipeline/processors.py", line 82, in __init__
+    sample_frames = torch.stack([indexable_stream[i].rgb.moveaxis(-1, 0) for i in self.sample_frame_inds])
+  File "/scratch/mthakur/manifold/models/vipe/vipe/pipeline/processors.py", line 82, in <listcomp>
+    sample_frames = torch.stack([indexable_stream[i].rgb.moveaxis(-1, 0) for i in self.sample_frame_inds])
+  File "/scratch/mthakur/manifold/models/vipe/vipe/streams/base.py", line 404, in __getitem__
+    return self.data[index].cuda()
+IndexError: list index out of range
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+Traceback (most recent call last):
+  File "/scratch/mthakur/manifold/models/vipe/run_chunked.py", line 238, in <module>
+    main()
+  File "/scratch/mthakur/manifold/models/vipe/run_chunked.py", line 220, in main
+    run_chunk(
+  File "/scratch/mthakur/manifold/models/vipe/run_chunked.py", line 116, in run_chunk
+    subprocess.run(cmd, cwd=model_root, check=True)
+  File "/opt/conda/envs/vipe/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/opt/conda/envs/vipe/bin/python', 'run.py', 'pipeline=no_vda', 'streams=raw_mp4_stream', 'streams.base_path=/scratch/mthakur/manifold/data/images/Jv5DjxNK4xI.mp4', 'streams.frame_start=0', 'streams.frame_end=18000', 'streams.frame_skip=1', 'pipeline.output.path=/scratch/mthakur/manifold/outputs/vipe/_chunks/Jv5DjxNK4xI/000000000_000018000', 'pipeline.output.skip_exists=true', 'pipeline.output.save_camera_artifacts=true', 'pipeline.output.save_artifacts=false', 'pipeline.output.save_viz=false']' returned non-zero exit status 1.
+
+ERROR conda.cli.main_run:execute(124): `conda run python run_chunked.py --video /scratch/mthakur/manifold/data/images/Jv5DjxNK4xI.mp4 --output /scratch/mthakur/manifold/outputs/vipe --pipeline no_vda --chunk-seconds 600 --frame-skip 1 --skip-existing true --save-viz false --overwrite false` failed. (See above for error)
+srun: error: gpu017: task 0: Exited with exit code 1
+srun: launch/slurm: _step_signal: Terminating StepId=9587131.0

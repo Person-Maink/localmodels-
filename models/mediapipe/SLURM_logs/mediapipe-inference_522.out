@@ -1,0 +1,27 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current   2) DefaultModules   3) gcc/11.3.0   4) 2024r1
+
+ 
+
+================ SLURM JOB INFO ================
+Job ID:         9590523
+Job Name:       mediapipe-inference
+Partition:      compute-p2
+Node List:      cmp287
+CPUs per task:  8
+Submit dir:     /scratch/mthakur/manifold/models/mediapipe
+Work dir:       /scratch/mthakur/manifold/models/mediapipe
+Video file:     -Zrf6jWiFZs.mp4
+Job started at: Sat Apr 11 04:41:23 CEST 2026
+===============================================
+Mediapipe video: /scratch/mthakur/manifold/data/images/-Zrf6jWiFZs.mp4
+Mediapipe output root: /scratch/mthakur/manifold/outputs/mediapipe
+Mediapipe completion marker: /scratch/mthakur/manifold/outputs/mediapipe/_completed/-Zrf6jWiFZs.json
+usage: main.py [-h] [--video_folder VIDEO_FOLDER] [--video VIDEO]
+               [--video_file VIDEO_FILE] [--output_folder OUTPUT_FOLDER]
+               [--visualize | --no-visualize] [--target_fps TARGET_FPS]
+main.py: error: argument --video: expected one argument
+srun: error: cmp287: task 0: Exited with exit code 2
+srun: launch/slurm: _step_signal: Terminating StepId=9590523.0

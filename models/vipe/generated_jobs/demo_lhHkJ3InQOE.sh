@@ -12,7 +12,7 @@
 
 #SBATCH --job-name=vipe-inference
 #SBATCH --partition=gpu-a100
-#SBATCH --time=00:01:00
+#SBATCH --time=01:04:12
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1

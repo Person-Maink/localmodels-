@@ -1,0 +1,38 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current   2) DefaultModules   3) gcc/11.3.0   4) 2024r1
+
+ 
+
+================ SLURM JOB INFO ================
+Job ID:         9589882
+Job Name:       mediapipe-inference
+Partition:      compute-p2
+Node List:      cmp266
+CPUs per task:  8
+Submit dir:     /scratch/mthakur/manifold/models/mediapipe
+Work dir:       /scratch/mthakur/manifold/models/mediapipe
+Video file:     1CzOg-MVqs4.mp4
+Job started at: Fri Apr 10 14:43:40 CEST 2026
+===============================================
+Mediapipe video: /scratch/mthakur/manifold/data/images/1CzOg-MVqs4.mp4
+Mediapipe output root: /scratch/mthakur/manifold/outputs/mediapipe
+Mediapipe completion marker: /scratch/mthakur/manifold/outputs/mediapipe/_completed/1CzOg-MVqs4.json
+
+Processing: 1CzOg-MVqs4.mp4
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1775825022.630175 1863872 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1775825022.643871 1863872 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+/scratch/mthakur/manifold/models/mediapipe/.venv/lib/python3.9/site-packages/google/protobuf/symbol_database.py:55: UserWarning: SymbolDatabase.GetPrototype() is deprecated. Please use message_factory.GetMessageClass() instead. SymbolDatabase.GetPrototype() will be removed soon.
+  warnings.warn('SymbolDatabase.GetPrototype() is deprecated. Please '
+Saved CSV: /scratch/mthakur/manifold/outputs/mediapipe/keypoints/1CzOg-MVqs4_keypoints.csv
+
+All videos processed.
+===============================================
+Job finished at: Fri Apr 10 14:48:12 CEST 2026
+Execution took 0.08 hours
+Writing output to SLURM_logs/mediapipe-inference_083.out
+Retained Mediapipe outputs: /scratch/mthakur/manifold/outputs/mediapipe/keypoints/1CzOg-MVqs4_keypoints.csv
+===============================================
