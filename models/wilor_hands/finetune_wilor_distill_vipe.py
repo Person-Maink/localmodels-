@@ -483,17 +483,32 @@ def _active_temporal_families(loss_cfg: dict[str, dict[str, Any]]) -> list[str]:
     ]
 
 
+def _log_progress(message: str) -> None:
+    print(f"[progress] {message}", flush=True)
+
+
 def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
+    _log_progress("Starting fine-tuning entrypoint.")
     loaded_experiment = None
     if args.loss_config:
+        _log_progress(
+            f"Resolving experiment config from {args.loss_config}"
+            + (
+                f" (experiment={args.experiment_name})"
+                if args.experiment_name
+                else ""
+            )
+        )
         loaded_experiment = resolve_experiment_config(args.loss_config, args.experiment_name)
         _apply_experiment_defaults(args, parser, loaded_experiment)
         args.experiment_name = args.experiment_name or loaded_experiment["name"]
+        _log_progress(f"Resolved experiment '{args.experiment_name}'.")
 
     seed_everything(args.seed)
     device = choose_device(args.use_gpu)
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
+    _log_progress(f"Using device {device}; output directory is {output_dir}")
 
     temporal_cfg = _resolve_temporal_settings(args, loaded_experiment)
     loss_cfg = _resolve_loss_settings(args, loaded_experiment)
@@ -504,14 +519,23 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
         loss_cfg,
     )
     _save_resolved_experiment(output_dir, resolved_experiment)
+    _log_progress("Saved resolved experiment snapshot.")
 
     if args.all_videos:
+        _log_progress("Discovering videos from image folder because --all_videos is enabled.")
         video_names = discover_videos(args.image_folder)
     else:
         video_names = sorted(set(args.videos))
+        _log_progress(
+            "Using explicitly requested video selection: "
+            f"{', '.join(video_names) if video_names else '<none>'}"
+        )
     if not video_names:
         raise ValueError("No videos selected. Pass --video ... or use --all_videos.")
 
+    _log_progress(
+        f"Filtering {len(video_names)} selected video(s) for matching ViPE artifacts."
+    )
     valid_video_names, missing_vipe_artifacts = filter_videos_with_vipe_artifacts(
         video_names,
         args.pose_dir,
@@ -541,6 +565,11 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
             "No videos remain after filtering for matching ViPE pose/intrinsics artifacts."
         )
 
+    _log_progress(
+        "Proceeding with video(s): "
+        f"{', '.join(video_names)}"
+    )
+    _log_progress("Loading student checkpoint and cloning teacher model.")
     student, _ = load_wilor(args.checkpoint, args.cfg_path)
     teacher = copy.deepcopy(student)
 
@@ -553,6 +582,7 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
     for param in teacher.parameters():
         param.requires_grad = False
 
+    _log_progress("Loading detector and ViPE camera index.")
     detector = load_detector(args.detector_path, device)
     camera_index = ViPECameraIndex(args.pose_dir, args.intrinsics_dir)
 
@@ -561,6 +591,9 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
         video_slug = "all" if args.all_videos else "_".join(video_names)
         detection_cache = str(output_dir / f"detections_{video_slug}.json")
 
+    _log_progress(
+        f"Building detection samples (cache path: {detection_cache})."
+    )
     samples = build_detection_samples(
         image_folder=args.image_folder,
         video_names=video_names,
@@ -572,7 +605,11 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
     )
     if not samples:
         raise RuntimeError("No detector samples were generated for fine-tuning.")
+    _log_progress(f"Collected {len(samples)} detector sample(s).")
 
+    _log_progress(
+        f"Splitting samples into train/val with validation_split={args.validation_split}."
+    )
     train_samples, val_samples, split_stats = split_samples_by_frame(
         samples,
         validation_split=args.validation_split,
@@ -583,6 +620,10 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
             "Validation split left no training samples. Reduce --validation_split or provide more frames."
         )
 
+    _log_progress(
+        f"Building temporal training windows with size={temporal_cfg['window_size']}, "
+        f"stride={temporal_cfg['window_stride']}, gap={temporal_cfg['max_frame_gap']}."
+    )
     train_windows, train_window_stats = build_temporal_windows(
         train_samples,
         window_size=int(temporal_cfg["window_size"]),
@@ -594,6 +635,7 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
             "No temporal training windows were produced. Increase sample coverage or reduce temporal window settings."
         )
 
+    _log_progress("Constructing training dataset and dataloader.")
     train_base_dataset = DetectedVideoHandDataset(
         student.cfg,
         train_samples,
@@ -613,6 +655,7 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
     val_window_stats = {"window_count": 0, "dropped_window_count": 0, "stream_count": 0, "broken_segment_count": 0}
     val_dataloader = None
     if val_samples:
+        _log_progress("Building validation temporal windows and dataloader.")
         val_windows, val_window_stats = build_temporal_windows(
             val_samples,
             window_size=int(temporal_cfg["window_size"]),
@@ -636,6 +679,7 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
                 collate_fn=temporal_window_collate,
             )
 
+    _log_progress(f"Configuring trainable scope: {args.train_scope}")
     trainable_params = configure_trainable_scope(student, args.train_scope)
     if not trainable_params:
         raise RuntimeError(f"No trainable parameters were selected for scope '{args.train_scope}'.")
@@ -652,15 +696,18 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
             layers=int(temporal_cfg["scorer_layers"]),
             dropout=float(temporal_cfg["scorer_dropout"]),
         ).to(device)
+        _log_progress("Initialized learnable temporal scorer.")
 
     optimizer_params: list[dict[str, Any]] = [{"params": trainable_params}]
     if temporal_scorer is not None:
         optimizer_params.append({"params": list(temporal_scorer.parameters())})
 
+    _log_progress("Creating optimizer and AMP scaler.")
     optimizer = torch.optim.AdamW(optimizer_params, lr=args.lr, weight_decay=args.weight_decay)
     scaler = torch.cuda.amp.GradScaler(enabled=args.amp and device.type == "cuda")
     batch_iter = infinite_loader(train_dataloader)
     metrics_path = output_dir / "metrics.jsonl"
+    _log_progress(f"Metrics will be appended to {metrics_path}")
 
     best_metric = float("inf")
     best_metric_name = "val_loss_total" if val_dataloader is not None else "train_loss_total"
@@ -671,32 +718,38 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
             param.numel() for param in temporal_scorer.parameters() if param.requires_grad
         )
 
-    print(f"Device: {device}")
-    print(f"Experiment: {resolved_experiment['name']}")
-    print(f"Videos: {', '.join(video_names)}")
+    print(f"Device: {device}", flush=True)
+    print(f"Experiment: {resolved_experiment['name']}", flush=True)
+    print(f"Videos: {', '.join(video_names)}", flush=True)
     print(
         f"Frames: total={split_stats['total_frames']} "
         f"train={split_stats['train_frames']} val={split_stats['val_frames']}"
-    )
+    , flush=True)
     print(
         f"Samples: total={split_stats['total_samples']} "
         f"train={split_stats['train_samples']} val={split_stats['val_samples']}"
-    )
+    , flush=True)
     print(
         f"Temporal windows: train={train_window_stats['window_count']} "
         f"val={val_window_stats['window_count']} "
         f"dropped_train={train_window_stats['dropped_window_count']} "
         f"dropped_val={val_window_stats['dropped_window_count']}"
-    )
+    , flush=True)
     if args.validation_split > 0.0 and val_dataloader is None:
         print(
             "Validation split requested, but there were not enough consecutive frames to reserve validation windows."
-        )
-    print(f"Train scope: {args.train_scope}")
-    print(f"Trainable params: {total_trainable_params:,}")
-    print(f"Temporal families: {', '.join(active_temporal_families) if active_temporal_families else 'none'}")
+        , flush=True)
+    print(f"Train scope: {args.train_scope}", flush=True)
+    print(f"Trainable params: {total_trainable_params:,}", flush=True)
+    print(
+        f"Temporal families: {', '.join(active_temporal_families) if active_temporal_families else 'none'}",
+        flush=True,
+    )
+    _log_progress("Entering optimization loop.")
 
     for step in range(1, args.max_steps + 1):
+        if step == 1:
+            _log_progress("Fetching first training batch.")
         apply_train_mode_for_scope(student, args.train_scope)
         if temporal_scorer is not None:
             temporal_scorer.train()
@@ -761,8 +814,9 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
                 f"temp_cam={train_metrics.get('loss_temporal_camera_base', 0.0):.4f} "
                 f"bbox_p={train_metrics.get('loss_temporal_bbox_projected_base', 0.0):.4f} "
                 f"bbox_i={train_metrics.get('loss_temporal_bbox_input_base', 0.0):.4f}"
-            )
+            , flush=True)
             if val_dataloader is not None:
+                _log_progress(f"Running validation at step {step}.")
                 val_metrics = _evaluate_window_dataloader(
                     student,
                     teacher,
@@ -790,7 +844,7 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
                     f"val_temp_cam={val_metrics.get('loss_temporal_camera_base', 0.0):.4f} "
                     f"val_bbox_p={val_metrics.get('loss_temporal_bbox_projected_base', 0.0):.4f} "
                     f"val_bbox_i={val_metrics.get('loss_temporal_bbox_input_base', 0.0):.4f}"
-                )
+                , flush=True)
                 if val_metrics["loss_total"] < best_metric:
                     best_metric = val_metrics["loss_total"]
                     save_wilor_checkpoint(
@@ -823,9 +877,10 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
                 },
                 extra_modules={"temporal_scorer": temporal_scorer} if temporal_scorer is not None else None,
             )
+            _log_progress(f"Saved latest checkpoint at step {step}.")
 
-    print(f"Finished fine-tuning. Best {best_metric_name}: {best_metric:.4f}")
-    print(f"Saved checkpoints under: {output_dir}")
+    print(f"Finished fine-tuning. Best {best_metric_name}: {best_metric:.4f}", flush=True)
+    print(f"Saved checkpoints under: {output_dir}", flush=True)
 
 
 if __name__ == "__main__":

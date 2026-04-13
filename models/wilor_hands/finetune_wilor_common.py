@@ -199,17 +199,36 @@ def build_detection_samples(
     sample_limit: int = 0,
 ) -> List[Dict]:
     if detection_cache_path and Path(detection_cache_path).exists():
+        print(
+            f"[progress] Loading detection cache from {detection_cache_path}",
+            flush=True,
+        )
         with open(detection_cache_path, "r", encoding="utf-8") as handle:
             cached_samples = json.load(handle)
         selected_videos = set(video_names)
         if not selected_videos:
+            print(
+                f"[progress] Loaded {len(cached_samples)} cached detection samples.",
+                flush=True,
+            )
             return cached_samples
-        return [
+        filtered_samples = [
             sample
             for sample in cached_samples
             if sample.get("video_name") in selected_videos
         ]
+        print(
+            "[progress] Detection cache contains "
+            f"{len(cached_samples)} samples; using {len(filtered_samples)} "
+            f"samples across {len(selected_videos)} selected video(s).",
+            flush=True,
+        )
+        return filtered_samples
 
+    print(
+        f"[progress] Scanning image folder for extracted frames and videos: {image_folder}",
+        flush=True,
+    )
     all_frame_paths = load_images_from_folder(image_folder)
     selected_videos = set(video_names)
     selected_frame_paths = [
@@ -221,10 +240,25 @@ def build_detection_samples(
     if sample_limit > 0:
         selected_frame_paths = selected_frame_paths[:sample_limit]
 
+    print(
+        "[progress] Prepared "
+        f"{len(selected_frame_paths)} frame(s) for detection across "
+        f"{len(selected_videos)} selected video(s).",
+        flush=True,
+    )
+
     samples: List[Dict] = []
     video_name_to_idx = {name: idx for idx, name in enumerate(sorted(set(video_names)))}
+    total_frames = len(selected_frame_paths)
+    progress_interval = 25
 
-    for frame_path in selected_frame_paths:
+    for frame_number, frame_path in enumerate(selected_frame_paths, start=1):
+        if frame_number == 1 or frame_number % progress_interval == 0 or frame_number == total_frames:
+            print(
+                "[progress] Running detector on frame "
+                f"{frame_number}/{total_frames}: {frame_path}",
+                flush=True,
+            )
         video_name = frame_path.parent.name.replace("_frames", "")
         frame_idx = parse_frame_index(frame_path.stem)
         camera_target = camera_index.resolve(video_name, frame_idx)
@@ -267,6 +301,15 @@ def build_detection_samples(
         cache_path.parent.mkdir(parents=True, exist_ok=True)
         with open(cache_path, "w", encoding="utf-8") as handle:
             json.dump(samples, handle)
+        print(
+            f"[progress] Saved {len(samples)} detection samples to {cache_path}",
+            flush=True,
+        )
+
+    print(
+        f"[progress] Finished detection sampling with {len(samples)} sample(s).",
+        flush=True,
+    )
 
     return samples
 
@@ -511,6 +554,10 @@ def set_optional_loss_weight(cfg, key: str, value: float) -> None:
 
 
 def load_detector(detector_path: str, device: torch.device) -> YOLO:
+    print(
+        f"[progress] Loading YOLO detector from {detector_path} onto {device}",
+        flush=True,
+    )
     old_load = torch.load
 
     def unsafe_load(*args, **kwargs):
@@ -523,7 +570,9 @@ def load_detector(detector_path: str, device: torch.device) -> YOLO:
     finally:
         torch.load = old_load
 
-    return detector.to(str(device))
+    detector = detector.to(str(device))
+    print("[progress] Detector ready.", flush=True)
+    return detector
 
 
 def append_metrics(path: Path, payload: Dict) -> None:
