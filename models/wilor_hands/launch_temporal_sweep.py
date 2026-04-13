@@ -5,6 +5,8 @@ from pathlib import Path
 
 from experiment_config import list_experiment_names, resolve_experiment_config
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+
 
 def make_argparser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -13,7 +15,7 @@ def make_argparser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--loss-config",
         type=str,
-        default="wilor_hands/experiments/temporal_ablations.yaml",
+        default="experiments/temporal_ablations.yaml",
         help="Path to the temporal ablation YAML file.",
     )
     parser.add_argument(
@@ -26,7 +28,7 @@ def make_argparser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--train-script",
         type=str,
-        default="wilor_hands/train.sh",
+        default="train.sh",
         help="Path to the SLURM training wrapper script.",
     )
     parser.add_argument(
@@ -43,10 +45,20 @@ def make_argparser() -> argparse.ArgumentParser:
     return parser
 
 
+def resolve_launcher_path(path_str: str) -> Path:
+    path = Path(path_str).expanduser()
+    if path.is_absolute():
+        return path.resolve()
+    cwd_candidate = path.resolve()
+    if cwd_candidate.exists():
+        return cwd_candidate
+    return (SCRIPT_DIR / path).resolve()
+
+
 def main() -> None:
     args = make_argparser().parse_args()
-    loss_config = Path(args.loss_config).expanduser().resolve()
-    train_script = Path(args.train_script).expanduser().resolve()
+    loss_config = resolve_launcher_path(args.loss_config)
+    train_script = resolve_launcher_path(args.train_script)
 
     if not loss_config.exists():
         raise FileNotFoundError(f"Loss config not found: {loss_config}")
