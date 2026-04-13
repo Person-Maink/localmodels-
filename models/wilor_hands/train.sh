@@ -13,11 +13,11 @@
 
 #SBATCH --job-name=wilor-train
 #SBATCH --partition=gpu-a100-small
-#SBATCH --time=01:00:00
+#SBATCH --time=04:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
-#SBATCH --mem-per-gpu=8G
+#SBATCH --mem-per-gpu=16G
 #SBATCH --account=Education-EEMCS-MSc-DSAIT
 #SBATCH --output=%x.out
 
@@ -60,6 +60,27 @@ append_bool_flag() {
   fi
 }
 
+append_value_flag_if_set() {
+  local flag_name="$1"
+  local flag_value="${2:-}"
+  if [[ -n "$flag_value" ]]; then
+    PYTHON_CMD+=("$flag_name" "$flag_value")
+  fi
+}
+
+append_optional_bool_override() {
+  local flag_name="$1"
+  local flag_value="${2:-}"
+  if [[ -z "$flag_value" ]]; then
+    return
+  fi
+  if is_true "$flag_value"; then
+    PYTHON_CMD+=("--${flag_name}")
+  else
+    PYTHON_CMD+=("--no-${flag_name}")
+  fi
+}
+
 print_command() {
   printf 'Command:'
   printf ' %q' "$@"
@@ -82,6 +103,17 @@ resolve_model_root_path() {
   else
     printf '%s' "${CFG_MODEL_ROOT}/${value}"
   fi
+}
+
+set_from_config_if_unset() {
+  local var_name="$1"
+  local encoded_value="$2"
+  local decoded_value=""
+  if [[ -n "${!var_name+x}" ]]; then
+    return 0
+  fi
+  decoded_value="$(printf '%s' "$encoded_value" | base64 --decode)"
+  printf -v "$var_name" '%s' "$decoded_value"
 }
 
 list_candidate_videos() {
@@ -120,9 +152,21 @@ pick_random_eligible_distill_video() {
   local pose_dir="$2"
   local intrinsics_dir="$3"
   local requested_video="${4:-}"
+  local requested_videos="${5:-}"
   local found_requested="false"
   local video_name=""
+  local allowed_requested="false"
+  local -A requested_subset=()
   local -a eligible_videos=()
+
+  if [[ -n "$requested_videos" ]]; then
+    local requested_parts=()
+    IFS='|' read -r -a requested_parts <<< "$requested_videos"
+    for video_name in "${requested_parts[@]}"; do
+      [[ -n "$video_name" ]] || continue
+      requested_subset["$video_name"]=1
+    done
+  fi
 
   if [[ -n "$requested_video" ]]; then
     while IFS= read -r video_name; do
@@ -149,10 +193,19 @@ pick_random_eligible_distill_video() {
 
   while IFS= read -r video_name; do
     [[ -z "$video_name" ]] && continue
+    if (( ${#requested_subset[@]} > 0 )) && [[ -z "${requested_subset[$video_name]+x}" ]]; then
+      continue
+    fi
     if [[ -f "${pose_dir}/${video_name}.npz" && -f "${intrinsics_dir}/${video_name}.npz" ]]; then
       eligible_videos+=("$video_name")
+      allowed_requested="true"
     fi
   done < <(list_candidate_videos "$image_root")
+
+  if (( ${#requested_subset[@]} > 0 )) && [[ "$allowed_requested" != "true" ]]; then
+    echo "No eligible requested videos were found under ${image_root} with matching ViPE artifacts." >&2
+    return 1
+  fi
 
   if (( ${#eligible_videos[@]} == 0 )); then
     echo "No eligible videos were found under ${image_root} with matching ViPE pose and intrinsics files." >&2
@@ -200,10 +253,40 @@ APPTAINER_IMAGE="${APPTAINER_IMAGE:-${MODEL_ROOT}/apptainer/template.sif}"
 
 # ================ TRAINING CONFIG ================
 
+LOSS_CONFIG="${LOSS_CONFIG:-}"
+EXPERIMENT_NAME="${EXPERIMENT_NAME:-}"
+
+if [[ -n "${LOSS_CONFIG}" ]]; then
+  RESOLVE_CMD=(
+    python -u "${MODEL_ROOT}/experiment_config.py"
+    resolve
+    --loss-config "${LOSS_CONFIG}"
+    --format shell
+  )
+  if [[ -n "${EXPERIMENT_NAME}" ]]; then
+    RESOLVE_CMD+=(--experiment-name "${EXPERIMENT_NAME}")
+  fi
+  while IFS=$'\t' read -r resolved_name resolved_value; do
+    [[ -n "${resolved_name}" ]] || continue
+    set_from_config_if_unset "${resolved_name}" "${resolved_value}"
+  done < <("${RESOLVE_CMD[@]}")
+fi
+
 TRAIN_MODE="${TRAIN_MODE:-distill}"        # distill | supervised | test
 INIT_MODE="${INIT_MODE:-checkpoint}"       # checkpoint | fresh
 TRAIN_SCOPE="${TRAIN_SCOPE:-refine_net}"   # camera_head | refine_net | full
 CAMERA_LOSS_WEIGHT="${CAMERA_LOSS_WEIGHT:-0.01}"
+VIPE_CAMERA_ENABLED="${VIPE_CAMERA_ENABLED:-}"
+VIPE_CAMERA_WEIGHT="${VIPE_CAMERA_WEIGHT:-}"
+TEMPORAL_CAMERA_ENABLED="${TEMPORAL_CAMERA_ENABLED:-}"
+TEMPORAL_CAMERA_WEIGHT="${TEMPORAL_CAMERA_WEIGHT:-}"
+TEMPORAL_CAMERA_SCORER_WEIGHT="${TEMPORAL_CAMERA_SCORER_WEIGHT:-}"
+TEMPORAL_BBOX_PROJECTED_ENABLED="${TEMPORAL_BBOX_PROJECTED_ENABLED:-}"
+TEMPORAL_BBOX_PROJECTED_WEIGHT="${TEMPORAL_BBOX_PROJECTED_WEIGHT:-}"
+TEMPORAL_BBOX_PROJECTED_SCORER_WEIGHT="${TEMPORAL_BBOX_PROJECTED_SCORER_WEIGHT:-}"
+TEMPORAL_BBOX_INPUT_ENABLED="${TEMPORAL_BBOX_INPUT_ENABLED:-}"
+TEMPORAL_BBOX_INPUT_WEIGHT="${TEMPORAL_BBOX_INPUT_WEIGHT:-}"
+TEMPORAL_BBOX_INPUT_SCORER_WEIGHT="${TEMPORAL_BBOX_INPUT_SCORER_WEIGHT:-}"
 LR="${LR:-1e-5}"
 WEIGHT_DECAY="${WEIGHT_DECAY:-1e-4}"
 BATCH_SIZE="${BATCH_SIZE:-8}"
@@ -217,10 +300,18 @@ USE_GPU="${USE_GPU:-true}"
 AMP="${AMP:-true}"
 SAMPLE_LIMIT="${SAMPLE_LIMIT:-}"
 VALIDATION_SPLIT="${VALIDATION_SPLIT:-0.15}"
+TEMPORAL_WINDOW_SIZE="${TEMPORAL_WINDOW_SIZE:-}"
+TEMPORAL_WINDOW_STRIDE="${TEMPORAL_WINDOW_STRIDE:-}"
+TEMPORAL_MAX_FRAME_GAP="${TEMPORAL_MAX_FRAME_GAP:-}"
+TEMPORAL_REDUCTION="${TEMPORAL_REDUCTION:-}"
+TEMPORAL_SCORER_HIDDEN_DIM="${TEMPORAL_SCORER_HIDDEN_DIM:-}"
+TEMPORAL_SCORER_LAYERS="${TEMPORAL_SCORER_LAYERS:-}"
+TEMPORAL_SCORER_DROPOUT="${TEMPORAL_SCORER_DROPOUT:-}"
 
 # Distillation-specific inputs
 IMAGE_FOLDER="${IMAGE_FOLDER:-${DATA_ROOT}/images}"
 VIDEO_NAME="${VIDEO_NAME:-}"
+VIDEO_NAMES="${VIDEO_NAMES:-}"
 ALL_VIDEOS="${ALL_VIDEOS:-false}"
 DETECTION_CONF="${DETECTION_CONF:-0.3}"
 DETECTION_CACHE="${DETECTION_CACHE:-}"
@@ -319,7 +410,7 @@ fi
 
 case "$TRAIN_MODE" in
   distill)
-    if ! is_true "$ALL_VIDEOS" && [[ -z "$VIDEO_NAME" ]]; then
+    if ! is_true "$ALL_VIDEOS" && [[ -z "$VIDEO_NAME" && -z "$VIDEO_NAMES" ]]; then
       VIDEO_NAME="clip_2"
     fi
     : "${MAX_STEPS:=10000}"
@@ -338,7 +429,7 @@ case "$TRAIN_MODE" in
       echo "TRAIN_MODE=test uses a single video; ignoring ALL_VIDEOS=${ALL_VIDEOS}."
     fi
     ALL_VIDEOS=false
-    VIDEO_NAME="$(pick_random_eligible_distill_video "$IMAGE_FOLDER" "$POSE_DIR" "$INTRINSICS_DIR" "$VIDEO_NAME")"
+    VIDEO_NAME="$(pick_random_eligible_distill_video "$IMAGE_FOLDER" "$POSE_DIR" "$INTRINSICS_DIR" "$VIDEO_NAME" "$VIDEO_NAMES")"
     : "${MAX_STEPS:=100}"
     : "${LOG_EVERY:=10}"
     : "${SAVE_EVERY:=50}"
@@ -348,9 +439,13 @@ case "$TRAIN_MODE" in
 esac
 
 if [[ -z "${RUN_NAME:-}" ]]; then
-  if [[ "$TRAIN_MODE" == "distill" ]]; then
+  if [[ -n "${EXPERIMENT_NAME}" ]]; then
+    RUN_NAME="${EXPERIMENT_NAME}"
+  elif [[ "$TRAIN_MODE" == "distill" ]]; then
     if is_true "$ALL_VIDEOS"; then
       RUN_NAME="distill_all_videos"
+    elif [[ -n "${VIDEO_NAMES}" ]]; then
+      RUN_NAME="distill_multi_video"
     else
       RUN_NAME="distill_${VIDEO_NAME}"
     fi
@@ -375,6 +470,8 @@ case "$TRAIN_MODE" in
     if [[ -z "$DETECTION_CACHE" ]]; then
       if is_true "$ALL_VIDEOS"; then
         DETECTION_CACHE="${RUN_OUTPUT_DIR}/detections_all_videos.json"
+      elif [[ -n "$VIDEO_NAMES" ]]; then
+        DETECTION_CACHE="${RUN_OUTPUT_DIR}/detections_selected_videos.json"
       else
         DETECTION_CACHE="${RUN_OUTPUT_DIR}/detections_${VIDEO_NAME}.json"
       fi
@@ -405,6 +502,9 @@ case "$TRAIN_MODE" in
       --detection_conf "${DETECTION_CONF}"
     )
 
+    append_value_flag_if_set "--loss_config" "${LOSS_CONFIG}"
+    append_value_flag_if_set "--experiment_name" "${EXPERIMENT_NAME}"
+
     if [[ "$SAMPLE_LIMIT" != "0" ]]; then
       PYTHON_CMD+=(--sample_limit "${SAMPLE_LIMIT}")
     fi
@@ -413,9 +513,34 @@ case "$TRAIN_MODE" in
 
     if is_true "$ALL_VIDEOS"; then
       PYTHON_CMD+=(--all_videos)
+    elif [[ -n "${VIDEO_NAMES}" ]]; then
+      IFS='|' read -r -a SELECTED_VIDEOS <<< "${VIDEO_NAMES}"
+      for selected_video in "${SELECTED_VIDEOS[@]}"; do
+        [[ -n "${selected_video}" ]] || continue
+        PYTHON_CMD+=(--video "${selected_video}")
+      done
     else
       PYTHON_CMD+=(--video "${VIDEO_NAME}")
     fi
+
+    append_value_flag_if_set "--temporal_window_size" "${TEMPORAL_WINDOW_SIZE}"
+    append_value_flag_if_set "--temporal_window_stride" "${TEMPORAL_WINDOW_STRIDE}"
+    append_value_flag_if_set "--temporal_max_frame_gap" "${TEMPORAL_MAX_FRAME_GAP}"
+    append_value_flag_if_set "--temporal_reduction" "${TEMPORAL_REDUCTION}"
+    append_value_flag_if_set "--temporal_scorer_hidden_dim" "${TEMPORAL_SCORER_HIDDEN_DIM}"
+    append_value_flag_if_set "--temporal_scorer_layers" "${TEMPORAL_SCORER_LAYERS}"
+    append_value_flag_if_set "--temporal_scorer_dropout" "${TEMPORAL_SCORER_DROPOUT}"
+    append_value_flag_if_set "--vipe_camera_weight" "${VIPE_CAMERA_WEIGHT}"
+    append_optional_bool_override "vipe_camera_enabled" "${VIPE_CAMERA_ENABLED}"
+    append_optional_bool_override "temporal_camera_enabled" "${TEMPORAL_CAMERA_ENABLED}"
+    append_value_flag_if_set "--temporal_camera_weight" "${TEMPORAL_CAMERA_WEIGHT}"
+    append_value_flag_if_set "--temporal_camera_scorer_weight" "${TEMPORAL_CAMERA_SCORER_WEIGHT}"
+    append_optional_bool_override "temporal_bbox_projected_enabled" "${TEMPORAL_BBOX_PROJECTED_ENABLED}"
+    append_value_flag_if_set "--temporal_bbox_projected_weight" "${TEMPORAL_BBOX_PROJECTED_WEIGHT}"
+    append_value_flag_if_set "--temporal_bbox_projected_scorer_weight" "${TEMPORAL_BBOX_PROJECTED_SCORER_WEIGHT}"
+    append_optional_bool_override "temporal_bbox_input_enabled" "${TEMPORAL_BBOX_INPUT_ENABLED}"
+    append_value_flag_if_set "--temporal_bbox_input_weight" "${TEMPORAL_BBOX_INPUT_WEIGHT}"
+    append_value_flag_if_set "--temporal_bbox_input_scorer_weight" "${TEMPORAL_BBOX_INPUT_SCORER_WEIGHT}"
     ;;
 
   supervised)
@@ -484,6 +609,8 @@ echo "Model root:      ${MODEL_ROOT}"
 echo "Output dir:      ${RUN_OUTPUT_DIR}"
 echo "Train mode:      ${TRAIN_MODE}"
 echo "Init mode:       ${INIT_MODE}"
+echo "Loss config:     ${LOSS_CONFIG:-<none>}"
+echo "Experiment:      ${EXPERIMENT_NAME:-<none>}"
 echo "Train scope:     ${TRAIN_SCOPE}"
 echo "Max steps:       ${MAX_STEPS}"
 echo "Log every:       ${LOG_EVERY}"
@@ -499,9 +626,14 @@ fi
 if [[ "$TRAIN_MODE" == "distill" || "$TRAIN_MODE" == "test" ]]; then
   if is_true "$ALL_VIDEOS"; then
     echo "Videos:          all discovered videos"
+  elif [[ -n "${VIDEO_NAMES}" ]]; then
+    echo "Videos:          ${VIDEO_NAMES}"
   else
     echo "Video:           ${VIDEO_NAME}"
   fi
+fi
+if [[ -n "${TEMPORAL_WINDOW_SIZE}" || -n "${TEMPORAL_WINDOW_STRIDE}" || -n "${TEMPORAL_MAX_FRAME_GAP}" ]]; then
+  echo "Temporal win:    size=${TEMPORAL_WINDOW_SIZE:-<default>} stride=${TEMPORAL_WINDOW_STRIDE:-<default>} gap=${TEMPORAL_MAX_FRAME_GAP:-<default>}"
 fi
 echo "Pose dir:        ${POSE_DIR}"
 echo "Intrinsics dir:  ${INTRINSICS_DIR}"

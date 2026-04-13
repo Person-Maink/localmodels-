@@ -334,10 +334,17 @@ def split_samples_by_frame(
 
 
 class DetectedVideoHandDataset(Dataset):
-    def __init__(self, model_cfg, samples: List[Dict], rescale_factor: float = 2.0):
+    def __init__(
+        self,
+        model_cfg,
+        samples: List[Dict],
+        rescale_factor: float = 2.0,
+        include_path_metadata: bool = True,
+    ):
         self.model_cfg = model_cfg
         self.samples = samples
         self.rescale_factor = rescale_factor
+        self.include_path_metadata = include_path_metadata
 
     def __len__(self) -> int:
         return len(self.samples)
@@ -356,9 +363,10 @@ class DetectedVideoHandDataset(Dataset):
             rescale_factor=self.rescale_factor,
         )
         item = crop_dataset[0]
-        item["imgname"] = sample["img_path"]
-        item["imgname_rel"] = sample["img_path_rel"]
-        item["video_name"] = sample["video_name"]
+        if self.include_path_metadata:
+            item["imgname"] = sample["img_path"]
+            item["imgname_rel"] = sample["img_path_rel"]
+            item["video_name"] = sample["video_name"]
         item["video_idx"] = np.int64(sample["video_idx"])
         item["frame_idx"] = np.int64(sample["frame_idx"])
         item["det_idx"] = np.int64(sample["det_idx"])
@@ -531,6 +539,7 @@ def save_wilor_checkpoint(
     step: int,
     epoch: int,
     extra: Optional[Dict] = None,
+    extra_modules: Optional[Dict[str, torch.nn.Module]] = None,
 ) -> None:
     checkpoint = {
         "state_dict": model.state_dict(),
@@ -541,6 +550,10 @@ def save_wilor_checkpoint(
     }
     if optimizer is not None:
         checkpoint["optimizer_states"] = [optimizer.state_dict()]
+    if extra_modules:
+        checkpoint["extra_state_dicts"] = {
+            name: module.state_dict() for name, module in extra_modules.items()
+        }
     if extra:
         checkpoint.update(extra)
     path.parent.mkdir(parents=True, exist_ok=True)

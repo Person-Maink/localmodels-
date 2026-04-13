@@ -1,10 +1,13 @@
 import argparse
 import copy
 from pathlib import Path
+from typing import Any
 
 import torch
+import yaml
 from torch.utils.data import DataLoader
 
+from experiment_config import DEFAULT_EXPERIMENT_CONFIG, resolve_experiment_config
 from finetune_wilor_common import (
     DetectedVideoHandDataset,
     ViPECameraIndex,
@@ -16,7 +19,6 @@ from finetune_wilor_common import (
     configure_trainable_scope,
     count_trainable_parameters,
     discover_videos,
-    evaluate_distillation,
     filter_videos_with_vipe_artifacts,
     format_loss_dict,
     infinite_loader,
@@ -26,13 +28,22 @@ from finetune_wilor_common import (
     set_optional_loss_weight,
     split_samples_by_frame,
 )
+from temporal_losses import (
+    TemporalWindowDataset,
+    TemporalWindowScorer,
+    build_temporal_windows,
+    compute_temporal_loss_bundle,
+    flatten_temporal_batch,
+    reshape_temporal_output,
+    temporal_window_collate,
+)
 from wilor.models import load_wilor
 from wilor.utils import recursive_to
 
 
 def make_argparser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Fine-tune WiLoR with teacher distillation and ViPE camera supervision."
+        description="Fine-tune WiLoR with teacher distillation, ViPE supervision, and temporal loss ablations."
     )
     parser.add_argument("--checkpoint", type=str, default="./pretrained_models/wilor_final.ckpt")
     parser.add_argument("--cfg_path", type=str, default="./pretrained_models/model_config.yaml")
@@ -41,6 +52,8 @@ def make_argparser() -> argparse.ArgumentParser:
     parser.add_argument("--pose_dir", type=str, default="../../outputs/vipe/pose")
     parser.add_argument("--intrinsics_dir", type=str, default="../../outputs/vipe/intrinsics")
     parser.add_argument("--output_dir", type=str, default="./finetune_runs/distill_vipe")
+    parser.add_argument("--loss_config", type=str, default=None)
+    parser.add_argument("--experiment_name", type=str, default=None)
     parser.add_argument("--video", action="append", dest="videos", default=[])
     parser.add_argument("--all_videos", action="store_true", help="Use every *_frames directory under image_folder.")
     parser.add_argument("--sample_limit", type=int, default=0, help="Limit the number of frames used to build the dataset.")
@@ -54,25 +67,409 @@ def make_argparser() -> argparse.ArgumentParser:
     parser.add_argument("--detection_conf", type=float, default=0.3)
     parser.add_argument("--rescale_factor", type=float, default=2.0)
     parser.add_argument("--train_scope", type=str, choices=["camera_head", "refine_net", "full"], default="refine_net")
-    parser.add_argument("--camera_loss_weight", type=float, default=0.01)
+    parser.add_argument("--camera_loss_weight", type=float, default=0.01, help="Legacy alias for the ViPE camera supervision weight.")
     parser.add_argument("--lr", type=float, default=1e-5)
     parser.add_argument("--weight_decay", type=float, default=1e-4)
-    parser.add_argument("--batch_size", type=int, default=16)
-    parser.add_argument("--num_workers", type=int, default=0)
-    parser.add_argument("--max_steps", type=int, default=2000)
+    parser.add_argument("--batch_size", type=int, default=8, help="Number of temporal windows per optimization step.")
+    parser.add_argument("--num_workers", type=int, default=4)
+    parser.add_argument("--max_steps", type=int, default=10000)
     parser.add_argument("--log_every", type=int, default=25)
     parser.add_argument("--save_every", type=int, default=250)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--use_gpu", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--amp", action=argparse.BooleanOptionalAction, default=True)
+    parser.add_argument("--temporal_window_size", type=int, default=None)
+    parser.add_argument("--temporal_window_stride", type=int, default=None)
+    parser.add_argument("--temporal_max_frame_gap", type=int, default=None)
+    parser.add_argument("--temporal_reduction", type=str, default=None, choices=["l1", "l2", "smooth_l1"])
+    parser.add_argument("--temporal_scorer_hidden_dim", type=int, default=None)
+    parser.add_argument("--temporal_scorer_layers", type=int, default=None)
+    parser.add_argument("--temporal_scorer_dropout", type=float, default=None)
+    parser.add_argument("--vipe_camera_enabled", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--vipe_camera_weight", type=float, default=None)
+    parser.add_argument("--temporal_camera_enabled", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--temporal_camera_weight", type=float, default=None)
+    parser.add_argument("--temporal_camera_scorer_weight", type=float, default=None)
+    parser.add_argument("--temporal_bbox_projected_enabled", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--temporal_bbox_projected_weight", type=float, default=None)
+    parser.add_argument("--temporal_bbox_projected_scorer_weight", type=float, default=None)
+    parser.add_argument("--temporal_bbox_input_enabled", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--temporal_bbox_input_weight", type=float, default=None)
+    parser.add_argument("--temporal_bbox_input_scorer_weight", type=float, default=None)
     return parser
 
 
-def main(args: argparse.Namespace) -> None:
+def _set_arg_from_config(
+    args: argparse.Namespace,
+    parser: argparse.ArgumentParser,
+    dest: str,
+    value: Any,
+) -> None:
+    current = getattr(args, dest)
+    default = parser.get_default(dest)
+    if isinstance(current, list):
+        if not current or current == default:
+            setattr(args, dest, copy.deepcopy(value))
+        return
+    if current is None or current == default:
+        setattr(args, dest, copy.deepcopy(value))
+
+
+def _apply_experiment_defaults(
+    args: argparse.Namespace,
+    parser: argparse.ArgumentParser,
+    resolved_experiment: dict[str, Any],
+) -> None:
+    for dest, cfg_key in (
+        ("train_scope", "train_scope"),
+        ("validation_split", "validation_split"),
+        ("sample_limit", "sample_limit"),
+        ("detection_conf", "detection_conf"),
+        ("rescale_factor", "rescale_factor"),
+        ("batch_size", "batch_size"),
+        ("num_workers", "num_workers"),
+        ("max_steps", "max_steps"),
+        ("log_every", "log_every"),
+        ("save_every", "save_every"),
+        ("seed", "seed"),
+    ):
+        _set_arg_from_config(args, parser, dest, resolved_experiment[cfg_key])
+
+    _set_arg_from_config(args, parser, "lr", resolved_experiment["optimizer"]["lr"])
+    _set_arg_from_config(
+        args,
+        parser,
+        "weight_decay",
+        resolved_experiment["optimizer"]["weight_decay"],
+    )
+
+    if not args.videos and args.all_videos == parser.get_default("all_videos"):
+        if resolved_experiment["all_videos"]:
+            args.all_videos = True
+        elif resolved_experiment["videos"]:
+            args.videos = list(resolved_experiment["videos"])
+
+    temporal_cfg = resolved_experiment["temporal"]
+    _set_arg_from_config(args, parser, "temporal_window_size", temporal_cfg["window_size"])
+    _set_arg_from_config(args, parser, "temporal_window_stride", temporal_cfg["window_stride"])
+    _set_arg_from_config(args, parser, "temporal_max_frame_gap", temporal_cfg["max_frame_gap"])
+    _set_arg_from_config(args, parser, "temporal_reduction", temporal_cfg["reduction"])
+    _set_arg_from_config(
+        args,
+        parser,
+        "temporal_scorer_hidden_dim",
+        temporal_cfg["scorer_hidden_dim"],
+    )
+    _set_arg_from_config(
+        args,
+        parser,
+        "temporal_scorer_layers",
+        temporal_cfg["scorer_layers"],
+    )
+    _set_arg_from_config(
+        args,
+        parser,
+        "temporal_scorer_dropout",
+        temporal_cfg["scorer_dropout"],
+    )
+
+    loss_cfg = resolved_experiment["losses"]
+    _set_arg_from_config(
+        args,
+        parser,
+        "vipe_camera_enabled",
+        loss_cfg["vipe_camera"]["enabled"],
+    )
+    _set_arg_from_config(
+        args,
+        parser,
+        "vipe_camera_weight",
+        loss_cfg["vipe_camera"]["weight"],
+    )
+    _set_arg_from_config(
+        args,
+        parser,
+        "temporal_camera_enabled",
+        loss_cfg["temporal_camera"]["enabled"],
+    )
+    _set_arg_from_config(
+        args,
+        parser,
+        "temporal_camera_weight",
+        loss_cfg["temporal_camera"]["weight"],
+    )
+    _set_arg_from_config(
+        args,
+        parser,
+        "temporal_camera_scorer_weight",
+        loss_cfg["temporal_camera"]["scorer_weight"],
+    )
+    _set_arg_from_config(
+        args,
+        parser,
+        "temporal_bbox_projected_enabled",
+        loss_cfg["temporal_bbox_projected"]["enabled"],
+    )
+    _set_arg_from_config(
+        args,
+        parser,
+        "temporal_bbox_projected_weight",
+        loss_cfg["temporal_bbox_projected"]["weight"],
+    )
+    _set_arg_from_config(
+        args,
+        parser,
+        "temporal_bbox_projected_scorer_weight",
+        loss_cfg["temporal_bbox_projected"]["scorer_weight"],
+    )
+    _set_arg_from_config(
+        args,
+        parser,
+        "temporal_bbox_input_enabled",
+        loss_cfg["temporal_bbox_input"]["enabled"],
+    )
+    _set_arg_from_config(
+        args,
+        parser,
+        "temporal_bbox_input_weight",
+        loss_cfg["temporal_bbox_input"]["weight"],
+    )
+    _set_arg_from_config(
+        args,
+        parser,
+        "temporal_bbox_input_scorer_weight",
+        loss_cfg["temporal_bbox_input"]["scorer_weight"],
+    )
+
+
+def _resolve_loss_settings(
+    args: argparse.Namespace,
+    loaded_experiment: dict[str, Any] | None,
+) -> dict[str, dict[str, Any]]:
+    base_loss_cfg = copy.deepcopy(
+        loaded_experiment["losses"] if loaded_experiment else DEFAULT_EXPERIMENT_CONFIG["losses"]
+    )
+
+    vipe_weight = (
+        float(args.vipe_camera_weight)
+        if args.vipe_camera_weight is not None
+        else float(args.camera_loss_weight)
+    )
+    base_loss_cfg["vipe_camera"]["enabled"] = (
+        base_loss_cfg["vipe_camera"]["enabled"]
+        if args.vipe_camera_enabled is None
+        else bool(args.vipe_camera_enabled)
+    )
+    base_loss_cfg["vipe_camera"]["weight"] = vipe_weight
+    base_loss_cfg["vipe_camera"]["scorer_weight"] = 0.0
+
+    for family_name, enabled_attr, weight_attr, scorer_attr in (
+        ("temporal_camera", "temporal_camera_enabled", "temporal_camera_weight", "temporal_camera_scorer_weight"),
+        (
+            "temporal_bbox_projected",
+            "temporal_bbox_projected_enabled",
+            "temporal_bbox_projected_weight",
+            "temporal_bbox_projected_scorer_weight",
+        ),
+        (
+            "temporal_bbox_input",
+            "temporal_bbox_input_enabled",
+            "temporal_bbox_input_weight",
+            "temporal_bbox_input_scorer_weight",
+        ),
+    ):
+        if getattr(args, enabled_attr) is not None:
+            base_loss_cfg[family_name]["enabled"] = bool(getattr(args, enabled_attr))
+        if getattr(args, weight_attr) is not None:
+            base_loss_cfg[family_name]["weight"] = float(getattr(args, weight_attr))
+        if getattr(args, scorer_attr) is not None:
+            base_loss_cfg[family_name]["scorer_weight"] = float(getattr(args, scorer_attr))
+
+    return base_loss_cfg
+
+
+def _resolve_temporal_settings(
+    args: argparse.Namespace,
+    loaded_experiment: dict[str, Any] | None,
+) -> dict[str, Any]:
+    temporal_cfg = copy.deepcopy(
+        loaded_experiment["temporal"] if loaded_experiment else DEFAULT_EXPERIMENT_CONFIG["temporal"]
+    )
+    for attr, key in (
+        ("temporal_window_size", "window_size"),
+        ("temporal_window_stride", "window_stride"),
+        ("temporal_max_frame_gap", "max_frame_gap"),
+        ("temporal_reduction", "reduction"),
+        ("temporal_scorer_hidden_dim", "scorer_hidden_dim"),
+        ("temporal_scorer_layers", "scorer_layers"),
+        ("temporal_scorer_dropout", "scorer_dropout"),
+    ):
+        value = getattr(args, attr)
+        if value is not None:
+            temporal_cfg[key] = value
+    return temporal_cfg
+
+
+def _build_resolved_experiment_snapshot(
+    args: argparse.Namespace,
+    loaded_experiment: dict[str, Any] | None,
+    temporal_cfg: dict[str, Any],
+    loss_cfg: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    snapshot = copy.deepcopy(loaded_experiment or DEFAULT_EXPERIMENT_CONFIG)
+    snapshot["name"] = args.experiment_name or snapshot.get("name") or "manual_distill_run"
+    snapshot["source_loss_config"] = (
+        str(Path(args.loss_config).expanduser().resolve())
+        if args.loss_config
+        else None
+    )
+    snapshot["run_name_suffix"] = snapshot.get("run_name_suffix", "")
+    snapshot["train_mode"] = snapshot.get("train_mode", "distill")
+    snapshot["videos"] = [] if args.all_videos else sorted(set(args.videos))
+    snapshot["all_videos"] = bool(args.all_videos)
+    snapshot["train_scope"] = args.train_scope
+    snapshot["validation_split"] = float(args.validation_split)
+    snapshot["sample_limit"] = int(args.sample_limit)
+    snapshot["detection_conf"] = float(args.detection_conf)
+    snapshot["rescale_factor"] = float(args.rescale_factor)
+    snapshot["batch_size"] = int(args.batch_size)
+    snapshot["num_workers"] = int(args.num_workers)
+    snapshot["max_steps"] = int(args.max_steps)
+    snapshot["log_every"] = int(args.log_every)
+    snapshot["save_every"] = int(args.save_every)
+    snapshot["seed"] = int(args.seed)
+    snapshot["optimizer"] = {
+        "lr": float(args.lr),
+        "weight_decay": float(args.weight_decay),
+    }
+    snapshot["temporal"] = copy.deepcopy(temporal_cfg)
+    snapshot["losses"] = copy.deepcopy(loss_cfg)
+    return snapshot
+
+
+def _save_resolved_experiment(output_dir: Path, resolved_experiment: dict[str, Any]) -> None:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    with open(output_dir / "resolved_experiment.yaml", "w", encoding="utf-8") as handle:
+        yaml.safe_dump(resolved_experiment, handle, sort_keys=False)
+
+
+def _compute_window_loss(
+    student: torch.nn.Module,
+    teacher: torch.nn.Module,
+    window_batch: dict[str, Any],
+    device: torch.device,
+    amp_enabled: bool,
+    temporal_cfg: dict[str, Any],
+    loss_cfg: dict[str, dict[str, Any]],
+    temporal_scorer: TemporalWindowScorer | None,
+    train: bool,
+) -> tuple[torch.Tensor, dict[str, float]]:
+    window_batch = recursive_to(window_batch, device)
+    flat_batch, (batch_size, window_size) = flatten_temporal_batch(window_batch)
+
+    with torch.no_grad():
+        teacher_output = teacher.forward_step(flat_batch, train=False)
+        supervision_batch = build_teacher_supervision_batch(flat_batch, teacher_output)
+
+    with torch.cuda.amp.autocast(enabled=amp_enabled):
+        student_output = student.forward_step(flat_batch, train=train)
+        distill_loss = student.compute_loss(supervision_batch, student_output, train=train)
+        student_output_seq = reshape_temporal_output(student_output, batch_size, window_size)
+        temporal_loss, temporal_metrics = compute_temporal_loss_bundle(
+            window_batch,
+            student_output_seq,
+            loss_cfg,
+            temporal_cfg,
+            temporal_scorer,
+        )
+        total_loss = distill_loss + temporal_loss
+
+    metrics = format_loss_dict(student_output["losses"])
+    metrics["loss_total"] = float(total_loss.detach().item())
+    metrics["window_size"] = float(window_size)
+    for key, value in temporal_metrics.items():
+        metrics[key] = float(value.detach().item()) if isinstance(value, torch.Tensor) else float(value)
+    return total_loss, metrics
+
+
+def _evaluate_window_dataloader(
+    student: torch.nn.Module,
+    teacher: torch.nn.Module,
+    dataloader: DataLoader,
+    device: torch.device,
+    amp_enabled: bool,
+    temporal_cfg: dict[str, Any],
+    loss_cfg: dict[str, dict[str, Any]],
+    temporal_scorer: TemporalWindowScorer | None,
+) -> dict[str, float]:
+    was_student_training = student.training
+    student.eval()
+    scorer_was_training = temporal_scorer.training if temporal_scorer is not None else False
+    if temporal_scorer is not None:
+        temporal_scorer.eval()
+
+    metric_sums: dict[str, float] = {}
+    total_windows = 0
+
+    with torch.no_grad():
+        for window_batch in dataloader:
+            _, batch_metrics = _compute_window_loss(
+                student,
+                teacher,
+                window_batch,
+                device=device,
+                amp_enabled=amp_enabled,
+                temporal_cfg=temporal_cfg,
+                loss_cfg=loss_cfg,
+                temporal_scorer=temporal_scorer,
+                train=False,
+            )
+            batch_window_count = int(window_batch["img"].shape[0])
+            total_windows += batch_window_count
+            for key, value in batch_metrics.items():
+                metric_sums[key] = metric_sums.get(key, 0.0) + float(value) * batch_window_count
+
+    student.train(was_student_training)
+    if temporal_scorer is not None:
+        temporal_scorer.train(scorer_was_training)
+
+    if total_windows == 0:
+        return {"loss_total": 0.0, "window_count": 0.0}
+
+    averaged = {key: value / total_windows for key, value in metric_sums.items()}
+    averaged["window_count"] = float(total_windows)
+    return averaged
+
+
+def _active_temporal_families(loss_cfg: dict[str, dict[str, Any]]) -> list[str]:
+    return [
+        family_name
+        for family_name in ("temporal_camera", "temporal_bbox_projected", "temporal_bbox_input")
+        if loss_cfg[family_name]["enabled"]
+    ]
+
+
+def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
+    loaded_experiment = None
+    if args.loss_config:
+        loaded_experiment = resolve_experiment_config(args.loss_config, args.experiment_name)
+        _apply_experiment_defaults(args, parser, loaded_experiment)
+        args.experiment_name = args.experiment_name or loaded_experiment["name"]
+
     seed_everything(args.seed)
     device = choose_device(args.use_gpu)
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
+
+    temporal_cfg = _resolve_temporal_settings(args, loaded_experiment)
+    loss_cfg = _resolve_loss_settings(args, loaded_experiment)
+    resolved_experiment = _build_resolved_experiment_snapshot(
+        args,
+        loaded_experiment,
+        temporal_cfg,
+        loss_cfg,
+    )
+    _save_resolved_experiment(output_dir, resolved_experiment)
 
     if args.all_videos:
         video_names = discover_videos(args.image_folder)
@@ -114,7 +511,8 @@ def main(args: argparse.Namespace) -> None:
     teacher = copy.deepcopy(student)
 
     set_optional_loss_weight(student.cfg, "ADVERSARIAL", 0.0)
-    set_optional_loss_weight(student.cfg, "CAMERA_T_FULL", args.camera_loss_weight)
+    vipe_weight = loss_cfg["vipe_camera"]["weight"] if loss_cfg["vipe_camera"]["enabled"] else 0.0
+    set_optional_loss_weight(student.cfg, "CAMERA_T_FULL", vipe_weight)
 
     student = student.to(device)
     teacher = teacher.to(device).eval()
@@ -151,46 +549,94 @@ def main(args: argparse.Namespace) -> None:
             "Validation split left no training samples. Reduce --validation_split or provide more frames."
         )
 
-    train_dataset = DetectedVideoHandDataset(
+    train_windows, train_window_stats = build_temporal_windows(
+        train_samples,
+        window_size=int(temporal_cfg["window_size"]),
+        window_stride=int(temporal_cfg["window_stride"]),
+        max_frame_gap=int(temporal_cfg["max_frame_gap"]),
+    )
+    if not train_windows:
+        raise RuntimeError(
+            "No temporal training windows were produced. Increase sample coverage or reduce temporal window settings."
+        )
+
+    train_base_dataset = DetectedVideoHandDataset(
         student.cfg,
         train_samples,
         rescale_factor=args.rescale_factor,
+        include_path_metadata=False,
     )
+    train_dataset = TemporalWindowDataset(train_base_dataset, train_windows)
     train_dataloader = DataLoader(
         train_dataset,
         batch_size=args.batch_size,
         shuffle=False,
         num_workers=args.num_workers,
         drop_last=False,
+        collate_fn=temporal_window_collate,
     )
+
+    val_window_stats = {"window_count": 0, "dropped_window_count": 0, "stream_count": 0, "broken_segment_count": 0}
     val_dataloader = None
     if val_samples:
-        val_dataset = DetectedVideoHandDataset(
-            student.cfg,
+        val_windows, val_window_stats = build_temporal_windows(
             val_samples,
-            rescale_factor=args.rescale_factor,
+            window_size=int(temporal_cfg["window_size"]),
+            window_stride=int(temporal_cfg["window_stride"]),
+            max_frame_gap=int(temporal_cfg["max_frame_gap"]),
         )
-        val_dataloader = DataLoader(
-            val_dataset,
-            batch_size=args.batch_size,
-            shuffle=False,
-            num_workers=args.num_workers,
-            drop_last=False,
-        )
+        if val_windows:
+            val_base_dataset = DetectedVideoHandDataset(
+                student.cfg,
+                val_samples,
+                rescale_factor=args.rescale_factor,
+                include_path_metadata=False,
+            )
+            val_dataset = TemporalWindowDataset(val_base_dataset, val_windows)
+            val_dataloader = DataLoader(
+                val_dataset,
+                batch_size=args.batch_size,
+                shuffle=False,
+                num_workers=args.num_workers,
+                drop_last=False,
+                collate_fn=temporal_window_collate,
+            )
 
     trainable_params = configure_trainable_scope(student, args.train_scope)
     if not trainable_params:
         raise RuntimeError(f"No trainable parameters were selected for scope '{args.train_scope}'.")
 
-    optimizer = torch.optim.AdamW(trainable_params, lr=args.lr, weight_decay=args.weight_decay)
+    temporal_scorer = None
+    if any(
+        loss_cfg[family_name]["enabled"] and loss_cfg[family_name]["scorer_weight"] > 0.0
+        for family_name in _active_temporal_families(loss_cfg)
+    ):
+        temporal_scorer = TemporalWindowScorer(
+            hidden_dim=int(temporal_cfg["scorer_hidden_dim"]),
+            layers=int(temporal_cfg["scorer_layers"]),
+            dropout=float(temporal_cfg["scorer_dropout"]),
+        ).to(device)
+
+    optimizer_params: list[dict[str, Any]] = [{"params": trainable_params}]
+    if temporal_scorer is not None:
+        optimizer_params.append({"params": list(temporal_scorer.parameters())})
+
+    optimizer = torch.optim.AdamW(optimizer_params, lr=args.lr, weight_decay=args.weight_decay)
     scaler = torch.cuda.amp.GradScaler(enabled=args.amp and device.type == "cuda")
     batch_iter = infinite_loader(train_dataloader)
     metrics_path = output_dir / "metrics.jsonl"
 
     best_metric = float("inf")
     best_metric_name = "val_loss_total" if val_dataloader is not None else "train_loss_total"
+    active_temporal_families = _active_temporal_families(loss_cfg)
+    total_trainable_params = count_trainable_parameters(student)
+    if temporal_scorer is not None:
+        total_trainable_params += sum(
+            param.numel() for param in temporal_scorer.parameters() if param.requires_grad
+        )
 
     print(f"Device: {device}")
+    print(f"Experiment: {resolved_experiment['name']}")
     print(f"Videos: {', '.join(video_names)}")
     print(
         f"Frames: total={split_stats['total_frames']} "
@@ -200,25 +646,38 @@ def main(args: argparse.Namespace) -> None:
         f"Samples: total={split_stats['total_samples']} "
         f"train={split_stats['train_samples']} val={split_stats['val_samples']}"
     )
+    print(
+        f"Temporal windows: train={train_window_stats['window_count']} "
+        f"val={val_window_stats['window_count']} "
+        f"dropped_train={train_window_stats['dropped_window_count']} "
+        f"dropped_val={val_window_stats['dropped_window_count']}"
+    )
     if args.validation_split > 0.0 and val_dataloader is None:
         print(
-            "Validation split requested, but there were not enough frames to reserve a validation set."
+            "Validation split requested, but there were not enough consecutive frames to reserve validation windows."
         )
     print(f"Train scope: {args.train_scope}")
-    print(f"Trainable params: {count_trainable_parameters(student):,}")
+    print(f"Trainable params: {total_trainable_params:,}")
+    print(f"Temporal families: {', '.join(active_temporal_families) if active_temporal_families else 'none'}")
 
     for step in range(1, args.max_steps + 1):
         apply_train_mode_for_scope(student, args.train_scope)
-        batch = recursive_to(next(batch_iter), device)
+        if temporal_scorer is not None:
+            temporal_scorer.train()
 
+        window_batch = next(batch_iter)
         optimizer.zero_grad(set_to_none=True)
-        with torch.no_grad():
-            teacher_output = teacher.forward_step(batch, train=False)
-            supervision_batch = build_teacher_supervision_batch(batch, teacher_output)
-
-        with torch.cuda.amp.autocast(enabled=scaler.is_enabled()):
-            student_output = student.forward_step(batch, train=True)
-            loss = student.compute_loss(supervision_batch, student_output, train=True)
+        loss, train_metrics = _compute_window_loss(
+            student,
+            teacher,
+            window_batch,
+            device=device,
+            amp_enabled=scaler.is_enabled(),
+            temporal_cfg=temporal_cfg,
+            loss_cfg=loss_cfg,
+            temporal_scorer=temporal_scorer,
+            train=True,
+        )
 
         if scaler.is_enabled():
             scaler.scale(loss).backward()
@@ -241,36 +700,60 @@ def main(args: argparse.Namespace) -> None:
                 epoch=0,
                 extra={
                     "finetune_args": vars(args),
+                    "experiment_config": resolved_experiment,
                     "best_metric": best_metric,
                     "best_metric_name": best_metric_name,
                 },
+                extra_modules={"temporal_scorer": temporal_scorer} if temporal_scorer is not None else None,
             )
 
         if should_log:
-            train_metrics = format_loss_dict(student_output["losses"])
-            train_metrics.update({"step": step, "split": "train", "loss_total": loss_value})
+            train_metrics.update(
+                {
+                    "step": step,
+                    "split": "train",
+                    "train_window_count": float(train_window_stats["window_count"]),
+                    "train_dropped_window_count": float(train_window_stats["dropped_window_count"]),
+                    "val_window_count": float(val_window_stats["window_count"]),
+                    "val_dropped_window_count": float(val_window_stats["dropped_window_count"]),
+                }
+            )
             append_metrics(metrics_path, train_metrics)
             print(
-                f"[step {step:05d}] loss={loss_value:.4f} "
+                f"[step {step:05d}] loss={train_metrics['loss_total']:.4f} "
                 f"cam={train_metrics.get('loss_camera_t_full', 0.0):.4f} "
-                f"kp2d={train_metrics.get('loss_keypoints_2d', 0.0):.4f} "
-                f"kp3d={train_metrics.get('loss_keypoints_3d', 0.0):.4f}"
+                f"temp_cam={train_metrics.get('loss_temporal_camera_base', 0.0):.4f} "
+                f"bbox_p={train_metrics.get('loss_temporal_bbox_projected_base', 0.0):.4f} "
+                f"bbox_i={train_metrics.get('loss_temporal_bbox_input_base', 0.0):.4f}"
             )
             if val_dataloader is not None:
-                val_metrics = evaluate_distillation(
+                val_metrics = _evaluate_window_dataloader(
                     student,
                     teacher,
                     val_dataloader,
                     device=device,
-                    amp=scaler.is_enabled(),
+                    amp_enabled=scaler.is_enabled(),
+                    temporal_cfg=temporal_cfg,
+                    loss_cfg=loss_cfg,
+                    temporal_scorer=temporal_scorer,
                 )
-                val_metrics.update({"step": step, "split": "val"})
+                val_metrics.update(
+                    {
+                        "step": step,
+                        "split": "val",
+                        "train_window_count": float(train_window_stats["window_count"]),
+                        "train_dropped_window_count": float(train_window_stats["dropped_window_count"]),
+                        "val_window_count": float(val_window_stats["window_count"]),
+                        "val_dropped_window_count": float(val_window_stats["dropped_window_count"]),
+                    }
+                )
                 append_metrics(metrics_path, val_metrics)
                 print(
                     f"             val_loss={val_metrics.get('loss_total', 0.0):.4f} "
                     f"val_cam={val_metrics.get('loss_camera_t_full', 0.0):.4f} "
-                    f"val_kp2d={val_metrics.get('loss_keypoints_2d', 0.0):.4f} "
-                    f"val_kp3d={val_metrics.get('loss_keypoints_3d', 0.0):.4f}"
+                    f"val_temp_cam={val_metrics.get('loss_temporal_camera_base', 0.0):.4f} "
+                    f"val_bbox_p={val_metrics.get('loss_temporal_bbox_projected_base', 0.0):.4f} "
+                    f"val_bbox_i={val_metrics.get('loss_temporal_bbox_input_base', 0.0):.4f}"
                 )
                 if val_metrics["loss_total"] < best_metric:
                     best_metric = val_metrics["loss_total"]
@@ -282,9 +765,11 @@ def main(args: argparse.Namespace) -> None:
                         epoch=0,
                         extra={
                             "finetune_args": vars(args),
+                            "experiment_config": resolved_experiment,
                             "best_metric": best_metric,
                             "best_metric_name": best_metric_name,
                         },
+                        extra_modules={"temporal_scorer": temporal_scorer} if temporal_scorer is not None else None,
                     )
 
         if step % args.save_every == 0 or step == args.max_steps:
@@ -296,9 +781,11 @@ def main(args: argparse.Namespace) -> None:
                 epoch=0,
                 extra={
                     "finetune_args": vars(args),
+                    "experiment_config": resolved_experiment,
                     "best_metric": best_metric,
                     "best_metric_name": best_metric_name,
                 },
+                extra_modules={"temporal_scorer": temporal_scorer} if temporal_scorer is not None else None,
             )
 
     print(f"Finished fine-tuning. Best {best_metric_name}: {best_metric:.4f}")
@@ -306,4 +793,5 @@ def main(args: argparse.Namespace) -> None:
 
 
 if __name__ == "__main__":
-    main(make_argparser().parse_args())
+    parser = make_argparser()
+    main(parser.parse_args(), parser)
