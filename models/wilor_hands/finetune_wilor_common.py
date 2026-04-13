@@ -235,6 +235,11 @@ def build_detection_samples(
         )
         with open(detection_cache_path, "r", encoding="utf-8") as handle:
             cached_samples = json.load(handle)
+        image_root = Path(image_folder)
+        for sample in cached_samples:
+            img_path_rel = sample.get("img_path_rel")
+            if img_path_rel:
+                sample["img_path"] = str(image_root / img_path_rel)
         selected_videos = set(video_names)
         if not selected_videos:
             print(

@@ -98,6 +98,30 @@ set_from_config_if_unset() {
   printf -v "$var_name" '%s' "$decoded_value"
 }
 
+resolve_video_path() {
+  local image_root="$1"
+  local video_name="$2"
+  local candidate=""
+
+  shopt -s nullglob
+  for candidate in \
+    "${image_root}/${video_name}.mp4" \
+    "${image_root}/${video_name}.MP4" \
+    "${image_root}/${video_name}.avi" \
+    "${image_root}/${video_name}.AVI" \
+    "${image_root}/${video_name}.mts" \
+    "${image_root}/${video_name}.MTS" \
+    "${image_root}/${video_name}.mov" \
+    "${image_root}/${video_name}.MOV"; do
+    [[ -f "$candidate" ]] || continue
+    printf '%s' "$candidate"
+    shopt -u nullglob
+    return 0
+  done
+  shopt -u nullglob
+  return 1
+}
+
 list_candidate_videos() {
   local image_root="$1"
   local entry=""
@@ -109,6 +133,16 @@ list_candidate_videos() {
     [[ -d "$entry" ]] || continue
     video_name="$(basename "$entry")"
     candidates+=("${video_name%_frames}")
+  done
+
+  for entry in "${image_root}"/*; do
+    [[ -f "$entry" ]] || continue
+    case "${entry##*.}" in
+      mp4|MP4|avi|AVI|mts|MTS|mov|MOV)
+        video_name="$(basename "$entry")"
+        candidates+=("${video_name%.*}")
+        ;;
+    esac
   done
   shopt -u nullglob
 
@@ -187,6 +221,82 @@ pick_random_eligible_distill_video() {
   printf '%s\n' "${eligible_videos[@]}" | shuf -n 1
 }
 
+ensure_temp_image_root() {
+  if [[ -n "${TEMP_IMAGE_ROOT:-}" ]]; then
+    return 0
+  fi
+
+  mkdir -p "${TEMP_PARENT}"
+  TEMP_WORKDIR=$(mktemp -d "${TEMP_PARENT%/}/wilor_train_${SLURM_JOB_ID:-manual}.XXXXXX")
+  TEMP_IMAGE_ROOT="${TEMP_WORKDIR}/images"
+  mkdir -p "${TEMP_IMAGE_ROOT}"
+  echo "[progress] Created temporary training image root: ${TEMP_IMAGE_ROOT}"
+}
+
+cleanup_temp_frames() {
+  if [[ -z "${TEMP_WORKDIR:-}" ]]; then
+    return 0
+  fi
+
+  if is_true "${KEEP_TEMP_FRAMES:-false}"; then
+    echo "Keeping temporary training frames at ${TEMP_WORKDIR}"
+    return 0
+  fi
+
+  rm -rf "${TEMP_WORKDIR}"
+}
+
+stage_video_frames_for_finetune() {
+  local source_image_root="$1"
+  local video_name="$2"
+  local source_frame_dir="${source_image_root}/${video_name}_frames"
+  local target_frame_dir="${TEMP_IMAGE_ROOT}/${video_name}_frames"
+  local video_path=""
+
+  [[ -n "$video_name" ]] || return 0
+
+  if [[ -e "${target_frame_dir}" ]]; then
+    return 0
+  fi
+
+  if [[ -d "${source_frame_dir}" ]]; then
+    ln -s "${source_frame_dir}" "${target_frame_dir}"
+    echo "[progress] Reusing existing frames for ${video_name} via ${source_frame_dir}"
+    return 0
+  fi
+
+  if ! video_path="$(resolve_video_path "${source_image_root}" "${video_name}")"; then
+    echo "Could not find extracted frames or a supported raw video for ${video_name} under ${source_image_root}" >&2
+    return 1
+  fi
+
+  echo "[progress] Extracting frames for ${video_name} into ${target_frame_dir}"
+  apptainer exec \
+    --nv \
+    --bind /scratch:/scratch \
+    --bind "${TEMP_PARENT}:${TEMP_PARENT}" \
+    "${APPTAINER_IMAGE}" \
+    python -u "${COMMON_PY}" --video "${video_path}" --output-dir "${target_frame_dir}"
+}
+
+prepare_image_root_for_finetune() {
+  local source_image_root="$1"
+  shift
+  local video_name=""
+  local -A seen_videos=()
+
+  ensure_temp_image_root
+
+  for video_name in "$@"; do
+    [[ -n "$video_name" ]] || continue
+    if [[ -n "${seen_videos[$video_name]+x}" ]]; then
+      continue
+    fi
+    seen_videos["$video_name"]=1
+    stage_video_frames_for_finetune "${source_image_root}" "${video_name}"
+  done
+}
+
 # ================ JOB INFO ================
 
 echo "Loaded modules:"
@@ -222,6 +332,14 @@ DETECTOR_PATH="${DETECTOR_PATH:-${MODEL_ROOT}/pretrained_models/detector.pt}"
 POSE_DIR="${POSE_DIR:-${VIPE_OUTPUT_ROOT}/pose}"
 INTRINSICS_DIR="${INTRINSICS_DIR:-${VIPE_OUTPUT_ROOT}/intrinsics}"
 APPTAINER_IMAGE="${APPTAINER_IMAGE:-${MODEL_ROOT}/apptainer/template.sif}"
+COMMON_PY="${COMMON_PY:-${PROJECT_ROOT}/models/common/extract_video_frames.py}"
+TEMP_PARENT="${TEMP_PARENT:-/tmp}"
+KEEP_TEMP_FRAMES="${KEEP_TEMP_FRAMES:-false}"
+TEMP_WORKDIR=""
+TEMP_IMAGE_ROOT=""
+SOURCE_IMAGE_FOLDER=""
+
+trap cleanup_temp_frames EXIT
 
 # ================ TRAINING CONFIG ================
 
@@ -318,6 +436,11 @@ if [[ ! -f "${DETECTOR_PATH}" ]]; then
   exit 1
 fi
 
+if [[ ! -f "${COMMON_PY}" ]]; then
+  echo "Frame extraction helper not found: ${COMMON_PY}" >&2
+  exit 1
+fi
+
 case "$TRAIN_MODE" in
   distill)
     if ! is_true "$ALL_VIDEOS" && [[ -z "$VIDEO_NAME" && -z "$VIDEO_NAMES" ]]; then
@@ -341,6 +464,27 @@ case "$TRAIN_MODE" in
     echo "Test mode selected video: ${VIDEO_NAME}"
     ;;
 esac
+
+declare -a SELECTED_VIDEOS=()
+if is_true "$ALL_VIDEOS"; then
+  while IFS= read -r selected_video; do
+    [[ -n "$selected_video" ]] || continue
+    SELECTED_VIDEOS+=("$selected_video")
+  done < <(list_candidate_videos "$IMAGE_FOLDER")
+elif [[ -n "${VIDEO_NAMES}" ]]; then
+  IFS='|' read -r -a SELECTED_VIDEOS <<< "${VIDEO_NAMES}"
+else
+  SELECTED_VIDEOS=("${VIDEO_NAME}")
+fi
+
+if (( ${#SELECTED_VIDEOS[@]} == 0 )); then
+  echo "No candidate videos were resolved under ${IMAGE_FOLDER} for training." >&2
+  exit 1
+fi
+
+SOURCE_IMAGE_FOLDER="${IMAGE_FOLDER}"
+prepare_image_root_for_finetune "${SOURCE_IMAGE_FOLDER}" "${SELECTED_VIDEOS[@]}"
+IMAGE_FOLDER="${TEMP_IMAGE_ROOT}"
 
 if [[ -z "${RUN_NAME:-}" ]]; then
   if [[ -n "${EXPERIMENT_NAME}" ]]; then
@@ -457,6 +601,8 @@ echo "Save every:      ${SAVE_EVERY}"
 echo "Sample limit:    ${SAMPLE_LIMIT}"
 echo "Validation split:${VALIDATION_SPLIT}"
 echo "Checkpoint:      ${CHECKPOINT}"
+echo "Source images:   ${SOURCE_IMAGE_FOLDER}"
+echo "Prepared images: ${IMAGE_FOLDER}"
 if is_true "$ALL_VIDEOS"; then
   echo "Videos:          all discovered videos"
 elif [[ -n "${VIDEO_NAMES}" ]]; then
@@ -480,6 +626,7 @@ APPTAINER_ARGS=(
   exec
   --nv
   --bind /scratch:/scratch
+  --bind "${TEMP_PARENT}:${TEMP_PARENT}"
 )
 
 echo "[progress] Starting containerized training process now..."
