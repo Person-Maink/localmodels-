@@ -1,6 +1,6 @@
 defaults:
   train_mode: distill
-  train_scope: refine_net
+  train_scope: camera_head
   videos:
     - 120-2_clip_1
   validation_split: 0.15
@@ -50,13 +50,9 @@ experiments:
     run_name_suffix: test_temp_all
     train_mode: test
     max_steps: 100
-    log_every: 1
+    log_every: 10
     save_every: 50
     sample_limit: 64
-    batch_size: 2
-    num_workers: 1
-    temporal:
-      window_size: 3
     losses:
       temporal_camera:
         enabled: true
