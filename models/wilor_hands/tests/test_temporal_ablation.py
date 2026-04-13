@@ -54,6 +54,7 @@ class TemporalAblationTests(unittest.TestCase):
         self.assertEqual(resolved["train_mode"], "distill")
         self.assertEqual(resolved["temporal"]["window_size"], 8)
         self.assertTrue(resolved["losses"]["temporal_camera"]["enabled"])
+        self.assertEqual(resolved["losses"]["temporal_camera"]["formulation"], "static")
         self.assertAlmostEqual(resolved["losses"]["temporal_camera"]["weight"], 0.02)
         self.assertTrue(resolved["losses"]["vipe_camera"]["enabled"])
 

@@ -87,24 +87,6 @@ print_command() {
   printf '\n'
 }
 
-strip_wrapping_quotes() {
-  local value="${1:-}"
-  value="${value%\"}"
-  value="${value#\"}"
-  value="${value%\'}"
-  value="${value#\'}"
-  printf '%s' "$value"
-}
-
-resolve_model_root_path() {
-  local value="$1"
-  if [[ "$value" = /* ]]; then
-    printf '%s' "$value"
-  else
-    printf '%s' "${CFG_MODEL_ROOT}/${value}"
-  fi
-}
-
 set_from_config_if_unset() {
   local var_name="$1"
   local encoded_value="$2"
@@ -272,19 +254,21 @@ if [[ -n "${LOSS_CONFIG}" ]]; then
   done < <("${RESOLVE_CMD[@]}")
 fi
 
-TRAIN_MODE="${TRAIN_MODE:-distill}"        # distill | supervised | test
-INIT_MODE="${INIT_MODE:-checkpoint}"       # checkpoint | fresh
+TRAIN_MODE="${TRAIN_MODE:-distill}"        # distill | test
 TRAIN_SCOPE="${TRAIN_SCOPE:-refine_net}"   # camera_head | refine_net | full
 CAMERA_LOSS_WEIGHT="${CAMERA_LOSS_WEIGHT:-0.01}"
 VIPE_CAMERA_ENABLED="${VIPE_CAMERA_ENABLED:-}"
 VIPE_CAMERA_WEIGHT="${VIPE_CAMERA_WEIGHT:-}"
 TEMPORAL_CAMERA_ENABLED="${TEMPORAL_CAMERA_ENABLED:-}"
+TEMPORAL_CAMERA_FORMULATION="${TEMPORAL_CAMERA_FORMULATION:-}"
 TEMPORAL_CAMERA_WEIGHT="${TEMPORAL_CAMERA_WEIGHT:-}"
 TEMPORAL_CAMERA_SCORER_WEIGHT="${TEMPORAL_CAMERA_SCORER_WEIGHT:-}"
 TEMPORAL_BBOX_PROJECTED_ENABLED="${TEMPORAL_BBOX_PROJECTED_ENABLED:-}"
+TEMPORAL_BBOX_PROJECTED_FORMULATION="${TEMPORAL_BBOX_PROJECTED_FORMULATION:-}"
 TEMPORAL_BBOX_PROJECTED_WEIGHT="${TEMPORAL_BBOX_PROJECTED_WEIGHT:-}"
 TEMPORAL_BBOX_PROJECTED_SCORER_WEIGHT="${TEMPORAL_BBOX_PROJECTED_SCORER_WEIGHT:-}"
 TEMPORAL_BBOX_INPUT_ENABLED="${TEMPORAL_BBOX_INPUT_ENABLED:-}"
+TEMPORAL_BBOX_INPUT_FORMULATION="${TEMPORAL_BBOX_INPUT_FORMULATION:-}"
 TEMPORAL_BBOX_INPUT_WEIGHT="${TEMPORAL_BBOX_INPUT_WEIGHT:-}"
 TEMPORAL_BBOX_INPUT_SCORER_WEIGHT="${TEMPORAL_BBOX_INPUT_SCORER_WEIGHT:-}"
 LR="${LR:-1e-5}"
@@ -316,40 +300,13 @@ ALL_VIDEOS="${ALL_VIDEOS:-false}"
 DETECTION_CONF="${DETECTION_CONF:-0.3}"
 DETECTION_CACHE="${DETECTION_CACHE:-}"
 
-# Supervised-specific inputs
-DATASET_FILE="${DATASET_FILE:-}"
-IMG_DIR="${IMG_DIR:-}"
-VIDEO_NAME_OVERRIDE="${VIDEO_NAME_OVERRIDE:-}"
-FRAME_INDEX_PATTERN="${FRAME_INDEX_PATTERN:-"(\\d+)$"}"
-SHUFFLE="${SHUFFLE:-true}"
-MOCAP_FILE="${MOCAP_FILE:-}"
-ADVERSARIAL_WEIGHT="${ADVERSARIAL_WEIGHT:-0.0}"
-
-case "$INIT_MODE" in
-  checkpoint|fresh) ;;
-  *)
-    echo "Unsupported INIT_MODE='${INIT_MODE}'. Use 'checkpoint' or 'fresh'." >&2
-    exit 1
-    ;;
-esac
-
 case "$TRAIN_MODE" in
-  distill|supervised|test) ;;
+  distill|test) ;;
   *)
-    echo "Unsupported TRAIN_MODE='${TRAIN_MODE}'. Use 'distill', 'supervised', or 'test'." >&2
+    echo "Unsupported TRAIN_MODE='${TRAIN_MODE}'. Use 'distill' or 'test'." >&2
     exit 1
     ;;
 esac
-
-if [[ "$INIT_MODE" == "fresh" && "$TRAIN_MODE" != "supervised" ]]; then
-  echo "INIT_MODE=fresh is only supported when TRAIN_MODE=supervised." >&2
-  exit 1
-fi
-
-if [[ "$INIT_MODE" == "fresh" && "$TRAIN_SCOPE" != "full" ]]; then
-  echo "INIT_MODE=fresh requires TRAIN_SCOPE=full; overriding '${TRAIN_SCOPE}' to 'full'."
-  TRAIN_SCOPE="full"
-fi
 
 if [[ ! -f "${APPTAINER_IMAGE}" ]]; then
   echo "Apptainer image not found: ${APPTAINER_IMAGE}" >&2
@@ -361,49 +318,12 @@ if [[ ! -f "${CFG_PATH}" ]]; then
   exit 1
 fi
 
-CFG_DIR="$(cd "$(dirname "${CFG_PATH}")" && pwd -P)"
-if [[ "$(basename "${CFG_DIR}")" == "pretrained_models" ]]; then
-  CFG_MODEL_ROOT="$(cd "${CFG_DIR}/.." && pwd -P)"
-else
-  CFG_MODEL_ROOT="${CFG_DIR}"
-fi
-
-BACKBONE_PRETRAINED_PATH=""
-MANO_DIR="${MANO_DIR:-${CFG_MODEL_ROOT}/mano_data}"
-MANO_RIGHT_PATH="${MANO_RIGHT_PATH:-${MANO_DIR}/MANO_RIGHT.pkl}"
-MANO_MEAN_PARAMS_PATH="${MANO_MEAN_PARAMS_PATH:-${MANO_DIR}/mano_mean_params.npz}"
-
-if [[ "$INIT_MODE" == "checkpoint" && ! -f "${CHECKPOINT}" ]]; then
+if [[ ! -f "${CHECKPOINT}" ]]; then
   echo "Checkpoint not found: ${CHECKPOINT}" >&2
   exit 1
 fi
 
-if [[ "$INIT_MODE" == "fresh" ]]; then
-  cfg_backbone_pretrained="$(sed -n 's/^[[:space:]]*PRETRAINED_WEIGHTS:[[:space:]]*//p' "${CFG_PATH}" | head -n 1)"
-  cfg_backbone_pretrained="$(strip_wrapping_quotes "${cfg_backbone_pretrained}")"
-  if [[ -z "${cfg_backbone_pretrained}" ]]; then
-    echo "MODEL.BACKBONE.PRETRAINED_WEIGHTS is not set in ${CFG_PATH}." >&2
-    exit 1
-  fi
-  BACKBONE_PRETRAINED_PATH="$(resolve_model_root_path "${cfg_backbone_pretrained}")"
-
-  if [[ ! -f "${BACKBONE_PRETRAINED_PATH}" ]]; then
-    echo "Backbone pretrained weights not found: ${BACKBONE_PRETRAINED_PATH}" >&2
-    exit 1
-  fi
-
-  if [[ ! -f "${MANO_RIGHT_PATH}" ]]; then
-    echo "MANO right-hand model not found: ${MANO_RIGHT_PATH}" >&2
-    exit 1
-  fi
-
-  if [[ ! -f "${MANO_MEAN_PARAMS_PATH}" ]]; then
-    echo "MANO mean params not found: ${MANO_MEAN_PARAMS_PATH}" >&2
-    exit 1
-  fi
-fi
-
-if [[ "${TRAIN_MODE}" != "supervised" && ! -f "${DETECTOR_PATH}" ]]; then
+if [[ ! -f "${DETECTOR_PATH}" ]]; then
   echo "Detector weights not found: ${DETECTOR_PATH}" >&2
   exit 1
 fi
@@ -413,12 +333,6 @@ case "$TRAIN_MODE" in
     if ! is_true "$ALL_VIDEOS" && [[ -z "$VIDEO_NAME" && -z "$VIDEO_NAMES" ]]; then
       VIDEO_NAME="clip_2"
     fi
-    : "${MAX_STEPS:=10000}"
-    : "${LOG_EVERY:=25}"
-    : "${SAVE_EVERY:=250}"
-    : "${SAMPLE_LIMIT:=0}"
-    ;;
-  supervised)
     : "${MAX_STEPS:=10000}"
     : "${LOG_EVERY:=25}"
     : "${SAVE_EVERY:=250}"
@@ -451,12 +365,6 @@ if [[ -z "${RUN_NAME:-}" ]]; then
     fi
   elif [[ "$TRAIN_MODE" == "test" ]]; then
     RUN_NAME="test_${VIDEO_NAME}"
-  else
-    if [[ -n "$DATASET_FILE" ]]; then
-      RUN_NAME="supervised_$(basename "${DATASET_FILE%.*}")"
-    else
-      RUN_NAME="supervised_run"
-    fi
   fi
 fi
 RUN_OUTPUT_DIR="${RUN_OUTPUT_DIR:-${OUTPUT_ROOT}/${RUN_NAME}}"
@@ -465,150 +373,91 @@ mkdir -p "${OUTPUT_ROOT}" "${RUN_OUTPUT_DIR}"
 
 # ================ COMMAND BUILD ================
 
-case "$TRAIN_MODE" in
-  distill|test)
-    if [[ -z "$DETECTION_CACHE" ]]; then
-      if is_true "$ALL_VIDEOS"; then
-        DETECTION_CACHE="${RUN_OUTPUT_DIR}/detections_all_videos.json"
-      elif [[ -n "$VIDEO_NAMES" ]]; then
-        DETECTION_CACHE="${RUN_OUTPUT_DIR}/detections_selected_videos.json"
-      else
-        DETECTION_CACHE="${RUN_OUTPUT_DIR}/detections_${VIDEO_NAME}.json"
-      fi
-    fi
-    mkdir -p "$(dirname "${DETECTION_CACHE}")"
+if [[ -z "$DETECTION_CACHE" ]]; then
+  if is_true "$ALL_VIDEOS"; then
+    DETECTION_CACHE="${RUN_OUTPUT_DIR}/detections_all_videos.json"
+  elif [[ -n "$VIDEO_NAMES" ]]; then
+    DETECTION_CACHE="${RUN_OUTPUT_DIR}/detections_selected_videos.json"
+  else
+    DETECTION_CACHE="${RUN_OUTPUT_DIR}/detections_${VIDEO_NAME}.json"
+  fi
+fi
+mkdir -p "$(dirname "${DETECTION_CACHE}")"
 
-    PYTHON_CMD=(
-      python -u "${MODEL_ROOT}/finetune_wilor_distill_vipe.py"
-      --checkpoint "${CHECKPOINT}"
-      --cfg_path "${CFG_PATH}"
-      --detector_path "${DETECTOR_PATH}"
-      --image_folder "${IMAGE_FOLDER}"
-      --pose_dir "${POSE_DIR}"
-      --intrinsics_dir "${INTRINSICS_DIR}"
-      --output_dir "${RUN_OUTPUT_DIR}"
-      --train_scope "${TRAIN_SCOPE}"
-      --camera_loss_weight "${CAMERA_LOSS_WEIGHT}"
-      --validation_split "${VALIDATION_SPLIT}"
-      --lr "${LR}"
-      --weight_decay "${WEIGHT_DECAY}"
-      --batch_size "${BATCH_SIZE}"
-      --num_workers "${NUM_WORKERS}"
-      --max_steps "${MAX_STEPS}"
-      --log_every "${LOG_EVERY}"
-      --save_every "${SAVE_EVERY}"
-      --seed "${SEED}"
-      --rescale_factor "${RESCALE_FACTOR}"
-      --detection_conf "${DETECTION_CONF}"
-    )
+PYTHON_CMD=(
+  python -u "${MODEL_ROOT}/finetune_wilor_distill_vipe.py"
+  --checkpoint "${CHECKPOINT}"
+  --cfg_path "${CFG_PATH}"
+  --detector_path "${DETECTOR_PATH}"
+  --image_folder "${IMAGE_FOLDER}"
+  --pose_dir "${POSE_DIR}"
+  --intrinsics_dir "${INTRINSICS_DIR}"
+  --output_dir "${RUN_OUTPUT_DIR}"
+  --train_scope "${TRAIN_SCOPE}"
+  --camera_loss_weight "${CAMERA_LOSS_WEIGHT}"
+  --validation_split "${VALIDATION_SPLIT}"
+  --lr "${LR}"
+  --weight_decay "${WEIGHT_DECAY}"
+  --batch_size "${BATCH_SIZE}"
+  --num_workers "${NUM_WORKERS}"
+  --max_steps "${MAX_STEPS}"
+  --log_every "${LOG_EVERY}"
+  --save_every "${SAVE_EVERY}"
+  --seed "${SEED}"
+  --rescale_factor "${RESCALE_FACTOR}"
+  --detection_conf "${DETECTION_CONF}"
+)
 
-    append_value_flag_if_set "--loss_config" "${LOSS_CONFIG}"
-    append_value_flag_if_set "--experiment_name" "${EXPERIMENT_NAME}"
+append_value_flag_if_set "--loss_config" "${LOSS_CONFIG}"
+append_value_flag_if_set "--experiment_name" "${EXPERIMENT_NAME}"
 
-    if [[ "$SAMPLE_LIMIT" != "0" ]]; then
-      PYTHON_CMD+=(--sample_limit "${SAMPLE_LIMIT}")
-    fi
+if [[ "$SAMPLE_LIMIT" != "0" ]]; then
+  PYTHON_CMD+=(--sample_limit "${SAMPLE_LIMIT}")
+fi
 
-    PYTHON_CMD+=(--detection_cache "${DETECTION_CACHE}")
+PYTHON_CMD+=(--detection_cache "${DETECTION_CACHE}")
 
-    if is_true "$ALL_VIDEOS"; then
-      PYTHON_CMD+=(--all_videos)
-    elif [[ -n "${VIDEO_NAMES}" ]]; then
-      IFS='|' read -r -a SELECTED_VIDEOS <<< "${VIDEO_NAMES}"
-      for selected_video in "${SELECTED_VIDEOS[@]}"; do
-        [[ -n "${selected_video}" ]] || continue
-        PYTHON_CMD+=(--video "${selected_video}")
-      done
-    else
-      PYTHON_CMD+=(--video "${VIDEO_NAME}")
-    fi
+if is_true "$ALL_VIDEOS"; then
+  PYTHON_CMD+=(--all_videos)
+elif [[ -n "${VIDEO_NAMES}" ]]; then
+  IFS='|' read -r -a SELECTED_VIDEOS <<< "${VIDEO_NAMES}"
+  for selected_video in "${SELECTED_VIDEOS[@]}"; do
+    [[ -n "${selected_video}" ]] || continue
+    PYTHON_CMD+=(--video "${selected_video}")
+  done
+else
+  PYTHON_CMD+=(--video "${VIDEO_NAME}")
+fi
 
-    append_value_flag_if_set "--temporal_window_size" "${TEMPORAL_WINDOW_SIZE}"
-    append_value_flag_if_set "--temporal_window_stride" "${TEMPORAL_WINDOW_STRIDE}"
-    append_value_flag_if_set "--temporal_max_frame_gap" "${TEMPORAL_MAX_FRAME_GAP}"
-    append_value_flag_if_set "--temporal_reduction" "${TEMPORAL_REDUCTION}"
-    append_value_flag_if_set "--temporal_scorer_hidden_dim" "${TEMPORAL_SCORER_HIDDEN_DIM}"
-    append_value_flag_if_set "--temporal_scorer_layers" "${TEMPORAL_SCORER_LAYERS}"
-    append_value_flag_if_set "--temporal_scorer_dropout" "${TEMPORAL_SCORER_DROPOUT}"
-    append_value_flag_if_set "--vipe_camera_weight" "${VIPE_CAMERA_WEIGHT}"
-    append_optional_bool_override "vipe_camera_enabled" "${VIPE_CAMERA_ENABLED}"
-    append_optional_bool_override "temporal_camera_enabled" "${TEMPORAL_CAMERA_ENABLED}"
-    append_value_flag_if_set "--temporal_camera_weight" "${TEMPORAL_CAMERA_WEIGHT}"
-    append_value_flag_if_set "--temporal_camera_scorer_weight" "${TEMPORAL_CAMERA_SCORER_WEIGHT}"
-    append_optional_bool_override "temporal_bbox_projected_enabled" "${TEMPORAL_BBOX_PROJECTED_ENABLED}"
-    append_value_flag_if_set "--temporal_bbox_projected_weight" "${TEMPORAL_BBOX_PROJECTED_WEIGHT}"
-    append_value_flag_if_set "--temporal_bbox_projected_scorer_weight" "${TEMPORAL_BBOX_PROJECTED_SCORER_WEIGHT}"
-    append_optional_bool_override "temporal_bbox_input_enabled" "${TEMPORAL_BBOX_INPUT_ENABLED}"
-    append_value_flag_if_set "--temporal_bbox_input_weight" "${TEMPORAL_BBOX_INPUT_WEIGHT}"
-    append_value_flag_if_set "--temporal_bbox_input_scorer_weight" "${TEMPORAL_BBOX_INPUT_SCORER_WEIGHT}"
-    ;;
-
-  supervised)
-    if [[ -z "$DATASET_FILE" ]]; then
-      echo "DATASET_FILE must be set when TRAIN_MODE=supervised." >&2
-      exit 1
-    fi
-
-    if [[ -z "$IMG_DIR" ]]; then
-      echo "IMG_DIR must be set when TRAIN_MODE=supervised." >&2
-      exit 1
-    fi
-
-    PYTHON_CMD=(
-      python -u "${MODEL_ROOT}/finetune_wilor_supervised.py"
-      --init_mode "${INIT_MODE}"
-      --cfg_path "${CFG_PATH}"
-      --dataset_file "${DATASET_FILE}"
-      --img_dir "${IMG_DIR}"
-      --pose_dir "${POSE_DIR}"
-      --intrinsics_dir "${INTRINSICS_DIR}"
-      --output_dir "${RUN_OUTPUT_DIR}"
-      --frame_index_pattern "${FRAME_INDEX_PATTERN}"
-      --rescale_factor "${RESCALE_FACTOR}"
-      --train_scope "${TRAIN_SCOPE}"
-      --camera_loss_weight "${CAMERA_LOSS_WEIGHT}"
-      --lr "${LR}"
-      --weight_decay "${WEIGHT_DECAY}"
-      --batch_size "${BATCH_SIZE}"
-      --num_workers "${NUM_WORKERS}"
-      --max_steps "${MAX_STEPS}"
-      --log_every "${LOG_EVERY}"
-      --save_every "${SAVE_EVERY}"
-      --seed "${SEED}"
-      --adversarial_weight "${ADVERSARIAL_WEIGHT}"
-    )
-
-    if [[ "$INIT_MODE" == "checkpoint" ]]; then
-      PYTHON_CMD+=(--checkpoint "${CHECKPOINT}")
-    fi
-
-    if [[ "$SAMPLE_LIMIT" != "0" ]]; then
-      PYTHON_CMD+=(--sample_limit "${SAMPLE_LIMIT}")
-    fi
-
-    if [[ -n "$VIDEO_NAME_OVERRIDE" ]]; then
-      PYTHON_CMD+=(--video_name "${VIDEO_NAME_OVERRIDE}")
-    fi
-
-    if [[ -n "$MOCAP_FILE" ]]; then
-      PYTHON_CMD+=(--mocap_file "${MOCAP_FILE}")
-    fi
-    ;;
-
-esac
+append_value_flag_if_set "--temporal_window_size" "${TEMPORAL_WINDOW_SIZE}"
+append_value_flag_if_set "--temporal_window_stride" "${TEMPORAL_WINDOW_STRIDE}"
+append_value_flag_if_set "--temporal_max_frame_gap" "${TEMPORAL_MAX_FRAME_GAP}"
+append_value_flag_if_set "--temporal_reduction" "${TEMPORAL_REDUCTION}"
+append_value_flag_if_set "--temporal_scorer_hidden_dim" "${TEMPORAL_SCORER_HIDDEN_DIM}"
+append_value_flag_if_set "--temporal_scorer_layers" "${TEMPORAL_SCORER_LAYERS}"
+append_value_flag_if_set "--temporal_scorer_dropout" "${TEMPORAL_SCORER_DROPOUT}"
+append_value_flag_if_set "--vipe_camera_weight" "${VIPE_CAMERA_WEIGHT}"
+append_optional_bool_override "vipe_camera_enabled" "${VIPE_CAMERA_ENABLED}"
+append_optional_bool_override "temporal_camera_enabled" "${TEMPORAL_CAMERA_ENABLED}"
+append_value_flag_if_set "--temporal_camera_formulation" "${TEMPORAL_CAMERA_FORMULATION}"
+append_value_flag_if_set "--temporal_camera_weight" "${TEMPORAL_CAMERA_WEIGHT}"
+append_value_flag_if_set "--temporal_camera_scorer_weight" "${TEMPORAL_CAMERA_SCORER_WEIGHT}"
+append_optional_bool_override "temporal_bbox_projected_enabled" "${TEMPORAL_BBOX_PROJECTED_ENABLED}"
+append_value_flag_if_set "--temporal_bbox_projected_formulation" "${TEMPORAL_BBOX_PROJECTED_FORMULATION}"
+append_value_flag_if_set "--temporal_bbox_projected_weight" "${TEMPORAL_BBOX_PROJECTED_WEIGHT}"
+append_value_flag_if_set "--temporal_bbox_projected_scorer_weight" "${TEMPORAL_BBOX_PROJECTED_SCORER_WEIGHT}"
+append_optional_bool_override "temporal_bbox_input_enabled" "${TEMPORAL_BBOX_INPUT_ENABLED}"
+append_value_flag_if_set "--temporal_bbox_input_formulation" "${TEMPORAL_BBOX_INPUT_FORMULATION}"
+append_value_flag_if_set "--temporal_bbox_input_weight" "${TEMPORAL_BBOX_INPUT_WEIGHT}"
+append_value_flag_if_set "--temporal_bbox_input_scorer_weight" "${TEMPORAL_BBOX_INPUT_SCORER_WEIGHT}"
 
 append_bool_flag "use_gpu" "${USE_GPU}"
 append_bool_flag "amp" "${AMP}"
-
-if [[ "$TRAIN_MODE" == "supervised" ]]; then
-  append_bool_flag "shuffle" "${SHUFFLE}"
-fi
 
 echo "Project root:    ${PROJECT_ROOT}"
 echo "Model root:      ${MODEL_ROOT}"
 echo "Output dir:      ${RUN_OUTPUT_DIR}"
 echo "Train mode:      ${TRAIN_MODE}"
-echo "Init mode:       ${INIT_MODE}"
 echo "Loss config:     ${LOSS_CONFIG:-<none>}"
 echo "Experiment:      ${EXPERIMENT_NAME:-<none>}"
 echo "Train scope:     ${TRAIN_SCOPE}"
@@ -617,20 +466,13 @@ echo "Log every:       ${LOG_EVERY}"
 echo "Save every:      ${SAVE_EVERY}"
 echo "Sample limit:    ${SAMPLE_LIMIT}"
 echo "Validation split:${VALIDATION_SPLIT}"
-if [[ "$INIT_MODE" == "checkpoint" ]]; then
-  echo "Checkpoint:      ${CHECKPOINT}"
+echo "Checkpoint:      ${CHECKPOINT}"
+if is_true "$ALL_VIDEOS"; then
+  echo "Videos:          all discovered videos"
+elif [[ -n "${VIDEO_NAMES}" ]]; then
+  echo "Videos:          ${VIDEO_NAMES}"
 else
-  echo "Checkpoint:      <fresh init>"
-  echo "Backbone init:   ${BACKBONE_PRETRAINED_PATH}"
-fi
-if [[ "$TRAIN_MODE" == "distill" || "$TRAIN_MODE" == "test" ]]; then
-  if is_true "$ALL_VIDEOS"; then
-    echo "Videos:          all discovered videos"
-  elif [[ -n "${VIDEO_NAMES}" ]]; then
-    echo "Videos:          ${VIDEO_NAMES}"
-  else
-    echo "Video:           ${VIDEO_NAME}"
-  fi
+  echo "Video:           ${VIDEO_NAME}"
 fi
 if [[ -n "${TEMPORAL_WINDOW_SIZE}" || -n "${TEMPORAL_WINDOW_STRIDE}" || -n "${TEMPORAL_MAX_FRAME_GAP}" ]]; then
   echo "Temporal win:    size=${TEMPORAL_WINDOW_SIZE:-<default>} stride=${TEMPORAL_WINDOW_STRIDE:-<default>} gap=${TEMPORAL_MAX_FRAME_GAP:-<default>}"

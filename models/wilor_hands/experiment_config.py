@@ -26,16 +26,19 @@ DEFAULT_LOSS_CONFIG = {
     },
     "temporal_camera": {
         "enabled": False,
+        "formulation": "static",
         "weight": 0.0,
         "scorer_weight": 0.0,
     },
     "temporal_bbox_projected": {
         "enabled": False,
+        "formulation": "static",
         "weight": 0.0,
         "scorer_weight": 0.0,
     },
     "temporal_bbox_input": {
         "enabled": False,
+        "formulation": "static",
         "weight": 0.0,
         "scorer_weight": 0.0,
     },
@@ -121,6 +124,11 @@ def _normalize_experiment(resolved: dict[str, Any]) -> dict[str, Any]:
     normalized["name"] = resolved.get("name", normalized.get("name"))
     normalized["run_name_suffix"] = str(normalized.get("run_name_suffix") or "")
     normalized["train_mode"] = str(normalized.get("train_mode") or "distill")
+    if normalized["train_mode"] not in {"distill", "test"}:
+        raise ValueError(
+            f"Unsupported train_mode '{normalized['train_mode']}'. "
+            "WiLoR experiment configs now support only 'distill' and 'test'."
+        )
     normalized["videos"] = _ensure_list(normalized.get("videos"))
     normalized["all_videos"] = _to_bool(normalized.get("all_videos", False))
 
@@ -166,6 +174,13 @@ def _normalize_experiment(resolved: dict[str, Any]) -> dict[str, Any]:
         family_cfg["enabled"] = _to_bool(family_cfg["enabled"])
         family_cfg["weight"] = float(family_cfg["weight"])
         family_cfg["scorer_weight"] = float(family_cfg.get("scorer_weight", 0.0))
+        if family_name != "vipe_camera":
+            family_cfg["formulation"] = str(family_cfg.get("formulation", "static"))
+            if family_cfg["formulation"] not in {"static", "learnable"}:
+                raise ValueError(
+                    f"Unsupported formulation '{family_cfg['formulation']}' for loss family "
+                    f"'{family_name}'. Use 'static' or 'learnable'."
+                )
 
     return normalized
 
@@ -265,6 +280,8 @@ def experiment_to_env_map(resolved: dict[str, Any]) -> dict[str, str]:
         env_map[f"{prefix}_ENABLED"] = "true" if family_cfg["enabled"] else "false"
         env_map[f"{prefix}_WEIGHT"] = str(family_cfg["weight"])
         env_map[f"{prefix}_SCORER_WEIGHT"] = str(family_cfg["scorer_weight"])
+        if family_name != "vipe_camera":
+            env_map[f"{prefix}_FORMULATION"] = str(family_cfg["formulation"])
 
     return env_map
 

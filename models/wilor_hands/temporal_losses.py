@@ -312,8 +312,9 @@ def compute_temporal_loss_bundle(
             reduction=str(temporal_cfg["reduction"]),
         )
         score_loss = base_loss.new_zeros(())
+        formulation = str(family_cfg.get("formulation", "static"))
         scorer_weight = float(family_cfg.get("scorer_weight", 0.0))
-        if scorer is not None and scorer_weight > 0.0:
+        if formulation == "learnable" and scorer is not None and scorer_weight > 0.0:
             score_loss = scorer.score_family(family_name, residual).mean()
 
         total_loss = total_loss + float(family_cfg["weight"]) * base_loss

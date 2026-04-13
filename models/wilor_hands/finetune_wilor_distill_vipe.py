@@ -88,12 +88,15 @@ def make_argparser() -> argparse.ArgumentParser:
     parser.add_argument("--vipe_camera_enabled", action=argparse.BooleanOptionalAction, default=None)
     parser.add_argument("--vipe_camera_weight", type=float, default=None)
     parser.add_argument("--temporal_camera_enabled", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--temporal_camera_formulation", type=str, default=None, choices=["static", "learnable"])
     parser.add_argument("--temporal_camera_weight", type=float, default=None)
     parser.add_argument("--temporal_camera_scorer_weight", type=float, default=None)
     parser.add_argument("--temporal_bbox_projected_enabled", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--temporal_bbox_projected_formulation", type=str, default=None, choices=["static", "learnable"])
     parser.add_argument("--temporal_bbox_projected_weight", type=float, default=None)
     parser.add_argument("--temporal_bbox_projected_scorer_weight", type=float, default=None)
     parser.add_argument("--temporal_bbox_input_enabled", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--temporal_bbox_input_formulation", type=str, default=None, choices=["static", "learnable"])
     parser.add_argument("--temporal_bbox_input_weight", type=float, default=None)
     parser.add_argument("--temporal_bbox_input_scorer_weight", type=float, default=None)
     return parser
@@ -195,6 +198,12 @@ def _apply_experiment_defaults(
     _set_arg_from_config(
         args,
         parser,
+        "temporal_camera_formulation",
+        loss_cfg["temporal_camera"]["formulation"],
+    )
+    _set_arg_from_config(
+        args,
+        parser,
         "temporal_camera_weight",
         loss_cfg["temporal_camera"]["weight"],
     )
@@ -213,6 +222,12 @@ def _apply_experiment_defaults(
     _set_arg_from_config(
         args,
         parser,
+        "temporal_bbox_projected_formulation",
+        loss_cfg["temporal_bbox_projected"]["formulation"],
+    )
+    _set_arg_from_config(
+        args,
+        parser,
         "temporal_bbox_projected_weight",
         loss_cfg["temporal_bbox_projected"]["weight"],
     )
@@ -227,6 +242,12 @@ def _apply_experiment_defaults(
         parser,
         "temporal_bbox_input_enabled",
         loss_cfg["temporal_bbox_input"]["enabled"],
+    )
+    _set_arg_from_config(
+        args,
+        parser,
+        "temporal_bbox_input_formulation",
+        loss_cfg["temporal_bbox_input"]["formulation"],
     )
     _set_arg_from_config(
         args,
@@ -263,23 +284,36 @@ def _resolve_loss_settings(
     base_loss_cfg["vipe_camera"]["weight"] = vipe_weight
     base_loss_cfg["vipe_camera"]["scorer_weight"] = 0.0
 
-    for family_name, enabled_attr, weight_attr, scorer_attr in (
-        ("temporal_camera", "temporal_camera_enabled", "temporal_camera_weight", "temporal_camera_scorer_weight"),
+    for family_name, enabled_attr, formulation_attr, weight_attr, scorer_attr in (
+        (
+            "temporal_camera",
+            "temporal_camera_enabled",
+            "temporal_camera_formulation",
+            "temporal_camera_weight",
+            "temporal_camera_scorer_weight",
+        ),
         (
             "temporal_bbox_projected",
             "temporal_bbox_projected_enabled",
+            "temporal_bbox_projected_formulation",
             "temporal_bbox_projected_weight",
             "temporal_bbox_projected_scorer_weight",
         ),
         (
             "temporal_bbox_input",
             "temporal_bbox_input_enabled",
+            "temporal_bbox_input_formulation",
             "temporal_bbox_input_weight",
             "temporal_bbox_input_scorer_weight",
         ),
     ):
+        base_loss_cfg[family_name]["formulation"] = str(
+            base_loss_cfg[family_name].get("formulation", "static")
+        )
         if getattr(args, enabled_attr) is not None:
             base_loss_cfg[family_name]["enabled"] = bool(getattr(args, enabled_attr))
+        if getattr(args, formulation_attr) is not None:
+            base_loss_cfg[family_name]["formulation"] = str(getattr(args, formulation_attr))
         if getattr(args, weight_attr) is not None:
             base_loss_cfg[family_name]["weight"] = float(getattr(args, weight_attr))
         if getattr(args, scorer_attr) is not None:
@@ -608,7 +642,9 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
 
     temporal_scorer = None
     if any(
-        loss_cfg[family_name]["enabled"] and loss_cfg[family_name]["scorer_weight"] > 0.0
+        loss_cfg[family_name]["enabled"]
+        and loss_cfg[family_name].get("formulation", "static") == "learnable"
+        and loss_cfg[family_name]["scorer_weight"] > 0.0
         for family_name in _active_temporal_families(loss_cfg)
     ):
         temporal_scorer = TemporalWindowScorer(
