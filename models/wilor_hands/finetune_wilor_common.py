@@ -1,5 +1,4 @@
 import json
-import os
 import random
 import re
 import sys
@@ -13,7 +12,6 @@ import torch
 from torch.utils.data import Dataset
 from ultralytics import YOLO
 
-from loader import load_images_from_folder
 from wilor.datasets.vitdet_dataset import ViTDetDataset
 from wilor.utils import recursive_to
 
@@ -21,6 +19,9 @@ from wilor.utils import recursive_to
 REPO_ROOT = Path(__file__).resolve().parent.parent
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
+
+FRAME_FILE_PATTERNS = ("*.jpg", "*.png", "*.jpeg")
+SUPPORTED_VIDEO_EXTS = (".mp4", ".avi", ".mts", ".mov")
 
 
 def seed_everything(seed: int) -> None:
@@ -37,8 +38,37 @@ def choose_device(use_gpu: bool = True) -> torch.device:
     return torch.device("cpu")
 
 
+def list_existing_frame_paths(
+    image_folder: str,
+    file_types: Sequence[str] = FRAME_FILE_PATTERNS,
+    video_exts: Sequence[str] = SUPPORTED_VIDEO_EXTS,
+) -> tuple[List[Path], List[Path]]:
+    image_root = Path(image_folder)
+    if not image_root.exists():
+        raise FileNotFoundError(f"Image folder not found: {image_root}")
+    if not image_root.is_dir():
+        raise NotADirectoryError(f"Image folder is not a directory: {image_root}")
+
+    frame_paths: List[Path] = []
+    for ext in file_types:
+        frame_paths.extend(sorted(image_root.glob(ext)))
+
+    for frame_dir in sorted(image_root.glob("*_frames")):
+        if not frame_dir.is_dir():
+            continue
+        for ext in file_types:
+            frame_paths.extend(sorted(frame_dir.glob(ext)))
+
+    raw_video_paths = [
+        path
+        for path in sorted(image_root.iterdir())
+        if path.is_file() and path.suffix.lower() in video_exts
+    ]
+    return sorted(frame_paths), raw_video_paths
+
+
 def discover_videos(image_folder: str) -> List[str]:
-    frame_paths = [Path(path) for path in load_images_from_folder(image_folder)]
+    frame_paths, _ = list_existing_frame_paths(image_folder)
     return sorted(
         {
             frame_path.parent.name[: -len("_frames")]
@@ -226,15 +256,21 @@ def build_detection_samples(
         return filtered_samples
 
     print(
-        f"[progress] Scanning image folder for extracted frames and videos: {image_folder}",
+        f"[progress] Scanning image folder for existing extracted frames: {image_folder}",
         flush=True,
     )
-    all_frame_paths = load_images_from_folder(image_folder)
+    all_frame_paths, raw_video_paths = list_existing_frame_paths(image_folder)
+    if raw_video_paths:
+        print(
+            "[progress] Ignoring raw video files during fine-tuning; "
+            "only pre-extracted *_frames directories are used.",
+            flush=True,
+        )
     selected_videos = set(video_names)
     selected_frame_paths = [
-        Path(img_path)
-        for img_path in all_frame_paths
-        if Path(img_path).parent.name.replace("_frames", "") in selected_videos
+        frame_path
+        for frame_path in all_frame_paths
+        if frame_path.parent.name.replace("_frames", "") in selected_videos
     ]
     selected_frame_paths = sorted(selected_frame_paths)
     if sample_limit > 0:
@@ -246,6 +282,12 @@ def build_detection_samples(
         f"{len(selected_videos)} selected video(s).",
         flush=True,
     )
+    if not selected_frame_paths:
+        print(
+            "[progress] No extracted frames matched the selected video(s). "
+            "If raw videos are present, extract them ahead of time instead of relying on on-the-fly extraction.",
+            flush=True,
+        )
 
     samples: List[Dict] = []
     video_name_to_idx = {name: idx for idx, name in enumerate(sorted(set(video_names)))}

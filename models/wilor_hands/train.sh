@@ -110,16 +110,6 @@ list_candidate_videos() {
     video_name="$(basename "$entry")"
     candidates+=("${video_name%_frames}")
   done
-
-  for entry in "${image_root}"/*; do
-    [[ -f "$entry" ]] || continue
-    case "${entry##*.}" in
-      mp4|MP4|avi|AVI|mts|MTS|mov|MOV)
-        video_name="$(basename "$entry")"
-        candidates+=("${video_name%.*}")
-        ;;
-    esac
-  done
   shopt -u nullglob
 
   if (( ${#candidates[@]} == 0 )); then
@@ -480,6 +470,9 @@ fi
 echo "Pose dir:        ${POSE_DIR}"
 echo "Intrinsics dir:  ${INTRINSICS_DIR}"
 print_command "${PYTHON_CMD[@]}"
+echo "[progress] About to launch Apptainer via srun."
+echo "[progress] SLURM wrapper log: ${outfile}"
+echo "[progress] Python run output dir: ${RUN_OUTPUT_DIR}"
 
 # ================ EXECUTION ================
 
@@ -489,7 +482,9 @@ APPTAINER_ARGS=(
   --bind /scratch:/scratch
 )
 
+echo "[progress] Starting containerized training process now..."
 srun apptainer "${APPTAINER_ARGS[@]}" "${APPTAINER_IMAGE}" "${PYTHON_CMD[@]}"
+echo "[progress] Containerized training process exited cleanly."
 
 echo "==============================================="
 end_time=$(date +%s)
