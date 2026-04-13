@@ -1,0 +1,118 @@
+
+The following have been reloaded with a version change:
+  1) python/3.10.12 => python/3.10.13
+
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1       6) python/3.10.13
+
+ 
+
+Mon Apr 13 21:51:50 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   50C    P0             83W /  300W |    1108MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    8   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9655415
+Job Name:       wilor-train
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 16384
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Mon Apr 13 21:51:50 CEST 2026
+===============================================
+Test mode selected video: 120-2_clip_1
+Project root:    /scratch/mthakur/manifold
+Model root:      /scratch/mthakur/manifold/models/wilor_hands
+Output dir:      /scratch/mthakur/manifold/outputs/wilor_finetune/test_temporal_all_losses
+Train mode:      test
+Loss config:     /scratch/mthakur/manifold/models/wilor_hands/experiments/temporal_ablations.yaml
+Experiment:      test_temporal_all_losses
+Train scope:     refine_net
+Max steps:       100
+Log every:       1
+Save every:      50
+Sample limit:    64
+Validation split:0.15
+Checkpoint:      /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/wilor_final.ckpt
+Video:           120-2_clip_1
+Temporal win:    size=8 stride=4 gap=1
+Pose dir:        /scratch/mthakur/manifold/outputs/vipe/pose
+Intrinsics dir:  /scratch/mthakur/manifold/outputs/vipe/intrinsics
+Command: python -u /scratch/mthakur/manifold/models/wilor_hands/finetune_wilor_distill_vipe.py --checkpoint /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/wilor_final.ckpt --cfg_path /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/model_config.yaml --detector_path /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/detector.pt --image_folder /scratch/mthakur/manifold/data//images --pose_dir /scratch/mthakur/manifold/outputs/vipe/pose --intrinsics_dir /scratch/mthakur/manifold/outputs/vipe/intrinsics --output_dir /scratch/mthakur/manifold/outputs/wilor_finetune/test_temporal_all_losses --train_scope refine_net --camera_loss_weight 0.01 --validation_split 0.15 --lr 1e-5 --weight_decay 1e-4 --batch_size 8 --num_workers 4 --max_steps 100 --log_every 1 --save_every 50 --seed 42 --rescale_factor 2.0 --detection_conf 0.3 --loss_config /scratch/mthakur/manifold/models/wilor_hands/experiments/temporal_ablations.yaml --experiment_name test_temporal_all_losses --sample_limit 64 --detection_cache /scratch/mthakur/manifold/outputs/wilor_finetune/test_temporal_all_losses/detections_120-2_clip_1.json --video 120-2_clip_1 --temporal_window_size 8 --temporal_window_stride 4 --temporal_max_frame_gap 1 --temporal_reduction smooth_l1 --temporal_scorer_hidden_dim 64 --temporal_scorer_layers 2 --temporal_scorer_dropout 0.0 --vipe_camera_weight 0.01 --vipe_camera_enabled --temporal_camera_enabled --temporal_camera_formulation learnable --temporal_camera_weight 0.01 --temporal_camera_scorer_weight 0.001 --temporal_bbox_projected_enabled --temporal_bbox_projected_formulation learnable --temporal_bbox_projected_weight 0.01 --temporal_bbox_projected_scorer_weight 0.001 --temporal_bbox_input_enabled --temporal_bbox_input_formulation learnable --temporal_bbox_input_weight 0.01 --temporal_bbox_input_scorer_weight 0.001 --use_gpu --amp
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+Loading  /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/wilor_final.ckpt
+Lightning automatically upgraded your loaded checkpoint from v1.8.1 to v2.0.9. To apply the upgrade to your files permanently, run `python -m pytorch_lightning.utilities.upgrade_checkpoint --file pretrained_models/wilor_final.ckpt`
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+Found existing frames for --6bmFM9wT4, skipping extraction.
+Found existing frames for --pq96V-6DA, skipping extraction.
+Found existing frames for -05MRmp1i4w, skipping extraction.
+Found existing frames for -0VIwubCjpM, skipping extraction.
+Found existing frames for -2UZsKfaGIk, skipping extraction.
+Found existing frames for -384XKXNw_w, skipping extraction.
+Found existing frames for -4FUS54WneA, skipping extraction.
+Found existing frames for -4Vny515GWw, skipping extraction.
+Found existing frames for -5pTTulJZ38, skipping extraction.
+Found existing frames for -60AS2h1R2M, skipping extraction.
+Found existing frames for -7L2DL9IOEU, skipping extraction.
+Found existing frames for -B_KgSrmTEk, skipping extraction.
+Found existing frames for -Bxu9R-lmFc, skipping extraction.
+Found existing frames for -ChOGBEL5uE, skipping extraction.
+Found existing frames for -Dycay2gHZU, skipping extraction.
+Found existing frames for -Fyp3iYp_Mo, skipping extraction.
+Found existing frames for -G2ksp95_Uw, skipping extraction.
+Found existing frames for -GgW0Hrt6ow, skipping extraction.
+Found existing frames for -GtDaiSJkSQ, skipping extraction.
+Found existing frames for -HV6JF-7Suc, skipping extraction.
+Found existing frames for -HkeOGWJWLI, skipping extraction.
+Found existing frames for -HlGNm4D0NA, skipping extraction.
+Found existing frames for -IgqjDsP-R8, skipping extraction.
+Found existing frames for -IrAGNgJDzg, skipping extraction.
+Found existing frames for -JL59Zq5vPY, skipping extraction.
+Found existing frames for -K-HfBcGPXU, skipping extraction.
+Found existing frames for -KgBBru7lps, skipping extraction.
+Found existing frames for -L3_lgFu2aw, skipping extraction.
+Found existing frames for -LoU4OvDdgs, skipping extraction.
+Found existing frames for -M7CostYoIM, skipping extraction.
+Found existing frames for -NWZsLFjA7A, skipping extraction.
+Found existing frames for -NaUu-UH5wQ, skipping extraction.
+Found existing frames for -P-luyYjEbg, skipping extraction.
+Found existing frames for -PReNU3L8Lc, skipping extraction.
+Found existing frames for -QHnZBBE8Ho, skipping extraction.
+Found existing frames for -SQFIbscsAI, skipping extraction.
+Found existing frames for -Tp_qLcc02c, skipping extraction.
+srun: Job step aborted: Waiting up to 122 seconds for job step to finish.
+slurmstepd: error: *** STEP 9655415.0 ON gpu020 CANCELLED AT 2026-04-13T22:19:54 ***

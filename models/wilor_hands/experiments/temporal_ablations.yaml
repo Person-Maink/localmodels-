@@ -2,7 +2,7 @@ defaults:
   train_mode: distill
   train_scope: refine_net
   videos:
-    - clip_2
+    - 120-2_clip_1
   validation_split: 0.15
   sample_limit: 0
   detection_conf: 0.3
@@ -10,7 +10,7 @@ defaults:
   batch_size: 8
   num_workers: 4
   max_steps: 10000
-  log_every: 25
+  log_every: 1
   save_every: 250
   seed: 42
   optimizer:
@@ -45,62 +45,18 @@ defaults:
       scorer_weight: 0.0
 
 experiments:
-  - name: baseline_vipe_only
-    run_name_suffix: baseline
-
-  - name: temporal_camera_only
-    run_name_suffix: temp_cam
-    losses:
-      temporal_camera:
-        enabled: true
-        formulation: learnable
-        weight: 0.01
-        scorer_weight: 0.001
-
-  - name: temporal_bbox_projected_only
-    run_name_suffix: temp_bbox_projected
-    losses:
-      temporal_bbox_projected:
-        enabled: true
-        formulation: learnable
-        weight: 0.01
-        scorer_weight: 0.001
-
-  - name: temporal_bbox_input_only
-    run_name_suffix: temp_bbox_input
-    losses:
-      temporal_bbox_input:
-        enabled: true
-        formulation: learnable
-        weight: 0.01
-        scorer_weight: 0.001
-
-  - name: temporal_all_losses
-    run_name_suffix: temp_all
-    losses:
-      temporal_camera:
-        enabled: true
-        formulation: learnable
-        weight: 0.01
-        scorer_weight: 0.001
-      temporal_bbox_projected:
-        enabled: true
-        formulation: learnable
-        weight: 0.01
-        scorer_weight: 0.001
-      temporal_bbox_input:
-        enabled: true
-        formulation: learnable
-        weight: 0.01
-        scorer_weight: 0.001
 
   - name: test_temporal_all_losses
     run_name_suffix: test_temp_all
     train_mode: test
     max_steps: 100
-    log_every: 10
+    log_every: 1
     save_every: 50
     sample_limit: 64
+    batch_size: 2
+    num_workers: 1
+    temporal:
+      window_size: 3
     losses:
       temporal_camera:
         enabled: true

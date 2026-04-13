@@ -13,11 +13,11 @@
 
 #SBATCH --job-name=wilor-train
 #SBATCH --partition=gpu-a100-small
-#SBATCH --time=04:00:00
+#SBATCH --time=00:30:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
-#SBATCH --mem-per-gpu=16G
+#SBATCH --mem-per-gpu=9G
 #SBATCH --account=Education-EEMCS-MSc-DSAIT
 #SBATCH --output=%x.out
 
@@ -322,7 +322,7 @@ echo "==============================================="
 
 PROJECT_ROOT="${PROJECT_ROOT:-/scratch/mthakur/manifold}"
 MODEL_ROOT="${MODEL_ROOT:-${PROJECT_ROOT}/models/wilor_hands}"
-DATA_ROOT="${DATA_ROOT:-${PROJECT_ROOT}/data/whim/training}"
+DATA_ROOT="${DATA_ROOT:-${PROJECT_ROOT}/data/}"
 VIPE_OUTPUT_ROOT="${VIPE_OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/vipe}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/wilor_finetune}"
 
