@@ -5,7 +5,11 @@ defaults:
   train_mode: distill
   train_scope: refine_net
   videos:
-    - 120-2_clip_1
+    - 5XDn22CL-ig
+    - 1oztZZLorBI
+    - 0k6USIJasZY
+    - 4MUq3Prl8pU
+    - 7ZeIBdPZhC0
   validation_split: 0.2
   sample_limit: 256
   detection_conf: 0.3
