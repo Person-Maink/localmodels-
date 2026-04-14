@@ -1,0 +1,90 @@
+defaults:
+  # Stage A: identify a temporal window setup that is stable, memory-feasible,
+  # and produces usable validation windows.
+  train_mode: distill
+  train_scope: refine_net
+  videos:
+    - 120-2_clip_1
+  validation_split: 0.2
+  sample_limit: 256
+  detection_conf: 0.3
+  rescale_factor: 2.0
+  batch_size: 4
+  num_workers: 2
+  max_steps: 200
+  log_every: 10
+  save_every: 100
+  seed: 42
+  optimizer:
+    lr: 1.0e-5
+    weight_decay: 1.0e-4
+  temporal:
+    window_size: 5
+    window_stride: 2
+    max_frame_gap: 1
+    reduction: smooth_l1
+    scorer_hidden_dim: 64
+    scorer_layers: 2
+    scorer_dropout: 0.0
+  losses:
+    vipe_camera:
+      enabled: true
+      weight: 0.01
+    temporal_camera:
+      enabled: true
+      formulation: learnable
+      weight: 0.01
+      scorer_weight: 0.001
+    temporal_bbox_projected:
+      enabled: true
+      formulation: learnable
+      weight: 0.01
+      scorer_weight: 0.001
+    temporal_bbox_input:
+      enabled: true
+      formulation: learnable
+      weight: 0.01
+      scorer_weight: 0.001
+
+experiments:
+  - name: hp_a_ws3_s1_b8
+    run_name_suffix: hp_a_ws3_s1_b8
+    batch_size: 8
+    temporal:
+      window_size: 3
+      window_stride: 1
+
+  - name: hp_a_ws3_s2_b8
+    run_name_suffix: hp_a_ws3_s2_b8
+    batch_size: 8
+    temporal:
+      window_size: 3
+      window_stride: 2
+
+  - name: hp_a_ws5_s2_b4
+    run_name_suffix: hp_a_ws5_s2_b4
+    batch_size: 4
+    temporal:
+      window_size: 5
+      window_stride: 2
+
+  - name: hp_a_ws5_s4_b4
+    run_name_suffix: hp_a_ws5_s4_b4
+    batch_size: 4
+    temporal:
+      window_size: 5
+      window_stride: 4
+
+  - name: hp_a_ws8_s2_b2
+    run_name_suffix: hp_a_ws8_s2_b2
+    batch_size: 2
+    temporal:
+      window_size: 8
+      window_stride: 2
+
+  - name: hp_a_ws8_s4_b2
+    run_name_suffix: hp_a_ws8_s4_b2
+    batch_size: 2
+    temporal:
+      window_size: 8
+      window_stride: 4
