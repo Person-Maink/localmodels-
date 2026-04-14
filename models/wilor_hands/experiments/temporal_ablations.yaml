@@ -8,7 +8,7 @@ defaults:
   detection_conf: 0.3
   rescale_factor: 2.0
   batch_size: 8
-  num_workers: 4
+  num_workers: 2
   max_steps: 10000
   log_every: 1
   save_every: 250
@@ -52,7 +52,25 @@ experiments:
     max_steps: 100
     log_every: 10
     save_every: 50
-    sample_limit: 64
+    losses:
+      temporal_camera:
+        enabled: true
+        formulation: learnable
+        weight: 0.01
+        scorer_weight: 0.001
+      temporal_bbox_projected:
+        enabled: true
+        formulation: learnable
+        weight: 0.01
+        scorer_weight: 0.001
+      temporal_bbox_input:
+        enabled: true
+        formulation: learnable
+        weight: 0.01
+        scorer_weight: 0.001
+
+  - name: test_temporal_all_losses
+    run_name_suffix: temp_all
     losses:
       temporal_camera:
         enabled: true

@@ -1,0 +1,266 @@
+
+The following have been reloaded with a version change:
+  1) python/3.10.12 => python/3.10.13
+
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1       6) python/3.10.13
+
+ 
+
+Tue Apr 14 04:41:05 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:2C:00.0 Off |                    0 |
+| N/A   47C    P0             49W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9655664
+Job Name:       wilor-train
+Partition:      gpu-a100
+Node List:      gpu019
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Tue Apr 14 04:41:06 CEST 2026
+===============================================
+[progress] Created temporary training image root: /tmp/wilor_train_9655664.VlbkgH/images
+[progress] Extracting frames for 120-2_clip_1 into /tmp/wilor_train_9655664.VlbkgH/images/120-2_clip_1_frames
+Extracted 155 frame(s) from /scratch/mthakur/manifold/data/images/120-2_clip_1.mp4 into /tmp/wilor_train_9655664.VlbkgH/images/120-2_clip_1_frames
+Project root:    /scratch/mthakur/manifold
+Model root:      /scratch/mthakur/manifold/models/wilor_hands
+Output dir:      /scratch/mthakur/manifold/outputs/wilor_finetune/test_temporal_all_losses
+Train mode:      distill
+Loss config:     /scratch/mthakur/manifold/models/wilor_hands/experiments/temporal_ablations.yaml
+Experiment:      test_temporal_all_losses
+Train scope:     camera_head
+Max steps:       10000
+Log every:       1
+Save every:      250
+Sample limit:    0
+Validation split:0.15
+Checkpoint:      /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/wilor_final.ckpt
+Source images:   /scratch/mthakur/manifold/data//images
+Prepared images: /tmp/wilor_train_9655664.VlbkgH/images
+Video:           120-2_clip_1
+Temporal win:    size=8 stride=4 gap=1
+Pose dir:        /scratch/mthakur/manifold/outputs/vipe/pose
+Intrinsics dir:  /scratch/mthakur/manifold/outputs/vipe/intrinsics
+Command: python -u /scratch/mthakur/manifold/models/wilor_hands/finetune_wilor_distill_vipe.py --checkpoint /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/wilor_final.ckpt --cfg_path /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/model_config.yaml --detector_path /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/detector.pt --image_folder /tmp/wilor_train_9655664.VlbkgH/images --pose_dir /scratch/mthakur/manifold/outputs/vipe/pose --intrinsics_dir /scratch/mthakur/manifold/outputs/vipe/intrinsics --output_dir /scratch/mthakur/manifold/outputs/wilor_finetune/test_temporal_all_losses --train_scope camera_head --camera_loss_weight 0.01 --validation_split 0.15 --lr 1e-5 --weight_decay 1e-4 --batch_size 8 --num_workers 2 --max_steps 10000 --log_every 1 --save_every 250 --seed 42 --rescale_factor 2.0 --detection_conf 0.3 --loss_config /scratch/mthakur/manifold/models/wilor_hands/experiments/temporal_ablations.yaml --experiment_name test_temporal_all_losses --detection_cache /scratch/mthakur/manifold/outputs/wilor_finetune/test_temporal_all_losses/detections_120-2_clip_1.json --video 120-2_clip_1 --temporal_window_size 8 --temporal_window_stride 4 --temporal_max_frame_gap 1 --temporal_reduction smooth_l1 --temporal_scorer_hidden_dim 64 --temporal_scorer_layers 2 --temporal_scorer_dropout 0.0 --vipe_camera_weight 0.01 --vipe_camera_enabled --temporal_camera_enabled --temporal_camera_formulation learnable --temporal_camera_weight 0.01 --temporal_camera_scorer_weight 0.001 --temporal_bbox_projected_enabled --temporal_bbox_projected_formulation learnable --temporal_bbox_projected_weight 0.01 --temporal_bbox_projected_scorer_weight 0.001 --temporal_bbox_input_enabled --temporal_bbox_input_formulation learnable --temporal_bbox_input_weight 0.01 --temporal_bbox_input_scorer_weight 0.001 --use_gpu --amp
+[progress] About to launch Apptainer via srun.
+[progress] SLURM wrapper log: SLURM_logs/wilor-train_022.out
+[progress] Python run output dir: /scratch/mthakur/manifold/outputs/wilor_finetune/test_temporal_all_losses
+[progress] Starting containerized training process now...
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[progress] Starting fine-tuning entrypoint.
+[progress] Resolving experiment config from /scratch/mthakur/manifold/models/wilor_hands/experiments/temporal_ablations.yaml (experiment=test_temporal_all_losses)
+[progress] Resolved experiment 'test_temporal_all_losses'.
+[progress] Using device cuda; output directory is /scratch/mthakur/manifold/outputs/wilor_finetune/test_temporal_all_losses
+[progress] Saved resolved experiment snapshot.
+[progress] Using explicitly requested video selection: 120-2_clip_1
+[progress] Filtering 1 selected video(s) for matching ViPE artifacts.
+[progress] Proceeding with video(s): 120-2_clip_1
+[progress] Loading student checkpoint and cloning teacher model.
+Loading  /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/wilor_final.ckpt
+Lightning automatically upgraded your loaded checkpoint from v1.8.1 to v2.0.9. To apply the upgrade to your files permanently, run `python -m pytorch_lightning.utilities.upgrade_checkpoint --file pretrained_models/wilor_final.ckpt`
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+[progress] Loading detector and ViPE camera index.
+[progress] Loading YOLO detector from /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/detector.pt onto cuda
+[progress] Detector ready.
+[progress] Building detection samples (cache path: /scratch/mthakur/manifold/outputs/wilor_finetune/test_temporal_all_losses/detections_120-2_clip_1.json).
+[progress] Loading detection cache from /scratch/mthakur/manifold/outputs/wilor_finetune/test_temporal_all_losses/detections_120-2_clip_1.json
+[progress] Detection cache contains 128 samples; using 128 samples across 1 selected video(s).
+[progress] Collected 128 detector sample(s).
+[progress] Splitting samples into train/val with validation_split=0.15.
+[progress] Building temporal training windows with size=8, stride=4, gap=1.
+[progress] Constructing training dataset and dataloader.
+[progress] Building validation temporal windows and dataloader.
+[progress] Configuring trainable scope: camera_head
+[progress] Initialized learnable temporal scorer.
+[progress] Creating optimizer and AMP scaler.
+[progress] Metrics will be appended to /scratch/mthakur/manifold/outputs/wilor_finetune/test_temporal_all_losses/metrics.jsonl
+Device: cuda
+Experiment: test_temporal_all_losses
+Videos: 120-2_clip_1
+Frames: total=64 train=54 val=10
+Samples: total=128 train=108 val=20
+Temporal windows: train=8 val=0 dropped_train=20 dropped_val=20
+Validation split requested, but there were not enough consecutive frames to reserve validation windows.
+Train scope: camera_head
+Trainable params: 38,121
+Temporal families: temporal_camera, temporal_bbox_projected, temporal_bbox_input
+[progress] Entering optimization loop.
+[progress] Fetching first training batch.
+[step 00001] loss=6.9741 cam=682.2218 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00002] loss=6.9741 cam=682.2218 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00003] loss=6.9741 cam=682.2218 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00004] loss=6.9741 cam=682.2218 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00005] loss=6.9741 cam=682.2218 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00006] loss=6.9741 cam=682.2218 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00007] loss=6.9469 cam=681.5082 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00008] loss=6.8744 cam=680.7588 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00009] loss=6.8774 cam=679.9926 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00010] loss=6.8976 cam=679.2693 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00011] loss=6.8822 cam=678.6152 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00012] loss=6.8549 cam=677.9805 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00013] loss=6.8376 cam=677.3439 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00014] loss=6.8197 cam=676.7053 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00015] loss=6.8218 cam=676.0648 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00016] loss=6.8220 cam=675.4050 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00017] loss=6.8168 cam=674.7349 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00018] loss=6.8006 cam=674.0746 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00019] loss=6.7797 cam=673.4113 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00020] loss=6.7789 cam=672.7164 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00021] loss=6.7789 cam=672.0701 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00022] loss=6.7736 cam=671.4079 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00023] loss=6.7636 cam=670.7427 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00024] loss=6.7528 cam=670.1224 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00025] loss=6.7476 cam=669.5013 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00026] loss=6.7427 cam=668.8718 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00027] loss=6.7392 cam=668.2562 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00028] loss=6.7336 cam=667.6367 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00029] loss=6.7276 cam=666.9796 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00030] loss=6.7189 cam=666.3508 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00031] loss=6.7137 cam=665.7369 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00032] loss=6.7118 cam=665.1080 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00033] loss=6.7080 cam=664.4839 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00034] loss=6.7016 cam=663.8851 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00035] loss=6.6945 cam=663.2903 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00036] loss=6.6880 cam=662.6703 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00037] loss=6.6845 cam=662.0819 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00038] loss=6.6806 cam=661.5077 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00039] loss=6.6752 cam=660.8878 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00040] loss=6.6686 cam=660.2998 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00041] loss=6.6642 cam=659.6944 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00042] loss=6.6597 cam=659.0972 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00043] loss=6.6558 cam=658.4911 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00044] loss=6.6513 cam=657.9006 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00045] loss=6.6466 cam=657.3181 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00046] loss=6.6404 cam=656.7134 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00047] loss=6.6354 cam=656.1574 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00048] loss=6.6313 cam=655.5862 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00049] loss=6.6267 cam=654.9980 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00050] loss=6.6226 cam=654.4252 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00051] loss=6.6182 cam=653.8557 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00052] loss=6.6134 cam=653.2922 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00053] loss=6.6088 cam=652.7019 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00054] loss=6.6046 cam=652.1362 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00055] loss=6.6000 cam=651.5590 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00056] loss=6.5954 cam=650.9783 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00057] loss=6.5911 cam=650.4196 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00058] loss=6.5864 cam=649.8670 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00059] loss=6.5816 cam=649.3002 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00060] loss=6.5770 cam=648.7260 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00061] loss=6.5729 cam=648.1825 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00062] loss=6.5686 cam=647.6216 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00063] loss=6.5639 cam=647.0520 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00064] loss=6.5596 cam=646.5012 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00065] loss=6.5555 cam=645.9575 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00066] loss=6.5510 cam=645.3862 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00067] loss=6.5466 cam=644.8387 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00068] loss=6.5421 cam=644.2747 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00069] loss=6.5382 cam=643.7269 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00070] loss=6.5336 cam=643.1550 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00071] loss=6.5291 cam=642.6229 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00072] loss=6.5251 cam=642.0877 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00073] loss=6.5206 cam=641.5269 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00074] loss=6.5162 cam=640.9739 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00075] loss=6.5119 cam=640.4329 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00076] loss=6.5078 cam=639.9105 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00077] loss=6.5032 cam=639.3488 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00078] loss=6.4994 cam=638.8190 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00079] loss=6.4953 cam=638.2923 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00080] loss=6.4916 cam=637.7393 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00081] loss=6.4875 cam=637.2138 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00082] loss=6.4831 cam=636.6816 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00083] loss=6.4794 cam=636.1431 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00084] loss=6.4745 cam=635.5930 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00085] loss=6.4704 cam=635.0734 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00086] loss=6.4663 cam=634.5596 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00087] loss=6.4620 cam=633.9938 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00088] loss=6.4579 cam=633.4685 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00089] loss=6.4538 cam=632.9513 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00090] loss=6.4502 cam=632.4341 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00091] loss=6.4457 cam=631.8944 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00092] loss=6.4414 cam=631.3828 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00093] loss=6.4381 cam=630.8698 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00094] loss=6.4342 cam=630.3314 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00095] loss=6.4301 cam=629.8077 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00096] loss=6.4261 cam=629.2939 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00097] loss=6.4221 cam=628.7681 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00098] loss=6.4179 cam=628.2253 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00099] loss=6.4142 cam=627.7233 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00100] loss=6.4105 cam=627.2202 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00101] loss=6.4060 cam=626.6776 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00102] loss=6.4021 cam=626.1730 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00103] loss=6.3985 cam=625.6788 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00104] loss=6.3944 cam=625.1689 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00105] loss=6.3902 cam=624.6381 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00106] loss=6.3863 cam=624.1407 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00107] loss=6.3833 cam=623.6519 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00108] loss=6.3787 cam=623.1196 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00109] loss=6.3752 cam=622.6140 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00110] loss=6.3715 cam=622.1118 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00111] loss=6.3675 cam=621.6084 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00112] loss=6.3636 cam=621.0843 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00113] loss=6.3596 cam=620.5828 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00114] loss=6.3563 cam=620.0992 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00115] loss=6.3522 cam=619.5933 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00116] loss=6.3476 cam=619.0844 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00117] loss=6.3442 cam=618.6022 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00118] loss=6.3406 cam=618.1047 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00119] loss=6.3367 cam=617.5983 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00120] loss=6.3336 cam=617.1315 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00121] loss=6.3295 cam=616.6134 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00122] loss=6.3257 cam=616.1234 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00123] loss=6.3222 cam=615.6256 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00124] loss=6.3187 cam=615.1292 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00125] loss=6.3152 cam=614.6446 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00126] loss=6.3113 cam=614.1331 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00127] loss=6.3075 cam=613.6527 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00128] loss=6.3040 cam=613.1770 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00129] loss=6.2999 cam=612.7139 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00130] loss=6.2961 cam=612.2030 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00131] loss=6.2924 cam=611.7338 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00132] loss=6.2885 cam=611.2598 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00133] loss=6.2848 cam=610.7590 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00134] loss=6.2815 cam=610.2830 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00135] loss=6.2780 cam=609.8008 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00136] loss=6.2749 cam=609.3345 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00137] loss=6.2711 cam=608.8397 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00138] loss=6.2674 cam=608.3879 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00139] loss=6.2641 cam=607.9021 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00140] loss=6.2609 cam=607.4380 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00141] loss=6.2566 cam=606.9561 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00142] loss=6.2531 cam=606.4905 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00143] loss=6.2498 cam=606.0432 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00144] loss=6.2459 cam=605.5322 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00145] loss=6.2430 cam=605.0803 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00146] loss=6.2392 cam=604.6157 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00147] loss=6.2362 cam=604.1641 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00148] loss=6.2324 cam=603.6748 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00149] loss=6.2288 cam=603.2183 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00150] loss=6.2252 cam=602.7488 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00151] loss=6.2217 cam=602.2901 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+[step 00152] loss=6.2188 cam=601.8314 temp_cam=0.0000 bbox_p=0.0000 bbox_i=0.0006
+slurmstepd: error: *** STEP 9655664.0 ON gpu019 CANCELLED AT 2026-04-14T05:11:06 DUE TO TIME LIMIT ***
+srun: Job step aborted: Waiting up to 122 seconds for job step to finish.
