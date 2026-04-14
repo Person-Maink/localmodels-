@@ -9,7 +9,8 @@ VIDEO_DIR="${VIDEO_DIR:-${SCRIPT_DIR}/../../data/test}"
 TEMPLATE="${TEMPLATE:-${SCRIPT_DIR}/template_wilor_finetune.sh}"
 OUT_DIR="${OUT_DIR:-${SCRIPT_DIR}/generated_jobs/finetune}"
 LOG_DIR="${LOG_DIR:-${SCRIPT_DIR}/SLURM_logs}"
-OUTPUT_ROOT="${OUTPUT_ROOT:-${SCRIPT_DIR}/../../outputs/wilor_finetune/}"
+EXPERIMENTS_ROOT="${EXPERIMENTS_ROOT:-${SCRIPT_DIR}/../../outputs/wilor_finetune}"
+OUTPUT_ROOT_BASE="${OUTPUT_ROOT_BASE:-${SCRIPT_DIR}/../../outputs/wilor_finetune}"
 RECENT_LOG_COUNT="${RECENT_LOG_COUNT:-12}"
 RECENT_TIME_MARGIN_HOURS="${RECENT_TIME_MARGIN_HOURS:-1.5}"
 MAX_PARTITION_TIME="${MAX_PARTITION_TIME:-08:00:00}"
@@ -84,6 +85,38 @@ print(estimated_seconds)
 PY
 }
 
+list_experiments_with_checkpoints() {
+    local experiments_root="$1"
+    "${PYTHON_BIN}" - "${experiments_root}" <<'PY'
+from pathlib import Path
+import sys
+
+root = Path(sys.argv[1]).expanduser().resolve()
+if not root.is_dir():
+    raise SystemExit(0)
+
+for path in sorted(p for p in root.iterdir() if p.is_dir()):
+    if (path / "best.ckpt").is_file():
+        print(path.name)
+PY
+}
+
+prompt_for_experiment() {
+    local experiments_root="$1"
+    shift
+    local experiments=("$@")
+    local choice
+
+    echo "Available finetune experiments under ${experiments_root}:" >&2
+    select choice in "${experiments[@]}"; do
+        if [[ -n "${choice:-}" ]]; then
+            printf '%s\n' "${choice}"
+            return 0
+        fi
+        echo "Please enter one of the listed experiment numbers." >&2
+    done
+}
+
 mkdir -p "${OUT_DIR}"
 mkdir -p "${LOG_DIR}"
 
@@ -96,6 +129,28 @@ elif [[ -x "${SCRIPT_DIR}/.venv/bin/python" ]]; then
 else
     PYTHON_BIN="python3"
 fi
+
+mapfile -t experiments < <(list_experiments_with_checkpoints "${EXPERIMENTS_ROOT}")
+if (( ${#experiments[@]} == 0 )); then
+    echo "No experiment folders with best.ckpt found under ${EXPERIMENTS_ROOT}"
+    exit 1
+fi
+
+SELECTED_EXPERIMENT="${EXPERIMENT_NAME:-}"
+if [[ -n "${SELECTED_EXPERIMENT}" ]]; then
+    if [[ ! -f "${EXPERIMENTS_ROOT%/}/${SELECTED_EXPERIMENT}/best.ckpt" ]]; then
+        echo "Requested experiment '${SELECTED_EXPERIMENT}' does not have ${EXPERIMENTS_ROOT%/}/${SELECTED_EXPERIMENT}/best.ckpt"
+        exit 1
+    fi
+else
+    SELECTED_EXPERIMENT="$(prompt_for_experiment "${EXPERIMENTS_ROOT}" "${experiments[@]}")"
+fi
+
+OUTPUT_ROOT="${OUTPUT_ROOT:-${OUTPUT_ROOT_BASE%/}/${SELECTED_EXPERIMENT}}"
+
+echo "Selected finetune experiment: ${SELECTED_EXPERIMENT}"
+echo "Using finetuned checkpoint: ${EXPERIMENTS_ROOT%/}/${SELECTED_EXPERIMENT}/best.ckpt"
+echo "Inference outputs will be written under: ${OUTPUT_ROOT}"
 
 shopt -s nullglob nocaseglob
 videos=("${VIDEO_DIR}"/*.mp4 "${VIDEO_DIR}"/*.avi "${VIDEO_DIR}"/*.mts "${VIDEO_DIR}"/*.mov)
@@ -149,13 +204,15 @@ for video in "${videos[@]}"; do
         fi
     fi
 
-    job_script="${OUT_DIR}/demo_${name}.sh"
+    job_script="${OUT_DIR}/demo_${SELECTED_EXPERIMENT}_${name}.sh"
     escaped_name=$(escape_sed_replacement "${name}")
     escaped_time=$(escape_sed_replacement "${final_time}")
+    escaped_experiment=$(escape_sed_replacement "${SELECTED_EXPERIMENT}")
 
     sed \
         -e "s|__NAME__|${escaped_name}|g" \
         -e "s|__TIME__|${escaped_time}|g" \
+        -e "s|__EXPERIMENT_NAME__|${escaped_experiment}|g" \
         "${TEMPLATE}" > "${job_script}"
 
     video_count=$((video_count + 1))

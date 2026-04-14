@@ -12,7 +12,12 @@ LIGHT_PURPLE = (0.25098039, 0.274117647, 0.65882353)
 
 def main(args):
     device = "cuda" if args.use_gpu and cv2.cuda.getCudaEnabledDeviceCount() > 0 else "cpu"
-    model, model_cfg, detector = setup_models(device=device)
+    model, model_cfg, detector = setup_models(
+        device=device,
+        checkpoint_path=args.checkpoint_path,
+        cfg_path=args.cfg_path,
+        detector_path=args.detector_path,
+    )
 
     img_paths = load_images_from_folder(args.image_folder)
     if args.video:
@@ -148,6 +153,24 @@ if __name__ == "__main__":
         action=argparse.BooleanOptionalAction,
         default=True,
         help="Use CUDA if available.",
+    )
+    parser.add_argument(
+        "--checkpoint_path",
+        type=str,
+        default="./pretrained_models/wilor_final.ckpt",
+        help="WiLoR checkpoint to load for inference.",
+    )
+    parser.add_argument(
+        "--cfg_path",
+        type=str,
+        default="./pretrained_models/model_config.yaml",
+        help="WiLoR model config to load for inference.",
+    )
+    parser.add_argument(
+        "--detector_path",
+        type=str,
+        default="./pretrained_models/detector.pt",
+        help="Detector checkpoint to use during inference.",
     )
     args = parser.parse_args()
     main(args)

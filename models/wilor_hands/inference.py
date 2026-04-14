@@ -9,11 +9,17 @@ from utils_new import *
 
 LIGHT_PURPLE = (0.25098039, 0.274117647, 0.65882353)
 
-def setup_models(device="cuda" if torch.cuda.is_available() else "cpu"):
+def setup_models(
+    device="cuda" if torch.cuda.is_available() else "cpu",
+    checkpoint_path="./pretrained_models/wilor_final.ckpt",
+    cfg_path="./pretrained_models/model_config.yaml",
+    detector_path="./pretrained_models/detector.pt",
+):
     # Load WiLoR
+    print(f"[progress] Loading WiLoR checkpoint: {checkpoint_path}", flush=True)
     model, model_cfg = load_wilor(
-        checkpoint_path="./pretrained_models/wilor_final.ckpt",
-        cfg_path="./pretrained_models/model_config.yaml",
+        checkpoint_path=checkpoint_path,
+        cfg_path=cfg_path,
     )
 
     old_load = torch.load
@@ -22,7 +28,8 @@ def setup_models(device="cuda" if torch.cuda.is_available() else "cpu"):
         return old_load(*args, **kwargs)
     torch.load = unsafe_load
 
-    detector = YOLO("./pretrained_models/detector.pt")
+    print(f"[progress] Loading detector: {detector_path}", flush=True)
+    detector = YOLO(detector_path)
 
     torch.load = old_load  # restore safe default
 

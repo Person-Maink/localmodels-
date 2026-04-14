@@ -61,7 +61,10 @@ echo "==============================================="
 VIDEO_DIR="${VIDEO_DIR:-${PROJECT_ROOT}/data/images}"
 VIDEO_NAME="${VIDEO_NAME:-__NAME__}"
 VIDEO_FILE="${VIDEO_FILE:-}"
-OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/wilor_finetune}"
+EXPERIMENT_NAME="${EXPERIMENT_NAME:-__EXPERIMENT_NAME__}"
+CHECKPOINT_PATH="${CHECKPOINT_PATH:-${PROJECT_ROOT}/outputs/wilor_finetune/${EXPERIMENT_NAME}/best.ckpt}"
+CFG_PATH="${CFG_PATH:-${MODEL_ROOT}/pretrained_models/model_config.yaml}"
+OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/wilor_finetune/${EXPERIMENT_NAME}}"
 APPTAINER_IMAGE="${APPTAINER_IMAGE:-${MODEL_ROOT}/apptainer/template.sif}"
 OVERWRITE="${OVERWRITE:-false}"
 KEEP_TEMP_FRAMES="${KEEP_TEMP_FRAMES:-false}"
@@ -83,6 +86,16 @@ VIDEO_OUTPUT_FILE="${OUTPUT_ROOT}/videos/${VIDEO_STEM}.mp4"
 
 if [[ ! -f "${APPTAINER_IMAGE}" ]]; then
     echo "Apptainer image not found: ${APPTAINER_IMAGE}" >&2
+    exit 1
+fi
+
+if [[ ! -f "${CHECKPOINT_PATH}" ]]; then
+    echo "Finetuned checkpoint not found: ${CHECKPOINT_PATH}" >&2
+    exit 1
+fi
+
+if [[ ! -f "${CFG_PATH}" ]]; then
+    echo "Model config not found: ${CFG_PATH}" >&2
     exit 1
 fi
 
@@ -130,10 +143,13 @@ container_cmd=$(cat <<EOF
 set -euo pipefail
 cd $(printf '%q' "${MODEL_ROOT}")
 python $(printf '%q' "${COMMON_PY}") --video $(printf '%q' "${VIDEO_PATH}") --output-dir $(printf '%q' "${TEMP_FRAME_DIR}")
-python main.py --image_folder $(printf '%q' "${TEMP_FRAME_DIR}") --output_folder $(printf '%q' "${OUTPUT_ROOT}") ${visualize_flag} ${save_mesh_flag} ${gpu_flag}
+python main.py --image_folder $(printf '%q' "${TEMP_FRAME_DIR}") --output_folder $(printf '%q' "${OUTPUT_ROOT}") --checkpoint_path $(printf '%q' "${CHECKPOINT_PATH}") --cfg_path $(printf '%q' "${CFG_PATH}") ${visualize_flag} ${save_mesh_flag} ${gpu_flag}
 EOF
 )
 
+echo "WiLoR finetune experiment: ${EXPERIMENT_NAME}"
+echo "WiLoR checkpoint: ${CHECKPOINT_PATH}"
+echo "WiLoR config: ${CFG_PATH}"
 echo "WiLoR video: ${VIDEO_PATH}"
 echo "WiLoR output root: ${OUTPUT_ROOT}"
 echo "WiLoR completion marker: ${MARKER_PATH}"
