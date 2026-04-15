@@ -1,0 +1,48 @@
+
+The following have been reloaded with a version change:
+  1) python/3.10.12 => python/3.10.13
+
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1       6) python/3.10.13
+
+ 
+
+Wed Apr 15 05:29:08 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:AE:00.0 Off |                    0 |
+| N/A   36C    P0             45W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9663449
+Job Name:       wilor-train
+Partition:      gpu-a100
+Node List:      gpu017
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 12288
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Wed Apr 15 05:29:08 CEST 2026
+===============================================
+[progress] Created temporary training image root: /tmp/wilor_train_9663449.v5kmNx/images
+[progress] Extracting frames for 5XDn22CL-ig into /tmp/wilor_train_9663449.v5kmNx/images/5XDn22CL-ig_frames
+Extracted 12737 frame(s) from /scratch/mthakur/manifold/data/images/5XDn22CL-ig.mp4 into /tmp/wilor_train_9663449.v5kmNx/images/5XDn22CL-ig_frames
+Could not find extracted frames or a supported raw video for 1oztZZLorBI under /scratch/mthakur/manifold/data//images
