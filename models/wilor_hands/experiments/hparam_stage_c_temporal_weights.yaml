@@ -5,10 +5,10 @@ defaults:
   train_mode: distill
   train_scope: refine_net
   videos:
-    - 5XDn22CL-ig
+    - 0KuJ2t4S_TY
     - 0gzQAgjx39o
     - -KgBBru7lps
-    - koOvrKENdH8
+    - YynYZyoETto
     - SlksdQT5JRE
   validation_split: 0.2
   sample_limit: 256
