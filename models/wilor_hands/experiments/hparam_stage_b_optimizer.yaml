@@ -1,7 +1,7 @@
 defaults:
   # Stage B: tune optimizer settings after Stage A picks a good window setup.
-  # These defaults use a conservative starter config; replace them with the
-  # winning Stage A setup before launching if needed.
+  # These defaults now carry forward the winning Stage A temporal setup so the
+  # optimizer sweep starts from the best known window configuration.
   train_mode: distill
   train_scope: refine_net
   videos:
@@ -14,7 +14,7 @@ defaults:
   sample_limit: 256
   detection_conf: 0.3
   rescale_factor: 2.0
-  batch_size: 4
+  batch_size: 8
   num_workers: 2
   max_steps: 200
   log_every: 10
@@ -24,7 +24,7 @@ defaults:
     lr: 1.0e-5
     weight_decay: 1.0e-4
   temporal:
-    window_size: 5
+    window_size: 3
     window_stride: 2
     max_frame_gap: 1
     reduction: smooth_l1

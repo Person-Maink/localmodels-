@@ -29,6 +29,7 @@ RSYNC_OPTS=(
   -a
   -z
   --delete
+  --exclude='*.ckpt'
   --info=stats2,progress2
 )
 
