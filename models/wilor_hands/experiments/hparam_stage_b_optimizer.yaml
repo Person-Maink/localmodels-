@@ -7,8 +7,8 @@ defaults:
   videos:
     - 0KuJ2t4S_TY
     - 0gzQAgjx39o
-    - -KgBBru7lps
-    - YynYZyoETto
+    - 0rq4nkWlO2E
+    - 0ElPjqY4Cq8
     - SlksdQT5JRE
   validation_split: 0.2
   sample_limit: 256
