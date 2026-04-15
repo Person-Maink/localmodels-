@@ -12,7 +12,7 @@
 #   visual                 : Visualization jobs
 
 #SBATCH --job-name=wilor-train
-#SBATCH --partition=gpu
+#SBATCH --partition=gpu-a100-small
 #SBATCH --time=01:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2

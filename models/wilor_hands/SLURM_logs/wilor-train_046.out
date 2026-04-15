@@ -1,0 +1,141 @@
+
+The following have been reloaded with a version change:
+  1) python/3.10.12 => python/3.10.13
+
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1       6) python/3.10.13
+
+ 
+
+Wed Apr 15 16:20:45 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   60C    P0            115W /  300W |     366MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    8   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9670965
+Job Name:       wilor-train
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 12288
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Wed Apr 15 16:20:45 CEST 2026
+===============================================
+[progress] Created temporary training image root: /tmp/wilor_train_9670965.4sdhCz/images
+[progress] Extracting frames for 5XDn22CL-ig into /tmp/wilor_train_9670965.4sdhCz/images/5XDn22CL-ig_frames
+Extracted 12737 frame(s) from /scratch/mthakur/manifold/data/images/5XDn22CL-ig.mp4 into /tmp/wilor_train_9670965.4sdhCz/images/5XDn22CL-ig_frames
+[progress] Extracting frames for 0gzQAgjx39o into /tmp/wilor_train_9670965.4sdhCz/images/0gzQAgjx39o_frames
+Extracted 992 frame(s) from /scratch/mthakur/manifold/data/images/0gzQAgjx39o.mp4 into /tmp/wilor_train_9670965.4sdhCz/images/0gzQAgjx39o_frames
+[progress] Extracting frames for -KgBBru7lps into /tmp/wilor_train_9670965.4sdhCz/images/-KgBBru7lps_frames
+Extracted 2569 frame(s) from /scratch/mthakur/manifold/data/images/-KgBBru7lps.mp4 into /tmp/wilor_train_9670965.4sdhCz/images/-KgBBru7lps_frames
+[progress] Extracting frames for koOvrKENdH8 into /tmp/wilor_train_9670965.4sdhCz/images/koOvrKENdH8_frames
+Extracted 2786 frame(s) from /scratch/mthakur/manifold/data/images/koOvrKENdH8.mp4 into /tmp/wilor_train_9670965.4sdhCz/images/koOvrKENdH8_frames
+[progress] Extracting frames for SlksdQT5JRE into /tmp/wilor_train_9670965.4sdhCz/images/SlksdQT5JRE_frames
+Extracted 946 frame(s) from /scratch/mthakur/manifold/data/images/SlksdQT5JRE.mp4 into /tmp/wilor_train_9670965.4sdhCz/images/SlksdQT5JRE_frames
+Project root:    /scratch/mthakur/manifold
+Model root:      /scratch/mthakur/manifold/models/wilor_hands
+Output dir:      /scratch/mthakur/manifold/outputs/wilor_finetune/hp_a_ws8_s4_b2
+Train mode:      distill
+Loss config:     /scratch/mthakur/manifold/models/wilor_hands/experiments/hparam_stage_a_windows.yaml
+Experiment:      hp_a_ws8_s4_b2
+Train scope:     refine_net
+Max steps:       200
+Log every:       10
+Save every:      100
+Sample limit:    256
+Validation split:0.2
+Checkpoint:      /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/wilor_final.ckpt
+Source images:   /scratch/mthakur/manifold/data//images
+Prepared images: /tmp/wilor_train_9670965.4sdhCz/images
+Videos:          5XDn22CL-ig|0gzQAgjx39o|-KgBBru7lps|koOvrKENdH8|SlksdQT5JRE
+Temporal win:    size=8 stride=4 gap=1
+Pose dir:        /scratch/mthakur/manifold/outputs/vipe/pose
+Intrinsics dir:  /scratch/mthakur/manifold/outputs/vipe/intrinsics
+Command: python -u /scratch/mthakur/manifold/models/wilor_hands/finetune_wilor_distill_vipe.py --checkpoint /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/wilor_final.ckpt --cfg_path /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/model_config.yaml --detector_path /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/detector.pt --image_folder /tmp/wilor_train_9670965.4sdhCz/images --pose_dir /scratch/mthakur/manifold/outputs/vipe/pose --intrinsics_dir /scratch/mthakur/manifold/outputs/vipe/intrinsics --output_dir /scratch/mthakur/manifold/outputs/wilor_finetune/hp_a_ws8_s4_b2 --train_scope refine_net --camera_loss_weight 0.01 --validation_split 0.2 --lr 1e-5 --weight_decay 1e-4 --batch_size 2 --num_workers 2 --max_steps 200 --log_every 10 --save_every 100 --seed 42 --rescale_factor 2.0 --detection_conf 0.3 --loss_config /scratch/mthakur/manifold/models/wilor_hands/experiments/hparam_stage_a_windows.yaml --experiment_name hp_a_ws8_s4_b2 --sample_limit 256 --detection_cache /scratch/mthakur/manifold/outputs/wilor_finetune/hp_a_ws8_s4_b2/detections_selected_videos.json --video 5XDn22CL-ig --video 0gzQAgjx39o --video -KgBBru7lps --video koOvrKENdH8 --video SlksdQT5JRE --temporal_window_size 8 --temporal_window_stride 4 --temporal_max_frame_gap 1 --temporal_reduction smooth_l1 --temporal_scorer_hidden_dim 64 --temporal_scorer_layers 2 --temporal_scorer_dropout 0.0 --vipe_camera_weight 0.01 --vipe_camera_enabled --temporal_camera_enabled --temporal_camera_formulation learnable --temporal_camera_weight 0.01 --temporal_camera_scorer_weight 0.001 --temporal_bbox_projected_enabled --temporal_bbox_projected_formulation learnable --temporal_bbox_projected_weight 0.01 --temporal_bbox_projected_scorer_weight 0.001 --temporal_bbox_input_enabled --temporal_bbox_input_formulation learnable --temporal_bbox_input_weight 0.01 --temporal_bbox_input_scorer_weight 0.001 --use_gpu --amp
+[progress] About to launch Apptainer via srun.
+[progress] SLURM wrapper log: SLURM_logs/wilor-train_046.out
+[progress] Python run output dir: /scratch/mthakur/manifold/outputs/wilor_finetune/hp_a_ws8_s4_b2
+[progress] Starting containerized training process now...
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+usage: finetune_wilor_distill_vipe.py [-h] [--checkpoint CHECKPOINT]
+                                      [--cfg_path CFG_PATH]
+                                      [--detector_path DETECTOR_PATH]
+                                      [--image_folder IMAGE_FOLDER]
+                                      [--pose_dir POSE_DIR]
+                                      [--intrinsics_dir INTRINSICS_DIR]
+                                      [--output_dir OUTPUT_DIR]
+                                      [--loss_config LOSS_CONFIG]
+                                      [--experiment_name EXPERIMENT_NAME]
+                                      [--video VIDEOS] [--all_videos]
+                                      [--sample_limit SAMPLE_LIMIT]
+                                      [--validation_split VALIDATION_SPLIT]
+                                      [--detection_cache DETECTION_CACHE]
+                                      [--detection_conf DETECTION_CONF]
+                                      [--rescale_factor RESCALE_FACTOR]
+                                      [--train_scope {camera_head,refine_net,full}]
+                                      [--camera_loss_weight CAMERA_LOSS_WEIGHT]
+                                      [--lr LR] [--weight_decay WEIGHT_DECAY]
+                                      [--batch_size BATCH_SIZE]
+                                      [--num_workers NUM_WORKERS]
+                                      [--max_steps MAX_STEPS]
+                                      [--log_every LOG_EVERY]
+                                      [--save_every SAVE_EVERY] [--seed SEED]
+                                      [--use_gpu | --no-use_gpu]
+                                      [--amp | --no-amp]
+                                      [--temporal_window_size TEMPORAL_WINDOW_SIZE]
+                                      [--temporal_window_stride TEMPORAL_WINDOW_STRIDE]
+                                      [--temporal_max_frame_gap TEMPORAL_MAX_FRAME_GAP]
+                                      [--temporal_reduction {l1,l2,smooth_l1}]
+                                      [--temporal_scorer_hidden_dim TEMPORAL_SCORER_HIDDEN_DIM]
+                                      [--temporal_scorer_layers TEMPORAL_SCORER_LAYERS]
+                                      [--temporal_scorer_dropout TEMPORAL_SCORER_DROPOUT]
+                                      [--vipe_camera_enabled | --no-vipe_camera_enabled]
+                                      [--vipe_camera_weight VIPE_CAMERA_WEIGHT]
+                                      [--temporal_camera_enabled | --no-temporal_camera_enabled]
+                                      [--temporal_camera_formulation {static,learnable}]
+                                      [--temporal_camera_weight TEMPORAL_CAMERA_WEIGHT]
+                                      [--temporal_camera_scorer_weight TEMPORAL_CAMERA_SCORER_WEIGHT]
+                                      [--temporal_bbox_projected_enabled | --no-temporal_bbox_projected_enabled]
+                                      [--temporal_bbox_projected_formulation {static,learnable}]
+                                      [--temporal_bbox_projected_weight TEMPORAL_BBOX_PROJECTED_WEIGHT]
+                                      [--temporal_bbox_projected_scorer_weight TEMPORAL_BBOX_PROJECTED_SCORER_WEIGHT]
+                                      [--temporal_bbox_input_enabled | --no-temporal_bbox_input_enabled]
+                                      [--temporal_bbox_input_formulation {static,learnable}]
+                                      [--temporal_bbox_input_weight TEMPORAL_BBOX_INPUT_WEIGHT]
+                                      [--temporal_bbox_input_scorer_weight TEMPORAL_BBOX_INPUT_SCORER_WEIGHT]
+finetune_wilor_distill_vipe.py: error: argument --video: expected one argument
+srun: error: gpu020: task 0: Exited with exit code 2
+srun: launch/slurm: _step_signal: Terminating StepId=9670965.0

@@ -1,6 +1,4 @@
 #!/bin/bash
-set -euo pipefail
-
 # ================ SLURM SETUP ================
 # Available HPC Partitions:
 #   compute / compute-p1   : CPU jobs (48 CPUs, 185 GB RAM, Phase 1)
@@ -12,14 +10,16 @@ set -euo pipefail
 #   visual                 : Visualization jobs
 
 #SBATCH --job-name=wilor-inference
-#SBATCH --partition=gpu-a100
-#SBATCH --time=06:00:00
+#SBATCH --partition=gpu-a100-small
+#SBATCH --time=00:15:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
-#SBATCH --mem-per-gpu=10G
+#SBATCH --mem-per-gpu=4G
 #SBATCH --account=Education-EEMCS-MSc-DSAIT
 #SBATCH --output=%x.out
+
+set -euo pipefail
 
 # ================ OUTPUT FILES ================
 base_name="${SLURM_JOB_NAME}"
@@ -51,7 +51,6 @@ echo "Job Name:       $SLURM_JOB_NAME"
 echo "Partition:      $SLURM_JOB_PARTITION"
 echo "Node List:      $SLURM_JOB_NODELIST"
 echo "CPUs per task:  $SLURM_CPUS_PER_TASK"
-echo "Memory per CPU: $SLURM_MEM_PER_CPU"
 echo "GPUs per task:  $SLURM_GPUS_PER_TASK"
 echo "Memory per GPU: $SLURM_MEM_PER_GPU"
 echo "Submit dir:     $SLURM_SUBMIT_DIR"
@@ -61,7 +60,7 @@ start_time=$(date +%s)
 echo "==============================================="
 
 VIDEO_DIR="${VIDEO_DIR:-${PROJECT_ROOT}/data/images}"
-VIDEO_NAME="${VIDEO_NAME:-}"
+VIDEO_NAME="${VIDEO_NAME:-'me 1_contrast_1000'}"
 VIDEO_FILE="${VIDEO_FILE:-}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/wilor}"
 APPTAINER_IMAGE="${APPTAINER_IMAGE:-${MODEL_ROOT}/apptainer/template.sif}"
