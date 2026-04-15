@@ -1,7 +1,7 @@
 defaults:
   # Stage C: tune temporal-loss scale after Stage A/B choose a stable config.
-  # These defaults use the same conservative starter as Stage B; update them to
-  # match the winning earlier-stage setup before launching if needed.
+  # These defaults now carry forward the Stage B winner so the temporal sweep
+  # starts from the best known window and optimizer setup.
   train_mode: distill
   train_scope: refine_net
   videos:
@@ -14,17 +14,17 @@ defaults:
   sample_limit: 256
   detection_conf: 0.3
   rescale_factor: 2.0
-  batch_size: 4
+  batch_size: 8
   num_workers: 2
   max_steps: 200
   log_every: 10
   save_every: 100
   seed: 42
   optimizer:
-    lr: 1.0e-5
+    lr: 3.0e-5
     weight_decay: 1.0e-4
   temporal:
-    window_size: 5
+    window_size: 3
     window_stride: 2
     max_frame_gap: 1
     reduction: smooth_l1
