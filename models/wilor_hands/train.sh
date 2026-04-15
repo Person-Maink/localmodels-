@@ -557,10 +557,11 @@ elif [[ -n "${VIDEO_NAMES}" ]]; then
   IFS='|' read -r -a SELECTED_VIDEOS <<< "${VIDEO_NAMES}"
   for selected_video in "${SELECTED_VIDEOS[@]}"; do
     [[ -n "${selected_video}" ]] || continue
-    PYTHON_CMD+=(--video "${selected_video}")
+    # Use --video=<value> so names beginning with '-' do not get parsed as options.
+    PYTHON_CMD+=("--video=${selected_video}")
   done
 else
-  PYTHON_CMD+=(--video "${VIDEO_NAME}")
+  PYTHON_CMD+=("--video=${VIDEO_NAME}")
 fi
 
 append_value_flag_if_set "--temporal_window_size" "${TEMPORAL_WINDOW_SIZE}"
