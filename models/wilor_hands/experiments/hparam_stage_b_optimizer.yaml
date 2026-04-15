@@ -6,10 +6,10 @@ defaults:
   train_scope: refine_net
   videos:
     - 5XDn22CL-ig
-    - 06kKvQp4SfM
-    - DjFX4idkS3o
-    - bxZtXdVvfpc
-    - 8NqJiAu9W3Y
+    - 0gzQAgjx39o
+    - -KgBBru7lps
+    - koOvrKENdH8
+    - SlksdQT5JRE
   validation_split: 0.2
   sample_limit: 256
   detection_conf: 0.3
