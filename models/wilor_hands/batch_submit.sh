@@ -5,7 +5,7 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 COMMON_SH="${SCRIPT_DIR}/../common/inference_common.sh"
 source "${COMMON_SH}"
 
-VIDEO_DIR="${VIDEO_DIR:-${SCRIPT_DIR}/../../data/images}"
+VIDEO_DIR="${VIDEO_DIR:-${SCRIPT_DIR}/../../data/test}"
 TEMPLATE="${TEMPLATE:-${SCRIPT_DIR}/template_wilor.sh}"
 OUT_DIR="${OUT_DIR:-${SCRIPT_DIR}/generated_jobs}"
 LOG_DIR="${LOG_DIR:-${SCRIPT_DIR}/SLURM_logs}"

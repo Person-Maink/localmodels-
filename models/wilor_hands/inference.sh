@@ -15,7 +15,7 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
-#SBATCH --mem-per-gpu=4G
+#SBATCH --mem-per-gpu=10G
 #SBATCH --account=Education-EEMCS-MSc-DSAIT
 #SBATCH --output=%x.out
 
@@ -59,8 +59,8 @@ echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
 
-VIDEO_DIR="${VIDEO_DIR:-${PROJECT_ROOT}/data/images}"
-VIDEO_NAME="${VIDEO_NAME:-'me 1_contrast_1000'}"
+VIDEO_DIR="${VIDEO_DIR:-${PROJECT_ROOT}/data/test}"
+VIDEO_NAME="${VIDEO_NAME:-"me 1_contrast_1000_amplified"}"
 VIDEO_FILE="${VIDEO_FILE:-}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/wilor}"
 APPTAINER_IMAGE="${APPTAINER_IMAGE:-${MODEL_ROOT}/apptainer/template.sif}"
