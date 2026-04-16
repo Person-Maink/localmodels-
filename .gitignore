@@ -128,6 +128,7 @@ Thumbs.db
 *.csv
 *.json
 *.png
+*.svg
 *.jpg
 *.zip
 **/*.tar.gz.1

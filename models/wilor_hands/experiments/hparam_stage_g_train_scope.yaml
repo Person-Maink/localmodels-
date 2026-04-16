@@ -1,10 +1,14 @@
 defaults:
-  # Stage E: actual tuning pass on the finalized baseline.
-  # Keep all non-video settings fixed; only the video set changes here.
-  # Latest synced result: tune_stage_5_videos reached best val loss 1.6595
-  # at step 400. The all-videos comparison is still pending locally.
+  # Stage G: compare trainable scopes on the current best-known baseline.
+  # The full-model run uses a smaller batch for memory safety.
   train_mode: distill
   train_scope: refine_net
+  videos:
+    - 0KuJ2t4S_TY
+    - 0gzQAgjx39o
+    - 0rq4nkWlO2E
+    - 0ElPjqY4Cq8
+    - SlksdQT5JRE
   validation_split: 0.2
   sample_limit: 0
   detection_conf: 0.3
@@ -47,15 +51,15 @@ defaults:
       scorer_weight: 0.001
 
 experiments:
-  - name: tune_all_videos
-    run_name_suffix: tune_all_videos
-    all_videos: true
+  - name: hp_g_scope_camera_head
+    run_name_suffix: hp_g_scope_camera_head
+    train_scope: camera_head
 
-  - name: tune_stage_5_videos
-    run_name_suffix: tune_stage_5_videos
-    videos:
-      - 0KuJ2t4S_TY
-      - 0gzQAgjx39o
-      - 0rq4nkWlO2E
-      - 0ElPjqY4Cq8
-      - SlksdQT5JRE
+  - name: hp_g_scope_refine_net
+    run_name_suffix: hp_g_scope_refine_net
+    train_scope: refine_net
+
+  - name: hp_g_scope_full
+    run_name_suffix: hp_g_scope_full
+    train_scope: full
+    batch_size: 4

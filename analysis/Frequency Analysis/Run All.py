@@ -138,7 +138,7 @@ def _parse_args():
     parser.add_argument(
         "--workers",
         type=int,
-        default=8,
+        default=32,
         help="Number of worker processes used after pair/group selection.",
     )
     parser.add_argument(
@@ -555,17 +555,17 @@ def _print_discovery(discovery, scenario_rows, selected_pairs, selected_all_mode
 
 def _expected_pair_outputs(output_dir, pair):
     return (
-        output_dir / f"compare__{pair.pair_id}.png",
-        output_dir / f"point_to_point__{pair.pair_id}.png",
-        output_dir / f"multi_point_to_point__{pair.pair_id}.png",
+        output_dir / f"compare__{pair.pair_id}.svg",
+        output_dir / f"point_to_point__{pair.pair_id}.svg",
+        output_dir / f"multi_point_to_point__{pair.pair_id}.svg",
     )
 
 
 def _expected_multi_model_outputs(output_dir, item):
     return (
-        output_dir / f"compare_all_models__{item.group_id}.png",
-        output_dir / f"point_to_point_all_models__{item.group_id}.png",
-        output_dir / f"multi_point_to_point_all_models__{item.group_id}.png",
+        output_dir / f"compare_all_models__{item.group_id}.svg",
+        output_dir / f"point_to_point_all_models__{item.group_id}.svg",
+        output_dir / f"multi_point_to_point_all_models__{item.group_id}.svg",
     )
 
 
@@ -657,9 +657,9 @@ def _run_worker_job(job):
             "source_b": item["source_b"],
             "analyses": {},
         }
-        compare_image = output_dir / f"compare__{runtime_item.pair_id}.png"
-        point_image = output_dir / f"point_to_point__{runtime_item.pair_id}.png"
-        multi_point_image = output_dir / f"multi_point_to_point__{runtime_item.pair_id}.png"
+        compare_image = output_dir / f"compare__{runtime_item.pair_id}.svg"
+        point_image = output_dir / f"point_to_point__{runtime_item.pair_id}.svg"
+        multi_point_image = output_dir / f"multi_point_to_point__{runtime_item.pair_id}.svg"
     else:
         sources = list(runtime_item.sources)
         labels = [_entry_label(source) for source in sources]
@@ -678,9 +678,9 @@ def _run_worker_job(job):
             "sources": item["sources"],
             "analyses": {},
         }
-        compare_image = output_dir / f"compare_all_models__{runtime_item.group_id}.png"
-        point_image = output_dir / f"point_to_point_all_models__{runtime_item.group_id}.png"
-        multi_point_image = output_dir / f"multi_point_to_point_all_models__{runtime_item.group_id}.png"
+        compare_image = output_dir / f"compare_all_models__{runtime_item.group_id}.svg"
+        point_image = output_dir / f"point_to_point_all_models__{runtime_item.group_id}.svg"
+        multi_point_image = output_dir / f"multi_point_to_point_all_models__{runtime_item.group_id}.svg"
 
     try:
         compare_data = compare_module.run_compare_analysis(compare_overrides)

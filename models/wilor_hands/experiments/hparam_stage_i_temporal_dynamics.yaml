@@ -1,10 +1,13 @@
 defaults:
-  # Stage E: actual tuning pass on the finalized baseline.
-  # Keep all non-video settings fixed; only the video set changes here.
-  # Latest synced result: tune_stage_5_videos reached best val loss 1.6595
-  # at step 400. The all-videos comparison is still pending locally.
+  # Stage I: tune temporal continuity assumptions and residual reduction.
   train_mode: distill
   train_scope: refine_net
+  videos:
+    - 0KuJ2t4S_TY
+    - 0gzQAgjx39o
+    - 0rq4nkWlO2E
+    - 0ElPjqY4Cq8
+    - SlksdQT5JRE
   validation_split: 0.2
   sample_limit: 0
   detection_conf: 0.3
@@ -47,15 +50,25 @@ defaults:
       scorer_weight: 0.001
 
 experiments:
-  - name: tune_all_videos
-    run_name_suffix: tune_all_videos
-    all_videos: true
+  - name: hp_i_gap1_smoothl1
+    run_name_suffix: hp_i_gap1_smoothl1
 
-  - name: tune_stage_5_videos
-    run_name_suffix: tune_stage_5_videos
-    videos:
-      - 0KuJ2t4S_TY
-      - 0gzQAgjx39o
-      - 0rq4nkWlO2E
-      - 0ElPjqY4Cq8
-      - SlksdQT5JRE
+  - name: hp_i_gap2_smoothl1
+    run_name_suffix: hp_i_gap2_smoothl1
+    temporal:
+      max_frame_gap: 2
+
+  - name: hp_i_gap3_smoothl1
+    run_name_suffix: hp_i_gap3_smoothl1
+    temporal:
+      max_frame_gap: 3
+
+  - name: hp_i_gap1_l1
+    run_name_suffix: hp_i_gap1_l1
+    temporal:
+      reduction: l1
+
+  - name: hp_i_gap1_l2
+    run_name_suffix: hp_i_gap1_l2
+    temporal:
+      reduction: l2

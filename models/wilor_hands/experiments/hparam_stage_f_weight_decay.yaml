@@ -1,10 +1,15 @@
 defaults:
-  # Stage E: actual tuning pass on the finalized baseline.
-  # Keep all non-video settings fixed; only the video set changes here.
-  # Latest synced result: tune_stage_5_videos reached best val loss 1.6595
-  # at step 400. The all-videos comparison is still pending locally.
+  # Stage F: tune optimizer regularization on the current best-known baseline.
+  # Uses the completed 5-video Stage E subset until the all-videos run is
+  # available locally for a clean comparison.
   train_mode: distill
   train_scope: refine_net
+  videos:
+    - 0KuJ2t4S_TY
+    - 0gzQAgjx39o
+    - 0rq4nkWlO2E
+    - 0ElPjqY4Cq8
+    - SlksdQT5JRE
   validation_split: 0.2
   sample_limit: 0
   detection_conf: 0.3
@@ -47,15 +52,22 @@ defaults:
       scorer_weight: 0.001
 
 experiments:
-  - name: tune_all_videos
-    run_name_suffix: tune_all_videos
-    all_videos: true
+  - name: hp_f_wd_0
+    run_name_suffix: hp_f_wd_0
+    optimizer:
+      weight_decay: 0.0
 
-  - name: tune_stage_5_videos
-    run_name_suffix: tune_stage_5_videos
-    videos:
-      - 0KuJ2t4S_TY
-      - 0gzQAgjx39o
-      - 0rq4nkWlO2E
-      - 0ElPjqY4Cq8
-      - SlksdQT5JRE
+  - name: hp_f_wd_1e5
+    run_name_suffix: hp_f_wd_1e5
+    optimizer:
+      weight_decay: 1.0e-5
+
+  - name: hp_f_wd_1e4
+    run_name_suffix: hp_f_wd_1e4
+    optimizer:
+      weight_decay: 1.0e-4
+
+  - name: hp_f_wd_1e3
+    run_name_suffix: hp_f_wd_1e3
+    optimizer:
+      weight_decay: 1.0e-3

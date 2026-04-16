@@ -4,8 +4,10 @@ import subprocess
 from pathlib import Path
 
 from experiment_config import list_experiment_names, resolve_experiment_config
+from finetune_runtime_estimator import estimate_runtime
 
 SCRIPT_DIR = Path(__file__).resolve().parent
+LOG_DIR = SCRIPT_DIR / "SLURM_logs"
 
 
 def make_argparser() -> argparse.ArgumentParser:
@@ -71,22 +73,25 @@ def main() -> None:
 
     for experiment_name in selected_experiments:
         resolved = resolve_experiment_config(loss_config, experiment_name)
+        estimate = estimate_runtime(resolved, LOG_DIR)
         env = os.environ.copy()
         env["LOSS_CONFIG"] = str(loss_config)
         env["EXPERIMENT_NAME"] = experiment_name
 
-        command = [args.sbatch_bin, str(train_script)]
+        command = [args.sbatch_bin, f"--time={estimate.time_str}", str(train_script)]
         if args.dry_run:
             print(
                 f"DRY_RUN: LOSS_CONFIG={loss_config} EXPERIMENT_NAME={experiment_name} "
-                f"TRAIN_MODE={resolved['train_mode']} {args.sbatch_bin} {train_script}"
+                f"TRAIN_MODE={resolved['train_mode']} TIME={estimate.time_str} "
+                f"({estimate.source}) {args.sbatch_bin} --time={estimate.time_str} {train_script}"
             )
             continue
 
         subprocess.run(command, check=True, env=env)
         print(
             f"Submitted experiment '{experiment_name}' "
-            f"(train_mode={resolved['train_mode']}) via {train_script}"
+            f"(train_mode={resolved['train_mode']}, time={estimate.time_str}, "
+            f"basis={estimate.source}) via {train_script}"
         )
 
 

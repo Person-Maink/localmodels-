@@ -1,10 +1,13 @@
 defaults:
-  # Stage E: actual tuning pass on the finalized baseline.
-  # Keep all non-video settings fixed; only the video set changes here.
-  # Latest synced result: tune_stage_5_videos reached best val loss 1.6595
-  # at step 400. The all-videos comparison is still pending locally.
+  # Stage K: tune the detection threshold and crop context around the hand.
   train_mode: distill
   train_scope: refine_net
+  videos:
+    - 0KuJ2t4S_TY
+    - 0gzQAgjx39o
+    - 0rq4nkWlO2E
+    - 0ElPjqY4Cq8
+    - SlksdQT5JRE
   validation_split: 0.2
   sample_limit: 0
   detection_conf: 0.3
@@ -47,15 +50,21 @@ defaults:
       scorer_weight: 0.001
 
 experiments:
-  - name: tune_all_videos
-    run_name_suffix: tune_all_videos
-    all_videos: true
+  - name: hp_k_det02_res2p0
+    run_name_suffix: hp_k_det02_res2p0
+    detection_conf: 0.2
 
-  - name: tune_stage_5_videos
-    run_name_suffix: tune_stage_5_videos
-    videos:
-      - 0KuJ2t4S_TY
-      - 0gzQAgjx39o
-      - 0rq4nkWlO2E
-      - 0ElPjqY4Cq8
-      - SlksdQT5JRE
+  - name: hp_k_det03_res1p5
+    run_name_suffix: hp_k_det03_res1p5
+    rescale_factor: 1.5
+
+  - name: hp_k_det03_res2p0
+    run_name_suffix: hp_k_det03_res2p0
+
+  - name: hp_k_det03_res2p5
+    run_name_suffix: hp_k_det03_res2p5
+    rescale_factor: 2.5
+
+  - name: hp_k_det05_res2p0
+    run_name_suffix: hp_k_det05_res2p0
+    detection_conf: 0.5
