@@ -1,6 +1,7 @@
 defaults:
   # Stage D: tune the ViPE camera supervision weight after the Stage C winner
   # has locked in the temporal setup and temporal-loss scales.
+  # Defaults now match the final best-known setup so only the ViPE weight varies.
   train_mode: distill
   train_scope: refine_net
   videos:
@@ -33,7 +34,7 @@ defaults:
   losses:
     vipe_camera:
       enabled: true
-      weight: 0.01
+      weight: 0.005
     temporal_camera:
       enabled: true
       formulation: learnable

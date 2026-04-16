@@ -1,23 +1,16 @@
 defaults:
-  # Stage B: tune optimizer settings after Stage A picks a good window setup.
-  # Defaults carry the final Stage D winner so only optimizer values vary
-  # across this sweep.
+  # Stage E: actual tuning pass on the finalized baseline.
+  # Keep all non-video settings fixed; only the video set changes here.
   train_mode: distill
   train_scope: refine_net
-  videos:
-    - 0KuJ2t4S_TY
-    - 0gzQAgjx39o
-    - 0rq4nkWlO2E
-    - 0ElPjqY4Cq8
-    - SlksdQT5JRE
   validation_split: 0.2
-  sample_limit: 256
+  sample_limit: 0
   detection_conf: 0.3
   rescale_factor: 2.0
   batch_size: 8
   num_workers: 2
-  max_steps: 200
-  log_every: 10
+  max_steps: 500
+  log_every: 25
   save_every: 100
   seed: 42
   optimizer:
@@ -52,17 +45,15 @@ defaults:
       scorer_weight: 0.001
 
 experiments:
-  - name: hp_b_lr_3e6
-    run_name_suffix: hp_b_lr_3e6
-    optimizer:
-      lr: 3.0e-6
+  - name: tune_all_videos
+    run_name_suffix: tune_all_videos
+    all_videos: true
 
-  - name: hp_b_lr_1e5
-    run_name_suffix: hp_b_lr_1e5
-    optimizer:
-      lr: 1.0e-5
-
-  - name: hp_b_lr_3e5
-    run_name_suffix: hp_b_lr_3e5
-    optimizer:
-      lr: 3.0e-5
+  - name: tune_stage_5_videos
+    run_name_suffix: tune_stage_5_videos
+    videos:
+      - 0KuJ2t4S_TY
+      - 0gzQAgjx39o
+      - 0rq4nkWlO2E
+      - 0ElPjqY4Cq8
+      - SlksdQT5JRE

@@ -1,4 +1,6 @@
 defaults:
+  # Shared baseline uses the final Stage D winner so test runs start from the
+  # best known configuration before applying the smoke-test overrides below.
   train_mode: distill
   train_scope: camera_head
   videos:
@@ -14,11 +16,11 @@ defaults:
   save_every: 250
   seed: 42
   optimizer:
-    lr: 1.0e-5
+    lr: 3.0e-5
     weight_decay: 1.0e-4
   temporal:
-    window_size: 8
-    window_stride: 4
+    window_size: 3
+    window_stride: 2
     max_frame_gap: 1
     reduction: smooth_l1
     scorer_hidden_dim: 64
@@ -27,22 +29,22 @@ defaults:
   losses:
     vipe_camera:
       enabled: true
-      weight: 0.01
+      weight: 0.005
     temporal_camera:
-      enabled: false
-      formulation: static
-      weight: 0.0
-      scorer_weight: 0.0
+      enabled: true
+      formulation: learnable
+      weight: 0.03
+      scorer_weight: 0.001
     temporal_bbox_projected:
-      enabled: false
-      formulation: static
-      weight: 0.0
-      scorer_weight: 0.0
+      enabled: true
+      formulation: learnable
+      weight: 0.03
+      scorer_weight: 0.001
     temporal_bbox_input:
-      enabled: false
-      formulation: static
-      weight: 0.0
-      scorer_weight: 0.0
+      enabled: true
+      formulation: learnable
+      weight: 0.03
+      scorer_weight: 0.001
 
 experiments:
 
