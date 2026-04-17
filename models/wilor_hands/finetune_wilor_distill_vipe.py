@@ -95,10 +95,6 @@ def make_argparser() -> argparse.ArgumentParser:
     parser.add_argument("--temporal_bbox_projected_formulation", type=str, default=None, choices=["static", "learnable"])
     parser.add_argument("--temporal_bbox_projected_weight", type=float, default=None)
     parser.add_argument("--temporal_bbox_projected_scorer_weight", type=float, default=None)
-    parser.add_argument("--temporal_bbox_input_enabled", action=argparse.BooleanOptionalAction, default=None)
-    parser.add_argument("--temporal_bbox_input_formulation", type=str, default=None, choices=["static", "learnable"])
-    parser.add_argument("--temporal_bbox_input_weight", type=float, default=None)
-    parser.add_argument("--temporal_bbox_input_scorer_weight", type=float, default=None)
     return parser
 
 
@@ -237,30 +233,6 @@ def _apply_experiment_defaults(
         "temporal_bbox_projected_scorer_weight",
         loss_cfg["temporal_bbox_projected"]["scorer_weight"],
     )
-    _set_arg_from_config(
-        args,
-        parser,
-        "temporal_bbox_input_enabled",
-        loss_cfg["temporal_bbox_input"]["enabled"],
-    )
-    _set_arg_from_config(
-        args,
-        parser,
-        "temporal_bbox_input_formulation",
-        loss_cfg["temporal_bbox_input"]["formulation"],
-    )
-    _set_arg_from_config(
-        args,
-        parser,
-        "temporal_bbox_input_weight",
-        loss_cfg["temporal_bbox_input"]["weight"],
-    )
-    _set_arg_from_config(
-        args,
-        parser,
-        "temporal_bbox_input_scorer_weight",
-        loss_cfg["temporal_bbox_input"]["scorer_weight"],
-    )
 
 
 def _resolve_loss_settings(
@@ -298,13 +270,6 @@ def _resolve_loss_settings(
             "temporal_bbox_projected_formulation",
             "temporal_bbox_projected_weight",
             "temporal_bbox_projected_scorer_weight",
-        ),
-        (
-            "temporal_bbox_input",
-            "temporal_bbox_input_enabled",
-            "temporal_bbox_input_formulation",
-            "temporal_bbox_input_weight",
-            "temporal_bbox_input_scorer_weight",
         ),
     ):
         base_loss_cfg[family_name]["formulation"] = str(
@@ -478,7 +443,7 @@ def _evaluate_window_dataloader(
 def _active_temporal_families(loss_cfg: dict[str, dict[str, Any]]) -> list[str]:
     return [
         family_name
-        for family_name in ("temporal_camera", "temporal_bbox_projected", "temporal_bbox_input")
+        for family_name in ("temporal_camera", "temporal_bbox_projected")
         if loss_cfg[family_name]["enabled"]
     ]
 
@@ -812,8 +777,7 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
                 f"[step {step:05d}] loss={train_metrics['loss_total']:.4f} "
                 f"cam={train_metrics.get('loss_camera_t_full', 0.0):.4f} "
                 f"temp_cam={train_metrics.get('loss_temporal_camera_base', 0.0):.4f} "
-                f"bbox_p={train_metrics.get('loss_temporal_bbox_projected_base', 0.0):.4f} "
-                f"bbox_i={train_metrics.get('loss_temporal_bbox_input_base', 0.0):.4f}"
+                f"bbox_p={train_metrics.get('loss_temporal_bbox_projected_base', 0.0):.4f}"
             , flush=True)
             if val_dataloader is not None:
                 _log_progress(f"Running validation at step {step}.")
@@ -842,8 +806,7 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
                     f"             val_loss={val_metrics.get('loss_total', 0.0):.4f} "
                     f"val_cam={val_metrics.get('loss_camera_t_full', 0.0):.4f} "
                     f"val_temp_cam={val_metrics.get('loss_temporal_camera_base', 0.0):.4f} "
-                    f"val_bbox_p={val_metrics.get('loss_temporal_bbox_projected_base', 0.0):.4f} "
-                    f"val_bbox_i={val_metrics.get('loss_temporal_bbox_input_base', 0.0):.4f}"
+                    f"val_bbox_p={val_metrics.get('loss_temporal_bbox_projected_base', 0.0):.4f}"
                 , flush=True)
                 if val_metrics["loss_total"] < best_metric:
                     best_metric = val_metrics["loss_total"]

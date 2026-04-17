@@ -44,11 +44,6 @@ defaults:
       formulation: learnable
       weight: 0.03
       scorer_weight: 0.001
-    temporal_bbox_input:
-      enabled: true
-      formulation: learnable
-      weight: 0.03
-      scorer_weight: 0.001
 
 experiments:
   - name: hp_h_all_learnable
@@ -63,16 +58,11 @@ experiments:
       temporal_bbox_projected:
         formulation: static
         scorer_weight: 0.0
-      temporal_bbox_input:
-        formulation: static
-        scorer_weight: 0.0
 
   - name: hp_h_camera_only
     run_name_suffix: hp_h_camera_only
     losses:
       temporal_bbox_projected:
-        enabled: false
-      temporal_bbox_input:
         enabled: false
 
   - name: hp_h_bbox_projected_only
@@ -80,31 +70,6 @@ experiments:
     losses:
       temporal_camera:
         enabled: false
-      temporal_bbox_input:
-        enabled: false
-
-  - name: hp_h_bbox_input_only
-    run_name_suffix: hp_h_bbox_input_only
-    losses:
-      temporal_camera:
-        enabled: false
-      temporal_bbox_projected:
-        enabled: false
 
   - name: hp_h_camera_projected
     run_name_suffix: hp_h_camera_projected
-    losses:
-      temporal_bbox_input:
-        enabled: false
-
-  - name: hp_h_camera_input
-    run_name_suffix: hp_h_camera_input
-    losses:
-      temporal_bbox_projected:
-        enabled: false
-
-  - name: hp_h_projected_input
-    run_name_suffix: hp_h_projected_input
-    losses:
-      temporal_camera:
-        enabled: false

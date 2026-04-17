@@ -40,11 +40,6 @@ defaults:
       formulation: learnable
       weight: 0.03
       scorer_weight: 0.001
-    temporal_bbox_input:
-      enabled: true
-      formulation: learnable
-      weight: 0.03
-      scorer_weight: 0.001
 
 experiments:
 
@@ -65,11 +60,6 @@ experiments:
         formulation: learnable
         weight: 0.01
         scorer_weight: 0.001
-      temporal_bbox_input:
-        enabled: true
-        formulation: learnable
-        weight: 0.01
-        scorer_weight: 0.001
 
   - name: test_temporal_all_losses
     run_name_suffix: temp_all
@@ -80,11 +70,6 @@ experiments:
         weight: 0.01
         scorer_weight: 0.001
       temporal_bbox_projected:
-        enabled: true
-        formulation: learnable
-        weight: 0.01
-        scorer_weight: 0.001
-      temporal_bbox_input:
         enabled: true
         formulation: learnable
         weight: 0.01

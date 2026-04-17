@@ -36,12 +36,6 @@ DEFAULT_LOSS_CONFIG = {
         "weight": 0.0,
         "scorer_weight": 0.0,
     },
-    "temporal_bbox_input": {
-        "enabled": False,
-        "formulation": "static",
-        "weight": 0.0,
-        "scorer_weight": 0.0,
-    },
 }
 
 DEFAULT_EXPERIMENT_CONFIG = {
@@ -170,6 +164,15 @@ def _normalize_experiment(resolved: dict[str, Any]) -> dict[str, Any]:
         DEFAULT_LOSS_CONFIG,
         normalized.get("losses", {}),
     )
+    allowed_loss_families = set(DEFAULT_LOSS_CONFIG)
+    unknown_loss_families = sorted(set(normalized["losses"]) - allowed_loss_families)
+    if unknown_loss_families:
+        allowed_list = ", ".join(sorted(allowed_loss_families))
+        unknown_list = ", ".join(unknown_loss_families)
+        raise ValueError(
+            "Unknown loss family(s) in experiment config: "
+            f"{unknown_list}. Allowed families: {allowed_list}"
+        )
     for family_name, family_cfg in normalized["losses"].items():
         family_cfg["enabled"] = _to_bool(family_cfg["enabled"])
         family_cfg["weight"] = float(family_cfg["weight"])

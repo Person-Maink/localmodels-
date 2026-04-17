@@ -194,12 +194,11 @@ videos:
 
 ## `losses`
 
-There are four supported loss families:
+There are three supported loss families:
 
 - `vipe_camera`
 - `temporal_camera`
 - `temporal_bbox_projected`
-- `temporal_bbox_input`
 
 ### Common keys for all loss families
 
@@ -236,7 +235,6 @@ These apply to:
 
 - `temporal_camera`
 - `temporal_bbox_projected`
-- `temporal_bbox_input`
 
 #### `formulation`
 - Type: `string`
@@ -281,15 +279,6 @@ Meaning:
 - This applies temporal consistency to bounding boxes derived from projected keypoints.
 - It is useful when you care about temporal stability in the model's projected image-space behavior rather than only camera parameters.
 
-#### `losses.temporal_bbox_input`
-- Supported keys:
-  - `enabled`
-  - `formulation`
-  - `weight`
-  - `scorer_weight`
-- This applies temporal consistency to the input bounding-box sequence itself.
-- It can act as a weaker or more geometry-agnostic temporal prior compared with projected-output-based constraints.
-
 ## Important Rules
 
 - `videos` and `all_videos` are mutually exclusive.
@@ -323,7 +312,7 @@ The stage YAMLs now carry the current best-known A-D winner in `defaults`. Stage
 | --- | --- | --- | --- | --- |
 | A | `temporal.window_size`, `temporal.window_stride`, `batch_size` | `ws3_s1_b8`, `ws3_s2_b8`, `ws5_s2_b4`, `ws5_s4_b4`, `ws8_s2_b2`, `ws8_s4_b2` | `window_size=3`, `window_stride=2`, `batch_size=8` | [hparam_stage_a_windows.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_a_windows.yaml) |
 | B | `optimizer.lr` | `3e-6`, `1e-5`, `3e-5` | `lr=3e-5` | [hparam_stage_b_optimizer.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_b_optimizer.yaml) |
-| C | shared temporal base weight and shared scorer weight across all three temporal families | `(0.01, 0.001)`, `(0.03, 0.001)`, `(0.10, 0.001)`, `(0.03, 0.01)` | temporal weight `0.03`, scorer weight `0.001` | [hparam_stage_c_temporal_weights.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_c_temporal_weights.yaml) |
+| C | shared temporal base weight and shared scorer weight across both temporal families | `(0.01, 0.001)`, `(0.03, 0.001)`, `(0.10, 0.001)`, `(0.03, 0.01)` | temporal weight `0.03`, scorer weight `0.001` | [hparam_stage_c_temporal_weights.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_c_temporal_weights.yaml) |
 | D | `losses.vipe_camera.weight` | `0.005`, `0.01`, `0.02`, `0.05` | `0.005` | [hparam_stage_d_vipe_camera.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_d_vipe_camera.yaml) |
 | E | video coverage | `all_videos=true` vs the 5-video stage subset | best available completed run: 5-video subset; `all_videos` still pending locally | [hparam_stage_e_tuning.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_e_tuning.yaml) |
 | F | `optimizer.weight_decay` | `0`, `1e-5`, `1e-4`, `1e-3` | planned | [hparam_stage_f_weight_decay.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_f_weight_decay.yaml) |
@@ -339,7 +328,7 @@ The stage YAMLs now carry the current best-known A-D winner in `defaults`. Stage
 | --- | --- | --- | --- | --- |
 | A | `hp_a_ws3_s1_b8`, `hp_a_ws3_s2_b8`, `hp_a_ws5_s2_b4`, `hp_a_ws5_s4_b4`, `hp_a_ws8_s2_b2`, `hp_a_ws8_s4_b2` | `hp_a_ws3_s2_b8` with `loss_total=1.5752` at step `200` | `window_size=3`, `window_stride=2`, `batch_size=8` | The `ws5` and `ws8` runs produced no validation windows, so the real comparison was between the two `ws3` runs. |
 | B | `hp_b_lr_3e6`, `hp_b_lr_1e5`, `hp_b_lr_3e5` | `hp_b_lr_3e5` with `loss_total=1.4672` at step `190` | `optimizer.lr=3e-5` | `optimizer.weight_decay` stayed fixed at `1e-4`. |
-| C | `hp_c_tw_0p01_sw_0p001`, `hp_c_tw_0p03_sw_0p001`, `hp_c_tw_0p10_sw_0p001`, `hp_c_tw_0p03_sw_0p01` | `hp_c_tw_0p03_sw_0p001` with `loss_total=1.4648` at step `200` | temporal weight `0.03`, scorer weight `0.001` | The same winning values apply to `temporal_camera`, `temporal_bbox_projected`, and `temporal_bbox_input`. |
+| C | `hp_c_tw_0p01_sw_0p001`, `hp_c_tw_0p03_sw_0p001`, `hp_c_tw_0p10_sw_0p001`, `hp_c_tw_0p03_sw_0p01` | `hp_c_tw_0p03_sw_0p001` with `loss_total=1.4648` at step `200` | temporal weight `0.03`, scorer weight `0.001` | The same winning values apply to `temporal_camera` and `temporal_bbox_projected`. |
 | D | `hp_d_vipe_0p005`, `hp_d_vipe_0p01`, `hp_d_vipe_0p02`, `hp_d_vipe_0p05` | `hp_d_vipe_0p005` with `loss_total=0.8515` at step `200` | `losses.vipe_camera.weight=0.005` | This is the strongest improvement across the staged sweeps. |
 | E | `tune_all_videos`, `tune_stage_5_videos` | `tune_stage_5_videos` with `loss_total=1.6595` at step `400` | best available completed run: 5-video subset | Only `tune_stage_5_videos` is present in the synced outputs right now, so the Stage E comparison is still incomplete until the `all_videos` run is available locally. |
 
@@ -375,10 +364,6 @@ This is the current best-known baseline from Stages A-D. Stage E keeps these val
 | `losses.temporal_bbox_projected.formulation` | `learnable` |
 | `losses.temporal_bbox_projected.weight` | `0.03` |
 | `losses.temporal_bbox_projected.scorer_weight` | `0.001` |
-| `losses.temporal_bbox_input.enabled` | `true` |
-| `losses.temporal_bbox_input.formulation` | `learnable` |
-| `losses.temporal_bbox_input.weight` | `0.03` |
-| `losses.temporal_bbox_input.scorer_weight` | `0.001` |
 
 For the Stage E tuning pass in [hparam_stage_e_tuning.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_e_tuning.yaml), the run-specific settings are:
 

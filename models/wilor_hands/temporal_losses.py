@@ -11,7 +11,6 @@ from torch.utils.data._utils.collate import default_collate
 TEMPORAL_FAMILY_DIMS = {
     "temporal_camera": 3,
     "temporal_bbox_projected": 4,
-    "temporal_bbox_input": 4,
 }
 
 
@@ -178,18 +177,6 @@ def bbox_sequence_from_keypoints(
     return normalize_bbox_sequence(bbox, batch["img_size"].float())
 
 
-def input_bbox_sequence(batch: Dict[str, torch.Tensor]) -> torch.Tensor:
-    box_size = batch["box_size"].float()
-    bbox = torch.cat(
-        [
-            batch["box_center"].float(),
-            torch.stack([box_size, box_size], dim=-1),
-        ],
-        dim=-1,
-    )
-    return normalize_bbox_sequence(bbox, batch["img_size"].float())
-
-
 def normalize_bbox_sequence(
     bbox_sequence: torch.Tensor,
     img_size: torch.Tensor,
@@ -298,7 +285,6 @@ def compute_temporal_loss_bundle(
             student_output_seq["pred_keypoints_2d"],
             window_batch,
         ),
-        "temporal_bbox_input": input_bbox_sequence(window_batch),
     }
 
     for family_name, signal in signal_map.items():

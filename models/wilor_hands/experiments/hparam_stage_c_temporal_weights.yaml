@@ -45,11 +45,6 @@ defaults:
       formulation: learnable
       weight: 0.03
       scorer_weight: 0.001
-    temporal_bbox_input:
-      enabled: true
-      formulation: learnable
-      weight: 0.03
-      scorer_weight: 0.001
 
 experiments:
   - name: hp_c_tw_0p01_sw_0p001
@@ -59,9 +54,6 @@ experiments:
         weight: 0.01
         scorer_weight: 0.001
       temporal_bbox_projected:
-        weight: 0.01
-        scorer_weight: 0.001
-      temporal_bbox_input:
         weight: 0.01
         scorer_weight: 0.001
 
@@ -74,9 +66,6 @@ experiments:
       temporal_bbox_projected:
         weight: 0.03
         scorer_weight: 0.001
-      temporal_bbox_input:
-        weight: 0.03
-        scorer_weight: 0.001
 
   - name: hp_c_tw_0p10_sw_0p001
     run_name_suffix: hp_c_tw_0p10_sw_0p001
@@ -87,9 +76,6 @@ experiments:
       temporal_bbox_projected:
         weight: 0.1
         scorer_weight: 0.001
-      temporal_bbox_input:
-        weight: 0.1
-        scorer_weight: 0.001
 
   - name: hp_c_tw_0p03_sw_0p01
     run_name_suffix: hp_c_tw_0p03_sw_0p01
@@ -98,8 +84,5 @@ experiments:
         weight: 0.03
         scorer_weight: 0.01
       temporal_bbox_projected:
-        weight: 0.03
-        scorer_weight: 0.01
-      temporal_bbox_input:
         weight: 0.03
         scorer_weight: 0.01

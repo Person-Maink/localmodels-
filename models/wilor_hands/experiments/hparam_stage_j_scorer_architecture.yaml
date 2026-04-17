@@ -43,11 +43,6 @@ defaults:
       formulation: learnable
       weight: 0.03
       scorer_weight: 0.001
-    temporal_bbox_input:
-      enabled: true
-      formulation: learnable
-      weight: 0.03
-      scorer_weight: 0.001
 
 experiments:
   - name: hp_j_sc32_l2_d0
