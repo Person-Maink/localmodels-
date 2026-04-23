@@ -27,7 +27,7 @@ HAS_WHIM_COMBINED_SCRIPT = WHIM_SCRIPT.is_file()
 
 WHIM_DATA_ROOT = DEFAULT_WHIM_DATA_ROOT
 
-FAMILY_NAMES = ("wilor", "hamba", "dynhamr", "vipe", "mediapipe", "whim_train", "whim_test")
+FAMILY_NAMES = ("wilor", "wilor_finetune", "hamba", "dynhamr", "vipe", "mediapipe", "whim_train", "whim_test")
 
 
 def _quote(value):
@@ -56,6 +56,22 @@ def _discover_model_clips(family):
             continue
         clips[meshes_dir.parent.name] = meshes_dir.resolve()
     return clips
+
+
+def _discover_experiment_model_clips(family):
+    family_root = OUTPUTS_ROOT / family
+    experiments = {}
+    if not family_root.exists():
+        return experiments
+
+    for meshes_dir in sorted(family_root.glob("*/*/meshes"), key=lambda path: (path.parent.parent.name, path.parent.name)):
+        if not meshes_dir.is_dir():
+            continue
+
+        experiment = meshes_dir.parent.parent.name
+        clip_name = meshes_dir.parent.name
+        experiments.setdefault(experiment, {})[clip_name] = meshes_dir.resolve()
+    return experiments
 
 
 def _discover_vipe_clips():
@@ -197,38 +213,42 @@ def _config_injection_wrapper(target_script, config_attr, source_path):
     )
 
 
+def _model_clip_launchers(meshes_root, camera_poses_file=None, use_meshes_for_camera=True):
+    clip_launchers = {
+        "camera": _camera_cli_wrapper(
+            frames_root=meshes_root if use_meshes_for_camera else None,
+            vipe_pose_file=None,
+            camera_poses_file=camera_poses_file,
+        ),
+        "free": _config_injection_wrapper(FREE_SCRIPT, "FREE_SOURCE", meshes_root),
+        "wrist_grounding": _config_injection_wrapper(WRIST_GROUNDING_SCRIPT, "WRIST_GROUNDING_SOURCE", meshes_root),
+    }
+    if _has_bbox_metadata(meshes_root):
+        clip_launchers["bounding_boxes"] = _bbox_cli_wrapper(meshes_root)
+    return clip_launchers
+
+
 def _build_family_launchers():
     launchers = {family: {} for family in FAMILY_NAMES}
 
     for clip_name, meshes_root in _discover_model_clips("wilor").items():
-        launchers["wilor"][clip_name] = {
-            "camera": _camera_cli_wrapper(frames_root=meshes_root, vipe_pose_file=None),
-            "free": _config_injection_wrapper(FREE_SCRIPT, "FREE_SOURCE", meshes_root),
-            "wrist_grounding": _config_injection_wrapper(WRIST_GROUNDING_SCRIPT, "WRIST_GROUNDING_SOURCE", meshes_root),
-        }
-        if _has_bbox_metadata(meshes_root):
-            launchers["wilor"][clip_name]["bounding_boxes"] = _bbox_cli_wrapper(meshes_root)
+        launchers["wilor"][clip_name] = _model_clip_launchers(meshes_root)
+
+    for experiment, clips in _discover_experiment_model_clips("wilor_finetune").items():
+        launchers["wilor_finetune"][experiment] = {}
+        for clip_name, meshes_root in clips.items():
+            launchers["wilor_finetune"][experiment][clip_name] = _model_clip_launchers(meshes_root)
 
     for clip_name, meshes_root in _discover_model_clips("hamba").items():
-        launchers["hamba"][clip_name] = {
-            "camera": _camera_cli_wrapper(frames_root=meshes_root, vipe_pose_file=None),
-            "free": _config_injection_wrapper(FREE_SCRIPT, "FREE_SOURCE", meshes_root),
-            "wrist_grounding": _config_injection_wrapper(WRIST_GROUNDING_SCRIPT, "WRIST_GROUNDING_SOURCE", meshes_root),
-        }
-        if _has_bbox_metadata(meshes_root):
-            launchers["hamba"][clip_name]["bounding_boxes"] = _bbox_cli_wrapper(meshes_root)
+        launchers["hamba"][clip_name] = _model_clip_launchers(meshes_root)
 
     for clip_name, meshes_root in _discover_model_clips("dynhamr").items():
         camera_poses_file = meshes_root.parent / "camera_poses.npz"
-        launchers["dynhamr"][clip_name] = {
-            "camera": _camera_cli_wrapper(
-                frames_root=None,
-                vipe_pose_file=None,
-                camera_poses_file=camera_poses_file if camera_poses_file.is_file() else None,
-            ),
-            "free": _config_injection_wrapper(FREE_SCRIPT, "FREE_SOURCE", meshes_root),
-            "wrist_grounding": _config_injection_wrapper(WRIST_GROUNDING_SCRIPT, "WRIST_GROUNDING_SOURCE", meshes_root),
-        }
+        launchers["dynhamr"][clip_name] = _model_clip_launchers(
+            meshes_root,
+            camera_poses_file=camera_poses_file if camera_poses_file.is_file() else None,
+            use_meshes_for_camera=False,
+        )
 
     for clip_name, pose_file in _discover_vipe_clips().items():
         launchers["vipe"][clip_name] = {
@@ -279,6 +299,8 @@ def _render_clip_files(clip_dir, desired_files):
 
 
 def _sync_clip_dir(clip_dir, desired_files):
+    if clip_dir.exists() and not clip_dir.is_dir():
+        clip_dir.unlink()
     clip_dir.mkdir(parents=True, exist_ok=True)
     rendered_files = _render_clip_files(clip_dir, desired_files)
 
@@ -296,21 +318,44 @@ def _sync_clip_dir(clip_dir, desired_files):
         _write_executable(clip_dir / name, content)
 
 
-def _sync_family_dir(family_dir, desired_clips):
-    family_dir.mkdir(parents=True, exist_ok=True)
+def _is_clip_launcher_node(node):
+    return bool(node) and all(isinstance(content, str) for content in node.values())
 
-    existing_names = {path.name for path in family_dir.iterdir()}
-    desired_names = set(desired_clips)
+
+def _sync_tree_dir(root_dir, desired_tree):
+    if root_dir.exists() and not root_dir.is_dir():
+        root_dir.unlink()
+    root_dir.mkdir(parents=True, exist_ok=True)
+
+    existing_names = {path.name for path in root_dir.iterdir()}
+    desired_names = set(desired_tree)
 
     for stale_name in sorted(existing_names - desired_names):
-        stale_path = family_dir / stale_name
+        stale_path = root_dir / stale_name
         if stale_path.is_dir():
             shutil.rmtree(stale_path)
         else:
             stale_path.unlink()
 
-    for clip_name, files in desired_clips.items():
-        _sync_clip_dir(family_dir / clip_name, files)
+    for name, child in desired_tree.items():
+        child_path = root_dir / name
+        if _is_clip_launcher_node(child):
+            _sync_clip_dir(child_path, child)
+            continue
+        _sync_tree_dir(child_path, child)
+
+
+def _summarize_tree(node):
+    if _is_clip_launcher_node(node):
+        return 1, len(node)
+
+    clips = 0
+    launchers = 0
+    for child in node.values():
+        child_clips, child_launchers = _summarize_tree(child)
+        clips += child_clips
+        launchers += child_launchers
+    return clips, launchers
 
 
 def generate_launcher_tree(output_root):
@@ -323,10 +368,11 @@ def generate_launcher_tree(output_root):
     for family in FAMILY_NAMES:
         family_dir = output_root / family
         desired_clips = desired_tree.get(family, {})
-        _sync_family_dir(family_dir, desired_clips)
+        _sync_tree_dir(family_dir, desired_clips)
+        clip_count, launcher_count = _summarize_tree(desired_clips)
         summary[family] = {
-            "clips": len(desired_clips),
-            "launchers": sum(len(files) for files in desired_clips.values()),
+            "clips": clip_count,
+            "launchers": launcher_count,
         }
 
     return output_root, summary

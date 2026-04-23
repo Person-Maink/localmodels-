@@ -25,7 +25,13 @@ COMP_SUFFIXES = ("_amplified_modified", "_amplified", "_modified")
 SCENARIOS = (
     ("hamba_vs_hamba_comp", "hamba_all", "hamba_comp"),
     ("wilor_vs_wilor_comp", "wilor_all", "wilor_comp"),
+    ("wilor_finetune_vs_wilor_finetune", "wilor_finetune_all", "wilor_finetune_all"),
+    ("wilor_finetune_vs_wilor_finetune_comp", "wilor_finetune_all", "wilor_finetune_comp"),
     ("mediapipe_vs_mediapipe_comp", "mediapipe_all", "mediapipe_comp"),
+    ("wilor_finetune_vs_wilor", "wilor_finetune_all", "wilor_all"),
+    ("wilor_finetune_vs_hamba", "wilor_finetune_all", "hamba_all"),
+    ("wilor_finetune_vs_dynhamr", "wilor_finetune_all", "dynhamr_all"),
+    ("wilor_finetune_vs_mediapipe", "wilor_finetune_all", "mediapipe_all"),
     ("wilor_vs_hamba", "wilor_all", "hamba_all"),
     ("dynhamr_vs_wilor", "dynhamr_all", "wilor_all"),
     ("dynhamr_vs_hamba", "dynhamr_all", "hamba_all"),
@@ -48,9 +54,17 @@ SCENARIO_OPTIONS = (
 SAME_CLIP_COMP_SCENARIOS = {
     "hamba_vs_hamba_comp",
     "wilor_vs_wilor_comp",
+    "wilor_finetune_vs_wilor_finetune_comp",
     "mediapipe_vs_mediapipe_comp",
 }
+SAME_CLIP_WITHIN_POOL_SCENARIOS = {
+    "wilor_finetune_vs_wilor_finetune",
+}
 CROSS_MODEL_SAME_CLIP_SCENARIOS = {
+    "wilor_finetune_vs_wilor",
+    "wilor_finetune_vs_hamba",
+    "wilor_finetune_vs_dynhamr",
+    "wilor_finetune_vs_mediapipe",
     "wilor_vs_hamba",
     "dynhamr_vs_wilor",
     "dynhamr_vs_hamba",
@@ -66,6 +80,7 @@ class SourceItem:
     family: str
     kind: str
     clip_id: str
+    display_id: str
     path: str
     is_comp: bool
 
@@ -138,7 +153,7 @@ def _parse_args():
     parser.add_argument(
         "--workers",
         type=int,
-        default=32,
+        default=8,
         help="Number of worker processes used after pair/group selection.",
     )
     parser.add_argument(
@@ -176,6 +191,33 @@ def _discover_model_family(outputs_root, family):
                 family=family,
                 kind="model",
                 clip_id=clip_id,
+                display_id=clip_id,
+                path=str(mesh_dir.resolve()),
+                is_comp=_is_comp_clip(clip_id),
+            )
+        )
+
+    return items
+
+
+def _discover_experiment_model_family(outputs_root, family):
+    family_root = Path(outputs_root) / family
+    items = []
+    if not family_root.exists():
+        return items
+
+    for mesh_dir in sorted(family_root.glob("*/*/meshes"), key=lambda p: (p.parent.parent.name, p.parent.name)):
+        if not mesh_dir.is_dir():
+            continue
+
+        experiment = mesh_dir.parent.parent.name
+        clip_id = mesh_dir.parent.name
+        items.append(
+            SourceItem(
+                family=family,
+                kind="model",
+                clip_id=clip_id,
+                display_id=f"{experiment}/{clip_id}",
                 path=str(mesh_dir.resolve()),
                 is_comp=_is_comp_clip(clip_id),
             )
@@ -200,12 +242,17 @@ def _discover_mediapipe(outputs_root):
                 family="mediapipe",
                 kind="mediapipe",
                 clip_id=clip_id,
+                display_id=clip_id,
                 path=str(csv_path.resolve()),
                 is_comp=_is_comp_clip(clip_id),
             )
         )
 
     return items
+
+
+def _source_display_id(source):
+    return source.display_id or source.clip_id
 
 
 def _slug(text):
@@ -229,19 +276,20 @@ def _canonical_clip_id(clip_id):
 def _build_pair_id(scenario_id, source_a, source_b):
     payload = f"{scenario_id}|{source_a.path}|{source_b.path}"
     digest = hashlib.sha1(payload.encode("utf-8")).hexdigest()[:8]
-    return f"{scenario_id}__{_slug(source_a.clip_id)}__{_slug(source_b.clip_id)}__{digest}"
+    return f"{scenario_id}__{_slug(_source_display_id(source_a))}__{_slug(_source_display_id(source_b))}__{digest}"
 
 
 def _build_group_id(scenario_id, *sources):
     payload = "|".join([scenario_id] + [source.path for source in sources])
     digest = hashlib.sha1(payload.encode("utf-8")).hexdigest()[:8]
-    clip_slug = "__".join(_slug(source.clip_id) for source in sources)
+    clip_slug = "__".join(_slug(_source_display_id(source)) for source in sources)
     return f"{scenario_id}__{clip_slug}__{digest}"
 
 
 def _build_source_pools(outputs_root):
     hamba_all = _discover_model_family(outputs_root, "hamba")
     wilor_all = _discover_model_family(outputs_root, "wilor")
+    wilor_finetune_all = _discover_experiment_model_family(outputs_root, "wilor_finetune")
     dynhamr_all = _discover_model_family(outputs_root, "dynhamr")
     mediapipe_all = _discover_mediapipe(outputs_root)
 
@@ -250,6 +298,8 @@ def _build_source_pools(outputs_root):
         "hamba_comp": [item for item in hamba_all if item.is_comp],
         "wilor_all": wilor_all,
         "wilor_comp": [item for item in wilor_all if item.is_comp],
+        "wilor_finetune_all": wilor_finetune_all,
+        "wilor_finetune_comp": [item for item in wilor_finetune_all if item.is_comp],
         "dynhamr_all": dynhamr_all,
         "dynhamr_comp": [item for item in dynhamr_all if item.is_comp],
         "mediapipe_all": mediapipe_all,
@@ -259,6 +309,10 @@ def _build_source_pools(outputs_root):
     discovery = {
         "hamba": {"all": len(pools["hamba_all"]), "comp": len(pools["hamba_comp"])},
         "wilor": {"all": len(pools["wilor_all"]), "comp": len(pools["wilor_comp"])},
+        "wilor_finetune": {
+            "all": len(pools["wilor_finetune_all"]),
+            "comp": len(pools["wilor_finetune_comp"]),
+        },
         "dynhamr": {"all": len(pools["dynhamr_all"]), "comp": len(pools["dynhamr_comp"])},
         "mediapipe": {"all": len(pools["mediapipe_all"]), "comp": len(pools["mediapipe_comp"])},
     }
@@ -332,6 +386,16 @@ def _build_scenarios_and_pairs(pools, requested_scenarios=None, include_all_mode
                 if item.is_comp:
                     continue
                 total_pairs += len(b_by_canonical.get(_canonical_clip_id(item.clip_id), []))
+        elif scenario_id in SAME_CLIP_WITHIN_POOL_SCENARIOS:
+            total_pairs = 0
+            items_by_canonical = {}
+            for item in a_items:
+                items_by_canonical.setdefault(_canonical_clip_id(item.clip_id), []).append(item)
+
+            for items in items_by_canonical.values():
+                count = len(items)
+                if count > 1:
+                    total_pairs += count * (count - 1) // 2
         elif scenario_id in CROSS_MODEL_SAME_CLIP_SCENARIOS:
             total_pairs = 0
             b_by_canonical = {}
@@ -377,6 +441,25 @@ def _build_scenarios_and_pairs(pools, requested_scenarios=None, include_all_mode
                             pair_id=_build_pair_id(scenario_id, source_a, source_b),
                         )
                     )
+        elif scenario_id in SAME_CLIP_WITHIN_POOL_SCENARIOS:
+            items_by_canonical = {}
+            for item in a_items:
+                items_by_canonical.setdefault(_canonical_clip_id(item.clip_id), []).append(item)
+
+            for canonical in sorted(items_by_canonical):
+                items = sorted(items_by_canonical[canonical], key=lambda item: (item.path, item.display_id))
+                for idx, source_a in enumerate(items):
+                    for source_b in items[idx + 1 :]:
+                        if source_a.path == source_b.path:
+                            continue
+                        pairs.append(
+                            PairItem(
+                                scenario_id=scenario_id,
+                                source_a=source_a,
+                                source_b=source_b,
+                                pair_id=_build_pair_id(scenario_id, source_a, source_b),
+                            )
+                        )
         elif scenario_id in CROSS_MODEL_SAME_CLIP_SCENARIOS:
             b_by_canonical = {}
             for item in b_items:
@@ -456,7 +539,7 @@ def _build_scenarios_and_pairs(pools, requested_scenarios=None, include_all_mode
 
 
 def _entry_label(source):
-    return f"{source.family.upper()}:{source.clip_id}"
+    return f"{source.family.upper()}:{_source_display_id(source)}"
 
 
 def _item_id(item):
@@ -522,7 +605,7 @@ def _summarize_entries(entries):
 
 def _print_discovery(discovery, scenario_rows, selected_pairs, selected_all_models):
     print("Discovery counts:")
-    for family in ("hamba", "wilor", "dynhamr", "mediapipe"):
+    for family in ("hamba", "wilor", "wilor_finetune", "dynhamr", "mediapipe"):
         counts = discovery[family]
         print(f"  {family}: all={counts['all']}, comp={counts['comp']}")
 

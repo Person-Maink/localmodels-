@@ -31,6 +31,7 @@ FILTER_ORDER = 3
 FPS = 30.0
 SOURCE_STYLE = {
     "wilor": "-",
+    "wilor_finetune": (0, (6, 2)),
     "hamba": "--",
     "dynhamr": "-.",
     "mediapipe": ":",
@@ -44,6 +45,14 @@ AXIS_ALPHA = {
 # Add optional per-run extras here without touching FILENAME.py.
 EXTRA_MANO_PAIRS = []
 EXTRA_MEDIAPIPE_PAIRS = []
+
+
+def _family_display_name(family):
+    return str(family).replace("_", " ").upper()
+
+
+def _line_style_for_family(family):
+    return SOURCE_STYLE.get(family, "-")
 
 
 @lru_cache(maxsize=1)
@@ -371,7 +380,7 @@ def run_multi_point_analysis(config_overrides=None):
 
     entries = []
 
-    model_families = [family for family in ("wilor", "hamba", "dynhamr") if family in sources]
+    model_families = [family for family in sources if family != "mediapipe"]
     media_pipe_enabled = "mediapipe" in sources
     if not model_families and not media_pipe_enabled:
         raise ValueError("Multi-point analysis needs at least one supported source family.")
@@ -391,7 +400,7 @@ def run_multi_point_analysis(config_overrides=None):
                     "source_family": family,
                     "kind": "model",
                     "slot": label,
-                    "label": f"{family.upper()} {label}",
+                    "label": f"{_family_display_name(family)} {label}",
                     "source": sources[family],
                     "pair": pair,
                     "pair_label": label,
@@ -407,7 +416,7 @@ def run_multi_point_analysis(config_overrides=None):
                     "source_family": "mediapipe",
                     "kind": "mediapipe",
                     "slot": label,
-                    "label": f"MEDIAPIPE {label}",
+                    "label": f"{_family_display_name('mediapipe')} {label}",
                     "source": sources["mediapipe"],
                     "pair": pair,
                     "pair_label": label,
@@ -438,9 +447,9 @@ def build_multi_point_figure(analysis_data, figsize_inches=(14, 9), dpi=100):
 
     for entry in analysis_data["entries"]:
         source_family = entry["source_family"]
-        style = SOURCE_STYLE[source_family]
+        style = _line_style_for_family(source_family)
         color = color_map[entry["pair_label"]]
-        source_label = source_family.upper()
+        source_label = _family_display_name(source_family)
         result = entry["result"]
         t = np.arange(len(result["magnitude"])) / FPS
 
@@ -487,7 +496,7 @@ def main():
 
     for entry in analysis_data["entries"]:
         print(
-            f"{entry['source_family'].upper()} {entry['pair_label']}: "
+            f"{_family_display_name(entry['source_family'])} {entry['pair_label']}: "
             f"dominant={entry['result']['dominant']:.2f} Hz, "
             f"rms={entry['result']['rms']:.6f}"
         )

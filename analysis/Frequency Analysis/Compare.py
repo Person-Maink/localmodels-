@@ -29,7 +29,7 @@ FPS = 30.0
 FILTER_ORDER = 3
 HIGHPASS_CUTOFF = 2.0
 LOWPASS_CUTOFF = 12.0
-DEFAULT_SLOT_NAMES = ("A", "B", "C", "D")
+DEFAULT_SLOT_NAMES = ("A", "B", "C", "D", "E")
 LINE_STYLES = ("-", "--", "-.", ":")
 
 
@@ -63,6 +63,7 @@ def _default_source_b():
 def _default_all_model_sources():
     return [
         getattr(CONFIG, "WILOR_ROOT", None),
+        getattr(CONFIG, "WILOR_FINETUNE_ROOT", None),
         getattr(CONFIG, "HAMBA_ROOT", None),
         getattr(CONFIG, "DYNHAMR_ROOT", None),
         getattr(CONFIG, "MEDIAPIPE_ROOT", None),
@@ -70,7 +71,7 @@ def _default_all_model_sources():
 
 
 def _default_all_model_labels():
-    return ["WILOR", "HAMBA", "DYNHAMR", "MEDIAPIPE"]
+    return ["WILOR", "WILOR FINETUNE", "HAMBA", "DYNHAMR", "MEDIAPIPE"]
 
 
 def _source_kind(path_text):
@@ -348,7 +349,11 @@ def build_compare_figure(analysis_data, figsize_inches=(13, 11), dpi=100):
 
 def main():
     parser = argparse.ArgumentParser(description="Compare frequency analyses across configured sources.")
-    parser.add_argument("--all-models", action="store_true", help="Compare WiLoR, Hamba, DynHAMR, and MediaPipe together.")
+    parser.add_argument(
+        "--all-models",
+        action="store_true",
+        help="Compare WiLoR, WiLoR finetune, Hamba, DynHAMR, and MediaPipe together.",
+    )
     args = parser.parse_args()
 
     analysis_data = run_compare_analysis({"all_models": args.all_models})

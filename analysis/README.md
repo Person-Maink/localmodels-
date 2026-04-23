@@ -109,6 +109,9 @@ Each launcher corresponds to a specific clip and visualization type, for example
 - `launchers/wilor/<clip>/free`
 - `launchers/wilor/<clip>/wrist_grounding`
 - `launchers/wilor/<clip>/bounding_boxes`
+- `launchers/wilor_finetune/<experiment>/<clip>/camera`
+- `launchers/wilor_finetune/<experiment>/<clip>/free`
+- `launchers/wilor_finetune/<experiment>/<clip>/wrist_grounding`
 - `launchers/vipe/<clip>/camera`
 - `launchers/mediapipe/<clip>/free`
 - `launchers/whim_train/<clip>/camera`
@@ -151,6 +154,7 @@ The frequency-analysis runner writes:
 The visualization scripts can work with several source types:
 
 - WiLoR mesh/frame outputs
+- WiLoR finetune mesh/frame outputs
 - Hamba mesh/frame outputs
 - DynHAMR mesh/frame outputs
 - ViPE pose outputs
@@ -182,4 +186,3 @@ If you want to explore the project quickly:
 1. Use `generate_visualization_launchers.py` to build clip-specific launchers.
 2. Use `Frequency Analysis/Run All.py` to generate batch SVG plots and summaries.
 3. Use one of the `3D Visualization /...` scripts for an interactive view of a single clip.
-

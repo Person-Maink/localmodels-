@@ -132,6 +132,22 @@ _WILOR_CLIP = "me 1"
 # _WILOR_CLIP = "me 3"
 # _WILOR_CLIP = "me 4"
 
+# WiLoR finetune experiment + clip (comment in/out one line)
+_WILOR_FINETUNE_EXPERIMENT = "tune_stage_5_videos"
+# _WILOR_FINETUNE_EXPERIMENT = "test_temporal_all_losses"
+
+# WiLoR finetune clip inside the selected experiment (comment in/out one line)
+_WILOR_FINETUNE_CLIP = "me 1_contrast_50_amplified"
+# _WILOR_FINETUNE_CLIP = "me 1"
+# _WILOR_FINETUNE_CLIP = "me 2"
+# _WILOR_FINETUNE_CLIP = "me 3"
+# _WILOR_FINETUNE_CLIP = "me 4"
+# _WILOR_FINETUNE_CLIP = "120-2_clip_1"
+# _WILOR_FINETUNE_CLIP = "120-2_clip_1_amplified"
+# _WILOR_FINETUNE_CLIP = "clip_1"
+# _WILOR_FINETUNE_CLIP = "clip_1_amplified"
+# _WILOR_FINETUNE_CLIP = "demo1"
+
 # WiLoR comparison clip (comment in/out one line)
 # _WILOR_COMP_CLIP = "120-2_clip_1"
 # _WILOR_COMP_CLIP = "120-2_clip_1_amplified"  # show stable right hand
@@ -284,6 +300,8 @@ _HAND_IDX = 0 # 1=right, 0=left
 
 _MANO_RIGHT_PATH = _ANALYSIS_ROOT / "mano_data" / "MANO_RIGHT.pkl"
 _WILOR_ROOT = _OUTPUTS_ROOT / "wilor" / _WILOR_CLIP / "meshes"
+_WILOR_FINETUNE_EXPERIMENT_ROOT = _OUTPUTS_ROOT / "wilor_finetune" / _WILOR_FINETUNE_EXPERIMENT
+_WILOR_FINETUNE_ROOT = _WILOR_FINETUNE_EXPERIMENT_ROOT / _WILOR_FINETUNE_CLIP / "meshes"
 _WILOR_COMP = _OUTPUTS_ROOT / "wilor" / _WILOR_COMP_CLIP / "meshes"
 _HAMBA_ROOT = _OUTPUTS_ROOT / "hamba" / _HAMBA_CLIP / "meshes"
 _HAMBA_COMP = _OUTPUTS_ROOT / "hamba" / _HAMBA_COMP_CLIP / "meshes"
@@ -307,6 +325,8 @@ _PATH_EXPORTS = {
     "ANALYSIS_ROOT": _ANALYSIS_ROOT,
     "MANO_RIGHT_PATH": _MANO_RIGHT_PATH,
     "WILOR_ROOT": _WILOR_ROOT,
+    "WILOR_FINETUNE_EXPERIMENT_ROOT": _WILOR_FINETUNE_EXPERIMENT_ROOT,
+    "WILOR_FINETUNE_ROOT": _WILOR_FINETUNE_ROOT,
     "WILOR_COMP": _WILOR_COMP,
     "HAMBA_ROOT": _HAMBA_ROOT,
     "HAMBA_COMP": _HAMBA_COMP,
@@ -343,6 +363,7 @@ for _name, _value in _RAW_EXPORTS.items():
 
 # Generic model aliases (preferred by new scripts).
 MODEL_ROOT = WILOR_ROOT
+# MODEL_ROOT = WILOR_FINETUNE_ROOT
 # MODEL_ROOT = HAMBA_ROOT
 # MODEL_ROOT = DYNHAMR_ROOT
 # MODEL_ROOT = MEDIAPIPE_ROOT

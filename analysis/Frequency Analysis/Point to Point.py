@@ -30,7 +30,7 @@ np.inf = float("inf")
 LOWPASS_CUTOFF = 6.0
 FILTER_ORDER = 3
 FPS = 30.0
-DEFAULT_SLOT_NAMES = ("A", "B", "C", "D")
+DEFAULT_SLOT_NAMES = ("A", "B", "C", "D", "E")
 LINE_STYLES = ("-", "--", "-.", ":")
 
 
@@ -67,6 +67,7 @@ def _default_source_b():
 def _default_all_model_sources():
     return [
         getattr(CONFIG, "WILOR_ROOT", None),
+        getattr(CONFIG, "WILOR_FINETUNE_ROOT", None),
         getattr(CONFIG, "HAMBA_ROOT", None),
         getattr(CONFIG, "DYNHAMR_ROOT", None),
         getattr(CONFIG, "MEDIAPIPE_ROOT", None),
@@ -74,7 +75,7 @@ def _default_all_model_sources():
 
 
 def _default_all_model_labels():
-    return ["WILOR", "HAMBA", "DYNHAMR", "MEDIAPIPE"]
+    return ["WILOR", "WILOR FINETUNE", "HAMBA", "DYNHAMR", "MEDIAPIPE"]
 
 
 def _infer_label(root_dir, fallback):
@@ -504,7 +505,11 @@ def build_point_to_point_figure(analysis_data, figsize_inches=(12, 10), dpi=100)
 
 def main():
     parser = argparse.ArgumentParser(description="Run point-to-point frequency analysis across configured sources.")
-    parser.add_argument("--all-models", action="store_true", help="Compare WiLoR, Hamba, DynHAMR, and MediaPipe together.")
+    parser.add_argument(
+        "--all-models",
+        action="store_true",
+        help="Compare WiLoR, WiLoR finetune, Hamba, DynHAMR, and MediaPipe together.",
+    )
     args = parser.parse_args()
 
     analysis_data = run_point_to_point_analysis({"all_models": args.all_models})
