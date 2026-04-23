@@ -21,7 +21,7 @@ defaults:
   save_every: 100
   seed: 42
   optimizer:
-    lr: 3.0e-5
+    lr: 1.0e-5
     weight_decay: 1.0e-4
   temporal:
     window_size: 3

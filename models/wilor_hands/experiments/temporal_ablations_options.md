@@ -288,6 +288,29 @@ Meaning:
   - `formulation: learnable`
   - and has `scorer_weight > 0.0`
 
+## Latest Synced Baseline
+
+The most recent directly comparable finetune reruns are the Stage A jobs from April 23, 2026:
+
+- [wilor-train_079.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_079.out>): `hp_a_ws3_s1_b8` reached `best val_loss_total=0.8864`
+- [wilor-train_080.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_080.out>): `hp_a_ws3_s2_b8` reached `best val_loss_total=0.8492`
+- [wilor-train_081.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_081.out>), [wilor-train_082.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_082.out>), [wilor-train_083.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_083.out>), and [wilor-train_084.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_084.out>) used larger windows and ended up with `0` validation windows, so their train-loss-only numbers are not suitable for model selection
+
+Parameters to carry forward from that rerun:
+
+- `train_scope=refine_net`
+- `videos=[0KuJ2t4S_TY, 0gzQAgjx39o, 0rq4nkWlO2E, 0ElPjqY4Cq8, SlksdQT5JRE]`
+- `validation_split=0.2`, `sample_limit=256`, `detection_conf=0.3`, `rescale_factor=2.0`
+- `batch_size=8`, `num_workers=2`, `max_steps=200`, `log_every=10`, `save_every=100`, `seed=42`
+- `optimizer.lr=1e-5`, `optimizer.weight_decay=1e-4`
+- `temporal.window_size=3`, `temporal.window_stride=2`, `temporal.max_frame_gap=1`, `temporal.reduction=smooth_l1`
+- scorer setup: `hidden_dim=64`, `layers=2`, `dropout=0.0`
+- `losses.vipe_camera.enabled=true`, `losses.vipe_camera.weight=0.005`
+- `losses.temporal_camera.enabled=true`, `losses.temporal_camera.formulation=learnable`, `losses.temporal_camera.weight=0.03`, `losses.temporal_camera.scorer_weight=0.001`
+- `losses.temporal_bbox_projected.enabled=true`, `losses.temporal_bbox_projected.formulation=learnable`, `losses.temporal_bbox_projected.weight=0.03`, `losses.temporal_bbox_projected.scorer_weight=0.001`
+
+The original Stage B logs from April 15, 2026 are not a valid learning-rate comparison. [wilor-train_065.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_065.out>), [wilor-train_066.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_066.out>), and [wilor-train_067.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_067.out>) all launched with `--lr 1e-5`, so the earlier `lr=3e-5` winner should be treated as invalid. Stage B should be rerun with the fixed optimizer export path before promoting any learning-rate winner downstream.
+
 ## Suggested Staged Sweep
 
 If you are tuning this regime manually, a good order is:
@@ -306,12 +329,12 @@ If you are tuning this regime manually, a good order is:
 
 Keep the ViPE camera weight in its own stage if you want a clean comparison, since it changes the balance of the base supervision rather than the temporal regularizers.
 
-The stage YAMLs now carry the current best-known A-D winner in `defaults`. Stages A-E record the sweeps you have already run, and Stages F-K define the next planned sweeps on top of that baseline.
+The stage YAMLs now carry the latest synced forward baseline in `defaults`. Stage B is the next required rerun, because its older logs never actually varied `lr`; later stages are still documented so the sweep order stays reproducible once that optimizer pass is refreshed.
 
 | Stage | Tune | Values tried / planned | Historical winner / status | Config |
 | --- | --- | --- | --- | --- |
-| A | `temporal.window_size`, `temporal.window_stride`, `batch_size` | `ws3_s1_b8`, `ws3_s2_b8`, `ws5_s2_b4`, `ws5_s4_b4`, `ws8_s2_b2`, `ws8_s4_b2` | `window_size=3`, `window_stride=2`, `batch_size=8` | [hparam_stage_a_windows.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_a_windows.yaml) |
-| B | `optimizer.lr` | `3e-6`, `1e-5`, `3e-5` | `lr=3e-5` | [hparam_stage_b_optimizer.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_b_optimizer.yaml) |
+| A | `temporal.window_size`, `temporal.window_stride`, `batch_size` | `ws3_s1_b8`, `ws3_s2_b8`, `ws5_s2_b4`, `ws5_s4_b4`, `ws8_s2_b2`, `ws8_s4_b2` | Apr 23, 2026 rerun winner: `window_size=3`, `window_stride=2`, `batch_size=8` (`hp_a_ws3_s2_b8`, best `val_loss_total=0.8492`) | [hparam_stage_a_windows.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_a_windows.yaml) |
+| B | `optimizer.lr` | `3e-6`, `1e-5`, `3e-5` | Apr 15, 2026 sweep invalid: all three runs launched with `lr=1e-5`; rerun required. Forward baseline stays `lr=1e-5`, `weight_decay=1e-4`. | [hparam_stage_b_optimizer.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_b_optimizer.yaml) |
 | C | shared temporal base weight and shared scorer weight across both temporal families | `(0.01, 0.001)`, `(0.03, 0.001)`, `(0.10, 0.001)`, `(0.03, 0.01)` | temporal weight `0.03`, scorer weight `0.001` | [hparam_stage_c_temporal_weights.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_c_temporal_weights.yaml) |
 | D | `losses.vipe_camera.weight` | `0.005`, `0.01`, `0.02`, `0.05` | `0.005` | [hparam_stage_d_vipe_camera.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_d_vipe_camera.yaml) |
 | E | video coverage | `all_videos=true` vs the 5-video stage subset | best available completed run: 5-video subset; `all_videos` still pending locally | [hparam_stage_e_tuning.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_e_tuning.yaml) |

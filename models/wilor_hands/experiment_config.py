@@ -262,6 +262,8 @@ def experiment_to_env_map(resolved: dict[str, Any]) -> dict[str, str]:
     for key, env_name in ENV_KEY_MAP.items():
         env_map[env_name] = str(resolved[key])
 
+    env_map["LR"] = str(resolved["optimizer"]["lr"])
+    env_map["WEIGHT_DECAY"] = str(resolved["optimizer"]["weight_decay"])
     env_map["ALL_VIDEOS"] = "true" if resolved["all_videos"] else "false"
     if resolved["videos"]:
         if len(resolved["videos"]) == 1:

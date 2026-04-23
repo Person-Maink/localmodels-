@@ -11,7 +11,7 @@ TEST_ROOT = Path(__file__).resolve().parents[1]
 if str(TEST_ROOT) not in sys.path:
     sys.path.insert(0, str(TEST_ROOT))
 
-from experiment_config import resolve_experiment_config
+from experiment_config import experiment_to_env_map, resolve_experiment_config
 from temporal_losses import (
     TemporalWindowScorer,
     bbox_sequence_from_keypoints,
@@ -57,6 +57,59 @@ class TemporalAblationTests(unittest.TestCase):
         self.assertEqual(resolved["losses"]["temporal_camera"]["formulation"], "static")
         self.assertAlmostEqual(resolved["losses"]["temporal_camera"]["weight"], 0.02)
         self.assertTrue(resolved["losses"]["vipe_camera"]["enabled"])
+
+    def test_env_map_exports_optimizer_values(self) -> None:
+        resolved = {
+            "train_mode": "distill",
+            "train_scope": "refine_net",
+            "validation_split": 0.2,
+            "sample_limit": 256,
+            "detection_conf": 0.3,
+            "rescale_factor": 2.0,
+            "batch_size": 8,
+            "num_workers": 2,
+            "max_steps": 200,
+            "log_every": 10,
+            "save_every": 100,
+            "seed": 42,
+            "optimizer": {"lr": 1.0e-5, "weight_decay": 1.0e-4},
+            "all_videos": False,
+            "videos": ["clip_a", "clip_b"],
+            "temporal": {
+                "window_size": 3,
+                "window_stride": 2,
+                "max_frame_gap": 1,
+                "reduction": "smooth_l1",
+                "scorer_hidden_dim": 64,
+                "scorer_layers": 2,
+                "scorer_dropout": 0.0,
+            },
+            "losses": {
+                "vipe_camera": {
+                    "enabled": True,
+                    "weight": 0.005,
+                    "scorer_weight": 0.0,
+                },
+                "temporal_camera": {
+                    "enabled": True,
+                    "formulation": "learnable",
+                    "weight": 0.03,
+                    "scorer_weight": 0.001,
+                },
+                "temporal_bbox_projected": {
+                    "enabled": True,
+                    "formulation": "learnable",
+                    "weight": 0.03,
+                    "scorer_weight": 0.001,
+                },
+            },
+        }
+
+        env_map = experiment_to_env_map(resolved)
+
+        self.assertEqual(env_map["LR"], "1e-05")
+        self.assertEqual(env_map["WEIGHT_DECAY"], "0.0001")
+        self.assertEqual(env_map["VIDEO_NAMES"], "clip_a|clip_b")
 
     def test_build_temporal_windows_respects_streams_and_gaps(self) -> None:
         samples = [

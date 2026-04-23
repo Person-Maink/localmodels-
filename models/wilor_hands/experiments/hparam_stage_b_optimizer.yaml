@@ -1,7 +1,8 @@
 defaults:
   # Stage B: tune optimizer settings after Stage A picks a good window setup.
-  # Defaults carry the final Stage D winner so only optimizer values vary
-  # across this sweep.
+  # Defaults mirror the Apr 23 2026 Stage A rerun winner. The older Stage B
+  # sweep was accidentally pinned to lr=1e-5 by the launcher, so this file
+  # should be rerun with the fixed optimizer export path.
   train_mode: distill
   train_scope: refine_net
   videos:
@@ -21,7 +22,7 @@ defaults:
   save_every: 100
   seed: 42
   optimizer:
-    lr: 3.0e-5
+    lr: 1.0e-5
     weight_decay: 1.0e-4
   temporal:
     window_size: 3

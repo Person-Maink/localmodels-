@@ -177,6 +177,15 @@ def bbox_sequence_from_keypoints(
     return normalize_bbox_sequence(bbox, batch["img_size"].float())
 
 
+def input_bbox_sequence(batch: Dict[str, torch.Tensor]) -> torch.Tensor:
+    box_size = batch["box_size"].float().unsqueeze(-1).expand(*batch["box_size"].shape, 2)
+    bbox = torch.cat(
+        [batch["box_center"].float(), box_size],
+        dim=-1,
+    )
+    return normalize_bbox_sequence(bbox, batch["img_size"].float())
+
+
 def normalize_bbox_sequence(
     bbox_sequence: torch.Tensor,
     img_size: torch.Tensor,
