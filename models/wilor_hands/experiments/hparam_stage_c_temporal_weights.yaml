@@ -1,7 +1,7 @@
 defaults:
-  # Stage C: tune temporal-loss scale after Stage A/B choose a stable config.
-  # Defaults carry the final Stage D winner so only temporal-loss values vary
-  # across this sweep.
+  # Stage C: tune temporal-loss scale after the Apr 23 2026 Stage B rerun
+  # selects the optimizer setting. Defaults carry that Stage B winner so only
+  # temporal-loss values vary across this sweep.
   train_mode: distill
   train_scope: refine_net
   videos:
@@ -21,7 +21,7 @@ defaults:
   save_every: 100
   seed: 42
   optimizer:
-    lr: 1.0e-5
+    lr: 3.0e-5
     weight_decay: 1.0e-4
   temporal:
     window_size: 3

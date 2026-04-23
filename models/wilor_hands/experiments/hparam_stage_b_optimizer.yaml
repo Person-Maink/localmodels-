@@ -1,8 +1,8 @@
 defaults:
   # Stage B: tune optimizer settings after Stage A picks a good window setup.
-  # Defaults mirror the Apr 23 2026 Stage A rerun winner. The older Stage B
-  # sweep was accidentally pinned to lr=1e-5 by the launcher, so this file
-  # should be rerun with the fixed optimizer export path.
+  # Defaults mirror the Apr 23 2026 Stage A rerun winner while only lr varies.
+  # The original Apr 15 2026 sweep was accidentally pinned to lr=1e-5, but the
+  # corrected Apr 23 2026 rerun selected hp_b_lr_3e5 as the forward baseline.
   train_mode: distill
   train_scope: refine_net
   videos:
