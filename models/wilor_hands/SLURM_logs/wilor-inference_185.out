@@ -1,0 +1,3574 @@
+
+The following have been reloaded with a version change:
+  1) python/3.10.12 => python/3.10.13
+
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) python/3.10.13
+  2) DefaultModules   4) 2024r1       6) cuda/11.7
+
+ 
+
+Thu Apr 16 18:40:03 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   56C    P0            104W /  300W |    1420MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    7   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9680116
+Job Name:       wilor-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Thu Apr 16 18:40:03 CEST 2026
+===============================================
+WiLoR finetune experiment: tune_stage_5_videos
+WiLoR checkpoint: /scratch/mthakur/manifold/outputs/wilor_finetune/tune_stage_5_videos/best.ckpt
+WiLoR config: /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/model_config.yaml
+WiLoR video: /scratch/mthakur/manifold/data/images/_Ce7G35GIqA.mp4
+WiLoR output root: /scratch/mthakur/manifold/outputs/wilor_finetune/tune_stage_5_videos
+WiLoR completion marker: /scratch/mthakur/manifold/outputs/wilor_finetune/tune_stage_5_videos/_completed/_Ce7G35GIqA.json
+WiLoR temp frame dir: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames
+Extracted 1620 frame(s) from /scratch/mthakur/manifold/data/images/_Ce7G35GIqA.mp4 into /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[progress] Loading WiLoR checkpoint: /scratch/mthakur/manifold/outputs/wilor_finetune/tune_stage_5_videos/best.ckpt
+Loading  /scratch/mthakur/manifold/outputs/wilor_finetune/tune_stage_5_videos/best.ckpt
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+[progress] Loading detector: ./pretrained_models/detector.pt
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000000.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000001.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000002.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000003.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000004.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000005.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000006.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000007.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000008.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000009.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000010.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000011.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000012.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000013.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000014.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000015.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000016.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000017.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000018.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000019.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000020.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000021.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000022.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000023.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000024.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000025.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000026.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000027.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000028.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000029.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000030.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000031.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000032.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000033.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000034.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000035.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000036.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000037.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000038.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000039.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000040.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000041.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000042.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000043.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000044.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000045.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000046.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000047.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000048.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000049.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000050.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000051.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000052.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000053.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000054.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000055.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000056.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000057.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000058.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000059.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000060.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000061.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000062.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000063.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000064.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000065.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000066.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000067.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000068.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000069.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000070.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000071.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000072.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000073.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000074.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000075.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000076.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000077.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000078.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000079.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000080.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000081.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000082.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000083.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000084.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000085.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000086.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000087.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000088.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000089.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000090.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000091.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000092.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000093.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000094.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000095.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000096.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000097.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000098.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000099.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000100.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000101.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000102.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000103.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000104.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000105.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000106.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000107.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000108.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000109.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000110.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000111.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000112.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000113.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000114.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000115.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000116.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000117.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000118.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000119.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000120.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000121.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000122.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000123.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000124.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000125.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000126.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000127.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000128.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000129.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000130.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000131.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000132.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000133.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000134.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000135.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000136.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000137.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000138.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000139.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000140.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000141.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000142.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000143.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000144.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000145.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000146.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000147.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000148.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000149.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000150.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000151.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000152.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000153.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000154.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000155.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000156.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000157.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000158.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000159.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000160.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000161.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000162.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000163.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000164.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000165.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000166.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000167.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000168.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000169.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000170.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000171.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000172.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000173.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000174.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000175.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000176.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000177.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000178.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000179.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000180.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000181.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000182.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000183.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000184.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000185.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000186.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000187.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000188.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000189.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000190.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000191.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000192.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000193.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000194.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000195.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000196.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000197.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000198.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000199.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000200.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000201.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000202.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000203.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000204.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000205.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000206.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000207.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000208.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000209.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000210.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000211.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000212.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000213.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000214.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000215.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000216.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000217.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000218.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000219.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000220.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000221.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000222.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000223.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000224.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000225.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000226.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000227.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000228.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000229.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000230.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000231.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000232.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000233.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000234.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000235.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000236.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000237.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000238.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000239.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000240.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000241.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000242.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000243.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000244.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000245.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000246.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000247.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000248.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000249.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000250.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000251.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000252.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000253.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000254.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000255.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000256.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000257.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000258.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000259.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000260.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000261.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000262.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000263.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000264.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000265.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000266.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000267.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000268.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000269.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000270.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000271.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000272.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000273.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000274.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000275.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000276.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000277.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000278.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000279.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000280.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000281.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000282.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000283.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000284.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000285.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000286.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000287.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000288.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000289.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000290.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000291.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000292.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000293.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000294.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000295.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000296.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000297.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000298.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000299.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000300.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000301.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000302.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000303.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000304.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000305.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000306.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000307.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000308.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000309.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000310.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000311.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000312.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000313.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000314.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000315.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000316.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000317.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000318.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000319.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000320.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000321.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000322.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000323.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000324.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000325.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000326.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000327.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000328.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000329.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000330.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000331.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000332.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000333.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000334.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000335.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000336.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000337.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000338.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000339.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000340.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000341.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000342.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000343.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000344.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000345.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000346.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000347.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000348.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000349.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000350.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000351.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000352.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000353.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000354.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000355.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000356.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000357.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000358.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000359.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000360.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000361.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000362.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000363.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000364.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000365.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000366.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000367.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000368.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000369.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000370.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000371.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000372.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000373.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000374.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000375.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000376.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000377.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000378.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000379.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000380.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000381.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000382.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000383.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000384.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000385.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000386.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000387.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000388.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000389.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000390.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000391.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000392.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000393.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000394.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000395.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000396.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000397.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000398.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000399.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000400.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000401.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000402.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000403.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000404.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000405.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000406.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000407.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000408.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000409.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000410.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000411.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000412.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000413.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000414.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000415.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000416.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000417.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000418.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000419.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000420.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000421.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000422.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000423.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000424.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000425.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000426.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000427.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000428.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000429.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000430.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000431.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000432.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000433.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000434.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000435.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000436.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000437.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000438.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000439.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000440.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000441.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000442.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000443.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000444.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000445.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000446.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000447.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000448.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000449.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000450.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000451.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000452.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000453.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000454.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000455.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000456.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000457.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000458.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000459.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000460.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000461.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000462.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000463.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000464.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000465.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000466.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000467.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000468.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000469.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000470.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000471.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000472.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000473.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000474.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000475.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000476.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000477.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000478.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000479.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000480.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000481.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000482.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000483.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000484.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000485.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000486.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000487.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000488.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000489.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000490.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000491.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000492.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000493.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000494.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000495.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000496.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000497.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000498.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000499.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000500.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000501.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000502.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000503.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000504.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000505.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000506.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000507.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000508.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000509.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000510.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000511.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000512.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000513.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000514.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000515.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000516.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000517.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000518.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000519.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000520.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000521.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000522.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000523.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000524.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000525.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000526.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000527.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000528.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000529.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000530.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000531.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000532.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000533.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000534.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000535.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000536.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000537.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000538.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000539.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000540.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000541.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000542.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000543.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000544.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000545.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000546.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000547.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000548.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000549.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000550.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000551.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000552.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000553.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000554.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000555.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000556.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000557.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000558.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000559.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000560.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000561.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000562.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000563.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000564.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000565.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000566.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000567.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000568.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000569.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000570.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000571.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000572.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000573.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000574.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000575.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000576.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000577.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000578.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000579.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000580.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000581.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000582.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000583.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000584.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000585.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000586.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000587.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000588.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000589.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000590.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000591.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000592.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000593.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000594.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000595.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000596.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000597.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000598.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000599.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000600.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000601.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000602.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000603.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000604.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000605.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000606.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000607.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000608.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000609.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000610.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000611.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000612.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000613.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000614.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000615.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000616.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000617.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000618.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000619.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000620.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000621.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000622.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000623.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000624.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000625.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000626.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000627.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000628.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000629.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000630.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000631.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000632.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000633.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000634.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000635.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000636.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000637.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000638.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000639.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000640.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000641.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000642.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000643.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000644.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000645.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000646.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000647.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000648.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000649.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000650.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000651.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000652.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000653.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000654.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000655.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000656.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000657.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000658.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000659.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000660.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000661.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000662.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000663.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000664.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000665.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000666.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000667.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000668.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000669.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000670.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000671.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000672.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000673.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000674.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000675.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000676.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000677.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000678.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000679.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000680.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000681.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000682.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000683.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000684.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000685.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000686.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000687.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000688.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000689.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000690.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000691.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000692.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000693.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000694.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000695.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000696.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000697.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000698.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000699.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000700.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000701.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000702.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000703.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000704.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000705.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000706.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000707.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000708.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000709.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000710.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000711.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000712.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000713.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000714.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000715.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000716.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000717.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000718.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000719.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000720.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000721.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000722.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000723.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000724.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000725.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000726.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000727.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000728.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000729.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000730.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000731.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000732.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000733.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000734.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000735.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000736.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000737.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000738.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000739.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000740.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000741.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000742.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000743.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000744.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000745.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000746.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000747.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000748.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000749.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000750.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000751.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000752.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000753.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000754.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000755.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000756.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000757.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000758.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000759.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000760.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000761.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000762.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000763.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000764.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000765.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000766.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000767.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000768.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000769.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000770.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000771.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000772.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000773.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000774.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000775.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000776.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000777.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000778.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000779.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000780.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000781.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000782.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000783.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000784.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000785.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000786.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000787.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000788.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000789.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000790.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000791.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000792.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000793.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000794.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000795.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000796.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000797.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000798.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000799.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000800.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000801.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000802.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000803.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000804.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000805.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000806.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000807.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000808.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000809.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000810.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000811.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000812.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000813.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000814.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000815.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000816.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000817.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000818.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000819.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000820.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000821.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000822.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000823.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000824.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000825.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000826.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000827.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000828.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000829.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000830.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000831.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000832.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000833.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000834.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000835.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000836.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000837.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000838.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000839.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000840.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000841.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000842.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000843.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000844.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000845.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000846.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000847.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000848.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000849.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000850.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000851.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000852.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000853.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000854.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000855.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000856.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000857.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000858.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000859.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000860.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000861.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000862.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000863.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000864.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000865.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000866.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000867.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000868.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000869.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000870.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000871.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000872.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000873.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000874.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000875.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000876.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000877.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000878.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000879.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000880.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000881.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000882.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000883.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000884.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000885.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000886.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000887.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000888.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000889.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000890.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000891.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000892.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000893.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000894.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000895.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000896.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000897.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000898.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000899.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000900.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000901.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000902.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000903.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000904.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000905.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000906.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000907.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000908.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000909.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000910.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000911.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000912.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000913.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000914.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000915.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000916.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000917.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000918.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000919.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000920.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000921.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000922.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000923.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000924.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000925.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000926.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000927.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000928.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000929.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000930.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000931.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000932.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000933.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000934.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000935.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000936.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000937.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000938.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000939.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000940.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000941.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000942.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000943.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000944.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000945.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000946.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000947.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000948.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000949.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000950.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000951.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000952.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000953.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000954.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000955.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000956.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000957.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000958.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000959.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000960.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000961.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000962.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000963.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000964.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000965.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000966.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000967.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000968.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000969.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000970.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000971.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000972.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000973.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000974.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000975.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000976.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000977.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000978.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000979.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000980.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000981.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000982.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000983.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000984.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000985.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000986.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000987.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000988.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000989.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000990.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000991.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000992.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000993.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000994.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000995.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000996.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000997.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000998.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_000999.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001000.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001001.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001002.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001003.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001004.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001005.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001006.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001007.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001008.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001009.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001010.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001011.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001012.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001013.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001014.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001015.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001016.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001017.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001018.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001019.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001020.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001021.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001022.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001023.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001024.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001025.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001026.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001027.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001028.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001029.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001030.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001031.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001032.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001033.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001034.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001035.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001036.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001037.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001038.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001039.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001040.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001041.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001042.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001043.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001044.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001045.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001046.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001047.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001048.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001049.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001050.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001051.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001052.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001053.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001054.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001055.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001056.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001057.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001058.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001059.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001060.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001061.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001062.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001063.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001064.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001065.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001066.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001067.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001068.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001069.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001070.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001071.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001072.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001073.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001074.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001075.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001076.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001077.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001078.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001079.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001080.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001081.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001082.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001083.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001084.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001085.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001086.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001087.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001088.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001089.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001090.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001091.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001092.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001093.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001094.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001095.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001096.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001097.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001098.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001099.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001100.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001101.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001102.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001103.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001104.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001105.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001106.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001107.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001108.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001109.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001110.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001111.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001112.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001113.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001114.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001115.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001116.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001117.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001118.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001119.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001120.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001121.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001122.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001123.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001124.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001125.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001126.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001127.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001128.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001129.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001130.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001131.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001132.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001133.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001134.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001135.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001136.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001137.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001138.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001139.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001140.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001141.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001142.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001143.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001144.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001145.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001146.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001147.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001148.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001149.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001150.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001151.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001152.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001153.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001154.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001155.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001156.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001157.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001158.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001159.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001160.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001161.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001162.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001163.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001164.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001165.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001166.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001167.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001168.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001169.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001170.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001171.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001172.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001173.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001174.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001175.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001176.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001177.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001178.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001179.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001180.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001181.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001182.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001183.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001184.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001185.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001186.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001187.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001188.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001189.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001190.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001191.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001192.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001193.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001194.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001195.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001196.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001197.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001198.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001199.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001200.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001201.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001202.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001203.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001204.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001205.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001206.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001207.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001208.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001209.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001210.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001211.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001212.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001213.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001214.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001215.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001216.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001217.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001218.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001219.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001220.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001221.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001222.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001223.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001224.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001225.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001226.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001227.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001228.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001229.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001230.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001231.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001232.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001233.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001234.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001235.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001236.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001237.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001238.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001239.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001240.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001241.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001242.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001243.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001244.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001245.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001246.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001247.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001248.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001249.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001250.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001251.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001252.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001253.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001254.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001255.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001256.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001257.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001258.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001259.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001260.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001261.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001262.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001263.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001264.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001265.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001266.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001267.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001268.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001269.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001270.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001271.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001272.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001273.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001274.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001275.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001276.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001277.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001278.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001279.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001280.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001281.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001282.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001283.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001284.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001285.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001286.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001287.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001288.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001289.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001290.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001291.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001292.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001293.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001294.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001295.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001296.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001297.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001298.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001299.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001300.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001301.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001302.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001303.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001304.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001305.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001306.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001307.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001308.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001309.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001310.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001311.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001312.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001313.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001314.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001315.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001316.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001317.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001318.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001319.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001320.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001321.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001322.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001323.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001324.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001325.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001326.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001327.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001328.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001329.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001330.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001331.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001332.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001333.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001334.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001335.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001336.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001337.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001338.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001339.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001340.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001341.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001342.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001343.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001344.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001345.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001346.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001347.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001348.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001349.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001350.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001351.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001352.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001353.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001354.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001355.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001356.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001357.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001358.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001359.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001360.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001361.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001362.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001363.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001364.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001365.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001366.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001367.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001368.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001369.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001370.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001371.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001372.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001373.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001374.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001375.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001376.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001377.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001378.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001379.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001380.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001381.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001382.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001383.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001384.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001385.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001386.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001387.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001388.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001389.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001390.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001391.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001392.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001393.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001394.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001395.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001396.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001397.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001398.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001399.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001400.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001401.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001402.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001403.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001404.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001405.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001406.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001407.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001408.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001409.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001410.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001411.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001412.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001413.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001414.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001415.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001416.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001417.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001418.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001419.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001420.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001421.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001422.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001423.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001424.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001425.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001426.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001427.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001428.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001429.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001430.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001431.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001432.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001433.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001434.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001435.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001436.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001437.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001438.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001439.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001440.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001441.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001442.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001443.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001444.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001445.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001446.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001447.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001448.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001449.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001450.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001451.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001452.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001453.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001454.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001455.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001456.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001457.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001458.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001459.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001460.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001461.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001462.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001463.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001464.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001465.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001466.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001467.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001468.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001469.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001470.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001471.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001472.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001473.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001474.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001475.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001476.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001477.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001478.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001479.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001480.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001481.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001482.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001483.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001484.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001485.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001486.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001487.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001488.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001489.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001490.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001491.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001492.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001493.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001494.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001495.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001496.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001497.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001498.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001499.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001500.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001501.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001502.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001503.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001504.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001505.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001506.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001507.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001508.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001509.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001510.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001511.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001512.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001513.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001514.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001515.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001516.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001517.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001518.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001519.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001520.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001521.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001522.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001523.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001524.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001525.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001526.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001527.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001528.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001529.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001530.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001531.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001532.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001533.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001534.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001535.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001536.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001537.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001538.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001539.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001540.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001541.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001542.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001543.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001544.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001545.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001546.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001547.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001548.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001549.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001550.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001551.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001552.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001553.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001554.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001555.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001556.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001557.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001558.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001559.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001560.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001561.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001562.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001563.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001564.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001565.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001566.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001567.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001568.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001569.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001570.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001571.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001572.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001573.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001574.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001575.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001576.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001577.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001578.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001579.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001580.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001581.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001582.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001583.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001584.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001585.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001586.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001587.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001588.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001589.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001590.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001591.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001592.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001593.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001594.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001595.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001596.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001597.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001598.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001599.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001600.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001601.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001602.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001603.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001604.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001605.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001606.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001607.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001608.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001609.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001610.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001611.jpg
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001612.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001613.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001614.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001615.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001616.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001617.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001618.jpg
+No detections, skipping.
+
+Processing: /tmp/wilor__Ce7G35GIqA.oZkL13/_Ce7G35GIqA_frames/frame_001619.jpg
+No detections, skipping.
+
+All images processed.
+===============================================
+Job finished at: Thu Apr 16 19:18:16 CEST 2026
+Execution took 0.64 hours
+Writing output to SLURM_logs/wilor-inference_185.out
+Retained WiLoR outputs: /scratch/mthakur/manifold/outputs/wilor_finetune/tune_stage_5_videos/_Ce7G35GIqA/meshes
+===============================================

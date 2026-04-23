@@ -1,0 +1,921 @@
+
+The following have been reloaded with a version change:
+  1) python/3.10.12 => python/3.10.13
+
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) python/3.10.13
+  2) DefaultModules   4) 2024r1       6) cuda/11.7
+
+ 
+
+Fri Apr 17 00:11:20 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   57C    P0            105W /  300W |    1486MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    8   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9681882
+Job Name:       wilor-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Fri Apr 17 00:11:20 CEST 2026
+===============================================
+WiLoR finetune experiment: tune_stage_5_videos
+WiLoR checkpoint: /scratch/mthakur/manifold/outputs/wilor_finetune/tune_stage_5_videos/best.ckpt
+WiLoR config: /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/model_config.yaml
+WiLoR video: /scratch/mthakur/manifold/data/test/120-2_clip_2_amplified.avi
+WiLoR output root: /scratch/mthakur/manifold/outputs/wilor_finetune/tune_stage_5_videos
+WiLoR completion marker: /scratch/mthakur/manifold/outputs/wilor_finetune/tune_stage_5_videos/_completed/120-2_clip_2_amplified.json
+WiLoR temp frame dir: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames
+Extracted 422 frame(s) from /scratch/mthakur/manifold/data/test/120-2_clip_2_amplified.avi into /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[progress] Loading WiLoR checkpoint: /scratch/mthakur/manifold/outputs/wilor_finetune/tune_stage_5_videos/best.ckpt
+Loading  /scratch/mthakur/manifold/outputs/wilor_finetune/tune_stage_5_videos/best.ckpt
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+[progress] Loading detector: ./pretrained_models/detector.pt
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000000.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000001.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000002.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000003.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000004.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000005.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000006.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000007.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000008.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000009.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000010.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000011.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000012.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000013.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000014.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000015.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000016.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000017.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000018.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000019.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000020.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000021.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000022.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000023.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000024.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000025.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000026.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000027.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000028.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000029.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000030.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000031.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000032.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000033.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000034.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000035.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000036.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000037.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000038.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000039.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000040.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000041.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000042.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000043.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000044.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000045.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000046.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000047.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000048.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000049.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000050.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000051.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000052.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000053.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000054.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000055.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000056.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000057.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000058.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000059.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000060.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000061.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000062.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000063.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000064.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000065.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000066.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000067.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000068.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000069.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000070.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000071.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000072.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000073.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000074.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000075.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000076.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000077.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000078.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000079.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000080.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000081.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000082.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000083.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000084.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000085.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000086.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000087.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000088.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000089.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000090.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000091.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000092.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000093.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000094.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000095.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000096.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000097.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000098.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000099.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000100.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000101.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000102.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000103.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000104.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000105.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000106.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000107.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000108.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000109.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000110.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000111.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000112.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000113.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000114.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000115.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000116.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000117.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000118.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000119.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000120.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000121.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000122.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000123.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000124.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000125.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000126.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000127.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000128.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000129.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000130.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000131.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000132.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000133.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000134.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000135.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000136.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000137.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000138.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000139.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000140.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000141.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000142.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000143.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000144.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000145.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000146.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000147.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000148.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000149.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000150.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000151.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000152.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000153.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000154.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000155.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000156.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000157.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000158.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000159.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000160.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000161.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000162.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000163.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000164.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000165.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000166.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000167.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000168.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000169.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000170.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000171.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000172.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000173.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000174.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000175.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000176.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000177.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000178.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000179.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000180.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000181.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000182.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000183.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000184.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000185.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000186.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000187.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000188.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000189.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000190.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000191.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000192.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000193.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000194.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000195.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000196.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000197.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000198.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000199.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000200.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000201.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000202.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000203.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000204.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000205.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000206.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000207.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000208.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000209.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000210.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000211.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000212.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000213.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000214.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000215.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000216.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000217.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000218.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000219.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000220.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000221.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000222.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000223.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000224.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000225.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000226.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000227.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000228.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000229.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000230.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000231.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000232.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000233.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000234.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000235.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000236.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000237.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000238.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000239.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000240.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000241.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000242.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000243.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000244.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000245.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000246.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000247.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000248.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000249.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000250.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000251.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000252.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000253.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000254.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000255.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000256.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000257.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000258.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000259.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000260.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000261.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000262.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000263.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000264.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000265.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000266.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000267.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000268.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000269.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000270.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000271.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000272.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000273.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000274.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000275.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000276.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000277.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000278.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000279.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000280.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000281.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000282.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000283.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000284.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000285.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000286.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000287.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000288.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000289.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000290.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000291.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000292.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000293.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000294.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000295.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000296.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000297.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000298.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000299.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000300.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000301.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000302.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000303.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000304.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000305.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000306.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000307.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000308.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000309.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000310.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000311.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000312.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000313.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000314.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000315.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000316.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000317.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000318.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000319.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000320.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000321.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000322.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000323.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000324.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000325.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000326.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000327.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000328.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000329.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000330.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000331.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000332.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000333.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000334.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000335.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000336.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000337.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000338.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000339.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000340.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000341.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000342.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000343.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000344.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000345.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000346.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000347.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000348.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000349.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000350.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000351.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000352.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000353.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000354.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000355.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000356.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000357.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000358.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000359.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000360.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000361.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000362.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000363.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000364.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000365.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000366.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000367.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000368.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000369.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000370.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000371.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000372.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000373.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000374.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000375.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000376.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000377.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000378.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000379.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000380.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000381.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000382.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000383.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000384.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000385.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000386.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000387.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000388.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000389.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000390.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000391.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000392.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000393.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000394.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000395.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000396.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000397.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000398.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000399.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000400.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000401.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000402.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000403.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000404.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000405.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000406.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000407.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000408.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000409.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000410.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000411.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000412.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000413.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000414.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000415.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000416.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000417.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000418.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000419.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000420.jpg
+
+Processing: /tmp/wilor_120-2_clip_2_amplified.dhQxWP/120-2_clip_2_amplified_frames/frame_000421.jpg
+
+All images processed.
+===============================================
+Job finished at: Fri Apr 17 00:30:32 CEST 2026
+Execution took 0.32 hours
+Writing output to SLURM_logs/wilor-inference_240.out
+Retained WiLoR outputs: /scratch/mthakur/manifold/outputs/wilor_finetune/tune_stage_5_videos/120-2_clip_2_amplified/meshes
+===============================================

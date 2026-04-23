@@ -1,0 +1,214 @@
+
+The following have been reloaded with a version change:
+  1) python/3.10.12 => python/3.10.13
+
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1       6) python/3.10.13
+
+ 
+
+Thu Apr 16 15:03:20 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   58C    P0            106W /  300W |    1318MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    7   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9679010
+Job Name:       wilor-train
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 12288
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Thu Apr 16 15:03:20 CEST 2026
+===============================================
+[progress] Created temporary training image root: /tmp/wilor_train_9679010.uGt7sD/images
+[progress] Extracting frames for -05MRmp1i4w into /tmp/wilor_train_9679010.uGt7sD/images/-05MRmp1i4w_frames
+Extracted 938 frame(s) from /scratch/mthakur/manifold/data/images/-05MRmp1i4w.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/-05MRmp1i4w_frames
+[progress] Extracting frames for 06kKvQp4SfM into /tmp/wilor_train_9679010.uGt7sD/images/06kKvQp4SfM_frames
+Extracted 2662 frame(s) from /scratch/mthakur/manifold/data/images/06kKvQp4SfM.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/06kKvQp4SfM_frames
+[progress] Extracting frames for 0axfOnsyUE8 into /tmp/wilor_train_9679010.uGt7sD/images/0axfOnsyUE8_frames
+Extracted 11590 frame(s) from /scratch/mthakur/manifold/data/images/0axfOnsyUE8.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0axfOnsyUE8_frames
+[progress] Extracting frames for 0bIQ-0ExK9c into /tmp/wilor_train_9679010.uGt7sD/images/0bIQ-0ExK9c_frames
+Extracted 15521 frame(s) from /scratch/mthakur/manifold/data/images/0bIQ-0ExK9c.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0bIQ-0ExK9c_frames
+[progress] Extracting frames for 0bX29nB6Pe0 into /tmp/wilor_train_9679010.uGt7sD/images/0bX29nB6Pe0_frames
+Extracted 2033 frame(s) from /scratch/mthakur/manifold/data/images/0bX29nB6Pe0.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0bX29nB6Pe0_frames
+[progress] Extracting frames for 0c_b0ZrIrxA into /tmp/wilor_train_9679010.uGt7sD/images/0c_b0ZrIrxA_frames
+Extracted 6213 frame(s) from /scratch/mthakur/manifold/data/images/0c_b0ZrIrxA.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0c_b0ZrIrxA_frames
+[progress] Extracting frames for 0ElPjqY4Cq8 into /tmp/wilor_train_9679010.uGt7sD/images/0ElPjqY4Cq8_frames
+Extracted 726 frame(s) from /scratch/mthakur/manifold/data/images/0ElPjqY4Cq8.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0ElPjqY4Cq8_frames
+[progress] Extracting frames for 0EV7Cfdw58s into /tmp/wilor_train_9679010.uGt7sD/images/0EV7Cfdw58s_frames
+Extracted 9561 frame(s) from /scratch/mthakur/manifold/data/images/0EV7Cfdw58s.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0EV7Cfdw58s_frames
+[progress] Extracting frames for 0F1CZq3opMw into /tmp/wilor_train_9679010.uGt7sD/images/0F1CZq3opMw_frames
+Extracted 3529 frame(s) from /scratch/mthakur/manifold/data/images/0F1CZq3opMw.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0F1CZq3opMw_frames
+[progress] Extracting frames for 0FBP71iD9u4 into /tmp/wilor_train_9679010.uGt7sD/images/0FBP71iD9u4_frames
+Extracted 32302 frame(s) from /scratch/mthakur/manifold/data/images/0FBP71iD9u4.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0FBP71iD9u4_frames
+[progress] Extracting frames for 0FFdnI-tQyw into /tmp/wilor_train_9679010.uGt7sD/images/0FFdnI-tQyw_frames
+Extracted 13909 frame(s) from /scratch/mthakur/manifold/data/images/0FFdnI-tQyw.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0FFdnI-tQyw_frames
+[progress] Extracting frames for 0fkFHKeQnTE into /tmp/wilor_train_9679010.uGt7sD/images/0fkFHKeQnTE_frames
+Extracted 11258 frame(s) from /scratch/mthakur/manifold/data/images/0fkFHKeQnTE.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0fkFHKeQnTE_frames
+[progress] Extracting frames for 0fqGjsbAkdU into /tmp/wilor_train_9679010.uGt7sD/images/0fqGjsbAkdU_frames
+Extracted 3923 frame(s) from /scratch/mthakur/manifold/data/images/0fqGjsbAkdU.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0fqGjsbAkdU_frames
+[progress] Extracting frames for 0FYqFEA9pTQ into /tmp/wilor_train_9679010.uGt7sD/images/0FYqFEA9pTQ_frames
+Extracted 16347 frame(s) from /scratch/mthakur/manifold/data/images/0FYqFEA9pTQ.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0FYqFEA9pTQ_frames
+[progress] Extracting frames for 0fZJVfJ2RBk into /tmp/wilor_train_9679010.uGt7sD/images/0fZJVfJ2RBk_frames
+Extracted 12935 frame(s) from /scratch/mthakur/manifold/data/images/0fZJVfJ2RBk.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0fZJVfJ2RBk_frames
+[progress] Extracting frames for 0GgsslCMqxk into /tmp/wilor_train_9679010.uGt7sD/images/0GgsslCMqxk_frames
+Extracted 3295 frame(s) from /scratch/mthakur/manifold/data/images/0GgsslCMqxk.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0GgsslCMqxk_frames
+[progress] Extracting frames for 0gzQAgjx39o into /tmp/wilor_train_9679010.uGt7sD/images/0gzQAgjx39o_frames
+Extracted 992 frame(s) from /scratch/mthakur/manifold/data/images/0gzQAgjx39o.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0gzQAgjx39o_frames
+[progress] Extracting frames for 0HzztPiFelY into /tmp/wilor_train_9679010.uGt7sD/images/0HzztPiFelY_frames
+Extracted 21500 frame(s) from /scratch/mthakur/manifold/data/images/0HzztPiFelY.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0HzztPiFelY_frames
+[progress] Extracting frames for 0ibHGUofRWQ into /tmp/wilor_train_9679010.uGt7sD/images/0ibHGUofRWQ_frames
+Extracted 26923 frame(s) from /scratch/mthakur/manifold/data/images/0ibHGUofRWQ.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0ibHGUofRWQ_frames
+[progress] Extracting frames for 0INWLJXjBsk into /tmp/wilor_train_9679010.uGt7sD/images/0INWLJXjBsk_frames
+Extracted 7347 frame(s) from /scratch/mthakur/manifold/data/images/0INWLJXjBsk.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0INWLJXjBsk_frames
+[progress] Extracting frames for 0IOv-YuOTb0 into /tmp/wilor_train_9679010.uGt7sD/images/0IOv-YuOTb0_frames
+Extracted 285 frame(s) from /scratch/mthakur/manifold/data/images/0IOv-YuOTb0.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0IOv-YuOTb0_frames
+[progress] Extracting frames for 0ivltlK21Ns into /tmp/wilor_train_9679010.uGt7sD/images/0ivltlK21Ns_frames
+Extracted 29233 frame(s) from /scratch/mthakur/manifold/data/images/0ivltlK21Ns.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0ivltlK21Ns_frames
+[progress] Extracting frames for 0J0lK5EHIAY into /tmp/wilor_train_9679010.uGt7sD/images/0J0lK5EHIAY_frames
+Extracted 7896 frame(s) from /scratch/mthakur/manifold/data/images/0J0lK5EHIAY.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0J0lK5EHIAY_frames
+[progress] Extracting frames for 0JCeMZ4Q3XQ into /tmp/wilor_train_9679010.uGt7sD/images/0JCeMZ4Q3XQ_frames
+Extracted 25060 frame(s) from /scratch/mthakur/manifold/data/images/0JCeMZ4Q3XQ.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0JCeMZ4Q3XQ_frames
+[progress] Extracting frames for 0JWnUGQrtIs into /tmp/wilor_train_9679010.uGt7sD/images/0JWnUGQrtIs_frames
+Extracted 12929 frame(s) from /scratch/mthakur/manifold/data/images/0JWnUGQrtIs.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0JWnUGQrtIs_frames
+[progress] Extracting frames for 0JYql1QeUUI into /tmp/wilor_train_9679010.uGt7sD/images/0JYql1QeUUI_frames
+Extracted 18705 frame(s) from /scratch/mthakur/manifold/data/images/0JYql1QeUUI.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0JYql1QeUUI_frames
+[progress] Extracting frames for 0k2iDuG8DnY into /tmp/wilor_train_9679010.uGt7sD/images/0k2iDuG8DnY_frames
+Extracted 19856 frame(s) from /scratch/mthakur/manifold/data/images/0k2iDuG8DnY.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0k2iDuG8DnY_frames
+[progress] Extracting frames for 0k6USIJasZY into /tmp/wilor_train_9679010.uGt7sD/images/0k6USIJasZY_frames
+Extracted 340 frame(s) from /scratch/mthakur/manifold/data/images/0k6USIJasZY.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0k6USIJasZY_frames
+[progress] Extracting frames for 0KkGcaUZfLM into /tmp/wilor_train_9679010.uGt7sD/images/0KkGcaUZfLM_frames
+Extracted 23818 frame(s) from /scratch/mthakur/manifold/data/images/0KkGcaUZfLM.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0KkGcaUZfLM_frames
+[progress] Extracting frames for 0kQEvxqIi4k into /tmp/wilor_train_9679010.uGt7sD/images/0kQEvxqIi4k_frames
+Extracted 326 frame(s) from /scratch/mthakur/manifold/data/images/0kQEvxqIi4k.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0kQEvxqIi4k_frames
+[progress] Extracting frames for 0KuJ2t4S_TY into /tmp/wilor_train_9679010.uGt7sD/images/0KuJ2t4S_TY_frames
+Extracted 2410 frame(s) from /scratch/mthakur/manifold/data/images/0KuJ2t4S_TY.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0KuJ2t4S_TY_frames
+[progress] Extracting frames for 0L0MNEN60iM into /tmp/wilor_train_9679010.uGt7sD/images/0L0MNEN60iM_frames
+Extracted 22994 frame(s) from /scratch/mthakur/manifold/data/images/0L0MNEN60iM.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0L0MNEN60iM_frames
+[progress] Extracting frames for 0m3glzoQMfI into /tmp/wilor_train_9679010.uGt7sD/images/0m3glzoQMfI_frames
+Extracted 4768 frame(s) from /scratch/mthakur/manifold/data/images/0m3glzoQMfI.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0m3glzoQMfI_frames
+[progress] Extracting frames for 0mlwYkrlmGs into /tmp/wilor_train_9679010.uGt7sD/images/0mlwYkrlmGs_frames
+Extracted 43360 frame(s) from /scratch/mthakur/manifold/data/images/0mlwYkrlmGs.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0mlwYkrlmGs_frames
+[progress] Extracting frames for 0mR7n0W1h9c into /tmp/wilor_train_9679010.uGt7sD/images/0mR7n0W1h9c_frames
+Extracted 3907 frame(s) from /scratch/mthakur/manifold/data/images/0mR7n0W1h9c.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0mR7n0W1h9c_frames
+[progress] Extracting frames for 0NE-fxfnfsw into /tmp/wilor_train_9679010.uGt7sD/images/0NE-fxfnfsw_frames
+Extracted 7506 frame(s) from /scratch/mthakur/manifold/data/images/0NE-fxfnfsw.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0NE-fxfnfsw_frames
+[progress] Extracting frames for 0OTrKoliOTc into /tmp/wilor_train_9679010.uGt7sD/images/0OTrKoliOTc_frames
+Extracted 18851 frame(s) from /scratch/mthakur/manifold/data/images/0OTrKoliOTc.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0OTrKoliOTc_frames
+[progress] Extracting frames for 0ozQhjCEq8g into /tmp/wilor_train_9679010.uGt7sD/images/0ozQhjCEq8g_frames
+Extracted 14688 frame(s) from /scratch/mthakur/manifold/data/images/0ozQhjCEq8g.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0ozQhjCEq8g_frames
+[progress] Extracting frames for 0pHAEC2ydR0 into /tmp/wilor_train_9679010.uGt7sD/images/0pHAEC2ydR0_frames
+Extracted 1418 frame(s) from /scratch/mthakur/manifold/data/images/0pHAEC2ydR0.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0pHAEC2ydR0_frames
+[progress] Extracting frames for 0Q3Ik0o3JuA into /tmp/wilor_train_9679010.uGt7sD/images/0Q3Ik0o3JuA_frames
+Extracted 6597 frame(s) from /scratch/mthakur/manifold/data/images/0Q3Ik0o3JuA.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0Q3Ik0o3JuA_frames
+[progress] Extracting frames for 0qr8Y9u7lK8 into /tmp/wilor_train_9679010.uGt7sD/images/0qr8Y9u7lK8_frames
+Extracted 16935 frame(s) from /scratch/mthakur/manifold/data/images/0qr8Y9u7lK8.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0qr8Y9u7lK8_frames
+[progress] Extracting frames for 0qtZASvLIak into /tmp/wilor_train_9679010.uGt7sD/images/0qtZASvLIak_frames
+Extracted 6529 frame(s) from /scratch/mthakur/manifold/data/images/0qtZASvLIak.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0qtZASvLIak_frames
+[progress] Extracting frames for 0rq4nkWlO2E into /tmp/wilor_train_9679010.uGt7sD/images/0rq4nkWlO2E_frames
+Extracted 728 frame(s) from /scratch/mthakur/manifold/data/images/0rq4nkWlO2E.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0rq4nkWlO2E_frames
+[progress] Extracting frames for 0s6E7uGXjRc into /tmp/wilor_train_9679010.uGt7sD/images/0s6E7uGXjRc_frames
+Extracted 5129 frame(s) from /scratch/mthakur/manifold/data/images/0s6E7uGXjRc.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0s6E7uGXjRc_frames
+[progress] Extracting frames for 0sJIlX1BvBc into /tmp/wilor_train_9679010.uGt7sD/images/0sJIlX1BvBc_frames
+Extracted 13531 frame(s) from /scratch/mthakur/manifold/data/images/0sJIlX1BvBc.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0sJIlX1BvBc_frames
+[progress] Extracting frames for 0t82hD3rkCU into /tmp/wilor_train_9679010.uGt7sD/images/0t82hD3rkCU_frames
+Extracted 2505 frame(s) from /scratch/mthakur/manifold/data/images/0t82hD3rkCU.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0t82hD3rkCU_frames
+[progress] Extracting frames for 0TGzKgxeNt4 into /tmp/wilor_train_9679010.uGt7sD/images/0TGzKgxeNt4_frames
+Extracted 7216 frame(s) from /scratch/mthakur/manifold/data/images/0TGzKgxeNt4.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0TGzKgxeNt4_frames
+[progress] Extracting frames for 0u2AVVL5KRE into /tmp/wilor_train_9679010.uGt7sD/images/0u2AVVL5KRE_frames
+Extracted 9725 frame(s) from /scratch/mthakur/manifold/data/images/0u2AVVL5KRE.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0u2AVVL5KRE_frames
+[progress] Extracting frames for 0udTXFEOTp8 into /tmp/wilor_train_9679010.uGt7sD/images/0udTXFEOTp8_frames
+Extracted 5753 frame(s) from /scratch/mthakur/manifold/data/images/0udTXFEOTp8.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0udTXFEOTp8_frames
+[progress] Extracting frames for 0ulVg4h6W9E into /tmp/wilor_train_9679010.uGt7sD/images/0ulVg4h6W9E_frames
+Extracted 14339 frame(s) from /scratch/mthakur/manifold/data/images/0ulVg4h6W9E.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0ulVg4h6W9E_frames
+[progress] Extracting frames for 0ummhjbzT3w into /tmp/wilor_train_9679010.uGt7sD/images/0ummhjbzT3w_frames
+Extracted 9272 frame(s) from /scratch/mthakur/manifold/data/images/0ummhjbzT3w.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0ummhjbzT3w_frames
+[progress] Extracting frames for 0UR9cREKeUI into /tmp/wilor_train_9679010.uGt7sD/images/0UR9cREKeUI_frames
+Extracted 7768 frame(s) from /scratch/mthakur/manifold/data/images/0UR9cREKeUI.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0UR9cREKeUI_frames
+[progress] Extracting frames for 0uSvqu1JBrQ into /tmp/wilor_train_9679010.uGt7sD/images/0uSvqu1JBrQ_frames
+Extracted 1722 frame(s) from /scratch/mthakur/manifold/data/images/0uSvqu1JBrQ.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0uSvqu1JBrQ_frames
+[progress] Extracting frames for 0v60vuyjGqA into /tmp/wilor_train_9679010.uGt7sD/images/0v60vuyjGqA_frames
+Extracted 2651 frame(s) from /scratch/mthakur/manifold/data/images/0v60vuyjGqA.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0v60vuyjGqA_frames
+[progress] Extracting frames for -0VIwubCjpM into /tmp/wilor_train_9679010.uGt7sD/images/-0VIwubCjpM_frames
+Extracted 2264 frame(s) from /scratch/mthakur/manifold/data/images/-0VIwubCjpM.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/-0VIwubCjpM_frames
+[progress] Extracting frames for 0VQ9H3AxdGc into /tmp/wilor_train_9679010.uGt7sD/images/0VQ9H3AxdGc_frames
+Extracted 29767 frame(s) from /scratch/mthakur/manifold/data/images/0VQ9H3AxdGc.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0VQ9H3AxdGc_frames
+[progress] Extracting frames for 0vqnjAecNI4 into /tmp/wilor_train_9679010.uGt7sD/images/0vqnjAecNI4_frames
+Extracted 9261 frame(s) from /scratch/mthakur/manifold/data/images/0vqnjAecNI4.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0vqnjAecNI4_frames
+[progress] Extracting frames for 0vzECnJwdOY into /tmp/wilor_train_9679010.uGt7sD/images/0vzECnJwdOY_frames
+Extracted 13201 frame(s) from /scratch/mthakur/manifold/data/images/0vzECnJwdOY.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0vzECnJwdOY_frames
+[progress] Extracting frames for 0W3wXxl1Fwk into /tmp/wilor_train_9679010.uGt7sD/images/0W3wXxl1Fwk_frames
+Extracted 20917 frame(s) from /scratch/mthakur/manifold/data/images/0W3wXxl1Fwk.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0W3wXxl1Fwk_frames
+[progress] Extracting frames for 0WcGVcWLLy0 into /tmp/wilor_train_9679010.uGt7sD/images/0WcGVcWLLy0_frames
+Extracted 15518 frame(s) from /scratch/mthakur/manifold/data/images/0WcGVcWLLy0.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0WcGVcWLLy0_frames
+[progress] Extracting frames for 0x09FfojaSM into /tmp/wilor_train_9679010.uGt7sD/images/0x09FfojaSM_frames
+Extracted 2410 frame(s) from /scratch/mthakur/manifold/data/images/0x09FfojaSM.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0x09FfojaSM_frames
+[progress] Extracting frames for 0xdOLtyqA5o into /tmp/wilor_train_9679010.uGt7sD/images/0xdOLtyqA5o_frames
+Extracted 2107 frame(s) from /scratch/mthakur/manifold/data/images/0xdOLtyqA5o.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0xdOLtyqA5o_frames
+[progress] Extracting frames for 0xLinXeAep8 into /tmp/wilor_train_9679010.uGt7sD/images/0xLinXeAep8_frames
+Extracted 5561 frame(s) from /scratch/mthakur/manifold/data/images/0xLinXeAep8.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0xLinXeAep8_frames
+[progress] Extracting frames for 0XtFVS_Kxno into /tmp/wilor_train_9679010.uGt7sD/images/0XtFVS_Kxno_frames
+Extracted 3787 frame(s) from /scratch/mthakur/manifold/data/images/0XtFVS_Kxno.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0XtFVS_Kxno_frames
+[progress] Extracting frames for 0XuYL6bKxa8 into /tmp/wilor_train_9679010.uGt7sD/images/0XuYL6bKxa8_frames
+Extracted 2126 frame(s) from /scratch/mthakur/manifold/data/images/0XuYL6bKxa8.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0XuYL6bKxa8_frames
+[progress] Extracting frames for 0YR_i6PVM5o into /tmp/wilor_train_9679010.uGt7sD/images/0YR_i6PVM5o_frames
+Extracted 6218 frame(s) from /scratch/mthakur/manifold/data/images/0YR_i6PVM5o.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0YR_i6PVM5o_frames
+[progress] Extracting frames for 0zv14ho2z2U into /tmp/wilor_train_9679010.uGt7sD/images/0zv14ho2z2U_frames
+Extracted 300 frame(s) from /scratch/mthakur/manifold/data/images/0zv14ho2z2U.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/0zv14ho2z2U_frames
+[progress] Extracting frames for 10XtDlKwdRo into /tmp/wilor_train_9679010.uGt7sD/images/10XtDlKwdRo_frames
+Extracted 1718 frame(s) from /scratch/mthakur/manifold/data/images/10XtDlKwdRo.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/10XtDlKwdRo_frames
+[progress] Extracting frames for 11bYjaf1gWc into /tmp/wilor_train_9679010.uGt7sD/images/11bYjaf1gWc_frames
+Extracted 9577 frame(s) from /scratch/mthakur/manifold/data/images/11bYjaf1gWc.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/11bYjaf1gWc_frames
+[progress] Extracting frames for 11gzqTBlm5Q into /tmp/wilor_train_9679010.uGt7sD/images/11gzqTBlm5Q_frames
+Extracted 4280 frame(s) from /scratch/mthakur/manifold/data/images/11gzqTBlm5Q.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/11gzqTBlm5Q_frames
+[progress] Extracting frames for 11qYnjz3sfo into /tmp/wilor_train_9679010.uGt7sD/images/11qYnjz3sfo_frames
+Extracted 1587 frame(s) from /scratch/mthakur/manifold/data/images/11qYnjz3sfo.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/11qYnjz3sfo_frames
+[progress] Extracting frames for 14X6oChjjT4 into /tmp/wilor_train_9679010.uGt7sD/images/14X6oChjjT4_frames
+Extracted 1743 frame(s) from /scratch/mthakur/manifold/data/images/14X6oChjjT4.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/14X6oChjjT4_frames
+[progress] Extracting frames for 15uD4UdvOGU into /tmp/wilor_train_9679010.uGt7sD/images/15uD4UdvOGU_frames
+Extracted 4474 frame(s) from /scratch/mthakur/manifold/data/images/15uD4UdvOGU.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/15uD4UdvOGU_frames
+[progress] Extracting frames for 16FY4shEniw into /tmp/wilor_train_9679010.uGt7sD/images/16FY4shEniw_frames
+Extracted 3520 frame(s) from /scratch/mthakur/manifold/data/images/16FY4shEniw.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/16FY4shEniw_frames
+[progress] Extracting frames for 182RxC-rQZw into /tmp/wilor_train_9679010.uGt7sD/images/182RxC-rQZw_frames
+Extracted 3186 frame(s) from /scratch/mthakur/manifold/data/images/182RxC-rQZw.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/182RxC-rQZw_frames
+[progress] Extracting frames for 18uLbZs9g3k into /tmp/wilor_train_9679010.uGt7sD/images/18uLbZs9g3k_frames
+Extracted 11087 frame(s) from /scratch/mthakur/manifold/data/images/18uLbZs9g3k.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/18uLbZs9g3k_frames
+[progress] Extracting frames for 1aJSOGb9gaA into /tmp/wilor_train_9679010.uGt7sD/images/1aJSOGb9gaA_frames
+Extracted 5463 frame(s) from /scratch/mthakur/manifold/data/images/1aJSOGb9gaA.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/1aJSOGb9gaA_frames
+[progress] Extracting frames for 1akHL1w-dg4 into /tmp/wilor_train_9679010.uGt7sD/images/1akHL1w-dg4_frames
+Extracted 19073 frame(s) from /scratch/mthakur/manifold/data/images/1akHL1w-dg4.mp4 into /tmp/wilor_train_9679010.uGt7sD/images/1akHL1w-dg4_frames
+[progress] Extracting frames for 1B4ZrxTcOBw into /tmp/wilor_train_9679010.uGt7sD/images/1B4ZrxTcOBw_frames
+rm: cannot remove '/tmp/wilor_train_9679010.uGt7sD/images/1B4ZrxTcOBw_frames': Directory not empty
