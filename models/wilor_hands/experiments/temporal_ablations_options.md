@@ -290,13 +290,14 @@ Meaning:
 
 ## Latest Synced Baseline
 
-The latest completed forward-selection pass is the corrected Stage B optimizer rerun from April 23, 2026. It reused the April 23, 2026 Stage A winner (`hp_a_ws3_s2_b8`) as the fixed window baseline and then compared the intended learning rates:
+The latest completed forward-selection pass is the Stage C rerun from April 24, 2026. It reused the corrected Stage B winner (`optimizer.lr=3e-5`) and compared the temporal-weight settings:
 
-- [wilor-train_085.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_085.out>): `hp_b_lr_1e5` ran with `--lr 1e-5` and reached `best val_loss_total=0.8692`
-- [wilor-train_086.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_086.out>): `hp_b_lr_3e5` ran with `--lr 3e-5` and reached `best val_loss_total=0.8492`
-- [wilor-train_087.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_087.out>): `hp_b_lr_3e6` ran with `--lr 3e-6` and reached `best val_loss_total=0.9116`
+- [wilor-train_088.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_088.out>): `hp_c_tw_0p01_sw_0p001` reached `best val_loss_total=0.8415` at step `180`
+- [wilor-train_089.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_089.out>): `hp_c_tw_0p03_sw_0p001` reached `best val_loss_total=0.8492` at step `160`
+- [wilor-train_090.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_090.out>): `hp_c_tw_0p03_sw_0p01` reached `best val_loss_total=0.8433` at step `190`
+- [wilor-train_091.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_091.out>): `hp_c_tw_0p10_sw_0p001` reached `best val_loss_total=0.8433` at step `200`
 
-Parameters to carry forward into Stage C:
+Parameters to carry forward into the next Stage D rerun:
 
 - `train_scope=refine_net`
 - `videos=[0KuJ2t4S_TY, 0gzQAgjx39o, 0rq4nkWlO2E, 0ElPjqY4Cq8, SlksdQT5JRE]`
@@ -306,10 +307,10 @@ Parameters to carry forward into Stage C:
 - `temporal.window_size=3`, `temporal.window_stride=2`, `temporal.max_frame_gap=1`, `temporal.reduction=smooth_l1`
 - scorer setup: `hidden_dim=64`, `layers=2`, `dropout=0.0`
 - `losses.vipe_camera.enabled=true`, `losses.vipe_camera.weight=0.005`
-- `losses.temporal_camera.enabled=true`, `losses.temporal_camera.formulation=learnable`, `losses.temporal_camera.weight=0.03`, `losses.temporal_camera.scorer_weight=0.001`
-- `losses.temporal_bbox_projected.enabled=true`, `losses.temporal_bbox_projected.formulation=learnable`, `losses.temporal_bbox_projected.weight=0.03`, `losses.temporal_bbox_projected.scorer_weight=0.001`
+- `losses.temporal_camera.enabled=true`, `losses.temporal_camera.formulation=learnable`, `losses.temporal_camera.weight=0.01`, `losses.temporal_camera.scorer_weight=0.001`
+- `losses.temporal_bbox_projected.enabled=true`, `losses.temporal_bbox_projected.formulation=learnable`, `losses.temporal_bbox_projected.weight=0.01`, `losses.temporal_bbox_projected.scorer_weight=0.001`
 
-The original Stage B logs from April 15, 2026 are still not a valid learning-rate comparison. [wilor-train_065.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_065.out>), [wilor-train_066.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_066.out>), and [wilor-train_067.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_067.out>) all launched with `--lr 1e-5`. The April 23, 2026 rerun above is the first valid Stage B winner and is the one that should be promoted downstream.
+There are also newer Stage D logs from April 24, 2026: [wilor-train_092.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_092.out>) to [wilor-train_095.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_095.out>). They again favor `losses.vipe_camera.weight=0.005`, but their command lines still launched with `temporal_camera.weight=0.03` and `temporal_bbox_projected.weight=0.03`, so Stage D should be rerun once on the updated Stage C winner before treating that comparison as fully current.
 
 ## Suggested Staged Sweep
 
@@ -329,14 +330,14 @@ If you are tuning this regime manually, a good order is:
 
 Keep the ViPE camera weight in its own stage if you want a clean comparison, since it changes the balance of the base supervision rather than the temporal regularizers.
 
-The stage YAMLs now carry the latest synced forward baseline in `defaults`. Stage C is the next required rerun, using the April 23, 2026 Stage B winner (`optimizer.lr=3e-5`) as its starting point. The older Stage C-E results below are still useful as historical reference, but they were collected before that corrected Stage B optimizer pass.
+The stage YAMLs now carry the latest synced forward baseline in `defaults`. Stage D is the next required rerun, using the April 24, 2026 Stage C winner (`temporal weight=0.01`, `scorer_weight=0.001`) as its starting point. The latest Stage D logs are still useful, but they were launched on the older `temporal weight=0.03` baseline.
 
 | Stage | Tune | Values tried / planned | Historical winner / status | Config |
 | --- | --- | --- | --- | --- |
 | A | `temporal.window_size`, `temporal.window_stride`, `batch_size` | `ws3_s1_b8`, `ws3_s2_b8`, `ws5_s2_b4`, `ws5_s4_b4`, `ws8_s2_b2`, `ws8_s4_b2` | Apr 23, 2026 rerun winner: `window_size=3`, `window_stride=2`, `batch_size=8` (`hp_a_ws3_s2_b8`, best `val_loss_total=0.8492`) | [hparam_stage_a_windows.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_a_windows.yaml) |
 | B | `optimizer.lr` | `3e-6`, `1e-5`, `3e-5` | Apr 23, 2026 rerun winner: `optimizer.lr=3e-5` (`hp_b_lr_3e5`, best `val_loss_total=0.8492` at step `160`) | [hparam_stage_b_optimizer.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_b_optimizer.yaml) |
-| C | shared temporal base weight and shared scorer weight across both temporal families | `(0.01, 0.001)`, `(0.03, 0.001)`, `(0.10, 0.001)`, `(0.03, 0.01)` | historical pre-rerun winner: temporal weight `0.03`, scorer weight `0.001`; rerun next on the Apr 23, 2026 Stage B baseline | [hparam_stage_c_temporal_weights.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_c_temporal_weights.yaml) |
-| D | `losses.vipe_camera.weight` | `0.005`, `0.01`, `0.02`, `0.05` | `0.005` | [hparam_stage_d_vipe_camera.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_d_vipe_camera.yaml) |
+| C | shared temporal base weight and shared scorer weight across both temporal families | `(0.01, 0.001)`, `(0.03, 0.001)`, `(0.10, 0.001)`, `(0.03, 0.01)` | Apr 24, 2026 rerun winner: temporal weight `0.01`, scorer weight `0.001` (`hp_c_tw_0p01_sw_0p001`, best `val_loss_total=0.8415` at step `180`) | [hparam_stage_c_temporal_weights.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_c_temporal_weights.yaml) |
+| D | `losses.vipe_camera.weight` | `0.005`, `0.01`, `0.02`, `0.05` | latest Apr 24, 2026 rerun again favors `0.005`, but it should be rerun once on the updated Stage C baseline before promotion | [hparam_stage_d_vipe_camera.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_d_vipe_camera.yaml) |
 | E | video coverage | `all_videos=true` vs the 5-video stage subset | best available completed run: 5-video subset; `all_videos` still pending locally | [hparam_stage_e_tuning.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_e_tuning.yaml) |
 | F | `optimizer.weight_decay` | `0`, `1e-5`, `1e-4`, `1e-3` | planned | [hparam_stage_f_weight_decay.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_f_weight_decay.yaml) |
 | G | `train_scope` | `camera_head`, `refine_net`, `full` | planned | [hparam_stage_g_train_scope.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_g_train_scope.yaml) |
@@ -351,13 +352,13 @@ The stage YAMLs now carry the latest synced forward baseline in `defaults`. Stag
 | --- | --- | --- | --- | --- |
 | A | `hp_a_ws3_s1_b8`, `hp_a_ws3_s2_b8`, `hp_a_ws5_s2_b4`, `hp_a_ws5_s4_b4`, `hp_a_ws8_s2_b2`, `hp_a_ws8_s4_b2` | `hp_a_ws3_s2_b8` with `loss_total=0.8492` at step `200` | `window_size=3`, `window_stride=2`, `batch_size=8` | This row reflects the Apr 23, 2026 rerun; the `ws5` and `ws8` runs produced no validation windows, so the real comparison was between the two `ws3` runs. |
 | B | `hp_b_lr_3e6`, `hp_b_lr_1e5`, `hp_b_lr_3e5` | `hp_b_lr_3e5` with `loss_total=0.8492` at step `160` | `optimizer.lr=3e-5` | This is the corrected Apr 23, 2026 rerun; `optimizer.weight_decay` stayed fixed at `1e-4`. |
-| C | `hp_c_tw_0p01_sw_0p001`, `hp_c_tw_0p03_sw_0p001`, `hp_c_tw_0p10_sw_0p001`, `hp_c_tw_0p03_sw_0p01` | `hp_c_tw_0p03_sw_0p001` with `loss_total=1.4648` at step `200` | temporal weight `0.03`, scorer weight `0.001` | Historical result from the older `lr=1e-5` baseline; rerun this stage next before promoting a Stage C winner downstream. |
-| D | `hp_d_vipe_0p005`, `hp_d_vipe_0p01`, `hp_d_vipe_0p02`, `hp_d_vipe_0p05` | `hp_d_vipe_0p005` with `loss_total=0.8515` at step `200` | `losses.vipe_camera.weight=0.005` | This is the strongest improvement across the staged sweeps. |
+| C | `hp_c_tw_0p01_sw_0p001`, `hp_c_tw_0p03_sw_0p001`, `hp_c_tw_0p10_sw_0p001`, `hp_c_tw_0p03_sw_0p01` | `hp_c_tw_0p01_sw_0p001` with `loss_total=0.8415` at step `180` | temporal weight `0.01`, scorer weight `0.001` | This is the Apr 24, 2026 rerun on top of the corrected `lr=3e-5` Stage B baseline. |
+| D | `hp_d_vipe_0p005`, `hp_d_vipe_0p01`, `hp_d_vipe_0p02`, `hp_d_vipe_0p05` | `hp_d_vipe_0p005` with `loss_total=0.8492` at step `160` | `losses.vipe_camera.weight=0.005` | The Apr 24, 2026 rerun still used `temporal weight=0.03`, so rerun Stage D once more on the updated Stage C winner before treating this as fully current. |
 | E | `tune_all_videos`, `tune_stage_5_videos` | `tune_stage_5_videos` with `loss_total=1.6595` at step `400` | best available completed run: 5-video subset | Only `tune_stage_5_videos` is present in the synced outputs right now, so the Stage E comparison is still incomplete until the `all_videos` run is available locally. |
 
 ## Current Forward Baseline
 
-This is the forward baseline for the next Stage C pass. It combines the April 23, 2026 Stage A rerun winner with the April 23, 2026 Stage B rerun winner. Stage C will now vary the temporal weights around this setup.
+This is the forward baseline for the next Stage D pass. It combines the April 23, 2026 Stage A rerun winner, the April 23, 2026 Stage B rerun winner, and the April 24, 2026 Stage C rerun winner. Stage D should now vary only the ViPE camera weight around this setup.
 
 | Parameter | Final value |
 | --- | --- |
@@ -381,11 +382,11 @@ This is the forward baseline for the next Stage C pass. It combines the April 23
 | `losses.vipe_camera.weight` | `0.005` |
 | `losses.temporal_camera.enabled` | `true` |
 | `losses.temporal_camera.formulation` | `learnable` |
-| `losses.temporal_camera.weight` | `0.03` |
+| `losses.temporal_camera.weight` | `0.01` |
 | `losses.temporal_camera.scorer_weight` | `0.001` |
 | `losses.temporal_bbox_projected.enabled` | `true` |
 | `losses.temporal_bbox_projected.formulation` | `learnable` |
-| `losses.temporal_bbox_projected.weight` | `0.03` |
+| `losses.temporal_bbox_projected.weight` | `0.01` |
 | `losses.temporal_bbox_projected.scorer_weight` | `0.001` |
 
 For the Stage E tuning pass in [hparam_stage_e_tuning.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_e_tuning.yaml), the run-specific settings are:

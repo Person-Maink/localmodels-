@@ -36,12 +36,12 @@ defaults:
     temporal_camera:
       enabled: true
       formulation: learnable
-      weight: 0.03
+      weight: 0.01
       scorer_weight: 0.001
     temporal_bbox_projected:
       enabled: true
       formulation: learnable
-      weight: 0.03
+      weight: 0.01
       scorer_weight: 0.001
 
 experiments:

@@ -1,7 +1,7 @@
 defaults:
-  # Stage D: tune the ViPE camera supervision weight after the Stage C winner
-  # has locked in the temporal setup and temporal-loss scales.
-  # Defaults now match the latest forward baseline so only the ViPE weight varies.
+  # Stage D: tune the ViPE camera supervision weight after the Apr 24 2026
+  # Stage C rerun locks in the temporal setup and temporal-loss scales.
+  # Defaults now match that Stage C winner so only the ViPE weight varies.
   train_mode: distill
   train_scope: refine_net
   videos:
@@ -38,12 +38,12 @@ defaults:
     temporal_camera:
       enabled: true
       formulation: learnable
-      weight: 0.03
+      weight: 0.01
       scorer_weight: 0.001
     temporal_bbox_projected:
       enabled: true
       formulation: learnable
-      weight: 0.03
+      weight: 0.01
       scorer_weight: 0.001
 
 experiments:
