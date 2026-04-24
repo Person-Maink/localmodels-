@@ -38,6 +38,7 @@ class PlotFinetuneLossesTests(unittest.TestCase):
             root = Path(tmpdir)
             experiments_root = root / "experiments"
             runs_root = root / "runs"
+            output_root = root / "analysis" / "analysis_images" / "wilor_finetune_plots"
             experiments_root.mkdir()
             runs_root.mkdir()
 
@@ -69,6 +70,7 @@ class PlotFinetuneLossesTests(unittest.TestCase):
             root = Path(tmpdir)
             experiments_root = root / "experiments"
             runs_root = root / "runs"
+            output_root = root / "analysis" / "analysis_images" / "wilor_finetune_plots"
             experiments_root.mkdir()
             runs_root.mkdir()
 
@@ -110,6 +112,7 @@ class PlotFinetuneLossesTests(unittest.TestCase):
             root = Path(tmpdir)
             experiments_root = root / "experiments"
             runs_root = root / "runs"
+            output_root = root / "analysis" / "analysis_images" / "wilor_finetune_plots"
             experiments_root.mkdir()
             runs_root.mkdir()
 
@@ -142,11 +145,11 @@ class PlotFinetuneLossesTests(unittest.TestCase):
                 },
             )
 
-            outputs = generate_all_figures(experiments_root, runs_root)
+            outputs = generate_all_figures(experiments_root, runs_root, output_root)
 
-            run_plot = runs_root / "hp_a_ws3_s2_b8" / "plots" / "validation_loss_vs_step.svg"
-            placeholder_plot = runs_root / "hp_a_ws8_s4_b2" / "plots" / "validation_loss_vs_step.svg"
-            stage_plot = runs_root / "reports" / "stage_a_validation_comparison.svg"
+            run_plot = output_root / "runs" / "hp_a_ws3_s2_b8" / "validation_loss_vs_step.svg"
+            placeholder_plot = output_root / "runs" / "hp_a_ws8_s4_b2" / "validation_loss_vs_step.svg"
+            stage_plot = output_root / "stages" / "stage_a_validation_comparison.svg"
 
             self.assertEqual(len(outputs), 1)
             self.assertTrue(run_plot.exists())

@@ -15,7 +15,6 @@ from matplotlib import pyplot as plt
 
 
 METRIC_NAME = "loss_total"
-BEST_RUN_COLOR = "#d95f02"
 RUN_LINE_COLOR = "#2a6f97"
 OTHER_RUN_COLORS = [
     "#4c78a8",
@@ -30,6 +29,9 @@ OTHER_RUN_COLORS = [
 SCRIPT_DIR = Path(__file__).resolve().parent
 DEFAULT_EXPERIMENTS_ROOT = SCRIPT_DIR / "experiments"
 DEFAULT_RUNS_ROOT = SCRIPT_DIR.parent.parent / "outputs" / "wilor_finetune"
+DEFAULT_OUTPUT_ROOT = (
+    SCRIPT_DIR.parent.parent / "analysis" / "analysis_images" / "wilor_finetune_plots"
+)
 
 
 @dataclass(frozen=True)
@@ -100,6 +102,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=str,
         default=None,
         help="Optional stage filter such as 'a' or 'B'. Defaults to all stages.",
+    )
+    parser.add_argument(
+        "--output-root",
+        type=Path,
+        default=DEFAULT_OUTPUT_ROOT,
+        help="Directory where generated plot files should be written.",
     )
     return parser.parse_args(argv)
 
@@ -277,8 +285,8 @@ def select_best_run(stage_result: StageResult) -> RunMetrics | None:
     )
 
 
-def plot_run_validation(run: RunMetrics) -> Path:
-    output_path = run.run_dir / "plots" / "validation_loss_vs_step.svg"
+def plot_run_validation(run: RunMetrics, output_root: Path) -> Path:
+    output_path = output_root / "runs" / run.name / "validation_loss_vs_step.svg"
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     fig, ax = plt.subplots(figsize=(10, 5.5))
@@ -300,7 +308,7 @@ def plot_run_validation(run: RunMetrics) -> Path:
         ax.scatter(
             [best_step],
             [best_loss],
-            color=BEST_RUN_COLOR,
+            color=RUN_LINE_COLOR,
             s=60,
             zorder=3,
             label=f"best {best_loss:.4f} @ step {best_step}",
@@ -324,8 +332,8 @@ def plot_run_validation(run: RunMetrics) -> Path:
     return output_path
 
 
-def plot_stage_comparison(stage_result: StageResult, reports_dir: Path) -> Path:
-    output_path = reports_dir / f"stage_{stage_result.definition.stage}_validation_comparison.svg"
+def plot_stage_comparison(stage_result: StageResult, output_root: Path) -> Path:
+    output_path = output_root / "stages" / f"stage_{stage_result.definition.stage}_validation_comparison.svg"
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     fig, ax = plt.subplots(figsize=(11, 6.5))
@@ -339,31 +347,23 @@ def plot_stage_comparison(stage_result: StageResult, reports_dir: Path) -> Path:
 
     if validation_runs:
         for index, run in enumerate(validation_runs):
-            if best_run is not None and run.name == best_run.name:
-                continue
+            is_best = best_run is not None and run.name == best_run.name
             color = OTHER_RUN_COLORS[index % len(OTHER_RUN_COLORS)]
             ax.plot(
                 run.validation_steps,
                 run.validation_losses,
-                label=run.name,
+                label=f"{run.name} (best)" if is_best else run.name,
                 color=color,
                 linewidth=1.8,
                 alpha=0.9,
             )
-
         if best_run is not None:
-            ax.plot(
-                best_run.validation_steps,
-                best_run.validation_losses,
-                label=f"{best_run.name} (winner)",
-                color=BEST_RUN_COLOR,
-                linewidth=3.0,
-            )
             best_step, best_loss = best_run.best_validation
-            ax.scatter([best_step], [best_loss], color=BEST_RUN_COLOR, s=70, zorder=4)
-            subtitle = f"Winner: {best_run.name} | best val {best_loss:.4f} @ step {best_step}"
+            subtitle = (
+                f"Best validation run: {best_run.name} | best val {best_loss:.4f} @ step {best_step}"
+            )
         else:
-            subtitle = "No comparable validation curves were available"
+            subtitle = f"Color-coded validation curves for {len(validation_runs)} run(s)"
         ax.legend()
     else:
         subtitle = "No comparable validation curves were available"
@@ -393,6 +393,7 @@ def plot_stage_comparison(stage_result: StageResult, reports_dir: Path) -> Path:
 def generate_all_figures(
     experiments_root: Path,
     runs_root: Path,
+    output_root: Path,
     stage_filter: str | None = None,
 ) -> list[tuple[StageResult, Path, list[Path]]]:
     stage_results = build_stage_results(experiments_root, runs_root, stage_filter)
@@ -402,11 +403,10 @@ def generate_all_figures(
             + (f" for stage '{stage_filter}'." if stage_filter else ".")
         )
 
-    reports_dir = runs_root / "reports"
     generated_outputs: list[tuple[StageResult, Path, list[Path]]] = []
     for stage_result in stage_results:
-        run_outputs = [plot_run_validation(run) for run in stage_result.runs]
-        stage_output = plot_stage_comparison(stage_result, reports_dir)
+        run_outputs = [plot_run_validation(run, output_root) for run in stage_result.runs]
+        stage_output = plot_stage_comparison(stage_result, output_root)
         generated_outputs.append((stage_result, stage_output, run_outputs))
     return generated_outputs
 
@@ -416,20 +416,20 @@ def main(argv: list[str] | None = None) -> int:
     outputs = generate_all_figures(
         experiments_root=args.experiments_root.expanduser().resolve(),
         runs_root=args.runs_root.expanduser().resolve(),
+        output_root=args.output_root.expanduser().resolve(),
         stage_filter=args.stage,
     )
 
     for stage_result, stage_output, run_outputs in outputs:
         best_run = select_best_run(stage_result)
-        if best_run is None:
-            winner_text = "no validation winner"
-        else:
+        best_text = ""
+        if best_run is not None:
             best_step, best_loss = best_run.best_validation
-            winner_text = f"winner={best_run.name} best_val={best_loss:.4f} step={best_step}"
+            best_text = f" best={best_run.name} best_val={best_loss:.4f} step={best_step}"
         print(
             f"Stage {stage_result.definition.stage.upper()}: "
             f"runs={len(stage_result.runs)} per_run_plots={len(run_outputs)} "
-            f"report={stage_output} {winner_text}"
+            f"report={stage_output}{best_text}"
         )
     return 0
 

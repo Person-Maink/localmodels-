@@ -2,7 +2,9 @@ defaults:
   # Stage E: actual tuning pass on the finalized baseline.
   # Keep all non-video settings fixed; only the video set changes here.
   # Latest synced result: tune_stage_5_videos reached best val loss 1.6595
-  # at step 400. The all-videos comparison is still pending locally.
+  # at step 400 on the older lr=1e-5 baseline. The all-videos comparison is
+  # still pending locally, and future reruns should start from the updated
+  # Stage B winner below.
   train_mode: distill
   train_scope: refine_net
   validation_split: 0.2
@@ -16,7 +18,7 @@ defaults:
   save_every: 100
   seed: 42
   optimizer:
-    lr: 1.0e-5
+    lr: 3.0e-5
     weight_decay: 1.0e-4
   temporal:
     window_size: 3
