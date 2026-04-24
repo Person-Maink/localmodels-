@@ -306,11 +306,11 @@ Parameters to carry forward into the next Stage D rerun:
 - `optimizer.lr=3e-5`, `optimizer.weight_decay=1e-4`
 - `temporal.window_size=3`, `temporal.window_stride=2`, `temporal.max_frame_gap=1`, `temporal.reduction=smooth_l1`
 - scorer setup: `hidden_dim=64`, `layers=2`, `dropout=0.0`
-- `losses.vipe_camera.enabled=true`, `losses.vipe_camera.weight=0.005`
+- `losses.vipe_camera.enabled=true`, `losses.vipe_camera.weight=0.05`
 - `losses.temporal_camera.enabled=true`, `losses.temporal_camera.formulation=learnable`, `losses.temporal_camera.weight=0.01`, `losses.temporal_camera.scorer_weight=0.001`
 - `losses.temporal_bbox_projected.enabled=true`, `losses.temporal_bbox_projected.formulation=learnable`, `losses.temporal_bbox_projected.weight=0.01`, `losses.temporal_bbox_projected.scorer_weight=0.001`
 
-There are also newer Stage D logs from April 24, 2026: [wilor-train_092.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_092.out>) to [wilor-train_095.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_095.out>). They again favor `losses.vipe_camera.weight=0.005`, but their command lines still launched with `temporal_camera.weight=0.03` and `temporal_bbox_projected.weight=0.03`, so Stage D should be rerun once on the updated Stage C winner before treating that comparison as fully current.
+There are also newer Stage D logs from April 24, 2026: [wilor-train_092.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_092.out>) to [wilor-train_095.out](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/SLURM_logs/wilor-train_095.out>). They again favor `losses.vipe_camera.weight=0.005`, but their command lines still launched with `temporal_camera.weight=0.03` and `temporal_bbox_projected.weight=0.03`, so Stage D should be rerun once on the updated Stage C winner before treating that comparison as fully current. The active default baseline has been manually pinned to `losses.vipe_camera.weight=0.05`.
 
 ## Suggested Staged Sweep
 
@@ -358,7 +358,7 @@ The stage YAMLs now carry the latest synced forward baseline in `defaults`. Stag
 
 ## Current Forward Baseline
 
-This is the forward baseline for the next Stage D pass. It combines the April 23, 2026 Stage A rerun winner, the April 23, 2026 Stage B rerun winner, and the April 24, 2026 Stage C rerun winner. Stage D should now vary only the ViPE camera weight around this setup.
+This is the forward baseline for the next Stage D pass. It combines the April 23, 2026 Stage A rerun winner, the April 23, 2026 Stage B rerun winner, and the April 24, 2026 Stage C rerun winner, with the ViPE camera default manually pinned to `0.05`.
 
 | Parameter | Final value |
 | --- | --- |
@@ -379,7 +379,7 @@ This is the forward baseline for the next Stage D pass. It combines the April 23
 | `temporal.scorer_layers` | `2` |
 | `temporal.scorer_dropout` | `0.0` |
 | `losses.vipe_camera.enabled` | `true` |
-| `losses.vipe_camera.weight` | `0.005` |
+| `losses.vipe_camera.weight` | `0.05` |
 | `losses.temporal_camera.enabled` | `true` |
 | `losses.temporal_camera.formulation` | `learnable` |
 | `losses.temporal_camera.weight` | `0.01` |

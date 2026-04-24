@@ -4,7 +4,7 @@ defaults:
   # Latest synced result: tune_stage_5_videos reached best val loss 1.6595
   # at step 400 on the older pre-Apr-24 baseline. The all-videos comparison is
   # still pending locally, and future reruns should start from the updated
-  # Stage C winner plus the current best ViPE weight below.
+  # Stage C winner plus the selected ViPE baseline below.
   train_mode: distill
   train_scope: refine_net
   validation_split: 0.2
@@ -31,7 +31,7 @@ defaults:
   losses:
     vipe_camera:
       enabled: true
-      weight: 0.005
+      weight: 0.05
     temporal_camera:
       enabled: true
       formulation: learnable
