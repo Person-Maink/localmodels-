@@ -1,0 +1,203 @@
+
+The following have been reloaded with a version change:
+  1) python/3.10.12 => python/3.10.13
+
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1       6) python/3.10.13
+
+ 
+
+Fri Apr 24 18:30:39 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   59C    P0            144W /  300W |   10926MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    8   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9747237
+Job Name:       wilor-train
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 12288
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Fri Apr 24 18:30:39 CEST 2026
+===============================================
+[progress] Created temporary training image root: /tmp/wilor_train_9747237.WTHKHC/images
+[progress] Extracting frames for 0KuJ2t4S_TY into /tmp/wilor_train_9747237.WTHKHC/images/0KuJ2t4S_TY_frames
+Extracted 2410 frame(s) from /scratch/mthakur/manifold/data/images/0KuJ2t4S_TY.mp4 into /tmp/wilor_train_9747237.WTHKHC/images/0KuJ2t4S_TY_frames
+[progress] Extracting frames for 0gzQAgjx39o into /tmp/wilor_train_9747237.WTHKHC/images/0gzQAgjx39o_frames
+Extracted 992 frame(s) from /scratch/mthakur/manifold/data/images/0gzQAgjx39o.mp4 into /tmp/wilor_train_9747237.WTHKHC/images/0gzQAgjx39o_frames
+[progress] Extracting frames for 0rq4nkWlO2E into /tmp/wilor_train_9747237.WTHKHC/images/0rq4nkWlO2E_frames
+Extracted 728 frame(s) from /scratch/mthakur/manifold/data/images/0rq4nkWlO2E.mp4 into /tmp/wilor_train_9747237.WTHKHC/images/0rq4nkWlO2E_frames
+[progress] Extracting frames for 0ElPjqY4Cq8 into /tmp/wilor_train_9747237.WTHKHC/images/0ElPjqY4Cq8_frames
+Extracted 726 frame(s) from /scratch/mthakur/manifold/data/images/0ElPjqY4Cq8.mp4 into /tmp/wilor_train_9747237.WTHKHC/images/0ElPjqY4Cq8_frames
+[progress] Extracting frames for SlksdQT5JRE into /tmp/wilor_train_9747237.WTHKHC/images/SlksdQT5JRE_frames
+Extracted 946 frame(s) from /scratch/mthakur/manifold/data/images/SlksdQT5JRE.mp4 into /tmp/wilor_train_9747237.WTHKHC/images/SlksdQT5JRE_frames
+Project root:    /scratch/mthakur/manifold
+Model root:      /scratch/mthakur/manifold/models/wilor_hands
+Output dir:      /scratch/mthakur/manifold/outputs/wilor_finetune/hp_d_vipe_0p02
+Train mode:      distill
+Loss config:     /scratch/mthakur/manifold/models/wilor_hands/experiments/hparam_stage_d_vipe_camera.yaml
+Experiment:      hp_d_vipe_0p02
+Train scope:     refine_net
+Max steps:       200
+Log every:       10
+Save every:      100
+Sample limit:    256
+Validation split:0.2
+Checkpoint:      /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/wilor_final.ckpt
+Source images:   /scratch/mthakur/manifold/data//images
+Prepared images: /tmp/wilor_train_9747237.WTHKHC/images
+Videos:          0KuJ2t4S_TY|0gzQAgjx39o|0rq4nkWlO2E|0ElPjqY4Cq8|SlksdQT5JRE
+Temporal win:    size=3 stride=2 gap=1
+Pose dir:        /scratch/mthakur/manifold/outputs/vipe/pose
+Intrinsics dir:  /scratch/mthakur/manifold/outputs/vipe/intrinsics
+Command: python -u /scratch/mthakur/manifold/models/wilor_hands/finetune_wilor_distill_vipe.py --checkpoint /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/wilor_final.ckpt --cfg_path /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/model_config.yaml --detector_path /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/detector.pt --image_folder /tmp/wilor_train_9747237.WTHKHC/images --pose_dir /scratch/mthakur/manifold/outputs/vipe/pose --intrinsics_dir /scratch/mthakur/manifold/outputs/vipe/intrinsics --output_dir /scratch/mthakur/manifold/outputs/wilor_finetune/hp_d_vipe_0p02 --train_scope refine_net --camera_loss_weight 0.01 --validation_split 0.2 --lr 3e-05 --weight_decay 0.0001 --batch_size 8 --num_workers 2 --max_steps 200 --log_every 10 --save_every 100 --seed 42 --rescale_factor 2.0 --detection_conf 0.3 --loss_config /scratch/mthakur/manifold/models/wilor_hands/experiments/hparam_stage_d_vipe_camera.yaml --experiment_name hp_d_vipe_0p02 --sample_limit 256 --detection_cache /scratch/mthakur/manifold/outputs/wilor_finetune/hp_d_vipe_0p02/detections_selected_videos.json --video=0KuJ2t4S_TY --video=0gzQAgjx39o --video=0rq4nkWlO2E --video=0ElPjqY4Cq8 --video=SlksdQT5JRE --temporal_window_size 3 --temporal_window_stride 2 --temporal_max_frame_gap 1 --temporal_reduction smooth_l1 --temporal_scorer_hidden_dim 64 --temporal_scorer_layers 2 --temporal_scorer_dropout 0.0 --vipe_camera_weight 0.02 --vipe_camera_enabled --temporal_camera_enabled --temporal_camera_formulation learnable --temporal_camera_weight 0.01 --temporal_camera_scorer_weight 0.001 --temporal_bbox_projected_enabled --temporal_bbox_projected_formulation learnable --temporal_bbox_projected_weight 0.01 --temporal_bbox_projected_scorer_weight 0.001 --use_gpu --amp
+[progress] About to launch Apptainer via srun.
+[progress] SLURM wrapper log: SLURM_logs/wilor-train_098.out
+[progress] Python run output dir: /scratch/mthakur/manifold/outputs/wilor_finetune/hp_d_vipe_0p02
+[progress] Starting containerized training process now...
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[progress] Starting fine-tuning entrypoint.
+[progress] Resolving experiment config from /scratch/mthakur/manifold/models/wilor_hands/experiments/hparam_stage_d_vipe_camera.yaml (experiment=hp_d_vipe_0p02)
+[progress] Resolved experiment 'hp_d_vipe_0p02'.
+[progress] Using device cuda; output directory is /scratch/mthakur/manifold/outputs/wilor_finetune/hp_d_vipe_0p02
+[progress] Saved resolved experiment snapshot.
+[progress] Using explicitly requested video selection: 0ElPjqY4Cq8, 0KuJ2t4S_TY, 0gzQAgjx39o, 0rq4nkWlO2E, SlksdQT5JRE
+[progress] Filtering 5 selected video(s) for matching ViPE artifacts.
+[progress] Proceeding with video(s): 0ElPjqY4Cq8, 0KuJ2t4S_TY, 0gzQAgjx39o, 0rq4nkWlO2E, SlksdQT5JRE
+[progress] Loading student checkpoint and cloning teacher model.
+Loading  /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/wilor_final.ckpt
+Lightning automatically upgraded your loaded checkpoint from v1.8.1 to v2.0.9. To apply the upgrade to your files permanently, run `python -m pytorch_lightning.utilities.upgrade_checkpoint --file pretrained_models/wilor_final.ckpt`
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+[progress] Loading detector and ViPE camera index.
+[progress] Loading YOLO detector from /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/detector.pt onto cuda
+[progress] Detector ready.
+[progress] Building detection samples (cache path: /scratch/mthakur/manifold/outputs/wilor_finetune/hp_d_vipe_0p02/detections_selected_videos.json).
+[progress] Loading detection cache from /scratch/mthakur/manifold/outputs/wilor_finetune/hp_d_vipe_0p02/detections_selected_videos.json
+[progress] Detection cache contains 507 samples; using 507 samples across 5 selected video(s).
+[progress] Collected 507 detector sample(s).
+[progress] Splitting samples into train/val with validation_split=0.2.
+[progress] Building temporal training windows with size=3, stride=2, gap=1.
+[progress] Constructing training dataset and dataloader.
+[progress] Building validation temporal windows and dataloader.
+[progress] Configuring trainable scope: refine_net
+[progress] Initialized learnable temporal scorer.
+[progress] Creating optimizer and AMP scaler.
+[progress] Metrics will be appended to /scratch/mthakur/manifold/outputs/wilor_finetune/hp_d_vipe_0p02/metrics.jsonl
+Device: cuda
+Experiment: hp_d_vipe_0p02
+Videos: 0ElPjqY4Cq8, 0KuJ2t4S_TY, 0gzQAgjx39o, 0rq4nkWlO2E, SlksdQT5JRE
+Frames: total=256 train=205 val=51
+Samples: total=507 train=405 val=102
+Temporal windows: train=144 val=4 dropped_train=46 dropped_val=72
+Train scope: refine_net
+Trainable params: 8,341,839
+Temporal families: temporal_camera, temporal_bbox_projected
+[progress] Entering optimization loop.
+[progress] Fetching first training batch.
+[step 00001] loss=7.9368 cam=394.6509 temp_cam=0.0000 bbox_p=0.0001
+[progress] Running validation at step 1.
+             val_loss=3.7154 val_cam=185.4206 val_temp_cam=0.0000 val_bbox_p=0.0002
+[step 00010] loss=7.7914 cam=341.5181 temp_cam=0.0000 bbox_p=0.0010
+[progress] Running validation at step 10.
+             val_loss=3.6585 val_cam=180.0543 val_temp_cam=0.0000 val_bbox_p=0.0003
+[step 00020] loss=7.6991 cam=325.0473 temp_cam=0.0000 bbox_p=0.0001
+[progress] Running validation at step 20.
+             val_loss=3.5353 val_cam=170.6968 val_temp_cam=0.0000 val_bbox_p=0.0003
+[step 00030] loss=6.7160 cam=303.5110 temp_cam=0.0000 bbox_p=0.0000
+[progress] Running validation at step 30.
+             val_loss=3.3969 val_cam=162.7138 val_temp_cam=0.0000 val_bbox_p=0.0003
+[step 00040] loss=6.8726 cam=323.7501 temp_cam=0.0000 bbox_p=0.0000
+[progress] Running validation at step 40.
+             val_loss=3.2511 val_cam=156.1329 val_temp_cam=0.0000 val_bbox_p=0.0003
+[step 00050] loss=6.4976 cam=297.8323 temp_cam=0.0000 bbox_p=0.0000
+[progress] Running validation at step 50.
+             val_loss=3.0822 val_cam=150.0686 val_temp_cam=0.0000 val_bbox_p=0.0004
+[step 00060] loss=6.5691 cam=289.3253 temp_cam=0.0000 bbox_p=0.0000
+[progress] Running validation at step 60.
+             val_loss=3.0960 val_cam=144.3310 val_temp_cam=0.0000 val_bbox_p=0.0004
+[step 00070] loss=7.3165 cam=270.6596 temp_cam=0.0000 bbox_p=0.0004
+[progress] Running validation at step 70.
+             val_loss=3.3413 val_cam=139.5100 val_temp_cam=0.0000 val_bbox_p=0.0004
+[step 00080] loss=6.1648 cam=283.9810 temp_cam=0.0000 bbox_p=0.0005
+[progress] Running validation at step 80.
+             val_loss=2.8872 val_cam=135.7455 val_temp_cam=0.0000 val_bbox_p=0.0004
+[step 00090] loss=6.0357 cam=274.1498 temp_cam=0.0000 bbox_p=0.0003
+[progress] Running validation at step 90.
+             val_loss=2.8202 val_cam=131.9159 val_temp_cam=0.0000 val_bbox_p=0.0004
+[step 00100] loss=4.9274 cam=229.1154 temp_cam=0.0000 bbox_p=0.0020
+[progress] Running validation at step 100.
+             val_loss=2.7285 val_cam=127.8624 val_temp_cam=0.0000 val_bbox_p=0.0004
+[progress] Saved latest checkpoint at step 100.
+[step 00110] loss=5.2073 cam=228.3806 temp_cam=0.0000 bbox_p=0.0001
+[progress] Running validation at step 110.
+             val_loss=2.6590 val_cam=123.6578 val_temp_cam=0.0000 val_bbox_p=0.0005
+[step 00120] loss=6.1183 cam=230.3954 temp_cam=0.0000 bbox_p=0.0000
+[progress] Running validation at step 120.
+             val_loss=2.6590 val_cam=119.5239 val_temp_cam=0.0000 val_bbox_p=0.0006
+[step 00130] loss=5.3311 cam=233.7889 temp_cam=0.0000 bbox_p=0.0000
+[progress] Running validation at step 130.
+             val_loss=2.5517 val_cam=115.8337 val_temp_cam=0.0000 val_bbox_p=0.0007
+[step 00140] loss=5.6701 cam=228.6899 temp_cam=0.0000 bbox_p=0.0001
+[progress] Running validation at step 140.
+             val_loss=2.4551 val_cam=112.5660 val_temp_cam=0.0000 val_bbox_p=0.0007
+[step 00150] loss=5.3171 cam=216.3456 temp_cam=0.0000 bbox_p=0.0001
+[progress] Running validation at step 150.
+             val_loss=2.4383 val_cam=109.7324 val_temp_cam=0.0000 val_bbox_p=0.0008
+[step 00160] loss=5.6076 cam=204.1916 temp_cam=0.0000 bbox_p=0.0008
+[progress] Running validation at step 160.
+             val_loss=2.4131 val_cam=107.4605 val_temp_cam=0.0000 val_bbox_p=0.0008
+[step 00170] loss=5.8412 cam=220.1837 temp_cam=0.0000 bbox_p=0.0009
+[progress] Running validation at step 170.
+             val_loss=2.4848 val_cam=105.9071 val_temp_cam=0.0000 val_bbox_p=0.0007
+[step 00180] loss=5.6040 cam=223.3103 temp_cam=0.0000 bbox_p=0.0005
+[progress] Running validation at step 180.
+             val_loss=2.5258 val_cam=106.1055 val_temp_cam=0.0000 val_bbox_p=0.0008
+[step 00190] loss=4.6678 cam=191.9638 temp_cam=0.0000 bbox_p=0.0028
+[progress] Running validation at step 190.
+             val_loss=2.6216 val_cam=106.8983 val_temp_cam=0.0000 val_bbox_p=0.0007
+[step 00200] loss=4.4543 cam=199.6368 temp_cam=0.0000 bbox_p=0.0002
+[progress] Running validation at step 200.
+             val_loss=2.5978 val_cam=106.8991 val_temp_cam=0.0000 val_bbox_p=0.0007
+[progress] Saved latest checkpoint at step 200.
+Finished fine-tuning. Best val_loss_total: 2.4131
+Saved checkpoints under: /scratch/mthakur/manifold/outputs/wilor_finetune/hp_d_vipe_0p02
+[progress] Containerized training process exited cleanly.
+===============================================
+Job finished at: Fri Apr 24 18:47:26 CEST 2026
+Execution took 0.28 hours
+Writing output to SLURM_logs/wilor-train_098.out
+===============================================
