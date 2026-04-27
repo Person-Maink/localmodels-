@@ -1,7 +1,7 @@
 defaults:
   # Stage F: tune optimizer regularization on the current best-known baseline.
-  # Uses the completed 5-video Stage E subset until the all-videos run is
-  # available locally for a clean comparison.
+  # Uses the completed 5-video Stage E subset while keeping the rest of the
+  # current main-suite baseline fixed.
   train_mode: distill
   train_scope: refine_net
   videos:
@@ -45,6 +45,12 @@ defaults:
       formulation: learnable
       weight: 0.01
       scorer_weight: 0.001
+    temporal_vipe_camera:
+      enabled: true
+      formulation: learnable
+      weight: 0.01
+      smoothness_weight: 0.005
+      anchor_weight: 0.001
 
 experiments:
   - name: hp_f_wd_0

@@ -43,6 +43,12 @@ defaults:
       formulation: learnable
       weight: 0.01
       scorer_weight: 0.001
+    temporal_vipe_camera:
+      enabled: true
+      formulation: learnable
+      weight: 0.01
+      smoothness_weight: 0.005
+      anchor_weight: 0.001
 
 experiments:
   - name: hp_i_gap1_smoothl1

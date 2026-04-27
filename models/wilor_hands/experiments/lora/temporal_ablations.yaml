@@ -2,7 +2,7 @@ defaults:
   # Shared baseline uses the current manual forward baseline so test runs
   # start from the selected configuration before applying the overrides below.
   train_mode: distill
-  train_scope: camera_head
+  train_scope: refine_net
   videos:
     - 120-2_clip_1
   validation_split: 0.15
@@ -49,6 +49,12 @@ defaults:
       formulation: learnable
       weight: 0.03
       scorer_weight: 0.001
+    temporal_vipe_camera:
+      enabled: true
+      formulation: learnable
+      weight: 0.01
+      smoothness_weight: 0.005
+      anchor_weight: 0.001
 
 experiments:
 
@@ -69,6 +75,12 @@ experiments:
         formulation: learnable
         weight: 0.01
         scorer_weight: 0.001
+      temporal_vipe_camera:
+        enabled: true
+        formulation: learnable
+        weight: 0.01
+        smoothness_weight: 0.005
+        anchor_weight: 0.001
 
   - name: lora_test_temporal_all_losses
     run_name_suffix: lora_temp_all
@@ -83,3 +95,23 @@ experiments:
         formulation: learnable
         weight: 0.01
         scorer_weight: 0.001
+      temporal_vipe_camera:
+        enabled: true
+        formulation: learnable
+        weight: 0.01
+        smoothness_weight: 0.005
+        anchor_weight: 0.001
+
+  - name: lora_temporal_vipe_camera_only
+    run_name_suffix: lora_temp_vipe_only
+    losses:
+      temporal_camera:
+        enabled: false
+      temporal_bbox_projected:
+        enabled: false
+      temporal_vipe_camera:
+        enabled: true
+        formulation: learnable
+        weight: 0.01
+        smoothness_weight: 0.005
+        anchor_weight: 0.001

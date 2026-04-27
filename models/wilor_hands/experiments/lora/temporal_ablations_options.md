@@ -1,7 +1,7 @@
 # Temporal Ablations Config Options
 
 This file documents the experiment-config schema used by
-[temporal_ablations.yaml](/home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/temporal_ablations.yaml).
+[temporal_ablations.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/temporal_ablations.yaml>).
 
 The config has two top-level sections:
 
@@ -70,6 +70,8 @@ videos:
 ### `lora.enabled`
 - Type: `bool`
 - Enables LoRA adapters on the WiLoR ViT attention blocks.
+- In this LoRA suite, enabled adapters are meant to train alongside the normal
+  WiLoR `train_scope`, not instead of it.
 
 ### `lora.rank`
 - Type: `int`
@@ -230,11 +232,12 @@ videos:
 
 ## `losses`
 
-There are three supported loss families:
+There are four supported loss families:
 
 - `vipe_camera`
 - `temporal_camera`
 - `temporal_bbox_projected`
+- `temporal_vipe_camera`
 
 ### Common keys for all loss families
 
@@ -352,17 +355,19 @@ There are also newer Stage D logs from April 24, 2026: [wilor-train_092.out](</h
 
 If you are tuning this regime manually, a good order is:
 
-- Stage A: [hparam_stage_a_windows.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_a_windows.yaml)
-- Stage B: [hparam_stage_b_optimizer.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_b_optimizer.yaml)
-- Stage C: [hparam_stage_c_temporal_weights.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_c_temporal_weights.yaml)
-- Stage D: [hparam_stage_d_vipe_camera.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_d_vipe_camera.yaml)
-- Stage E: [hparam_stage_e_tuning.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_e_tuning.yaml)
-- Stage F: [hparam_stage_f_weight_decay.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_f_weight_decay.yaml)
-- Stage G: [hparam_stage_g_train_scope.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_g_train_scope.yaml)
-- Stage H: [hparam_stage_h_temporal_families.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_h_temporal_families.yaml)
-- Stage I: [hparam_stage_i_temporal_dynamics.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_i_temporal_dynamics.yaml)
-- Stage J: [hparam_stage_j_scorer_architecture.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_j_scorer_architecture.yaml)
-- Stage K: [hparam_stage_k_detection_crop.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_k_detection_crop.yaml)
+- Stage A: [hparam_stage_a_windows.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_a_windows.yaml>)
+- Stage B: [hparam_stage_b_optimizer.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_b_optimizer.yaml>)
+- Stage C: [hparam_stage_c_temporal_weights.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_c_temporal_weights.yaml>)
+- Stage D: [hparam_stage_d_vipe_camera.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_d_vipe_camera.yaml>)
+- Stage E: [hparam_stage_e_tuning.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_e_tuning.yaml>)
+- Stage F: [hparam_stage_f_weight_decay.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_f_weight_decay.yaml>)
+- Stage G: [hparam_stage_g_train_scope.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_g_train_scope.yaml>)
+- Stage H: [hparam_stage_h_lora_adapters.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_h_lora_adapters.yaml>)
+- Stage I: [hparam_stage_i_temporal_families.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_i_temporal_families.yaml>)
+- Stage J: [hparam_stage_j_temporal_dynamics.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_j_temporal_dynamics.yaml>)
+- Stage K: [hparam_stage_k_scorer_architecture.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_k_scorer_architecture.yaml>)
+- Stage L: [hparam_stage_l_detection_crop.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_l_detection_crop.yaml>)
+- Stage M: [hparam_stage_m_temporal_vipe_camera.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_m_temporal_vipe_camera.yaml>)
 
 Keep the ViPE camera weight in its own stage if you want a clean comparison, since it changes the balance of the base supervision rather than the temporal regularizers.
 
@@ -376,11 +381,13 @@ The stage YAMLs now carry the latest synced forward baseline in `defaults`. Stag
 | D | `losses.vipe_camera.weight` | `0.005`, `0.01`, `0.02`, `0.05` | latest Apr 24, 2026 rerun again favors `0.005`, but it should be rerun once on the updated Stage C baseline before promotion | [hparam_stage_d_vipe_camera.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_d_vipe_camera.yaml) |
 | E | video coverage | `all_videos=true` vs the 5-video stage subset | best available completed run: 5-video subset; `all_videos` still pending locally | [hparam_stage_e_tuning.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_e_tuning.yaml) |
 | F | `optimizer.weight_decay` | `0`, `1e-5`, `1e-4`, `1e-3` | planned | [hparam_stage_f_weight_decay.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_f_weight_decay.yaml) |
-| G | `train_scope` | `camera_head`, `refine_net`, `full` | planned | [hparam_stage_g_train_scope.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_g_train_scope.yaml) |
-| H | temporal family enable/formulation | all learnable, all static, and every non-empty learnable family subset | planned | [hparam_stage_h_temporal_families.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_h_temporal_families.yaml) |
-| I | `temporal.max_frame_gap`, `temporal.reduction` | `gap={1,2,3}`, `reduction in {smooth_l1,l1,l2}` | planned | [hparam_stage_i_temporal_dynamics.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_i_temporal_dynamics.yaml) |
-| J | scorer architecture | `hidden_dim={32,64,128}`, `layers={1,2,3}`, `dropout={0.0,0.1}` | planned | [hparam_stage_j_scorer_architecture.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_j_scorer_architecture.yaml) |
-| K | `detection_conf`, `rescale_factor` | `detection_conf={0.2,0.3,0.5}`, `rescale_factor={1.5,2.0,2.5}` | planned | [hparam_stage_k_detection_crop.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_k_detection_crop.yaml) |
+| G | additive `train_scope` with LoRA always enabled | `refine_net`, `camera_head`, `full` | planned | [hparam_stage_g_train_scope.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_g_train_scope.yaml>) |
+| H | LoRA adapter capacity | `qkv` vs `qkv+proj`, last-8 vs last-12 blocks, `rank={8,16}` | planned | [hparam_stage_h_lora_adapters.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_h_lora_adapters.yaml>) |
+| I | temporal family enable/formulation | all learnable, all static, and every non-empty learnable family subset including `temporal_vipe_camera` | planned | [hparam_stage_i_temporal_families.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_i_temporal_families.yaml>) |
+| J | `temporal.max_frame_gap`, `temporal.reduction` | `gap={1,2,3}`, `reduction in {smooth_l1,l1,l2}` | planned | [hparam_stage_j_temporal_dynamics.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_j_temporal_dynamics.yaml>) |
+| K | scorer architecture | `hidden_dim={32,64,128}`, `layers={1,2,3}`, `dropout={0.0,0.1}` | planned | [hparam_stage_k_scorer_architecture.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_k_scorer_architecture.yaml>) |
+| L | `detection_conf`, `rescale_factor` | `detection_conf={0.2,0.3,0.5}`, `rescale_factor={1.5,2.0,2.5}` | planned | [hparam_stage_l_detection_crop.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_l_detection_crop.yaml>) |
+| M | `temporal_vipe_camera` weights | alignment weight plus smoothness/anchor regularization | planned | [hparam_stage_m_temporal_vipe_camera.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_m_temporal_vipe_camera.yaml>) |
 
 ## Historical Tuning Results
 
@@ -444,12 +451,14 @@ These files are ready to run next on top of the current best-known baseline:
 
 | Stage | Main question | Config |
 | --- | --- | --- |
-| F | Is `weight_decay=1e-4` actually best, or should regularization be weaker or stronger? | [hparam_stage_f_weight_decay.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_f_weight_decay.yaml) |
-| G | Is `refine_net` really the best trainable scope, or does `camera_head` / `full` work better? | [hparam_stage_g_train_scope.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_g_train_scope.yaml) |
-| H | Which temporal families are actually helping, and do they need to be `learnable`? | [hparam_stage_h_temporal_families.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_h_temporal_families.yaml) |
-| I | Should temporal continuity be stricter or looser, and is `smooth_l1` still the best reduction? | [hparam_stage_i_temporal_dynamics.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_i_temporal_dynamics.yaml) |
-| J | Is the learnable scorer under- or over-sized? | [hparam_stage_j_scorer_architecture.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_j_scorer_architecture.yaml) |
-| K | Are the hand detection threshold and crop context holding back the downstream training signal? | [hparam_stage_k_detection_crop.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_k_detection_crop.yaml) |
+| F | Is `weight_decay=1e-4` actually best, or should regularization be weaker or stronger? | [hparam_stage_f_weight_decay.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_f_weight_decay.yaml>) |
+| G | Is `refine_net + LoRA` really the best additive trainable scope, or does `camera_head + LoRA` / `full + LoRA` work better? | [hparam_stage_g_train_scope.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_g_train_scope.yaml>) |
+| H | Is the default LoRA recipe too small, too shallow, or missing useful `proj` adapters? | [hparam_stage_h_lora_adapters.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_h_lora_adapters.yaml>) |
+| I | Which temporal families are actually helping, and do they need to be `learnable`? | [hparam_stage_i_temporal_families.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_i_temporal_families.yaml>) |
+| J | Should temporal continuity be stricter or looser, and is `smooth_l1` still the best reduction? | [hparam_stage_j_temporal_dynamics.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_j_temporal_dynamics.yaml>) |
+| K | Is the learnable scorer under- or over-sized? | [hparam_stage_k_scorer_architecture.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_k_scorer_architecture.yaml>) |
+| L | Are the hand detection threshold and crop context holding back the downstream training signal? | [hparam_stage_l_detection_crop.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_l_detection_crop.yaml>) |
+| M | Does the new temporal ViPE camera head help once LoRA is also adapting WiLoR? | [hparam_stage_m_temporal_vipe_camera.yaml](</home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/models/wilor_hands/experiments/lora/hparam_stage_m_temporal_vipe_camera.yaml>) |
 
 ## Minimal Example
 

@@ -6,6 +6,13 @@ from pathlib import Path
 
 import yaml
 
+try:
+    import matplotlib  # noqa: F401
+except ModuleNotFoundError:
+    MATPLOTLIB_AVAILABLE = False
+else:
+    MATPLOTLIB_AVAILABLE = True
+
 
 TEST_ROOT = Path(__file__).resolve().parents[1]
 if str(TEST_ROOT) not in sys.path:
@@ -13,6 +20,7 @@ if str(TEST_ROOT) not in sys.path:
 
 from plot_finetune_losses import (
     build_stage_results,
+    discover_stage_definitions,
     extract_validation_series,
     generate_all_figures,
     select_best_run,
@@ -61,9 +69,37 @@ class PlotFinetuneLossesTests(unittest.TestCase):
 
             stage_results = build_stage_results(experiments_root, runs_root)
 
+        self.assertEqual([stage.definition.suite for stage in stage_results], ["main", "main"])
         self.assertEqual([stage.definition.stage for stage in stage_results], ["a", "e"])
         self.assertEqual(stage_results[0].runs[0].name, "hp_a_ws3_s2_b8")
         self.assertEqual(stage_results[1].runs[0].name, "tune_stage_5_videos")
+
+    def test_discover_stage_definitions_recurses_into_suite_subfolders(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            experiments_root = root / "experiments"
+            (experiments_root / "lora").mkdir(parents=True)
+            (experiments_root / "frozen wilor").mkdir(parents=True)
+
+            self._write_stage_yaml(
+                experiments_root / "hparam_stage_a_windows.yaml",
+                ["hp_a_ws3_s2_b8"],
+            )
+            self._write_stage_yaml(
+                experiments_root / "lora" / "hparam_stage_h_lora_adapters.yaml",
+                ["lora_hp_h_qkv_last8_r8"],
+            )
+            self._write_stage_yaml(
+                experiments_root / "frozen wilor" / "hparam_stage_j_temporal_vipe_camera.yaml",
+                ["hp_j_tvc_w_1e2"],
+            )
+
+            definitions = discover_stage_definitions(experiments_root)
+
+        self.assertEqual(
+            [(definition.suite, definition.stage) for definition in definitions],
+            [("frozen wilor", "j"), ("lora", "h"), ("main", "a")],
+        )
 
     def test_select_best_run_uses_lowest_best_validation_loss(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -107,6 +143,7 @@ class PlotFinetuneLossesTests(unittest.TestCase):
         self.assertEqual(best_run.name, "hp_b_lr_3e5")
         self.assertEqual(best_run.best_validation, (20, 0.9))
 
+    @unittest.skipUnless(MATPLOTLIB_AVAILABLE, "matplotlib is not installed")
     def test_generate_all_figures_creates_per_run_and_stage_outputs(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
@@ -147,14 +184,55 @@ class PlotFinetuneLossesTests(unittest.TestCase):
 
             outputs = generate_all_figures(experiments_root, runs_root, output_root)
 
-            run_plot = output_root / "runs" / "hp_a_ws3_s2_b8" / "validation_loss_vs_step.svg"
-            placeholder_plot = output_root / "runs" / "hp_a_ws8_s4_b2" / "validation_loss_vs_step.svg"
-            stage_plot = output_root / "stages" / "stage_a_validation_comparison.svg"
+            run_plot = (
+                output_root / "runs" / "main" / "hp_a_ws3_s2_b8" / "validation_loss_vs_step.svg"
+            )
+            placeholder_plot = (
+                output_root / "runs" / "main" / "hp_a_ws8_s4_b2" / "validation_loss_vs_step.svg"
+            )
+            stage_plot = output_root / "stages" / "main" / "stage_a_validation_comparison.svg"
 
             self.assertEqual(len(outputs), 1)
             self.assertTrue(run_plot.exists())
             self.assertTrue(placeholder_plot.exists())
             self.assertTrue(stage_plot.exists())
+
+    @unittest.skipUnless(MATPLOTLIB_AVAILABLE, "matplotlib is not installed")
+    def test_generate_all_figures_can_filter_single_suite(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            experiments_root = root / "experiments"
+            runs_root = root / "runs"
+            output_root = root / "analysis" / "analysis_images" / "wilor_finetune_plots"
+            (experiments_root / "lora").mkdir(parents=True)
+            runs_root.mkdir()
+
+            self._write_stage_yaml(
+                experiments_root / "hparam_stage_a_windows.yaml",
+                ["hp_a_ws3_s2_b8"],
+            )
+            self._write_stage_yaml(
+                experiments_root / "lora" / "hparam_stage_h_lora_adapters.yaml",
+                ["lora_hp_h_qkv_last8_r8"],
+            )
+            self._write_run(
+                runs_root / "hp_a_ws3_s2_b8",
+                [{"step": 10, "split": "val", "loss_total": 1.2}],
+            )
+            self._write_run(
+                runs_root / "lora_hp_h_qkv_last8_r8",
+                [{"step": 10, "split": "val", "loss_total": 0.9}],
+            )
+
+            outputs = generate_all_figures(
+                experiments_root,
+                runs_root,
+                output_root,
+                suite_filter="lora",
+            )
+
+        self.assertEqual(len(outputs), 1)
+        self.assertEqual(outputs[0][0].definition.suite, "lora")
 
     @staticmethod
     def _write_stage_yaml(path: Path, run_names: list[str]) -> None:

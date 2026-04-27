@@ -1,8 +1,6 @@
 defaults:
   # Stage B: tune optimizer settings after Stage A picks a good window setup.
-  # Defaults mirror the Apr 23 2026 Stage A rerun winner while only lr varies.
-  # The original Apr 15 2026 sweep was accidentally pinned to lr=1e-5, but the
-  # corrected Apr 23 2026 rerun selected hp_b_lr_3e5 as the forward baseline.
+  # Defaults mirror the current main-suite baseline while only lr varies.
   train_mode: distill
   train_scope: refine_net
   videos:
@@ -22,7 +20,7 @@ defaults:
   save_every: 100
   seed: 42
   optimizer:
-    lr: 1.0e-5
+    lr: 3.0e-5
     weight_decay: 1.0e-4
   temporal:
     window_size: 3
@@ -35,17 +33,23 @@ defaults:
   losses:
     vipe_camera:
       enabled: true
-      weight: 0.005
+      weight: 0.05
     temporal_camera:
       enabled: true
       formulation: learnable
-      weight: 0.03
+      weight: 0.01
       scorer_weight: 0.001
     temporal_bbox_projected:
       enabled: true
       formulation: learnable
-      weight: 0.03
+      weight: 0.01
       scorer_weight: 0.001
+    temporal_vipe_camera:
+      enabled: true
+      formulation: learnable
+      weight: 0.01
+      smoothness_weight: 0.005
+      anchor_weight: 0.001
 
 experiments:
   - name: hp_b_lr_3e6

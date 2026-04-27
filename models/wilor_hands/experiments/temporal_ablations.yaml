@@ -1,8 +1,8 @@
 defaults:
-  # Shared baseline uses the current manual forward baseline so test runs
-  # start from the selected configuration before applying the overrides below.
+  # Shared baseline uses the current main-suite finetuning baseline, including
+  # the tuned temporal ViPE camera branch, before applying the overrides below.
   train_mode: distill
-  train_scope: camera_head
+  train_scope: refine_net
   videos:
     - 120-2_clip_1
   validation_split: 0.15
@@ -33,12 +33,12 @@ defaults:
     temporal_camera:
       enabled: true
       formulation: learnable
-      weight: 0.03
+      weight: 0.01
       scorer_weight: 0.001
     temporal_bbox_projected:
       enabled: true
       formulation: learnable
-      weight: 0.03
+      weight: 0.01
       scorer_weight: 0.001
     temporal_vipe_camera:
       enabled: true

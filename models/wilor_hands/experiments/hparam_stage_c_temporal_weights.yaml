@@ -1,7 +1,6 @@
 defaults:
-  # Stage C: tune temporal-loss scale after the Apr 23 2026 Stage B rerun
-  # selects the optimizer setting. Defaults carry that Stage B winner so only
-  # temporal-loss values vary across this sweep.
+  # Stage C: tune temporal-loss scale while holding the rest of the current
+  # main-suite baseline fixed.
   train_mode: distill
   train_scope: refine_net
   videos:
@@ -34,17 +33,23 @@ defaults:
   losses:
     vipe_camera:
       enabled: true
-      weight: 0.005
+      weight: 0.05
     temporal_camera:
       enabled: true
       formulation: learnable
-      weight: 0.03
+      weight: 0.01
       scorer_weight: 0.001
     temporal_bbox_projected:
       enabled: true
       formulation: learnable
-      weight: 0.03
+      weight: 0.01
       scorer_weight: 0.001
+    temporal_vipe_camera:
+      enabled: true
+      formulation: learnable
+      weight: 0.01
+      smoothness_weight: 0.005
+      anchor_weight: 0.001
 
 experiments:
   - name: hp_c_tw_0p01_sw_0p001
