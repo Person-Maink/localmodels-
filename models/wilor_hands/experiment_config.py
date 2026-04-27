@@ -38,6 +38,14 @@ DEFAULT_LOSS_CONFIG = {
         "weight": 0.0,
         "scorer_weight": 0.0,
     },
+    "temporal_vipe_camera": {
+        "enabled": False,
+        "formulation": "learnable",
+        "weight": 0.0,
+        "scorer_weight": 0.0,
+        "smoothness_weight": 0.0,
+        "anchor_weight": 0.0,
+    },
 }
 
 DEFAULT_EXPERIMENT_CONFIG = {
@@ -184,10 +192,20 @@ def _normalize_experiment(resolved: dict[str, Any]) -> dict[str, Any]:
         family_cfg["scorer_weight"] = float(family_cfg.get("scorer_weight", 0.0))
         if family_name != "vipe_camera":
             family_cfg["formulation"] = str(family_cfg.get("formulation", "static"))
-            if family_cfg["formulation"] not in {"static", "learnable"}:
+            allowed_formulations = {"static", "learnable"}
+            if family_name == "temporal_vipe_camera":
+                allowed_formulations = {"learnable"}
+                family_cfg["smoothness_weight"] = float(
+                    family_cfg.get("smoothness_weight", 0.0)
+                )
+                family_cfg["anchor_weight"] = float(
+                    family_cfg.get("anchor_weight", 0.0)
+                )
+            if family_cfg["formulation"] not in allowed_formulations:
+                allowed_display = " or ".join(sorted(allowed_formulations))
                 raise ValueError(
                     f"Unsupported formulation '{family_cfg['formulation']}' for loss family "
-                    f"'{family_name}'. Use 'static' or 'learnable'."
+                    f"'{family_name}'. Use {allowed_display}."
                 )
 
     return normalized
@@ -301,6 +319,11 @@ def experiment_to_env_map(resolved: dict[str, Any]) -> dict[str, str]:
         env_map[f"{prefix}_SCORER_WEIGHT"] = str(family_cfg["scorer_weight"])
         if family_name != "vipe_camera":
             env_map[f"{prefix}_FORMULATION"] = str(family_cfg["formulation"])
+        if family_name == "temporal_vipe_camera":
+            env_map[f"{prefix}_SMOOTHNESS_WEIGHT"] = str(
+                family_cfg["smoothness_weight"]
+            )
+            env_map[f"{prefix}_ANCHOR_WEIGHT"] = str(family_cfg["anchor_weight"])
 
     return env_map
 

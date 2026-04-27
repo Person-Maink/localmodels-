@@ -363,7 +363,7 @@ if [[ -n "${LOSS_CONFIG}" ]]; then
 fi
 
 TRAIN_MODE="${TRAIN_MODE:-distill}"        # distill | test
-TRAIN_SCOPE="${TRAIN_SCOPE:-refine_net}"   # camera_head | refine_net | full
+TRAIN_SCOPE="${TRAIN_SCOPE:-refine_net}"   # temporal_only | camera_head | refine_net | full
 CAMERA_LOSS_WEIGHT="${CAMERA_LOSS_WEIGHT:-0.01}"
 LORA_ENABLED="${LORA_ENABLED:-}"
 LORA_RANK="${LORA_RANK:-}"
@@ -382,6 +382,11 @@ TEMPORAL_BBOX_PROJECTED_ENABLED="${TEMPORAL_BBOX_PROJECTED_ENABLED:-}"
 TEMPORAL_BBOX_PROJECTED_FORMULATION="${TEMPORAL_BBOX_PROJECTED_FORMULATION:-}"
 TEMPORAL_BBOX_PROJECTED_WEIGHT="${TEMPORAL_BBOX_PROJECTED_WEIGHT:-}"
 TEMPORAL_BBOX_PROJECTED_SCORER_WEIGHT="${TEMPORAL_BBOX_PROJECTED_SCORER_WEIGHT:-}"
+TEMPORAL_VIPE_CAMERA_ENABLED="${TEMPORAL_VIPE_CAMERA_ENABLED:-}"
+TEMPORAL_VIPE_CAMERA_FORMULATION="${TEMPORAL_VIPE_CAMERA_FORMULATION:-}"
+TEMPORAL_VIPE_CAMERA_WEIGHT="${TEMPORAL_VIPE_CAMERA_WEIGHT:-}"
+TEMPORAL_VIPE_CAMERA_SMOOTHNESS_WEIGHT="${TEMPORAL_VIPE_CAMERA_SMOOTHNESS_WEIGHT:-}"
+TEMPORAL_VIPE_CAMERA_ANCHOR_WEIGHT="${TEMPORAL_VIPE_CAMERA_ANCHOR_WEIGHT:-}"
 LR="${LR:-1e-5}"
 WEIGHT_DECAY="${WEIGHT_DECAY:-1e-4}"
 BATCH_SIZE="${BATCH_SIZE:-8}"
@@ -591,6 +596,11 @@ append_optional_bool_override "temporal_bbox_projected_enabled" "${TEMPORAL_BBOX
 append_value_flag_if_set "--temporal_bbox_projected_formulation" "${TEMPORAL_BBOX_PROJECTED_FORMULATION}"
 append_value_flag_if_set "--temporal_bbox_projected_weight" "${TEMPORAL_BBOX_PROJECTED_WEIGHT}"
 append_value_flag_if_set "--temporal_bbox_projected_scorer_weight" "${TEMPORAL_BBOX_PROJECTED_SCORER_WEIGHT}"
+append_optional_bool_override "temporal_vipe_camera_enabled" "${TEMPORAL_VIPE_CAMERA_ENABLED}"
+append_value_flag_if_set "--temporal_vipe_camera_formulation" "${TEMPORAL_VIPE_CAMERA_FORMULATION}"
+append_value_flag_if_set "--temporal_vipe_camera_weight" "${TEMPORAL_VIPE_CAMERA_WEIGHT}"
+append_value_flag_if_set "--temporal_vipe_camera_smoothness_weight" "${TEMPORAL_VIPE_CAMERA_SMOOTHNESS_WEIGHT}"
+append_value_flag_if_set "--temporal_vipe_camera_anchor_weight" "${TEMPORAL_VIPE_CAMERA_ANCHOR_WEIGHT}"
 
 append_bool_flag "use_gpu" "${USE_GPU}"
 append_bool_flag "amp" "${AMP}"

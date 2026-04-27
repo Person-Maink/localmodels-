@@ -44,6 +44,12 @@ defaults:
       formulation: learnable
       weight: 0.0
       scorer_weight: 0.001
+    temporal_vipe_camera:
+      enabled: true
+      formulation: learnable
+      weight: 0.01
+      smoothness_weight: 0.005
+      anchor_weight: 0.001
 
 experiments:
   - name: hp_f_all_learnable
@@ -54,12 +60,39 @@ experiments:
     losses:
       temporal_bbox_projected:
         enabled: false
+      temporal_vipe_camera:
+        enabled: false
 
   - name: hp_f_bbox_projected_only
     run_name_suffix: hp_f_bbox_projected_only
     losses:
       temporal_camera:
         enabled: false
+      temporal_vipe_camera:
+        enabled: false
+
+  - name: hp_f_vipe_camera_only
+    run_name_suffix: hp_f_vipe_camera_only
+    losses:
+      temporal_camera:
+        enabled: false
+      temporal_bbox_projected:
+        enabled: false
 
   - name: hp_f_camera_projected
     run_name_suffix: hp_f_camera_projected
+    losses:
+      temporal_vipe_camera:
+        enabled: false
+
+  - name: hp_f_camera_vipe
+    run_name_suffix: hp_f_camera_vipe
+    losses:
+      temporal_bbox_projected:
+        enabled: false
+
+  - name: hp_f_projected_vipe
+    run_name_suffix: hp_f_projected_vipe
+    losses:
+      temporal_camera:
+        enabled: false

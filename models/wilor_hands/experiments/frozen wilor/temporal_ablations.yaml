@@ -41,6 +41,12 @@ defaults:
       formulation: learnable
       weight: 0.0
       scorer_weight: 0.001
+    temporal_vipe_camera:
+      enabled: false
+      formulation: learnable
+      weight: 0.01
+      smoothness_weight: 0.005
+      anchor_weight: 0.001
 
 experiments:
   - name: test_temporal_scorer_only
@@ -52,3 +58,35 @@ experiments:
 
   - name: frozen_temporal_scorer_baseline
     run_name_suffix: frozen_temporal_scorer_baseline
+
+  - name: test_temporal_vipe_camera_head_smoke
+    run_name_suffix: test_temporal_vipe_camera_head_smoke
+    train_mode: test
+    max_steps: 100
+    log_every: 10
+    save_every: 50
+    losses:
+      temporal_camera:
+        enabled: false
+      temporal_bbox_projected:
+        enabled: false
+      temporal_vipe_camera:
+        enabled: true
+        formulation: learnable
+        weight: 0.01
+        smoothness_weight: 0.005
+        anchor_weight: 0.001
+
+  - name: frozen_temporal_vipe_camera_head
+    run_name_suffix: frozen_temporal_vipe_camera_head
+    losses:
+      temporal_camera:
+        enabled: false
+      temporal_bbox_projected:
+        enabled: false
+      temporal_vipe_camera:
+        enabled: true
+        formulation: learnable
+        weight: 0.01
+        smoothness_weight: 0.005
+        anchor_weight: 0.001

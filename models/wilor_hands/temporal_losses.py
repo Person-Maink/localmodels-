@@ -12,6 +12,7 @@ TEMPORAL_FAMILY_DIMS = {
     "temporal_camera": 3,
     "temporal_bbox_projected": 4,
 }
+TEMPORAL_VIPE_CAMERA_INPUT_DIM = 8
 
 
 def build_temporal_windows(
@@ -227,6 +228,36 @@ def reduce_temporal_residual(
     raise ValueError(f"Unsupported temporal reduction '{reduction}'.")
 
 
+def reduce_masked_temporal_residual(
+    residual: torch.Tensor,
+    mask: torch.Tensor,
+    reduction: str = "smooth_l1",
+) -> torch.Tensor:
+    if residual.numel() == 0:
+        return residual.new_zeros(())
+
+    expanded_mask = mask.float()
+    while expanded_mask.ndim < residual.ndim:
+        expanded_mask = expanded_mask.unsqueeze(-1)
+    expanded_mask = expanded_mask.expand_as(residual)
+
+    if reduction == "l1":
+        per_element = residual.abs()
+    elif reduction == "l2":
+        per_element = residual.square()
+    elif reduction == "smooth_l1":
+        per_element = F.smooth_l1_loss(
+            residual,
+            torch.zeros_like(residual),
+            reduction="none",
+        )
+    else:
+        raise ValueError(f"Unsupported temporal reduction '{reduction}'.")
+
+    normalizer = expanded_mask.sum().clamp_min(1.0)
+    return (per_element * expanded_mask).sum() / normalizer
+
+
 class TemporalWindowScorer(nn.Module):
     def __init__(
         self,
@@ -275,31 +306,98 @@ class TemporalWindowScorer(nn.Module):
         return self.output_activation(score)
 
 
+class TemporalViPECameraHead(nn.Module):
+    def __init__(
+        self,
+        hidden_dim: int = 64,
+        layers: int = 2,
+        dropout: float = 0.0,
+    ):
+        super().__init__()
+        self.input_projection = nn.Conv1d(
+            TEMPORAL_VIPE_CAMERA_INPUT_DIM,
+            hidden_dim,
+            kernel_size=1,
+        )
+
+        blocks: list[nn.Module] = []
+        for _ in range(max(layers, 1)):
+            blocks.extend(
+                [
+                    nn.Conv1d(hidden_dim, hidden_dim, kernel_size=3, padding=1),
+                    nn.SiLU(),
+                    nn.Dropout(dropout),
+                ]
+            )
+        self.backbone = nn.Sequential(*blocks)
+        self.output_head = nn.Conv1d(hidden_dim, 3, kernel_size=1)
+        nn.init.zeros_(self.output_head.weight)
+        nn.init.zeros_(self.output_head.bias)
+
+    def forward(
+        self,
+        base_camera: torch.Tensor,
+        valid_mask: torch.Tensor,
+        fallback_mask: torch.Tensor,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        base_curvature = compute_second_difference(base_camera)
+        if base_curvature.shape[1] > 0:
+            base_curvature = F.pad(
+                base_curvature.transpose(1, 2),
+                (1, 1),
+            ).transpose(1, 2)
+        else:
+            base_curvature = torch.zeros_like(base_camera)
+        features = torch.cat(
+            [
+                base_camera,
+                base_curvature,
+                valid_mask.float().unsqueeze(-1),
+                fallback_mask.float().unsqueeze(-1),
+            ],
+            dim=-1,
+        )
+        x = features.transpose(1, 2)
+        x = self.input_projection(x)
+        x = self.backbone(x)
+        delta = self.output_head(x).transpose(1, 2)
+        return base_camera + delta, delta
+
+
+def _compute_temporal_signal(
+    family_name: str,
+    window_batch: Dict[str, torch.Tensor],
+    student_output_seq: Dict[str, torch.Tensor],
+) -> torch.Tensor:
+    if family_name == "temporal_camera":
+        return normalize_camera_sequence(
+            student_output_seq["pred_cam_t_full"],
+            student_output_seq["scaled_focal_length"],
+        )
+    if family_name == "temporal_bbox_projected":
+        return bbox_sequence_from_keypoints(
+            student_output_seq["pred_keypoints_2d"],
+            window_batch,
+        )
+    raise ValueError(f"Unsupported temporal signal family '{family_name}'.")
+
+
 def compute_temporal_loss_bundle(
     window_batch: Dict[str, torch.Tensor],
     student_output_seq: Dict[str, torch.Tensor],
     loss_cfg: Dict[str, Dict[str, Any]],
     temporal_cfg: Dict[str, Any],
     scorer: TemporalWindowScorer | None,
+    vipe_camera_head: TemporalViPECameraHead | None,
 ) -> tuple[torch.Tensor, Dict[str, float | torch.Tensor]]:
     metrics: Dict[str, float | torch.Tensor] = {}
-    total_loss = student_output_seq["pred_keypoints_2d"].new_zeros(())
+    total_loss = student_output_seq["pred_cam_t_full"].new_zeros(())
 
-    signal_map = {
-        "temporal_camera": normalize_camera_sequence(
-            student_output_seq["pred_cam_t_full"],
-            student_output_seq["scaled_focal_length"],
-        ),
-        "temporal_bbox_projected": bbox_sequence_from_keypoints(
-            student_output_seq["pred_keypoints_2d"],
-            window_batch,
-        ),
-    }
-
-    for family_name, signal in signal_map.items():
+    for family_name in TEMPORAL_FAMILY_DIMS:
         family_cfg = loss_cfg.get(family_name, {})
         if not family_cfg.get("enabled", False):
             continue
+        signal = _compute_temporal_signal(family_name, window_batch, student_output_seq)
 
         residual = compute_second_difference(signal)
         base_loss = reduce_temporal_residual(
@@ -316,5 +414,57 @@ def compute_temporal_loss_bundle(
         total_loss = total_loss + scorer_weight * score_loss
         metrics[f"loss_{family_name}_base"] = base_loss
         metrics[f"loss_{family_name}_score"] = score_loss
+
+    vipe_family_cfg = loss_cfg.get("temporal_vipe_camera", {})
+    if vipe_family_cfg.get("enabled", False):
+        if vipe_camera_head is None:
+            raise RuntimeError(
+                "temporal_vipe_camera is enabled, but no TemporalViPECameraHead was provided."
+            )
+
+        normalized_camera = normalize_camera_sequence(
+            student_output_seq["pred_cam_t_full"],
+            student_output_seq["scaled_focal_length"],
+        )
+        normalized_target = normalize_camera_sequence(
+            window_batch["camera_target_t_full"],
+            student_output_seq["scaled_focal_length"],
+        )
+        valid_mask = window_batch["camera_target_valid"].float()
+        fallback_mask = window_batch.get("camera_target_used_fallback")
+        if fallback_mask is None:
+            fallback_mask = valid_mask.new_zeros(valid_mask.shape)
+        else:
+            fallback_mask = fallback_mask.float()
+
+        refined_camera, delta = vipe_camera_head(
+            normalized_camera,
+            valid_mask,
+            fallback_mask,
+        )
+        align_residual = refined_camera - normalized_target
+        smooth_residual = compute_second_difference(refined_camera)
+        align_loss = reduce_masked_temporal_residual(
+            align_residual,
+            valid_mask,
+            reduction=str(temporal_cfg["reduction"]),
+        )
+        smooth_loss = reduce_temporal_residual(
+            smooth_residual,
+            reduction=str(temporal_cfg["reduction"]),
+        )
+        anchor_loss = reduce_temporal_residual(
+            delta,
+            reduction=str(temporal_cfg["reduction"]),
+        )
+
+        total_loss = total_loss + float(vipe_family_cfg["weight"]) * align_loss
+        total_loss = total_loss + float(vipe_family_cfg.get("smoothness_weight", 0.0)) * smooth_loss
+        total_loss = total_loss + float(vipe_family_cfg.get("anchor_weight", 0.0)) * anchor_loss
+        metrics["loss_temporal_vipe_camera_base"] = align_loss
+        metrics["loss_temporal_vipe_camera_align"] = align_loss
+        metrics["loss_temporal_vipe_camera_smooth"] = smooth_loss
+        metrics["loss_temporal_vipe_camera_anchor"] = anchor_loss
+        metrics["loss_temporal_vipe_camera_delta_abs"] = delta.abs().mean()
 
     return total_loss, metrics

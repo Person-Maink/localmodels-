@@ -59,6 +59,7 @@ videos:
   - `camera_head`
   - `refine_net`
   - `full`
+  - `temporal_only`
 - This controls which part of the WiLoR model is allowed to update during finetuning.
 - Smaller scopes are cheaper and safer for early tuning, while `full` is the most flexible but also the easiest to destabilize.
 
@@ -194,11 +195,12 @@ videos:
 
 ## `losses`
 
-There are three supported loss families:
+There are four supported loss families:
 
 - `vipe_camera`
 - `temporal_camera`
 - `temporal_bbox_projected`
+- `temporal_vipe_camera`
 
 ### Common keys for all loss families
 
@@ -216,6 +218,7 @@ There are three supported loss families:
 - Meaning:
   - `vipe_camera.weight` scales direct ViPE camera supervision
   - temporal family `weight` scales the analytical second-difference term
+  - `temporal_vipe_camera.weight` scales alignment of the refined temporal camera output to the ViPE target
 - This determines how much a loss family contributes to the total objective relative to the others.
 - If a family is enabled but its base values are numerically tiny, you may need to increase this by a lot before it meaningfully affects training.
 
@@ -235,6 +238,7 @@ These apply to:
 
 - `temporal_camera`
 - `temporal_bbox_projected`
+- `temporal_vipe_camera`
 
 #### `formulation`
 - Type: `string`
@@ -247,6 +251,7 @@ Meaning:
 - `learnable`: analytical second-difference plus the learned scorer module
 - `static` is the simpler and cheaper option, so it is often a better starting point for stability checks.
 - `learnable` adds extra flexibility, but it also adds parameters and another set of weights to tune.
+- `temporal_vipe_camera` currently supports only `learnable`, because it uses a dedicated temporal camera-refinement head rather than the analytical second-difference path.
 
 ### Loss-family-specific notes
 
@@ -279,11 +284,21 @@ Meaning:
 - This applies temporal consistency to bounding boxes derived from projected keypoints.
 - It is useful when you care about temporal stability in the model's projected image-space behavior rather than only camera parameters.
 
+#### `losses.temporal_vipe_camera`
+- Supported keys:
+  - `enabled`
+  - `formulation`
+  - `weight`
+  - `smoothness_weight`
+  - `anchor_weight`
+- This runs a learnable temporal head over frozen-or-finetuned WiLoR camera predictions and ViPE camera targets, then supervises the head on the refined camera sequence.
+- `weight` scales target alignment, `smoothness_weight` regularizes second-difference of the refined sequence, and `anchor_weight` keeps the learned correction from drifting too far.
+
 ## Important Rules
 
 - `videos` and `all_videos` are mutually exclusive.
 - `train_mode` must be `distill` or `test`.
-- Temporal `formulation` must be `static` or `learnable`.
+- Temporal `formulation` must be `static` or `learnable`, except `temporal_vipe_camera` which is learnable-only.
 - The scorer network is only instantiated if at least one enabled temporal family is:
   - `formulation: learnable`
   - and has `scorer_weight > 0.0`
@@ -327,6 +342,7 @@ If you are tuning this regime manually, a good order is:
 - Stage I: [hparam_stage_i_temporal_dynamics.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_i_temporal_dynamics.yaml)
 - Stage J: [hparam_stage_j_scorer_architecture.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_j_scorer_architecture.yaml)
 - Stage K: [hparam_stage_k_detection_crop.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_k_detection_crop.yaml)
+- Stage L: [hparam_stage_l_temporal_vipe_camera.yaml](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/experiments/hparam_stage_l_temporal_vipe_camera.yaml)
 
 Keep the ViPE camera weight in its own stage if you want a clean comparison, since it changes the balance of the base supervision rather than the temporal regularizers.
 

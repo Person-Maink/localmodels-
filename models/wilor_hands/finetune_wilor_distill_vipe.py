@@ -29,6 +29,7 @@ from finetune_wilor_common import (
     split_samples_by_frame,
 )
 from temporal_losses import (
+    TemporalViPECameraHead,
     TemporalWindowDataset,
     TemporalWindowScorer,
     build_temporal_windows,
@@ -102,6 +103,11 @@ def make_argparser() -> argparse.ArgumentParser:
     parser.add_argument("--temporal_bbox_projected_formulation", type=str, default=None, choices=["static", "learnable"])
     parser.add_argument("--temporal_bbox_projected_weight", type=float, default=None)
     parser.add_argument("--temporal_bbox_projected_scorer_weight", type=float, default=None)
+    parser.add_argument("--temporal_vipe_camera_enabled", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--temporal_vipe_camera_formulation", type=str, default=None, choices=["learnable"])
+    parser.add_argument("--temporal_vipe_camera_weight", type=float, default=None)
+    parser.add_argument("--temporal_vipe_camera_smoothness_weight", type=float, default=None)
+    parser.add_argument("--temporal_vipe_camera_anchor_weight", type=float, default=None)
     parser.add_argument("--lora_enabled", action=argparse.BooleanOptionalAction, default=None)
     parser.add_argument("--lora_rank", type=int, default=None)
     parser.add_argument("--lora_alpha", type=float, default=None)
@@ -247,6 +253,36 @@ def _apply_experiment_defaults(
         "temporal_bbox_projected_scorer_weight",
         loss_cfg["temporal_bbox_projected"]["scorer_weight"],
     )
+    _set_arg_from_config(
+        args,
+        parser,
+        "temporal_vipe_camera_enabled",
+        loss_cfg["temporal_vipe_camera"]["enabled"],
+    )
+    _set_arg_from_config(
+        args,
+        parser,
+        "temporal_vipe_camera_formulation",
+        loss_cfg["temporal_vipe_camera"]["formulation"],
+    )
+    _set_arg_from_config(
+        args,
+        parser,
+        "temporal_vipe_camera_weight",
+        loss_cfg["temporal_vipe_camera"]["weight"],
+    )
+    _set_arg_from_config(
+        args,
+        parser,
+        "temporal_vipe_camera_smoothness_weight",
+        loss_cfg["temporal_vipe_camera"]["smoothness_weight"],
+    )
+    _set_arg_from_config(
+        args,
+        parser,
+        "temporal_vipe_camera_anchor_weight",
+        loss_cfg["temporal_vipe_camera"]["anchor_weight"],
+    )
 
     lora_cfg = resolved_experiment["lora"]
     _set_arg_from_config(args, parser, "lora_enabled", lora_cfg["enabled"])
@@ -311,6 +347,26 @@ def _resolve_loss_settings(
             base_loss_cfg[family_name]["weight"] = float(getattr(args, weight_attr))
         if getattr(args, scorer_attr) is not None:
             base_loss_cfg[family_name]["scorer_weight"] = float(getattr(args, scorer_attr))
+
+    base_loss_cfg["temporal_vipe_camera"]["formulation"] = str(
+        base_loss_cfg["temporal_vipe_camera"].get("formulation", "learnable")
+    )
+    if args.temporal_vipe_camera_enabled is not None:
+        base_loss_cfg["temporal_vipe_camera"]["enabled"] = bool(args.temporal_vipe_camera_enabled)
+    if args.temporal_vipe_camera_formulation is not None:
+        base_loss_cfg["temporal_vipe_camera"]["formulation"] = str(
+            args.temporal_vipe_camera_formulation
+        )
+    if args.temporal_vipe_camera_weight is not None:
+        base_loss_cfg["temporal_vipe_camera"]["weight"] = float(args.temporal_vipe_camera_weight)
+    if args.temporal_vipe_camera_smoothness_weight is not None:
+        base_loss_cfg["temporal_vipe_camera"]["smoothness_weight"] = float(
+            args.temporal_vipe_camera_smoothness_weight
+        )
+    if args.temporal_vipe_camera_anchor_weight is not None:
+        base_loss_cfg["temporal_vipe_camera"]["anchor_weight"] = float(
+            args.temporal_vipe_camera_anchor_weight
+        )
 
     return base_loss_cfg
 
@@ -413,6 +469,7 @@ def _compute_window_loss(
     temporal_cfg: dict[str, Any],
     loss_cfg: dict[str, dict[str, Any]],
     temporal_scorer: TemporalWindowScorer | None,
+    temporal_vipe_camera_head: TemporalViPECameraHead | None,
     train: bool,
 ) -> tuple[torch.Tensor, dict[str, float]]:
     window_batch = recursive_to(window_batch, device)
@@ -432,6 +489,7 @@ def _compute_window_loss(
             loss_cfg,
             temporal_cfg,
             temporal_scorer,
+            temporal_vipe_camera_head,
         )
         total_loss = distill_loss + temporal_loss
 
@@ -452,12 +510,20 @@ def _evaluate_window_dataloader(
     temporal_cfg: dict[str, Any],
     loss_cfg: dict[str, dict[str, Any]],
     temporal_scorer: TemporalWindowScorer | None,
+    temporal_vipe_camera_head: TemporalViPECameraHead | None,
 ) -> dict[str, float]:
     was_student_training = student.training
     student.eval()
     scorer_was_training = temporal_scorer.training if temporal_scorer is not None else False
     if temporal_scorer is not None:
         temporal_scorer.eval()
+    vipe_head_was_training = (
+        temporal_vipe_camera_head.training
+        if temporal_vipe_camera_head is not None
+        else False
+    )
+    if temporal_vipe_camera_head is not None:
+        temporal_vipe_camera_head.eval()
 
     metric_sums: dict[str, float] = {}
     total_windows = 0
@@ -473,6 +539,7 @@ def _evaluate_window_dataloader(
                 temporal_cfg=temporal_cfg,
                 loss_cfg=loss_cfg,
                 temporal_scorer=temporal_scorer,
+                temporal_vipe_camera_head=temporal_vipe_camera_head,
                 train=False,
             )
             batch_window_count = int(window_batch["img"].shape[0])
@@ -483,6 +550,8 @@ def _evaluate_window_dataloader(
     student.train(was_student_training)
     if temporal_scorer is not None:
         temporal_scorer.train(scorer_was_training)
+    if temporal_vipe_camera_head is not None:
+        temporal_vipe_camera_head.train(vipe_head_was_training)
 
     if total_windows == 0:
         return {"loss_total": 0.0, "window_count": 0.0}
@@ -495,9 +564,25 @@ def _evaluate_window_dataloader(
 def _active_temporal_families(loss_cfg: dict[str, dict[str, Any]]) -> list[str]:
     return [
         family_name
-        for family_name in ("temporal_camera", "temporal_bbox_projected")
+        for family_name in (
+            "temporal_camera",
+            "temporal_bbox_projected",
+            "temporal_vipe_camera",
+        )
         if loss_cfg[family_name]["enabled"]
     ]
+
+
+def _collect_extra_modules(
+    temporal_scorer: TemporalWindowScorer | None,
+    temporal_vipe_camera_head: TemporalViPECameraHead | None,
+) -> dict[str, torch.nn.Module] | None:
+    extra_modules: dict[str, torch.nn.Module] = {}
+    if temporal_scorer is not None:
+        extra_modules["temporal_scorer"] = temporal_scorer
+    if temporal_vipe_camera_head is not None:
+        extra_modules["temporal_vipe_camera_head"] = temporal_vipe_camera_head
+    return extra_modules or None
 
 
 def _log_progress(message: str) -> None:
@@ -722,7 +807,7 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
         loss_cfg[family_name]["enabled"]
         and loss_cfg[family_name].get("formulation", "static") == "learnable"
         and loss_cfg[family_name]["scorer_weight"] > 0.0
-        for family_name in _active_temporal_families(loss_cfg)
+        for family_name in ("temporal_camera", "temporal_bbox_projected")
     ):
         temporal_scorer = TemporalWindowScorer(
             hidden_dim=int(temporal_cfg["scorer_hidden_dim"]),
@@ -731,12 +816,25 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
         ).to(device)
         _log_progress("Initialized learnable temporal scorer.")
 
-    if args.train_scope == "temporal_only" and temporal_scorer is None:
+    temporal_vipe_camera_head = None
+    if loss_cfg["temporal_vipe_camera"]["enabled"]:
+        temporal_vipe_camera_head = TemporalViPECameraHead(
+            hidden_dim=int(temporal_cfg["scorer_hidden_dim"]),
+            layers=int(temporal_cfg["scorer_layers"]),
+            dropout=float(temporal_cfg["scorer_dropout"]),
+        ).to(device)
+        _log_progress("Initialized temporal ViPE camera refinement head.")
+
+    if (
+        args.train_scope == "temporal_only"
+        and temporal_scorer is None
+        and temporal_vipe_camera_head is None
+    ):
         raise RuntimeError(
-            "train_scope='temporal_only' requires at least one learnable temporal loss "
-            "with scorer_weight > 0 so the temporal scorer has parameters to optimize."
+            "train_scope='temporal_only' requires at least one learnable temporal module "
+            "so there are parameters to optimize while WiLoR stays frozen."
         )
-    if not trainable_params and temporal_scorer is None:
+    if not trainable_params and temporal_scorer is None and temporal_vipe_camera_head is None:
         raise RuntimeError(f"No trainable parameters were selected for scope '{args.train_scope}'.")
 
     optimizer_params: list[dict[str, Any]] = []
@@ -744,6 +842,8 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
         optimizer_params.append({"params": trainable_params})
     if temporal_scorer is not None:
         optimizer_params.append({"params": list(temporal_scorer.parameters())})
+    if temporal_vipe_camera_head is not None:
+        optimizer_params.append({"params": list(temporal_vipe_camera_head.parameters())})
 
     _log_progress("Creating optimizer and AMP scaler.")
     optimizer = torch.optim.AdamW(optimizer_params, lr=args.lr, weight_decay=args.weight_decay)
@@ -759,6 +859,12 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
     if temporal_scorer is not None:
         total_trainable_params += sum(
             param.numel() for param in temporal_scorer.parameters() if param.requires_grad
+        )
+    if temporal_vipe_camera_head is not None:
+        total_trainable_params += sum(
+            param.numel()
+            for param in temporal_vipe_camera_head.parameters()
+            if param.requires_grad
         )
 
     print(f"Device: {device}", flush=True)
@@ -811,6 +917,8 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
         )
         if temporal_scorer is not None:
             temporal_scorer.train()
+        if temporal_vipe_camera_head is not None:
+            temporal_vipe_camera_head.train()
 
         window_batch = next(batch_iter)
         optimizer.zero_grad(set_to_none=True)
@@ -823,6 +931,7 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
             temporal_cfg=temporal_cfg,
             loss_cfg=loss_cfg,
             temporal_scorer=temporal_scorer,
+            temporal_vipe_camera_head=temporal_vipe_camera_head,
             train=True,
         )
 
@@ -852,7 +961,10 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
                     "best_metric": best_metric,
                     "best_metric_name": best_metric_name,
                 },
-                extra_modules={"temporal_scorer": temporal_scorer} if temporal_scorer is not None else None,
+                extra_modules=_collect_extra_modules(
+                    temporal_scorer,
+                    temporal_vipe_camera_head,
+                ),
             )
 
         if should_log:
@@ -871,7 +983,8 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
                 f"[step {step:05d}] loss={train_metrics['loss_total']:.4f} "
                 f"cam={train_metrics.get('loss_camera_t_full', 0.0):.4f} "
                 f"temp_cam={train_metrics.get('loss_temporal_camera_base', 0.0):.4f} "
-                f"bbox_p={train_metrics.get('loss_temporal_bbox_projected_base', 0.0):.4f}"
+                f"bbox_p={train_metrics.get('loss_temporal_bbox_projected_base', 0.0):.4f} "
+                f"vipe_t={train_metrics.get('loss_temporal_vipe_camera_align', 0.0):.4f}"
             , flush=True)
             if val_dataloader is not None:
                 _log_progress(f"Running validation at step {step}.")
@@ -884,6 +997,7 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
                     temporal_cfg=temporal_cfg,
                     loss_cfg=loss_cfg,
                     temporal_scorer=temporal_scorer,
+                    temporal_vipe_camera_head=temporal_vipe_camera_head,
                 )
                 val_metrics.update(
                     {
@@ -900,7 +1014,8 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
                     f"             val_loss={val_metrics.get('loss_total', 0.0):.4f} "
                     f"val_cam={val_metrics.get('loss_camera_t_full', 0.0):.4f} "
                     f"val_temp_cam={val_metrics.get('loss_temporal_camera_base', 0.0):.4f} "
-                    f"val_bbox_p={val_metrics.get('loss_temporal_bbox_projected_base', 0.0):.4f}"
+                    f"val_bbox_p={val_metrics.get('loss_temporal_bbox_projected_base', 0.0):.4f} "
+                    f"val_vipe_t={val_metrics.get('loss_temporal_vipe_camera_align', 0.0):.4f}"
                 , flush=True)
                 if val_metrics["loss_total"] < best_metric:
                     best_metric = val_metrics["loss_total"]
@@ -917,7 +1032,10 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
                             "best_metric": best_metric,
                             "best_metric_name": best_metric_name,
                         },
-                        extra_modules={"temporal_scorer": temporal_scorer} if temporal_scorer is not None else None,
+                        extra_modules=_collect_extra_modules(
+                            temporal_scorer,
+                            temporal_vipe_camera_head,
+                        ),
                     )
 
         if step % args.save_every == 0 or step == args.max_steps:
@@ -934,7 +1052,10 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
                     "best_metric": best_metric,
                     "best_metric_name": best_metric_name,
                 },
-                extra_modules={"temporal_scorer": temporal_scorer} if temporal_scorer is not None else None,
+                extra_modules=_collect_extra_modules(
+                    temporal_scorer,
+                    temporal_vipe_camera_head,
+                ),
             )
             _log_progress(f"Saved latest checkpoint at step {step}.")
 

@@ -14,9 +14,11 @@ if str(TEST_ROOT) not in sys.path:
 from experiment_config import experiment_to_env_map, resolve_experiment_config
 from finetune_wilor_common import apply_train_mode_for_scope, configure_trainable_scope
 from temporal_losses import (
+    TemporalViPECameraHead,
     TemporalWindowScorer,
     bbox_sequence_from_keypoints,
     build_temporal_windows,
+    compute_temporal_loss_bundle,
     compute_second_difference,
     input_bbox_sequence,
     normalize_camera_sequence,
@@ -112,6 +114,14 @@ class TemporalAblationTests(unittest.TestCase):
                     "weight": 0.03,
                     "scorer_weight": 0.001,
                 },
+                "temporal_vipe_camera": {
+                    "enabled": True,
+                    "formulation": "learnable",
+                    "weight": 0.02,
+                    "scorer_weight": 0.0,
+                    "smoothness_weight": 0.01,
+                    "anchor_weight": 0.001,
+                },
             },
         }
 
@@ -120,6 +130,9 @@ class TemporalAblationTests(unittest.TestCase):
         self.assertEqual(env_map["LR"], "1e-05")
         self.assertEqual(env_map["WEIGHT_DECAY"], "0.0001")
         self.assertEqual(env_map["VIDEO_NAMES"], "clip_a|clip_b")
+        self.assertEqual(env_map["TEMPORAL_VIPE_CAMERA_ENABLED"], "true")
+        self.assertEqual(env_map["TEMPORAL_VIPE_CAMERA_SMOOTHNESS_WEIGHT"], "0.01")
+        self.assertEqual(env_map["TEMPORAL_VIPE_CAMERA_ANCHOR_WEIGHT"], "0.001")
 
     def test_build_temporal_windows_respects_streams_and_gaps(self) -> None:
         samples = [
@@ -202,6 +215,71 @@ class TemporalAblationTests(unittest.TestCase):
         self.assertTrue(torch.all(scores >= 0.0))
         scores.mean().backward()
         self.assertIsNotNone(residual.grad)
+
+    def test_temporal_vipe_camera_head_backpropagates(self) -> None:
+        head = TemporalViPECameraHead(hidden_dim=8, layers=1, dropout=0.0)
+        window_batch = {
+            "camera_target_t_full": torch.tensor(
+                [
+                    [[0.10, 0.20, 0.30], [0.15, 0.24, 0.34], [0.20, 0.28, 0.38], [0.25, 0.32, 0.42]],
+                    [[0.05, 0.10, 0.20], [0.08, 0.13, 0.24], [0.11, 0.16, 0.28], [0.14, 0.19, 0.32]],
+                ],
+                dtype=torch.float32,
+            ),
+            "camera_target_valid": torch.ones(2, 4, dtype=torch.float32),
+            "camera_target_used_fallback": torch.zeros(2, 4, dtype=torch.float32),
+        }
+        student_output_seq = {
+            "pred_cam_t_full": torch.tensor(
+                [
+                    [[0.12, 0.19, 0.35], [0.17, 0.23, 0.39], [0.23, 0.30, 0.44], [0.29, 0.35, 0.48]],
+                    [[0.04, 0.11, 0.19], [0.10, 0.15, 0.25], [0.13, 0.18, 0.30], [0.16, 0.22, 0.35]],
+                ],
+                dtype=torch.float32,
+            ),
+            "scaled_focal_length": torch.full((2, 4, 2), 100.0, dtype=torch.float32),
+        }
+        loss_cfg = {
+            "vipe_camera": {"enabled": False, "weight": 0.0, "scorer_weight": 0.0},
+            "temporal_camera": {
+                "enabled": False,
+                "formulation": "static",
+                "weight": 0.0,
+                "scorer_weight": 0.0,
+            },
+            "temporal_bbox_projected": {
+                "enabled": False,
+                "formulation": "static",
+                "weight": 0.0,
+                "scorer_weight": 0.0,
+            },
+            "temporal_vipe_camera": {
+                "enabled": True,
+                "formulation": "learnable",
+                "weight": 1.0,
+                "scorer_weight": 0.0,
+                "smoothness_weight": 0.1,
+                "anchor_weight": 0.01,
+            },
+        }
+        temporal_cfg = {"reduction": "smooth_l1"}
+
+        loss, metrics = compute_temporal_loss_bundle(
+            window_batch,
+            student_output_seq,
+            loss_cfg,
+            temporal_cfg,
+            scorer=None,
+            vipe_camera_head=head,
+        )
+
+        self.assertGreater(float(loss.detach().item()), 0.0)
+        self.assertIn("loss_temporal_vipe_camera_align", metrics)
+        self.assertIn("loss_temporal_vipe_camera_smooth", metrics)
+        loss.backward()
+        self.assertTrue(
+            any(param.grad is not None for param in head.parameters() if param.requires_grad)
+        )
 
     def test_temporal_only_scope_freezes_wilor_modules(self) -> None:
         class _TinyModel(torch.nn.Module):
