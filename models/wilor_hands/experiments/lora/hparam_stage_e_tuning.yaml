@@ -1,0 +1,67 @@
+defaults:
+  # Stage E: actual tuning pass on the finalized baseline.
+  # Keep all non-video settings fixed; only the video set changes here.
+  # Latest synced result: tune_stage_5_videos reached best val loss 1.6595
+  # at step 400 on the older pre-Apr-24 baseline. The all-videos comparison is
+  # still pending locally, and future reruns should start from the updated
+  # Stage C winner plus the selected ViPE baseline below.
+  train_mode: distill
+  train_scope: refine_net
+  validation_split: 0.2
+  sample_limit: 0
+  detection_conf: 0.3
+  rescale_factor: 2.0
+  batch_size: 8
+  num_workers: 2
+  max_steps: 500
+  log_every: 25
+  save_every: 100
+  seed: 42
+  optimizer:
+    lr: 3.0e-5
+    weight_decay: 1.0e-4
+  temporal:
+    window_size: 3
+    window_stride: 2
+    max_frame_gap: 1
+    reduction: smooth_l1
+    scorer_hidden_dim: 64
+    scorer_layers: 2
+    scorer_dropout: 0.0
+  lora:
+    enabled: true
+    rank: 8
+    alpha: 16.0
+    dropout: 0.0
+    block_start: 24
+    block_end: 32
+    target_modules:
+      - qkv
+  losses:
+    vipe_camera:
+      enabled: true
+      weight: 0.05
+    temporal_camera:
+      enabled: true
+      formulation: learnable
+      weight: 0.01
+      scorer_weight: 0.001
+    temporal_bbox_projected:
+      enabled: true
+      formulation: learnable
+      weight: 0.01
+      scorer_weight: 0.001
+
+experiments:
+  - name: lora_tune_all_videos
+    run_name_suffix: lora_tune_all_videos
+    all_videos: true
+
+  - name: lora_tune_stage_5_videos
+    run_name_suffix: lora_tune_stage_5_videos
+    videos:
+      - 0KuJ2t4S_TY
+      - 0gzQAgjx39o
+      - 0rq4nkWlO2E
+      - 0ElPjqY4Cq8
+      - SlksdQT5JRE

@@ -1,0 +1,65 @@
+defaults:
+  # Stage F: untie the learnable temporal families and compare which scorer
+  # family contributes most when WiLoR itself stays frozen.
+  train_mode: distill
+  train_scope: temporal_only
+  videos:
+    - 0KuJ2t4S_TY
+    - 0gzQAgjx39o
+    - 0rq4nkWlO2E
+    - 0ElPjqY4Cq8
+    - SlksdQT5JRE
+  validation_split: 0.2
+  sample_limit: 0
+  detection_conf: 0.3
+  rescale_factor: 2.0
+  batch_size: 8
+  num_workers: 2
+  max_steps: 500
+  log_every: 25
+  save_every: 100
+  seed: 42
+  optimizer:
+    lr: 3.0e-5
+    weight_decay: 1.0e-4
+  temporal:
+    window_size: 3
+    window_stride: 2
+    max_frame_gap: 1
+    reduction: smooth_l1
+    scorer_hidden_dim: 64
+    scorer_layers: 2
+    scorer_dropout: 0.0
+  losses:
+    vipe_camera:
+      enabled: false
+      weight: 0.0
+    temporal_camera:
+      enabled: true
+      formulation: learnable
+      weight: 0.0
+      scorer_weight: 0.001
+    temporal_bbox_projected:
+      enabled: true
+      formulation: learnable
+      weight: 0.0
+      scorer_weight: 0.001
+
+experiments:
+  - name: hp_f_all_learnable
+    run_name_suffix: hp_f_all_learnable
+
+  - name: hp_f_camera_only
+    run_name_suffix: hp_f_camera_only
+    losses:
+      temporal_bbox_projected:
+        enabled: false
+
+  - name: hp_f_bbox_projected_only
+    run_name_suffix: hp_f_bbox_projected_only
+    losses:
+      temporal_camera:
+        enabled: false
+
+  - name: hp_f_camera_projected
+    run_name_suffix: hp_f_camera_projected

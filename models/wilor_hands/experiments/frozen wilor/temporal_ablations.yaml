@@ -1,0 +1,54 @@
+defaults:
+  # Frozen-WiLoR smoke-test baseline.
+  # This config keeps WiLoR fully frozen and trains only the learnable
+  # temporal scorer.
+  train_mode: distill
+  train_scope: temporal_only
+  videos:
+    - 120-2_clip_1
+  validation_split: 0.15
+  sample_limit: 0
+  detection_conf: 0.3
+  rescale_factor: 2.0
+  batch_size: 8
+  num_workers: 2
+  max_steps: 10000
+  log_every: 1
+  save_every: 250
+  seed: 42
+  optimizer:
+    lr: 3.0e-5
+    weight_decay: 1.0e-4
+  temporal:
+    window_size: 3
+    window_stride: 2
+    max_frame_gap: 1
+    reduction: smooth_l1
+    scorer_hidden_dim: 64
+    scorer_layers: 2
+    scorer_dropout: 0.0
+  losses:
+    vipe_camera:
+      enabled: false
+      weight: 0.0
+    temporal_camera:
+      enabled: true
+      formulation: learnable
+      weight: 0.0
+      scorer_weight: 0.001
+    temporal_bbox_projected:
+      enabled: true
+      formulation: learnable
+      weight: 0.0
+      scorer_weight: 0.001
+
+experiments:
+  - name: test_temporal_scorer_only
+    run_name_suffix: test_temporal_scorer_only
+    train_mode: test
+    max_steps: 100
+    log_every: 10
+    save_every: 50
+
+  - name: frozen_temporal_scorer_baseline
+    run_name_suffix: frozen_temporal_scorer_baseline

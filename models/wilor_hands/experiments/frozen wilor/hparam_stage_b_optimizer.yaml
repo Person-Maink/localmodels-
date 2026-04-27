@@ -1,0 +1,61 @@
+defaults:
+  # Stage B: tune optimizer settings after Stage A picks a good window setup.
+  train_mode: distill
+  train_scope: temporal_only
+  videos:
+    - 0KuJ2t4S_TY
+    - 0gzQAgjx39o
+    - 0rq4nkWlO2E
+    - 0ElPjqY4Cq8
+    - SlksdQT5JRE
+  validation_split: 0.2
+  sample_limit: 256
+  detection_conf: 0.3
+  rescale_factor: 2.0
+  batch_size: 8
+  num_workers: 2
+  max_steps: 200
+  log_every: 10
+  save_every: 100
+  seed: 42
+  optimizer:
+    lr: 1.0e-5
+    weight_decay: 1.0e-4
+  temporal:
+    window_size: 3
+    window_stride: 2
+    max_frame_gap: 1
+    reduction: smooth_l1
+    scorer_hidden_dim: 64
+    scorer_layers: 2
+    scorer_dropout: 0.0
+  losses:
+    vipe_camera:
+      enabled: false
+      weight: 0.0
+    temporal_camera:
+      enabled: true
+      formulation: learnable
+      weight: 0.0
+      scorer_weight: 0.001
+    temporal_bbox_projected:
+      enabled: true
+      formulation: learnable
+      weight: 0.0
+      scorer_weight: 0.001
+
+experiments:
+  - name: hp_b_lr_3e6
+    run_name_suffix: hp_b_lr_3e6
+    optimizer:
+      lr: 3.0e-6
+
+  - name: hp_b_lr_1e5
+    run_name_suffix: hp_b_lr_1e5
+    optimizer:
+      lr: 1.0e-5
+
+  - name: hp_b_lr_3e5
+    run_name_suffix: hp_b_lr_3e5
+    optimizer:
+      lr: 3.0e-5

@@ -1,0 +1,80 @@
+defaults:
+  # Stage C: tune the learnable temporal scorer weight after Stage B locks in
+  # the optimizer setting. Analytical temporal base terms stay at zero because
+  # WiLoR is frozen and only the scorer receives gradients.
+  train_mode: distill
+  train_scope: temporal_only
+  videos:
+    - 0KuJ2t4S_TY
+    - 0gzQAgjx39o
+    - 0rq4nkWlO2E
+    - 0ElPjqY4Cq8
+    - SlksdQT5JRE
+  validation_split: 0.2
+  sample_limit: 256
+  detection_conf: 0.3
+  rescale_factor: 2.0
+  batch_size: 8
+  num_workers: 2
+  max_steps: 200
+  log_every: 10
+  save_every: 100
+  seed: 42
+  optimizer:
+    lr: 3.0e-5
+    weight_decay: 1.0e-4
+  temporal:
+    window_size: 3
+    window_stride: 2
+    max_frame_gap: 1
+    reduction: smooth_l1
+    scorer_hidden_dim: 64
+    scorer_layers: 2
+    scorer_dropout: 0.0
+  losses:
+    vipe_camera:
+      enabled: false
+      weight: 0.0
+    temporal_camera:
+      enabled: true
+      formulation: learnable
+      weight: 0.0
+      scorer_weight: 0.001
+    temporal_bbox_projected:
+      enabled: true
+      formulation: learnable
+      weight: 0.0
+      scorer_weight: 0.001
+
+experiments:
+  - name: hp_c_sw_1e4
+    run_name_suffix: hp_c_sw_1e4
+    losses:
+      temporal_camera:
+        scorer_weight: 1.0e-4
+      temporal_bbox_projected:
+        scorer_weight: 1.0e-4
+
+  - name: hp_c_sw_1e3
+    run_name_suffix: hp_c_sw_1e3
+    losses:
+      temporal_camera:
+        scorer_weight: 1.0e-3
+      temporal_bbox_projected:
+        scorer_weight: 1.0e-3
+
+  - name: hp_c_sw_3e3
+    run_name_suffix: hp_c_sw_3e3
+    losses:
+      temporal_camera:
+        scorer_weight: 3.0e-3
+      temporal_bbox_projected:
+        scorer_weight: 3.0e-3
+
+  - name: hp_c_sw_1e2
+    run_name_suffix: hp_c_sw_1e2
+    losses:
+      temporal_camera:
+        scorer_weight: 1.0e-2
+      temporal_bbox_projected:
+        scorer_weight: 1.0e-2
