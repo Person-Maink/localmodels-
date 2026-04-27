@@ -229,6 +229,13 @@ def build_config_summary(stage: str, resolved_experiment_path: Path | None) -> s
         parts.append(f"wd={_format_number(optimizer_cfg['weight_decay'])}")
     if payload.get("train_scope"):
         parts.append(f"scope={payload['train_scope']}")
+    lora_cfg = payload.get("lora") or {}
+    if lora_cfg.get("enabled"):
+        parts.append(
+            "lora="
+            f"r{lora_cfg.get('rank', '?')}"
+            f"@{lora_cfg.get('block_start', '?')}-{lora_cfg.get('block_end', '?')}"
+        )
     return " | ".join(parts)
 
 

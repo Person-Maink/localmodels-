@@ -37,7 +37,9 @@ from temporal_losses import (
     reshape_temporal_output,
     temporal_window_collate,
 )
+from lora_config import normalize_lora_config
 from wilor.models import load_wilor
+from wilor.models.lora import apply_lora_to_wilor, has_lora_modules
 from wilor.utils import recursive_to
 
 
@@ -66,7 +68,12 @@ def make_argparser() -> argparse.ArgumentParser:
     parser.add_argument("--detection_cache", type=str, default=None)
     parser.add_argument("--detection_conf", type=float, default=0.3)
     parser.add_argument("--rescale_factor", type=float, default=2.0)
-    parser.add_argument("--train_scope", type=str, choices=["camera_head", "refine_net", "full"], default="refine_net")
+    parser.add_argument(
+        "--train_scope",
+        type=str,
+        choices=["temporal_only", "camera_head", "refine_net", "full"],
+        default="refine_net",
+    )
     parser.add_argument("--camera_loss_weight", type=float, default=0.01, help="Legacy alias for the ViPE camera supervision weight.")
     parser.add_argument("--lr", type=float, default=1e-5)
     parser.add_argument("--weight_decay", type=float, default=1e-4)
@@ -95,6 +102,13 @@ def make_argparser() -> argparse.ArgumentParser:
     parser.add_argument("--temporal_bbox_projected_formulation", type=str, default=None, choices=["static", "learnable"])
     parser.add_argument("--temporal_bbox_projected_weight", type=float, default=None)
     parser.add_argument("--temporal_bbox_projected_scorer_weight", type=float, default=None)
+    parser.add_argument("--lora_enabled", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--lora_rank", type=int, default=None)
+    parser.add_argument("--lora_alpha", type=float, default=None)
+    parser.add_argument("--lora_dropout", type=float, default=None)
+    parser.add_argument("--lora_block_start", type=int, default=None)
+    parser.add_argument("--lora_block_end", type=int, default=None)
+    parser.add_argument("--lora_target_modules", type=str, default=None)
     return parser
 
 
@@ -234,6 +248,20 @@ def _apply_experiment_defaults(
         loss_cfg["temporal_bbox_projected"]["scorer_weight"],
     )
 
+    lora_cfg = resolved_experiment["lora"]
+    _set_arg_from_config(args, parser, "lora_enabled", lora_cfg["enabled"])
+    _set_arg_from_config(args, parser, "lora_rank", lora_cfg["rank"])
+    _set_arg_from_config(args, parser, "lora_alpha", lora_cfg["alpha"])
+    _set_arg_from_config(args, parser, "lora_dropout", lora_cfg["dropout"])
+    _set_arg_from_config(args, parser, "lora_block_start", lora_cfg["block_start"])
+    _set_arg_from_config(args, parser, "lora_block_end", lora_cfg["block_end"])
+    _set_arg_from_config(
+        args,
+        parser,
+        "lora_target_modules",
+        ",".join(lora_cfg["target_modules"]),
+    )
+
 
 def _resolve_loss_settings(
     args: argparse.Namespace,
@@ -309,10 +337,33 @@ def _resolve_temporal_settings(
     return temporal_cfg
 
 
+def _resolve_lora_settings(
+    args: argparse.Namespace,
+    loaded_experiment: dict[str, Any] | None,
+) -> dict[str, Any]:
+    base_lora_cfg = copy.deepcopy(
+        loaded_experiment["lora"] if loaded_experiment else DEFAULT_EXPERIMENT_CONFIG["lora"]
+    )
+    overrides = {
+        "enabled": args.lora_enabled,
+        "rank": args.lora_rank,
+        "alpha": args.lora_alpha,
+        "dropout": args.lora_dropout,
+        "block_start": args.lora_block_start,
+        "block_end": args.lora_block_end,
+        "target_modules": args.lora_target_modules,
+    }
+    for key, value in overrides.items():
+        if value is not None:
+            base_lora_cfg[key] = value
+    return normalize_lora_config(base_lora_cfg)
+
+
 def _build_resolved_experiment_snapshot(
     args: argparse.Namespace,
     loaded_experiment: dict[str, Any] | None,
     temporal_cfg: dict[str, Any],
+    lora_cfg: dict[str, Any],
     loss_cfg: dict[str, dict[str, Any]],
 ) -> dict[str, Any]:
     snapshot = copy.deepcopy(loaded_experiment or DEFAULT_EXPERIMENT_CONFIG)
@@ -342,6 +393,7 @@ def _build_resolved_experiment_snapshot(
         "weight_decay": float(args.weight_decay),
     }
     snapshot["temporal"] = copy.deepcopy(temporal_cfg)
+    snapshot["lora"] = copy.deepcopy(lora_cfg)
     snapshot["losses"] = copy.deepcopy(loss_cfg)
     return snapshot
 
@@ -476,11 +528,13 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
     _log_progress(f"Using device {device}; output directory is {output_dir}")
 
     temporal_cfg = _resolve_temporal_settings(args, loaded_experiment)
+    lora_cfg = _resolve_lora_settings(args, loaded_experiment)
     loss_cfg = _resolve_loss_settings(args, loaded_experiment)
     resolved_experiment = _build_resolved_experiment_snapshot(
         args,
         loaded_experiment,
         temporal_cfg,
+        lora_cfg,
         loss_cfg,
     )
     _save_resolved_experiment(output_dir, resolved_experiment)
@@ -536,6 +590,18 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
     )
     _log_progress("Loading student checkpoint and cloning teacher model.")
     student, _ = load_wilor(args.checkpoint, args.cfg_path)
+    lora_wrapped_modules: list[str] = []
+    if lora_cfg["enabled"]:
+        lora_wrapped_modules = apply_lora_to_wilor(student, lora_cfg)
+        _log_progress(
+            "LoRA is enabled with targets="
+            f"{','.join(lora_cfg['target_modules'])}, "
+            f"blocks=[{lora_cfg['block_start']}, {lora_cfg['block_end']})."
+        )
+        if lora_wrapped_modules:
+            _log_progress(
+                f"Wrapped {len(lora_wrapped_modules)} attention linear(s) with LoRA adapters."
+            )
     teacher = copy.deepcopy(student)
 
     set_optional_loss_weight(student.cfg, "ADVERSARIAL", 0.0)
@@ -645,9 +711,11 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
             )
 
     _log_progress(f"Configuring trainable scope: {args.train_scope}")
-    trainable_params = configure_trainable_scope(student, args.train_scope)
-    if not trainable_params:
-        raise RuntimeError(f"No trainable parameters were selected for scope '{args.train_scope}'.")
+    trainable_params = configure_trainable_scope(
+        student,
+        args.train_scope,
+        include_lora=lora_cfg["enabled"],
+    )
 
     temporal_scorer = None
     if any(
@@ -663,7 +731,17 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
         ).to(device)
         _log_progress("Initialized learnable temporal scorer.")
 
-    optimizer_params: list[dict[str, Any]] = [{"params": trainable_params}]
+    if args.train_scope == "temporal_only" and temporal_scorer is None:
+        raise RuntimeError(
+            "train_scope='temporal_only' requires at least one learnable temporal loss "
+            "with scorer_weight > 0 so the temporal scorer has parameters to optimize."
+        )
+    if not trainable_params and temporal_scorer is None:
+        raise RuntimeError(f"No trainable parameters were selected for scope '{args.train_scope}'.")
+
+    optimizer_params: list[dict[str, Any]] = []
+    if trainable_params:
+        optimizer_params.append({"params": trainable_params})
     if temporal_scorer is not None:
         optimizer_params.append({"params": list(temporal_scorer.parameters())})
 
@@ -705,6 +783,17 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
             "Validation split requested, but there were not enough consecutive frames to reserve validation windows."
         , flush=True)
     print(f"Train scope: {args.train_scope}", flush=True)
+    print(
+        "LoRA: "
+        + (
+            f"enabled rank={lora_cfg['rank']} alpha={lora_cfg['alpha']} "
+            f"dropout={lora_cfg['dropout']} blocks=[{lora_cfg['block_start']}, {lora_cfg['block_end']}) "
+            f"targets={','.join(lora_cfg['target_modules'])}"
+            if lora_cfg["enabled"]
+            else "disabled"
+        ),
+        flush=True,
+    )
     print(f"Trainable params: {total_trainable_params:,}", flush=True)
     print(
         f"Temporal families: {', '.join(active_temporal_families) if active_temporal_families else 'none'}",
@@ -715,7 +804,11 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
     for step in range(1, args.max_steps + 1):
         if step == 1:
             _log_progress("Fetching first training batch.")
-        apply_train_mode_for_scope(student, args.train_scope)
+        apply_train_mode_for_scope(
+            student,
+            args.train_scope,
+            lora_enabled=lora_cfg["enabled"] and has_lora_modules(student),
+        )
         if temporal_scorer is not None:
             temporal_scorer.train()
 
@@ -755,6 +848,7 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
                 extra={
                     "finetune_args": vars(args),
                     "experiment_config": resolved_experiment,
+                    "lora_config": lora_cfg,
                     "best_metric": best_metric,
                     "best_metric_name": best_metric_name,
                 },
@@ -819,6 +913,7 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
                         extra={
                             "finetune_args": vars(args),
                             "experiment_config": resolved_experiment,
+                            "lora_config": lora_cfg,
                             "best_metric": best_metric,
                             "best_metric_name": best_metric_name,
                         },
@@ -835,6 +930,7 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser) -> None:
                 extra={
                     "finetune_args": vars(args),
                     "experiment_config": resolved_experiment,
+                    "lora_config": lora_cfg,
                     "best_metric": best_metric,
                     "best_metric_name": best_metric_name,
                 },

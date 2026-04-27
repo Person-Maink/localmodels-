@@ -365,6 +365,13 @@ fi
 TRAIN_MODE="${TRAIN_MODE:-distill}"        # distill | test
 TRAIN_SCOPE="${TRAIN_SCOPE:-refine_net}"   # camera_head | refine_net | full
 CAMERA_LOSS_WEIGHT="${CAMERA_LOSS_WEIGHT:-0.01}"
+LORA_ENABLED="${LORA_ENABLED:-}"
+LORA_RANK="${LORA_RANK:-}"
+LORA_ALPHA="${LORA_ALPHA:-}"
+LORA_DROPOUT="${LORA_DROPOUT:-}"
+LORA_BLOCK_START="${LORA_BLOCK_START:-}"
+LORA_BLOCK_END="${LORA_BLOCK_END:-}"
+LORA_TARGET_MODULES="${LORA_TARGET_MODULES:-}"
 VIPE_CAMERA_ENABLED="${VIPE_CAMERA_ENABLED:-}"
 VIPE_CAMERA_WEIGHT="${VIPE_CAMERA_WEIGHT:-}"
 TEMPORAL_CAMERA_ENABLED="${TEMPORAL_CAMERA_ENABLED:-}"
@@ -540,6 +547,13 @@ PYTHON_CMD=(
 
 append_value_flag_if_set "--loss_config" "${LOSS_CONFIG}"
 append_value_flag_if_set "--experiment_name" "${EXPERIMENT_NAME}"
+append_optional_bool_override "lora_enabled" "${LORA_ENABLED}"
+append_value_flag_if_set "--lora_rank" "${LORA_RANK}"
+append_value_flag_if_set "--lora_alpha" "${LORA_ALPHA}"
+append_value_flag_if_set "--lora_dropout" "${LORA_DROPOUT}"
+append_value_flag_if_set "--lora_block_start" "${LORA_BLOCK_START}"
+append_value_flag_if_set "--lora_block_end" "${LORA_BLOCK_END}"
+append_value_flag_if_set "--lora_target_modules" "${LORA_TARGET_MODULES}"
 
 if [[ "$SAMPLE_LIMIT" != "0" ]]; then
   PYTHON_CMD+=(--sample_limit "${SAMPLE_LIMIT}")
@@ -588,6 +602,9 @@ echo "Train mode:      ${TRAIN_MODE}"
 echo "Loss config:     ${LOSS_CONFIG:-<none>}"
 echo "Experiment:      ${EXPERIMENT_NAME:-<none>}"
 echo "Train scope:     ${TRAIN_SCOPE}"
+if [[ -n "${LORA_ENABLED}" || -n "${LORA_RANK}" || -n "${LORA_ALPHA}" || -n "${LORA_BLOCK_START}" || -n "${LORA_TARGET_MODULES}" ]]; then
+  echo "LoRA:            enabled=${LORA_ENABLED:-<default>} rank=${LORA_RANK:-<default>} alpha=${LORA_ALPHA:-<default>} blocks=${LORA_BLOCK_START:-<default>}-${LORA_BLOCK_END:-<default>} targets=${LORA_TARGET_MODULES:-<default>}"
+fi
 echo "Max steps:       ${MAX_STEPS}"
 echo "Log every:       ${LOG_EVERY}"
 echo "Save every:      ${SAVE_EVERY}"

@@ -12,6 +12,7 @@ if str(TEST_ROOT) not in sys.path:
     sys.path.insert(0, str(TEST_ROOT))
 
 from experiment_config import experiment_to_env_map, resolve_experiment_config
+from finetune_wilor_common import apply_train_mode_for_scope, configure_trainable_scope
 from temporal_losses import (
     TemporalWindowScorer,
     bbox_sequence_from_keypoints,
@@ -75,6 +76,15 @@ class TemporalAblationTests(unittest.TestCase):
             "optimizer": {"lr": 1.0e-5, "weight_decay": 1.0e-4},
             "all_videos": False,
             "videos": ["clip_a", "clip_b"],
+            "lora": {
+                "enabled": False,
+                "rank": 8,
+                "alpha": 16.0,
+                "dropout": 0.0,
+                "block_start": 24,
+                "block_end": 32,
+                "target_modules": ["qkv"],
+            },
             "temporal": {
                 "window_size": 3,
                 "window_stride": 2,
@@ -192,6 +202,29 @@ class TemporalAblationTests(unittest.TestCase):
         self.assertTrue(torch.all(scores >= 0.0))
         scores.mean().backward()
         self.assertIsNotNone(residual.grad)
+
+    def test_temporal_only_scope_freezes_wilor_modules(self) -> None:
+        class _TinyModel(torch.nn.Module):
+            def __init__(self) -> None:
+                super().__init__()
+                self.backbone = torch.nn.Module()
+                self.backbone.cam_emb = torch.nn.Linear(3, 4)
+                self.backbone.deccam = torch.nn.Linear(4, 3)
+                self.refine_net = torch.nn.Module()
+                self.refine_net.dec_cam = torch.nn.Linear(4, 3)
+                self.refine_net.other = torch.nn.Linear(4, 4)
+                self.discriminator = torch.nn.Linear(4, 1)
+
+        model = _TinyModel()
+        trainable = configure_trainable_scope(model, "temporal_only")
+
+        self.assertEqual(trainable, [])
+        self.assertFalse(any(param.requires_grad for param in model.parameters()))
+
+        apply_train_mode_for_scope(model, "temporal_only")
+        self.assertFalse(model.training)
+        self.assertFalse(model.backbone.training)
+        self.assertFalse(model.discriminator.training)
 
 
 if __name__ == "__main__":

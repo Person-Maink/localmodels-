@@ -14,6 +14,7 @@ from ultralytics import YOLO
 
 from wilor.datasets.vitdet_dataset import ViTDetDataset
 from wilor.utils import recursive_to
+from wilor.models.lora import unfreeze_lora_parameters
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -560,11 +561,18 @@ def unfreeze_module(module: torch.nn.Module) -> None:
         param.requires_grad = True
 
 
-def configure_trainable_scope(model: torch.nn.Module, scope: str) -> List[torch.nn.Parameter]:
+def configure_trainable_scope(
+    model: torch.nn.Module,
+    scope: str,
+    *,
+    include_lora: bool = False,
+) -> List[torch.nn.Parameter]:
     for param in model.parameters():
         param.requires_grad = False
 
-    if scope == "camera_head":
+    if scope == "temporal_only":
+        modules = []
+    elif scope == "camera_head":
         modules = [model.backbone.cam_emb, model.backbone.deccam, model.refine_net.dec_cam]
     elif scope == "refine_net":
         modules = [model.refine_net]
@@ -576,15 +584,26 @@ def configure_trainable_scope(model: torch.nn.Module, scope: str) -> List[torch.
     for module in modules:
         unfreeze_module(module)
 
+    if include_lora:
+        unfreeze_lora_parameters(model)
+
     if hasattr(model, "discriminator"):
         freeze_module(model.discriminator)
 
     return [param for param in model.parameters() if param.requires_grad]
 
 
-def apply_train_mode_for_scope(model: torch.nn.Module, scope: str) -> None:
-    model.train()
-    if scope in {"camera_head", "refine_net"}:
+def apply_train_mode_for_scope(
+    model: torch.nn.Module,
+    scope: str,
+    *,
+    lora_enabled: bool = False,
+) -> None:
+    if scope == "temporal_only" and not lora_enabled:
+        model.eval()
+    else:
+        model.train()
+    if scope in {"camera_head", "refine_net", "temporal_only"} and not lora_enabled:
         model.backbone.eval()
     if hasattr(model, "discriminator"):
         model.discriminator.eval()

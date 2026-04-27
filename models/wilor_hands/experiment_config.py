@@ -7,6 +7,8 @@ from typing import Any
 
 import yaml
 
+from lora_config import DEFAULT_LORA_CONFIG, normalize_lora_config
+
 
 DEFAULT_TEMPORAL_CONFIG = {
     "window_size": 8,
@@ -60,6 +62,7 @@ DEFAULT_EXPERIMENT_CONFIG = {
         "weight_decay": 1e-4,
     },
     "temporal": DEFAULT_TEMPORAL_CONFIG,
+    "lora": DEFAULT_LORA_CONFIG,
     "losses": DEFAULT_LOSS_CONFIG,
 }
 
@@ -159,6 +162,8 @@ def _normalize_experiment(resolved: dict[str, Any]) -> dict[str, Any]:
     normalized["temporal"]["scorer_dropout"] = float(
         normalized["temporal"]["scorer_dropout"]
     )
+
+    normalized["lora"] = normalize_lora_config(normalized.get("lora", {}))
 
     normalized["losses"] = _deep_merge(
         DEFAULT_LOSS_CONFIG,
@@ -279,6 +284,15 @@ def experiment_to_env_map(resolved: dict[str, Any]) -> dict[str, str]:
     env_map["TEMPORAL_SCORER_HIDDEN_DIM"] = str(temporal["scorer_hidden_dim"])
     env_map["TEMPORAL_SCORER_LAYERS"] = str(temporal["scorer_layers"])
     env_map["TEMPORAL_SCORER_DROPOUT"] = str(temporal["scorer_dropout"])
+
+    lora = resolved["lora"]
+    env_map["LORA_ENABLED"] = "true" if lora["enabled"] else "false"
+    env_map["LORA_RANK"] = str(lora["rank"])
+    env_map["LORA_ALPHA"] = str(lora["alpha"])
+    env_map["LORA_DROPOUT"] = str(lora["dropout"])
+    env_map["LORA_BLOCK_START"] = str(lora["block_start"])
+    env_map["LORA_BLOCK_END"] = str(lora["block_end"])
+    env_map["LORA_TARGET_MODULES"] = ",".join(lora["target_modules"])
 
     for family_name, family_cfg in resolved["losses"].items():
         prefix = family_name.upper()

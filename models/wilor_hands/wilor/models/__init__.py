@@ -1,8 +1,12 @@
 from pathlib import Path
 
+import torch
+
+from lora_config import infer_lora_config_from_checkpoint_payload, normalize_lora_config
 from wilor.configs import get_config
 
 from .discriminator import Discriminator
+from .lora import apply_lora_to_wilor
 from .mano_wrapper import MANO
 from .wilor import WiLoR
 
@@ -66,8 +70,38 @@ def build_wilor(cfg_path):
     return model, model_cfg
 
 
-def load_wilor(checkpoint_path, cfg_path):
+def _load_checkpoint_payload(checkpoint_path):
+    old_load = torch.load
+
+    def unsafe_load(*args, **kwargs):
+        kwargs["weights_only"] = False
+        return old_load(*args, **kwargs)
+
+    torch.load = unsafe_load
+    try:
+        return torch.load(checkpoint_path, map_location="cpu")
+    finally:
+        torch.load = old_load
+
+
+def load_wilor(checkpoint_path, cfg_path, lora_config=None):
     print("Loading ", checkpoint_path)
     model_cfg = _prepare_wilor_cfg(cfg_path, strip_backbone_pretrained=True)
-    model = WiLoR.load_from_checkpoint(checkpoint_path, strict=False, cfg=model_cfg)
+    checkpoint_data = _load_checkpoint_payload(checkpoint_path)
+    state_dict = checkpoint_data.get("state_dict", checkpoint_data)
+
+    checkpoint_lora_config = None
+    if isinstance(checkpoint_data, dict):
+        checkpoint_lora_config = infer_lora_config_from_checkpoint_payload(checkpoint_data)
+
+    requested_lora_config = normalize_lora_config(lora_config)
+
+    model = WiLoR(cfg=model_cfg)
+    if checkpoint_lora_config and checkpoint_lora_config["enabled"]:
+        apply_lora_to_wilor(model, checkpoint_lora_config)
+        model.load_state_dict(state_dict, strict=False)
+    else:
+        model.load_state_dict(state_dict, strict=False)
+        if requested_lora_config["enabled"]:
+            apply_lora_to_wilor(model, requested_lora_config)
     return model, model_cfg
