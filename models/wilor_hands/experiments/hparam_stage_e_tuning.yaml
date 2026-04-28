@@ -17,7 +17,7 @@ defaults:
   seed: 42
   optimizer:
     lr: 3.0e-5
-    weight_decay: 1.0e-4
+    weight_decay: 1.0e-3
   temporal:
     window_size: 3
     window_stride: 2
@@ -29,7 +29,7 @@ defaults:
   losses:
     vipe_camera:
       enabled: true
-      weight: 0.05
+      weight: 0.005
     temporal_camera:
       enabled: true
       formulation: learnable

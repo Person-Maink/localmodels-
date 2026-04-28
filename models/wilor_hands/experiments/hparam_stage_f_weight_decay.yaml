@@ -34,7 +34,7 @@ defaults:
   losses:
     vipe_camera:
       enabled: true
-      weight: 0.05
+      weight: 0.005
     temporal_camera:
       enabled: true
       formulation: learnable
