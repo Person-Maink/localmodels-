@@ -148,3 +148,32 @@ Temporal families: temporal_camera, temporal_bbox_projected
 [progress] Fetching first training batch.
 [step 00001] loss=1.5954 cam=278.5929 temp_cam=0.0000 bbox_p=0.0001 vipe_t=0.0000
 [step 00010] loss=1.7010 cam=241.6836 temp_cam=0.0000 bbox_p=0.0001 vipe_t=0.0000
+[step 00020] loss=1.8311 cam=257.0073 temp_cam=0.0000 bbox_p=0.0002 vipe_t=0.0000
+[step 00030] loss=1.6416 cam=237.6340 temp_cam=0.0000 bbox_p=0.0001 vipe_t=0.0000
+[step 00040] loss=1.7654 cam=251.4592 temp_cam=0.0000 bbox_p=0.0002 vipe_t=0.0000
+[step 00050] loss=1.3944 cam=231.6804 temp_cam=0.0000 bbox_p=0.0000 vipe_t=0.0000
+[step 00060] loss=1.5312 cam=244.1112 temp_cam=0.0000 bbox_p=0.0002 vipe_t=0.0000
+[step 00070] loss=1.5582 cam=229.0793 temp_cam=0.0000 bbox_p=0.0001 vipe_t=0.0000
+[step 00080] loss=1.7106 cam=242.2241 temp_cam=0.0000 bbox_p=0.0002 vipe_t=0.0000
+[step 00090] loss=1.4463 cam=227.4711 temp_cam=0.0000 bbox_p=0.0001 vipe_t=0.0000
+[step 00100] loss=1.6254 cam=238.1407 temp_cam=0.0000 bbox_p=0.0002 vipe_t=0.0000
+[progress] Saved latest checkpoint at step 100.
+[step 00110] loss=1.4536 cam=222.8599 temp_cam=0.0000 bbox_p=0.0000 vipe_t=0.0000
+[step 00120] loss=1.4367 cam=236.8327 temp_cam=0.0000 bbox_p=0.0002 vipe_t=0.0000
+[step 00130] loss=1.3240 cam=220.3791 temp_cam=0.0000 bbox_p=0.0000 vipe_t=0.0000
+[step 00140] loss=1.4028 cam=232.4717 temp_cam=0.0000 bbox_p=0.0002 vipe_t=0.0000
+[step 00150] loss=1.2920 cam=215.3892 temp_cam=0.0000 bbox_p=0.0000 vipe_t=0.0000
+[step 00160] loss=1.4199 cam=228.5976 temp_cam=0.0000 bbox_p=0.0001 vipe_t=0.0000
+[step 00170] loss=1.2931 cam=211.8749 temp_cam=0.0000 bbox_p=0.0000 vipe_t=0.0000
+[step 00180] loss=1.4137 cam=224.4084 temp_cam=0.0000 bbox_p=0.0002 vipe_t=0.0000
+[step 00190] loss=1.4401 cam=209.6912 temp_cam=0.0000 bbox_p=0.0001 vipe_t=0.0000
+[step 00200] loss=1.5703 cam=220.6234 temp_cam=0.0000 bbox_p=0.0002 vipe_t=0.0000
+[progress] Saved latest checkpoint at step 200.
+Finished fine-tuning. Best train_loss_total: 1.2082
+Saved checkpoints under: /scratch/mthakur/manifold/outputs/wilor_finetune/lora_hp_a_ws8_s2_b2
+[progress] Containerized training process exited cleanly.
+===============================================
+Job finished at: Tue Apr 28 18:59:23 CEST 2026
+Execution took 0.19 hours
+Writing output to SLURM_logs/wilor-train_134.out
+===============================================
