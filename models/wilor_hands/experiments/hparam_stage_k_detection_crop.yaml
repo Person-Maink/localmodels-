@@ -1,5 +1,6 @@
 defaults:
-  # Stage K: tune the detection threshold and crop context around the hand.
+  # Stage K: tune the detection threshold and crop context around the hand on
+  # top of the current Stage H winner.
   train_mode: distill
   train_scope: refine_net
   videos:
@@ -35,16 +36,16 @@ defaults:
       weight: 0.005
     temporal_camera:
       enabled: true
-      formulation: learnable
+      formulation: static
       weight: 0.01
-      scorer_weight: 0.001
+      scorer_weight: 0.0
     temporal_bbox_projected:
       enabled: true
-      formulation: learnable
+      formulation: static
       weight: 0.01
-      scorer_weight: 0.001
+      scorer_weight: 0.0
     temporal_vipe_camera:
-      enabled: true
+      enabled: false
       formulation: learnable
       weight: 0.01
       smoothness_weight: 0.005

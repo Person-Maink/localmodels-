@@ -37,12 +37,12 @@ defaults:
       enabled: true
       formulation: learnable
       weight: 0.0
-      scorer_weight: 0.001
+      scorer_weight: 0.0001
     temporal_bbox_projected:
       enabled: true
       formulation: learnable
       weight: 0.0
-      scorer_weight: 0.001
+      scorer_weight: 0.0001
 
 experiments:
   - name: hp_i_det02_res2p0

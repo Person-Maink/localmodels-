@@ -1,5 +1,6 @@
 defaults:
-  # Stage D: actual tuning pass on the frozen scorer-only baseline.
+  # Stage D: actual tuning pass on the frozen scorer-only baseline after the
+  # new scorer-weight sweep locks in the current winner.
   # Keep all non-video settings fixed; only the video set changes here.
   train_mode: distill
   train_scope: temporal_only
@@ -32,12 +33,12 @@ defaults:
       enabled: true
       formulation: learnable
       weight: 0.0
-      scorer_weight: 0.001
+      scorer_weight: 0.0001
     temporal_bbox_projected:
       enabled: true
       formulation: learnable
       weight: 0.0
-      scorer_weight: 0.001
+      scorer_weight: 0.0001
 
 experiments:
   - name: hp_d_tune_all_videos

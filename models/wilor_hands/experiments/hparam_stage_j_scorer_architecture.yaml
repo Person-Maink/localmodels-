@@ -1,5 +1,6 @@
 defaults:
-  # Stage J: tune the learnable temporal scorer architecture itself.
+  # Stage J: tune the learnable temporal scorer architecture itself after the
+  # Stage H family sweep updates the forward baseline.
   train_mode: distill
   train_scope: refine_net
   videos:
@@ -35,16 +36,16 @@ defaults:
       weight: 0.005
     temporal_camera:
       enabled: true
-      formulation: learnable
+      formulation: static
       weight: 0.01
-      scorer_weight: 0.001
+      scorer_weight: 0.0
     temporal_bbox_projected:
       enabled: true
-      formulation: learnable
+      formulation: static
       weight: 0.01
-      scorer_weight: 0.001
+      scorer_weight: 0.0
     temporal_vipe_camera:
-      enabled: true
+      enabled: false
       formulation: learnable
       weight: 0.01
       smoothness_weight: 0.005
