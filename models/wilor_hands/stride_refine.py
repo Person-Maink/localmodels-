@@ -203,7 +203,9 @@ def _stack_records(records, image_folder=None, video_name=None):
     }
 
     if image_folder is not None and video_name is not None:
-        image_dir = Path(image_folder) / f"{video_name}_frames"
+        image_dir = Path(image_folder)
+        if image_dir.name != f"{video_name}_frames":
+            image_dir = image_dir / f"{video_name}_frames"
         seq["image_paths"] = [
             image_dir / f"frame_{int(frame_id):06d}.jpg"
             for frame_id in full_frame_ids

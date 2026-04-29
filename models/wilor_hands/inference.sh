@@ -40,6 +40,11 @@ COMMON_SH="${PROJECT_ROOT}/models/common/inference_common.sh"
 
 source "${COMMON_SH}"
 
+MODE="${MODE:-wilor}"
+if [[ "${MODE}" == "stride" ]]; then
+    exec bash "${MODEL_ROOT}/stride_inference.sh"
+fi
+
 echo "Loaded modules:"
 module list 2>&1
 

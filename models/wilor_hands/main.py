@@ -7,6 +7,7 @@ from pathlib import Path
 from inference import * 
 from loader import * 
 from stride_refine import StrideConfig, run_stride_refinement
+from stride_hmp import HMPConfig, run_stride_hmp
 from visualize import *
 
 from utils_new import *
@@ -151,12 +152,13 @@ def _run_wilor_pass(args):
 
 
 def _run_stride_pass(args):
+    source_root = args.wilor_cache_root or args.output_folder
     processed_videos = [args.video] if args.video else []
     if not args.stride_from_cache:
         processed_videos = _run_wilor_pass(args)
     elif not processed_videos:
         processed_videos = [
-            path.name for path in Path(args.output_folder).iterdir()
+            path.name for path in Path(source_root).iterdir()
             if path.is_dir() and path.name not in {"videos", "single_images"}
         ]
 
@@ -166,35 +168,59 @@ def _run_stride_pass(args):
     summaries = []
     for video_name in processed_videos:
         print(f"\n[INFO] Running STRIDE refinement for {video_name}")
-        summaries.append(
-            run_stride_refinement(
-                source_root=args.output_folder,
-                output_root=args.stride_output_folder,
-                video_name=video_name,
-                image_folder=args.image_folder,
-                visualize=args.visualize,
-                target_hand=args.target_hand,
-                mano_model_path=args.mano_model_path,
-                use_gpu=args.use_gpu,
-                stride_config=StrideConfig(
-                    iters=args.stride_iters,
-                    lr=args.stride_lr,
-                    obs_weight=args.stride_obs_weight,
-                    reproj_weight=args.stride_reproj_weight,
-                    shape_weight=args.stride_shape_weight,
-                    cam_smooth_weight=args.stride_cam_smooth_weight,
-                    pose_smooth_weight=args.stride_pose_smooth_weight,
-                    joint_smooth_weight=args.stride_joint_smooth_weight,
-                    anchor_weight=args.stride_anchor_weight,
-                    fft_weight=args.stride_fft_weight,
-                    fft_band_low_hz=args.stride_fft_band_low_hz,
-                    fft_band_high_hz=args.stride_fft_band_high_hz,
-                    fps=args.stride_fps,
-                    pose_rank=args.stride_pose_rank,
-                    cam_rank=args.stride_cam_rank,
-                ),
+        if args.overwrite:
+            target_dir = Path(args.stride_output_folder) / video_name
+            if target_dir.exists():
+                import shutil
+                shutil.rmtree(target_dir)
+
+        if args.stride_backend == "hmp":
+            summaries.append(
+                run_stride_hmp(
+                    cache_root=source_root,
+                    output_root=args.stride_output_folder,
+                    video_name=video_name,
+                    image_folder=args.image_folder,
+                    target_hand=args.target_hand,
+                    mano_model_path=args.mano_model_path,
+                    use_gpu=args.use_gpu,
+                    visualize=args.visualize,
+                    hmp_config=HMPConfig(
+                        assets_root=args.hmp_assets_root,
+                        config_name=args.hmp_config_name,
+                    ),
+                )
             )
-        )
+        else:
+            summaries.append(
+                run_stride_refinement(
+                    source_root=source_root,
+                    output_root=args.stride_output_folder,
+                    video_name=video_name,
+                    image_folder=args.image_folder,
+                    visualize=args.visualize,
+                    target_hand=args.target_hand,
+                    mano_model_path=args.mano_model_path,
+                    use_gpu=args.use_gpu,
+                    stride_config=StrideConfig(
+                        iters=args.stride_iters,
+                        lr=args.stride_lr,
+                        obs_weight=args.stride_obs_weight,
+                        reproj_weight=args.stride_reproj_weight,
+                        shape_weight=args.stride_shape_weight,
+                        cam_smooth_weight=args.stride_cam_smooth_weight,
+                        pose_smooth_weight=args.stride_pose_smooth_weight,
+                        joint_smooth_weight=args.stride_joint_smooth_weight,
+                        anchor_weight=args.stride_anchor_weight,
+                        fft_weight=args.stride_fft_weight,
+                        fft_band_low_hz=args.stride_fft_band_low_hz,
+                        fft_band_high_hz=args.stride_fft_band_high_hz,
+                        fps=args.stride_fps,
+                        pose_rank=args.stride_pose_rank,
+                        cam_rank=args.stride_cam_rank,
+                    ),
+                )
+            )
     print(f"\nRefined {len(summaries)} video(s) into {args.stride_output_folder}.")
 
 
@@ -209,14 +235,17 @@ if __name__ == "__main__":
     parser.add_argument("--mode", choices=["wilor", "stride"], default="wilor", help="Inference mode to run.")
     parser.add_argument("--image_folder", type=str, default="../../data/images/", help="Folder with input images.")
     parser.add_argument("--output_folder", type=str, default="../../outputs/wilor/", help="Folder for results.")
+    parser.add_argument("--wilor_cache_root", type=str, default=None, help="WiLoR cache root used as STRIDE input. Defaults to output_folder.")
     parser.add_argument("--stride_output_folder", type=str, default="../../outputs/stride/", help="Folder for STRIDE-refined results.")
+    parser.add_argument("--stride_backend", choices=["hmp", "simple"], default="hmp", help="STRIDE backend to run.")
     parser.add_argument("--rescale_factor", type=float, default=2.0, help="BBox padding scale.")
     parser.add_argument("--video", type=str, default=None, help="Video name to process (expects <video>_frames folder).")
     parser.add_argument("--target_hand", default="auto", help="Target hand for STRIDE refinement: auto, 0, or 1.")
+    parser.add_argument("--overwrite", action=argparse.BooleanOptionalAction, default=False, help="Overwrite existing STRIDE output for the selected video.")
     parser.add_argument(
         "--stride_from_cache",
         action=argparse.BooleanOptionalAction,
-        default=False,
+        default=True,
         help="Skip WiLoR inference and refine an existing WiLoR cache from output_folder.",
     )
     parser.add_argument(
@@ -224,6 +253,18 @@ if __name__ == "__main__":
         type=str,
         default="./mano_data",
         help="Path to MANO assets used for STRIDE reconstruction.",
+    )
+    parser.add_argument(
+        "--hmp_assets_root",
+        type=str,
+        default="./_DATA/hmp_model",
+        help="Path to HMP checkpoints and motion statistics.",
+    )
+    parser.add_argument(
+        "--hmp_config_name",
+        type=str,
+        default="hmp_config.yaml",
+        help="HMP config file inside wilor_hands/hmp_prior.",
     )
     parser.add_argument("--stride_iters", type=int, default=300, help="Number of STRIDE optimization steps.")
     parser.add_argument("--stride_lr", type=float, default=0.05, help="Learning rate for STRIDE optimization.")

@@ -63,9 +63,13 @@ VIDEO_NAME="${VIDEO_NAME:-}"
 VIDEO_FILE="${VIDEO_FILE:-}"
 WILOR_OUTPUT_ROOT="${WILOR_OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/wilor}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/stride}"
+HMP_ASSETS_ROOT="${HMP_ASSETS_ROOT:-${WILOR_ROOT}/_DATA/hmp_model}"
+MANO_MODEL_PATH="${MANO_MODEL_PATH:-${WILOR_ROOT}/mano_data}"
+HMP_CONFIG_NAME="${HMP_CONFIG_NAME:-hmp_config.yaml}"
+STRIDE_BACKEND="${STRIDE_BACKEND:-hmp}"
 OVERWRITE="${OVERWRITE:-false}"
 KEEP_TEMP_FRAMES="${KEEP_TEMP_FRAMES:-false}"
-STRIDE_FROM_CACHE="${STRIDE_FROM_CACHE:-false}"
+STRIDE_FROM_CACHE="${STRIDE_FROM_CACHE:-true}"
 VISUALIZE="${VISUALIZE:-false}"
 TARGET_HAND="${TARGET_HAND:-auto}"
 STRIDE_ITERS="${STRIDE_ITERS:-300}"
@@ -108,6 +112,11 @@ for required_file in "${WILOR_IMAGE}"; do
     fi
 done
 
+if [[ "${STRIDE_BACKEND}" == "hmp" && ! -d "${HMP_ASSETS_ROOT}" ]]; then
+    echo "HMP assets root not found: ${HMP_ASSETS_ROOT}" >&2
+    exit 1
+fi
+
 if [[ -f "${MARKER_PATH}" ]] && ! is_truthy "${OVERWRITE}"; then
     echo "Skipping ${VIDEO_STEM}: completion marker already exists at ${MARKER_PATH}"
     exit 0
@@ -131,9 +140,19 @@ if is_truthy "${OVERWRITE}"; then
     rm -f "${MARKER_PATH}"
 fi
 
+if is_truthy "${STRIDE_FROM_CACHE}" && [[ ! -d "${WILOR_OUTPUT_ROOT}/${VIDEO_STEM}/meshes" ]]; then
+    echo "Expected cached WiLoR meshes at ${WILOR_OUTPUT_ROOT}/${VIDEO_STEM}/meshes" >&2
+    exit 1
+fi
+
 visualize_flag="--no-visualize"
 if is_truthy "${VISUALIZE}"; then
     visualize_flag="--visualize"
+fi
+
+overwrite_flag="--no-overwrite"
+if is_truthy "${OVERWRITE}"; then
+    overwrite_flag="--overwrite"
 fi
 
 stride_from_cache_flag="--no-stride_from_cache"
@@ -154,7 +173,7 @@ fi
 container_cmd=$(cat <<EOF
 set -euo pipefail
 cd $(printf '%q' "${WILOR_ROOT}")
-python main.py --mode stride --image_folder $(printf '%q' "${TEMP_FRAME_DIR}") --output_folder $(printf '%q' "${WILOR_OUTPUT_ROOT}") --stride_output_folder $(printf '%q' "${OUTPUT_ROOT}") --video $(printf '%q' "${VIDEO_STEM}") --target_hand $(printf '%q' "${TARGET_HAND}") ${stride_from_cache_flag} ${visualize_flag} --save_mesh --use_gpu --stride_iters $(printf '%q' "${STRIDE_ITERS}") --stride_lr $(printf '%q' "${STRIDE_LR}") --stride_obs_weight $(printf '%q' "${STRIDE_OBS_WEIGHT}") --stride_reproj_weight $(printf '%q' "${STRIDE_REPROJ_WEIGHT}") --stride_shape_weight $(printf '%q' "${STRIDE_SHAPE_WEIGHT}") --stride_cam_smooth_weight $(printf '%q' "${STRIDE_CAM_SMOOTH_WEIGHT}") --stride_pose_smooth_weight $(printf '%q' "${STRIDE_POSE_SMOOTH_WEIGHT}") --stride_joint_smooth_weight $(printf '%q' "${STRIDE_JOINT_SMOOTH_WEIGHT}") --stride_anchor_weight $(printf '%q' "${STRIDE_ANCHOR_WEIGHT}") --stride_fft_weight $(printf '%q' "${STRIDE_FFT_WEIGHT}") --stride_fps $(printf '%q' "${STRIDE_FPS}") --stride_pose_rank $(printf '%q' "${STRIDE_POSE_RANK}") --stride_cam_rank $(printf '%q' "${STRIDE_CAM_RANK}") ${fft_low_flag} ${fft_high_flag}
+python main.py --mode stride --stride_backend $(printf '%q' "${STRIDE_BACKEND}") --image_folder $(printf '%q' "${TEMP_FRAME_DIR}") --output_folder $(printf '%q' "${WILOR_OUTPUT_ROOT}") --wilor_cache_root $(printf '%q' "${WILOR_OUTPUT_ROOT}") --stride_output_folder $(printf '%q' "${OUTPUT_ROOT}") --video $(printf '%q' "${VIDEO_STEM}") --target_hand $(printf '%q' "${TARGET_HAND}") --mano_model_path $(printf '%q' "${MANO_MODEL_PATH}") --hmp_assets_root $(printf '%q' "${HMP_ASSETS_ROOT}") --hmp_config_name $(printf '%q' "${HMP_CONFIG_NAME}") ${overwrite_flag} ${stride_from_cache_flag} ${visualize_flag} --save_mesh --use_gpu --stride_iters $(printf '%q' "${STRIDE_ITERS}") --stride_lr $(printf '%q' "${STRIDE_LR}") --stride_obs_weight $(printf '%q' "${STRIDE_OBS_WEIGHT}") --stride_reproj_weight $(printf '%q' "${STRIDE_REPROJ_WEIGHT}") --stride_shape_weight $(printf '%q' "${STRIDE_SHAPE_WEIGHT}") --stride_cam_smooth_weight $(printf '%q' "${STRIDE_CAM_SMOOTH_WEIGHT}") --stride_pose_smooth_weight $(printf '%q' "${STRIDE_POSE_SMOOTH_WEIGHT}") --stride_joint_smooth_weight $(printf '%q' "${STRIDE_JOINT_SMOOTH_WEIGHT}") --stride_anchor_weight $(printf '%q' "${STRIDE_ANCHOR_WEIGHT}") --stride_fft_weight $(printf '%q' "${STRIDE_FFT_WEIGHT}") --stride_fps $(printf '%q' "${STRIDE_FPS}") --stride_pose_rank $(printf '%q' "${STRIDE_POSE_RANK}") --stride_cam_rank $(printf '%q' "${STRIDE_CAM_RANK}") ${fft_low_flag} ${fft_high_flag}
 EOF
 )
 
@@ -163,7 +182,7 @@ if ! is_truthy "${STRIDE_FROM_CACHE}"; then
 set -euo pipefail
 cd $(printf '%q' "${WILOR_ROOT}")
 python $(printf '%q' "${COMMON_PY}") --video $(printf '%q' "${VIDEO_PATH}") --output-dir $(printf '%q' "${TEMP_FRAME_DIR}")
-python main.py --mode stride --image_folder $(printf '%q' "${TEMP_FRAME_DIR}") --output_folder $(printf '%q' "${WILOR_OUTPUT_ROOT}") --stride_output_folder $(printf '%q' "${OUTPUT_ROOT}") --video $(printf '%q' "${VIDEO_STEM}") --target_hand $(printf '%q' "${TARGET_HAND}") ${stride_from_cache_flag} ${visualize_flag} --save_mesh --use_gpu --stride_iters $(printf '%q' "${STRIDE_ITERS}") --stride_lr $(printf '%q' "${STRIDE_LR}") --stride_obs_weight $(printf '%q' "${STRIDE_OBS_WEIGHT}") --stride_reproj_weight $(printf '%q' "${STRIDE_REPROJ_WEIGHT}") --stride_shape_weight $(printf '%q' "${STRIDE_SHAPE_WEIGHT}") --stride_cam_smooth_weight $(printf '%q' "${STRIDE_CAM_SMOOTH_WEIGHT}") --stride_pose_smooth_weight $(printf '%q' "${STRIDE_POSE_SMOOTH_WEIGHT}") --stride_joint_smooth_weight $(printf '%q' "${STRIDE_JOINT_SMOOTH_WEIGHT}") --stride_anchor_weight $(printf '%q' "${STRIDE_ANCHOR_WEIGHT}") --stride_fft_weight $(printf '%q' "${STRIDE_FFT_WEIGHT}") --stride_fps $(printf '%q' "${STRIDE_FPS}") --stride_pose_rank $(printf '%q' "${STRIDE_POSE_RANK}") --stride_cam_rank $(printf '%q' "${STRIDE_CAM_RANK}") ${fft_low_flag} ${fft_high_flag}
+python main.py --mode stride --stride_backend $(printf '%q' "${STRIDE_BACKEND}") --image_folder $(printf '%q' "${TEMP_FRAME_DIR}") --output_folder $(printf '%q' "${WILOR_OUTPUT_ROOT}") --wilor_cache_root $(printf '%q' "${WILOR_OUTPUT_ROOT}") --stride_output_folder $(printf '%q' "${OUTPUT_ROOT}") --video $(printf '%q' "${VIDEO_STEM}") --target_hand $(printf '%q' "${TARGET_HAND}") --mano_model_path $(printf '%q' "${MANO_MODEL_PATH}") --hmp_assets_root $(printf '%q' "${HMP_ASSETS_ROOT}") --hmp_config_name $(printf '%q' "${HMP_CONFIG_NAME}") ${overwrite_flag} ${stride_from_cache_flag} ${visualize_flag} --save_mesh --use_gpu --stride_iters $(printf '%q' "${STRIDE_ITERS}") --stride_lr $(printf '%q' "${STRIDE_LR}") --stride_obs_weight $(printf '%q' "${STRIDE_OBS_WEIGHT}") --stride_reproj_weight $(printf '%q' "${STRIDE_REPROJ_WEIGHT}") --stride_shape_weight $(printf '%q' "${STRIDE_SHAPE_WEIGHT}") --stride_cam_smooth_weight $(printf '%q' "${STRIDE_CAM_SMOOTH_WEIGHT}") --stride_pose_smooth_weight $(printf '%q' "${STRIDE_POSE_SMOOTH_WEIGHT}") --stride_joint_smooth_weight $(printf '%q' "${STRIDE_JOINT_SMOOTH_WEIGHT}") --stride_anchor_weight $(printf '%q' "${STRIDE_ANCHOR_WEIGHT}") --stride_fft_weight $(printf '%q' "${STRIDE_FFT_WEIGHT}") --stride_fps $(printf '%q' "${STRIDE_FPS}") --stride_pose_rank $(printf '%q' "${STRIDE_POSE_RANK}") --stride_cam_rank $(printf '%q' "${STRIDE_CAM_RANK}") ${fft_low_flag} ${fft_high_flag}
 EOF
 )
 fi
@@ -171,6 +190,8 @@ fi
 echo "STRIDE video: ${VIDEO_PATH}"
 echo "WiLoR cache root: ${WILOR_OUTPUT_ROOT}"
 echo "STRIDE output root: ${OUTPUT_ROOT}"
+echo "STRIDE backend: ${STRIDE_BACKEND}"
+echo "HMP assets root: ${HMP_ASSETS_ROOT}"
 echo "STRIDE completion marker: ${MARKER_PATH}"
 
 srun apptainer exec \
