@@ -157,3 +157,64 @@ Temporal families: temporal_camera, temporal_bbox_projected
 [step 00030] loss=2.7915 cam=339.7268 temp_cam=0.0000 bbox_p=0.0001 vipe_t=0.0000
 [progress] Running validation at step 30.
              val_loss=1.0568 val_cam=182.3127 val_temp_cam=0.0000 val_bbox_p=0.0003 val_vipe_t=0.0000
+[step 00040] loss=2.5418 cam=388.7167 temp_cam=0.0000 bbox_p=0.0000 vipe_t=0.0000
+[progress] Running validation at step 40.
+             val_loss=0.9756 val_cam=180.8191 val_temp_cam=0.0000 val_bbox_p=0.0003 val_vipe_t=0.0000
+[step 00050] loss=2.1133 cam=353.2569 temp_cam=0.0000 bbox_p=0.0000 vipe_t=0.0000
+[progress] Running validation at step 50.
+             val_loss=0.9579 val_cam=179.2796 val_temp_cam=0.0000 val_bbox_p=0.0003 val_vipe_t=0.0000
+[step 00060] loss=2.1996 cam=369.6789 temp_cam=0.0000 bbox_p=0.0000 vipe_t=0.0000
+[progress] Running validation at step 60.
+             val_loss=0.9193 val_cam=177.7132 val_temp_cam=0.0000 val_bbox_p=0.0003 val_vipe_t=0.0000
+[step 00070] loss=2.2606 cam=355.4337 temp_cam=0.0000 bbox_p=0.0003 vipe_t=0.0000
+[progress] Running validation at step 70.
+             val_loss=0.9386 val_cam=176.1313 val_temp_cam=0.0000 val_bbox_p=0.0003 val_vipe_t=0.0000
+[step 00080] loss=2.3804 cam=376.5550 temp_cam=0.0000 bbox_p=0.0004 vipe_t=0.0000
+[progress] Running validation at step 80.
+             val_loss=0.9548 val_cam=174.6588 val_temp_cam=0.0000 val_bbox_p=0.0003 val_vipe_t=0.0000
+[step 00090] loss=2.4417 cam=365.7419 temp_cam=0.0000 bbox_p=0.0003 vipe_t=0.0000
+[progress] Running validation at step 90.
+             val_loss=0.9442 val_cam=173.1904 val_temp_cam=0.0000 val_bbox_p=0.0003 val_vipe_t=0.0000
+[step 00100] loss=2.1668 cam=328.8535 temp_cam=0.0000 bbox_p=0.0012 vipe_t=0.0000
+[progress] Running validation at step 100.
+             val_loss=0.9346 val_cam=171.7672 val_temp_cam=0.0000 val_bbox_p=0.0003 val_vipe_t=0.0000
+[progress] Saved latest checkpoint at step 100.
+[step 00110] loss=2.0203 cam=333.5416 temp_cam=0.0000 bbox_p=0.0004 vipe_t=0.0000
+[progress] Running validation at step 110.
+             val_loss=0.9402 val_cam=170.4002 val_temp_cam=0.0000 val_bbox_p=0.0003 val_vipe_t=0.0000
+[step 00120] loss=2.0190 cam=317.5442 temp_cam=0.0000 bbox_p=0.0000 vipe_t=0.0000
+[progress] Running validation at step 120.
+             val_loss=0.9450 val_cam=169.0796 val_temp_cam=0.0000 val_bbox_p=0.0003 val_vipe_t=0.0000
+[step 00130] loss=2.1163 cam=358.0770 temp_cam=0.0000 bbox_p=0.0001 vipe_t=0.0000
+[progress] Running validation at step 130.
+             val_loss=0.8880 val_cam=167.7137 val_temp_cam=0.0000 val_bbox_p=0.0003 val_vipe_t=0.0000
+[step 00140] loss=2.1616 cam=334.2751 temp_cam=0.0000 bbox_p=0.0001 vipe_t=0.0000
+[progress] Running validation at step 140.
+             val_loss=0.9162 val_cam=166.2912 val_temp_cam=0.0000 val_bbox_p=0.0003 val_vipe_t=0.0000
+[step 00150] loss=2.1247 cam=339.8819 temp_cam=0.0000 bbox_p=0.0001 vipe_t=0.0000
+[progress] Running validation at step 150.
+             val_loss=0.9037 val_cam=164.8513 val_temp_cam=0.0000 val_bbox_p=0.0003 val_vipe_t=0.0000
+[step 00160] loss=2.0979 cam=330.3202 temp_cam=0.0000 bbox_p=0.0003 vipe_t=0.0000
+[progress] Running validation at step 160.
+             val_loss=0.8936 val_cam=163.2768 val_temp_cam=0.0000 val_bbox_p=0.0003 val_vipe_t=0.0000
+[step 00170] loss=2.0410 cam=348.5585 temp_cam=0.0000 bbox_p=0.0003 vipe_t=0.0000
+[progress] Running validation at step 170.
+             val_loss=0.8736 val_cam=161.9006 val_temp_cam=0.0000 val_bbox_p=0.0003 val_vipe_t=0.0000
+[step 00180] loss=2.1802 cam=338.2352 temp_cam=0.0000 bbox_p=0.0002 vipe_t=0.0000
+[progress] Running validation at step 180.
+             val_loss=0.8870 val_cam=160.5741 val_temp_cam=0.0000 val_bbox_p=0.0003 val_vipe_t=0.0000
+[step 00190] loss=2.1569 cam=303.1391 temp_cam=0.0000 bbox_p=0.0013 vipe_t=0.0000
+[progress] Running validation at step 190.
+             val_loss=0.8789 val_cam=159.2082 val_temp_cam=0.0000 val_bbox_p=0.0003 val_vipe_t=0.0000
+[step 00200] loss=2.3462 cam=307.3314 temp_cam=0.0000 bbox_p=0.0006 vipe_t=0.0000
+[progress] Running validation at step 200.
+             val_loss=0.9647 val_cam=157.8658 val_temp_cam=0.0000 val_bbox_p=0.0003 val_vipe_t=0.0000
+[progress] Saved latest checkpoint at step 200.
+Finished fine-tuning. Best val_loss_total: 0.8736
+Saved checkpoints under: /scratch/mthakur/manifold/outputs/wilor_finetune/lora_hp_b_lr_1e5
+[progress] Containerized training process exited cleanly.
+===============================================
+Job finished at: Wed Apr 29 01:30:57 CEST 2026
+Execution took 0.26 hours
+Writing output to SLURM_logs/wilor-train_143.out
+===============================================
