@@ -38,9 +38,30 @@ def setup_models(
     return model, model_cfg, detector
 
 
-def run_wilor_inference(model, model_cfg, detector, dataloader, img_cv2, device="cpu", out_folder=None, img_fn=None, save_mesh=True):
+def _to_numpy_mano_params(pred_mano_params, index):
+    return {
+        "global_orient": pred_mano_params["global_orient"][index].detach().cpu().numpy(),
+        "hand_pose": pred_mano_params["hand_pose"][index].detach().cpu().numpy(),
+        "betas": pred_mano_params["betas"][index].detach().cpu().numpy(),
+    }
+
+
+def run_wilor_inference(
+    model,
+    model_cfg,
+    detector,
+    dataloader,
+    img_cv2,
+    device="cpu",
+    out_folder=None,
+    img_fn=None,
+    save_mesh=True,
+    frame_id=None,
+    detection_scores=None,
+):
 
     all_results = []
+    detection_offset = 0
 
     for batch in dataloader:
         batch = recursive_to(batch, device)
@@ -72,6 +93,12 @@ def run_wilor_inference(model, model_cfg, detector, dataloader, img_cv2, device=
             box_size_n = box_size[n].detach().cpu().numpy()
 
             img_res = batch["img_size"][n].detach().cpu().numpy().astype(int)
+            pred_keypoints_2d = out["pred_keypoints_2d"][n].detach().cpu().numpy()
+            pred_cam_n = pred_cam[n].detach().cpu().numpy()
+            score = None
+            detection_index = detection_offset + n
+            if detection_scores is not None and detection_index < len(detection_scores):
+                score = float(detection_scores[detection_index])
 
             result = dict(
                 verts=verts,
@@ -80,6 +107,12 @@ def run_wilor_inference(model, model_cfg, detector, dataloader, img_cv2, device=
                 right=is_right,
                 box_center=box_center_n,
                 box_size=box_size_n,
+                pred_cam=pred_cam_n,
+                pred_keypoints_2d=pred_keypoints_2d,
+                pred_mano_params=_to_numpy_mano_params(out["pred_mano_params"], n),
+                frame_id=-1 if frame_id is None else int(frame_id),
+                detection_index=int(detection_index),
+                detection_confidence=score,
                 focal_length=float(scaled_focal_length),  # <- store the scaled value actually used
                 img_res=img_res                           # <- store render resolution used in math
             )
@@ -93,5 +126,7 @@ def run_wilor_inference(model, model_cfg, detector, dataloader, img_cv2, device=
             if save_mesh and out_folder:
                 os.makedirs(out_folder, exist_ok=True)
                 np.save(os.path.join(out_folder, f"{img_fn}_{n}_{is_right}_verts.npy"), result)
+
+        detection_offset += batch["img"].shape[0]
 
     return all_results

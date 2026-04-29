@@ -6,13 +6,28 @@ COMMON_SH="${SCRIPT_DIR}/../common/inference_common.sh"
 source "${COMMON_SH}"
 
 VIDEO_DIR="${VIDEO_DIR:-${SCRIPT_DIR}/../../data/test}"
-TEMPLATE="${TEMPLATE:-${SCRIPT_DIR}/template_wilor.sh}"
+MODE="${MODE:-wilor}"
+if [[ -z "${TEMPLATE:-}" ]]; then
+    if [[ "${MODE}" == "stride" ]]; then
+        TEMPLATE="${SCRIPT_DIR}/template_stride.sh"
+    else
+        TEMPLATE="${SCRIPT_DIR}/template_wilor.sh"
+    fi
+fi
 OUT_DIR="${OUT_DIR:-${SCRIPT_DIR}/generated_jobs}"
 LOG_DIR="${LOG_DIR:-${SCRIPT_DIR}/SLURM_logs}"
-OUTPUT_ROOT="${OUTPUT_ROOT:-${SCRIPT_DIR}/../../outputs/wilor}"
+if [[ -z "${OUTPUT_ROOT:-}" ]]; then
+    if [[ "${MODE}" == "stride" ]]; then
+        OUTPUT_ROOT="${SCRIPT_DIR}/../../outputs/stride"
+    else
+        OUTPUT_ROOT="${SCRIPT_DIR}/../../outputs/wilor"
+    fi
+fi
 RECENT_LOG_COUNT="${RECENT_LOG_COUNT:-12}"
 RECENT_TIME_MARGIN_HOURS="${RECENT_TIME_MARGIN_HOURS:-1.5}"
 MAX_PARTITION_TIME="${MAX_PARTITION_TIME:-08:00:00}"
+JOB_NAME_PREFIX="${JOB_NAME_PREFIX:-$([[ "${MODE}" == "stride" ]] && printf 'stride-inference' || printf 'wilor-inference')}"
+JOB_LABEL="${JOB_LABEL:-$([[ "${MODE}" == "stride" ]] && printf 'stride' || printf 'wilor')}"
 
 escape_sed_replacement() {
     printf '%s\n' "$1" | sed 's/[\\&|]/\\&/g'
@@ -44,19 +59,20 @@ time_to_seconds() {
 }
 
 recent_log_time_floor() {
-    local logs=("${LOG_DIR}"/wilor-inference_*.out)
+    local logs=("${LOG_DIR}"/${JOB_NAME_PREFIX}_*.out)
     [[ ${#logs[@]} -gt 0 ]] || return 0
 
-    "${PYTHON_BIN}" - "${LOG_DIR}" "${RECENT_LOG_COUNT}" "${RECENT_TIME_MARGIN_HOURS}" <<'PY'
+    "${PYTHON_BIN}" - "${LOG_DIR}" "${JOB_NAME_PREFIX}" "${RECENT_LOG_COUNT}" "${RECENT_TIME_MARGIN_HOURS}" <<'PY'
 from pathlib import Path
 import re
 import sys
 
 log_dir = Path(sys.argv[1])
-recent_count = max(1, int(sys.argv[2]))
-margin_hours = float(sys.argv[3])
+job_name_prefix = sys.argv[2]
+recent_count = max(1, int(sys.argv[3]))
+margin_hours = float(sys.argv[4])
 
-logs = sorted(log_dir.glob("wilor-inference_*.out"))
+logs = sorted(log_dir.glob(f"{job_name_prefix}_*.out"))
 if not logs:
     raise SystemExit(0)
 
@@ -171,6 +187,6 @@ if (( video_count == 0 )); then
     exit 0
 fi
 
-echo "Prepared ${video_count} wilor job scripts in ${OUT_DIR}"
-echo "Submitted ${submitted_count} wilor jobs"
-echo "Skipped ${skipped_count} completed wilor videos"
+echo "Prepared ${video_count} ${JOB_LABEL} job scripts in ${OUT_DIR}"
+echo "Submitted ${submitted_count} ${JOB_LABEL} jobs"
+echo "Skipped ${skipped_count} completed ${JOB_LABEL} videos"
