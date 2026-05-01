@@ -117,6 +117,7 @@ def run_mano(body_model, trans, root_orient, body_pose, is_right, betas=None, on
         betas=betas.reshape((B * seq_len, -1)),
         global_orient=root_orient.reshape((B * seq_len, -1)),
         transl=trans.reshape((B * seq_len, -1)),
+        pose2rot=True,
     )
     joints = mano_output.joints
     verts = mano_output.vertices

@@ -146,12 +146,18 @@ def _reconstruct_sequence(sequence, result_dict, mano_model_path: str, device: t
         model_path=mano_model_path,
         batch_size=seq_len,
         create_body_pose=False,
+        use_pca=False,
     ).to(device)
     with torch.no_grad():
         root_orient_t = torch.from_numpy(root_orient_aa).to(device)
         pose_body_t = torch.from_numpy(pose_body_aa.reshape(seq_len, -1)).to(device)
         betas_t = torch.from_numpy(betas).to(device)
-        mano_out = mano(global_orient=root_orient_t, hand_pose=pose_body_t, betas=betas_t)
+        mano_out = mano(
+            global_orient=root_orient_t,
+            hand_pose=pose_body_t,
+            betas=betas_t,
+            pose2rot=True,
+        )
         verts = mano_out.vertices.detach().cpu().numpy().astype(np.float32)
         joints = mano_out.joints.detach().cpu().numpy().astype(np.float32)
 
@@ -355,7 +361,12 @@ def run_stride_hmp(
         ),
     )
     data_args = SimpleNamespace(seq=video_name)
-    hand_model = MANO(model_path=mano_model_path, batch_size=128, create_body_pose=False).to(device)
+    hand_model = MANO(
+        model_path=mano_model_path,
+        batch_size=128,
+        create_body_pose=False,
+        use_pca=False,
+    ).to(device)
 
     fitting_prior(obs_data, res_dict, hand_model, opt, data_args, str(out_dir), device)
 
@@ -365,7 +376,12 @@ def run_stride_hmp(
 
     result_dict = _load_world_result(raw_result_path)
     refined = _reconstruct_sequence(sequence, result_dict, mano_model_path=mano_model_path, device=device)
-    mano_faces = MANO(model_path=mano_model_path, batch_size=1, create_body_pose=False).faces
+    mano_faces = MANO(
+        model_path=mano_model_path,
+        batch_size=1,
+        create_body_pose=False,
+        use_pca=False,
+    ).faces
     _save_outputs(video_name, sequence, refined, output_root, raw_result_path, visualize, mano_faces)
 
     metadata = {
