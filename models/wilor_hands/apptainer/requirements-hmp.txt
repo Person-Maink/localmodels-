@@ -1,0 +1,8 @@
+scipy
+matplotlib
+Pillow
+plyfile
+tqdm
+tensorboardX
+joblib
+loguru

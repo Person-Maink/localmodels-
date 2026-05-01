@@ -1,0 +1,119 @@
+Bootstrap: docker
+From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
+
+%labels
+    Author REIT Team, Modified by Mayank Thakur
+    Description WiLoR HMP container (CUDA 11.7, PyTorch 2.0.x, Python 3.10, UV)
+
+%help
+    WiLoR HMP Apptainer container with CUDA + PyTorch 2.0.x using UV.
+    This variant extends the base WiLoR image with the extra runtime
+    dependencies needed by the newer STRIDE + HMP flow.
+    Usage:
+        apptainer shell --nv container.sif
+        apptainer exec --nv container.sif python script.py
+
+%environment
+    export LC_ALL=C
+    export PYTHONUNBUFFERED=1
+    export PATH="/.venv/bin:$PATH"
+    export PYTHONNOUSERSITE=1
+
+%files
+    /scratch/mthakur/manifold/models/wilor_hands/wilor               /app/WiLoR/wilor
+    /scratch/mthakur/manifold/models/wilor_hands/mano_data           /app/WiLoR/mano_data
+    /scratch/mthakur/manifold/models/wilor_hands/pretrained_models   /app/WiLoR/pretrained_models
+    /scratch/mthakur/manifold/models/wilor_hands/requirements.txt    /app/WiLoR/requirements.txt
+    /scratch/mthakur/manifold/models/wilor_hands/pyproject.toml      /app/WiLoR/pyproject.toml
+    /scratch/mthakur/manifold/models/wilor_hands/apptainer/requirements-hmp.txt /app/WiLoR/requirements-hmp.txt
+
+%post
+    set -e
+
+    echo "=============================="
+    echo "Installing system dependencies"
+    echo "=============================="
+
+    apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        python3.10 \
+        python3.10-venv \
+        python3-pip \
+        build-essential \
+        git \
+        curl \
+        libgl1 \
+        libglib2.0-0 \
+        libosmesa6 \
+        libgl1-mesa-dri \
+        libgl1-mesa-glx \
+        libsm6 \
+        libxext6 \
+        libxrender1 \
+        libegl1 \
+        libglvnd0
+
+    echo "===== Installing UV ====="
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    export PATH="/root/.local/bin:$PATH"
+    uv venv --python 3.10
+
+    echo "===== Upgrading build tooling ====="
+    uv pip install --python /.venv/bin/python "pip<25.1" wheel setuptools==68.2.0 packaging
+
+    echo "=============================="
+    echo "Installing PyTorch for CUDA 11.7"
+    echo "=============================="
+
+    uv pip install --python /.venv/bin/python torch==2.0.1 torchvision==0.15.2 \
+        --index-url https://download.pytorch.org/whl/cu117
+
+    echo "=============================="
+    echo "Installing base WiLoR requirements"
+    echo "=============================="
+
+    cd /app/WiLoR
+    uv pip install --python /.venv/bin/python --no-build-isolation -r requirements.txt
+
+    uv pip install --python /.venv/bin/python --no-build-isolation pytorch3d \
+        -f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py310_cu117_pyt201/download.html
+
+    echo "=============================="
+    echo "Installing HMP extras"
+    echo "=============================="
+
+    uv pip install --python /.venv/bin/python --no-build-isolation -r requirements-hmp.txt
+    uv pip install --python /.venv/bin/python --no-build-isolation dill natsort
+
+    echo "=============================="
+    echo "Running dependency smoke test"
+    echo "=============================="
+
+    python - <<'PY'
+import PIL
+import joblib
+import loguru
+import matplotlib
+import plyfile
+import scipy
+import tensorboardX
+import torch
+import tqdm
+print("python ok")
+print("torch", torch.__version__)
+print("scipy", scipy.__version__)
+PY
+
+    echo "=============================="
+    echo "Build completed successfully"
+    echo "=============================="
+
+    apt-get clean && rm -rf /var/lib/apt/lists/* /root/.cache/uv
+
+%runscript
+    echo "=============================="
+    echo "WiLoR HMP Apptainer Container"
+    echo "=============================="
+    echo "Python: $(python --version)"
+    echo "PyTorch: $(python -c 'import torch; print(torch.__version__)')"
+    echo "CUDA Available: $(python -c 'import torch; print(torch.cuda.is_available())')"
+    exec "$@"

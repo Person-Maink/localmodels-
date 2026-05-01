@@ -22,7 +22,7 @@ defaults:
     window_size: 3
     window_stride: 2
     max_frame_gap: 1
-    reduction: smooth_l1
+    reduction: l1
     scorer_hidden_dim: 64
     scorer_layers: 2
     scorer_dropout: 0.0
