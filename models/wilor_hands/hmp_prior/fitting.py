@@ -112,12 +112,16 @@ def run_mano(body_model, trans, root_orient, body_pose, is_right, betas=None, on
     betas = betas.reshape((B, 1, bm_num_betas)).expand((B, seq_len, bm_num_betas))
     # print('body_pose: ', body_pose.reshape((B * seq_len, -1)).shape)
 
+    # wilor.models.MANO subclasses smplx.MANOLayer, which expects rotation
+    # matrices directly and internally forwards with pose2rot=False.
+    hand_pose_rot = axis_angle_to_matrix(body_pose.reshape(B * seq_len, J_BODY, 3))
+    global_orient_rot = axis_angle_to_matrix(root_orient.reshape(B * seq_len, 3)).unsqueeze(1)
+
     mano_output = body_model(
-        hand_pose=body_pose.reshape((B * seq_len, -1)),
+        hand_pose=hand_pose_rot,
         betas=betas.reshape((B * seq_len, -1)),
-        global_orient=root_orient.reshape((B * seq_len, -1)),
+        global_orient=global_orient_rot,
         transl=trans.reshape((B * seq_len, -1)),
-        pose2rot=True,
     )
     joints = mano_output.joints
     verts = mano_output.vertices

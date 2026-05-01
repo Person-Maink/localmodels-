@@ -149,15 +149,12 @@ def _reconstruct_sequence(sequence, result_dict, mano_model_path: str, device: t
         use_pca=False,
     ).to(device)
     with torch.no_grad():
-        root_orient_t = torch.from_numpy(root_orient_aa).to(device)
-        pose_body_t = torch.from_numpy(pose_body_aa.reshape(seq_len, -1)).to(device)
+        root_orient_t = axis_angle_to_matrix(torch.from_numpy(root_orient_aa).to(device)).unsqueeze(1)
+        pose_body_t = axis_angle_to_matrix(
+            torch.from_numpy(pose_body_aa.reshape(-1, 3)).to(device)
+        ).reshape(seq_len, 15, 3, 3)
         betas_t = torch.from_numpy(betas).to(device)
-        mano_out = mano(
-            global_orient=root_orient_t,
-            hand_pose=pose_body_t,
-            betas=betas_t,
-            pose2rot=True,
-        )
+        mano_out = mano(global_orient=root_orient_t, hand_pose=pose_body_t, betas=betas_t)
         verts = mano_out.vertices.detach().cpu().numpy().astype(np.float32)
         joints = mano_out.joints.detach().cpu().numpy().astype(np.float32)
 
