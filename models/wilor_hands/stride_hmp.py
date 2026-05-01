@@ -64,6 +64,12 @@ def _sequence_to_hmp_inputs(sequence, device: torch.device):
     pose_body = matrix_to_axis_angle(hand_pose_rot.reshape(-1, 3, 3)).reshape(seq_len, 15, 3).detach().cpu().numpy().astype(np.float32)
     cam_t = np.asarray(sequence["cam_t"], dtype=np.float32)
     betas = np.asarray(sequence["betas"], dtype=np.float32)
+    if betas.ndim == 2:
+        # WiLoR stores per-frame betas, but HMP's reconstruction path assumes
+        # one subject-shape vector per sequence at initialization time.
+        betas = betas.mean(axis=0)
+    elif betas.ndim > 2:
+        betas = betas.reshape(-1, betas.shape[-1]).mean(axis=0)
     focal = np.asarray(sequence["focal_length"], dtype=np.float32)
     img_res = np.asarray(sequence["img_res"], dtype=np.float32)
     cam_r = np.tile(np.eye(3, dtype=np.float32), (seq_len, 1, 1))
