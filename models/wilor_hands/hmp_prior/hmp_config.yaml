@@ -107,7 +107,7 @@ stg2:
   lambda_batch_cs: 0
   lambda_init_z_prior: 0
   lambda_j3d_smooth: 0
-  lambda_motion_prior: 200
+  lambda_motion_prior: 20
   lambda_pose_prior: 0
   lambda_orient: 0
   lambda_orient_smooth: 1
