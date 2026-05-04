@@ -22,7 +22,8 @@ Hyperparameter sweeps live under [experiments](/home/mayank/Documents/Uni/TUD/Th
 Typical files:
 
 - `hparam_stage_*.yaml`: one tuning stage
-- `finetuning.yaml`: the winner-locked full-dataset finetuning baseline for that setup
+- `finetuning.yaml`: the winner-locked full-dataset finetuning config
+  The root file can contain multiple regime experiments for joint comparison.
 - `README.md`: setup-specific notes such as stage ordering or scope differences
 
 The setup-specific docs are:
