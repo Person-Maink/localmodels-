@@ -12,7 +12,7 @@ from scipy.signal import butter, filtfilt, welch
 from _path_setup import PROJECT_ROOT  # ensures root imports work
 import FILENAME as CONFIG
 from mano_pickle import load_mano_pickle
-from npy_io import list_frame_folders, load_frame_records
+from npy_io import iter_model_frame_records
 
 
 # NumPy legacy aliases for old pickle compatibility.
@@ -30,8 +30,8 @@ np.inf = float("inf")
 LOWPASS_CUTOFF = 6.0
 FILTER_ORDER = 3
 FPS = 30.0
-DEFAULT_SLOT_NAMES = ("A", "B", "C", "D", "E")
-LINE_STYLES = ("-", "--", "-.", ":")
+DEFAULT_SLOT_NAMES = ("A", "B", "C", "D", "E", "F")
+LINE_STYLES = ("-", "--", "-.", ":", (0, (6, 2)), (0, (3, 1, 1, 1)))
 
 
 @lru_cache(maxsize=1)
@@ -70,12 +70,13 @@ def _default_all_model_sources():
         getattr(CONFIG, "WILOR_FINETUNE_ROOT", None),
         getattr(CONFIG, "HAMBA_ROOT", None),
         getattr(CONFIG, "DYNHAMR_ROOT", None),
+        getattr(CONFIG, "STRIDE_ROOT", None),
         getattr(CONFIG, "MEDIAPIPE_ROOT", None),
     ]
 
 
 def _default_all_model_labels():
-    return ["WILOR", "WILOR FINETUNE", "HAMBA", "DYNHAMR", "MEDIAPIPE"]
+    return ["WILOR", "WILOR FINETUNE", "HAMBA", "DYNHAMR", "STRIDE", "MEDIAPIPE"]
 
 
 def _infer_label(root_dir, fallback):
@@ -201,8 +202,7 @@ def _finish_analysis(trajectory):
 
 def _analyze_model(root_dir, j_reg, region_a, region_b, n_verts, hand_idx, wrist_joint_idx):
     frames = []
-    for folder in list_frame_folders(root_dir):
-        records = load_frame_records(folder)
+    for _, records in iter_model_frame_records(root_dir):
         if not records:
             continue
 
@@ -228,7 +228,7 @@ def _analyze_model(root_dir, j_reg, region_a, region_b, n_verts, hand_idx, wrist
         if frame_hands:
             frames.append(frame_hands)
 
-    print(f"Loaded {len(frames)} frames from npy for: {root_dir}")
+    print(f"Loaded {len(frames)} frames from model/stride data for: {root_dir}")
 
     trajectory = []
     for frame_hands in frames:
@@ -335,7 +335,7 @@ def _resolve_entries(overrides):
     if not any(source is not None for source in normalized_sources):
         raise ValueError(
             "No point-to-point sources resolved. Set POINT_SOURCE_A/B in FILENAME.py, "
-            "pass explicit sources, or use --all-models with configured WILOR/HAMBA/MEDIAPIPE roots."
+            "pass explicit sources, or use --all-models with configured WiLoR/Hamba/DynHAMR/Stride/MediaPipe roots."
         )
 
     if labels_override is not None:
@@ -508,7 +508,7 @@ def main():
     parser.add_argument(
         "--all-models",
         action="store_true",
-        help="Compare WiLoR, WiLoR finetune, Hamba, DynHAMR, and MediaPipe together.",
+        help="Compare WiLoR, WiLoR finetune, Hamba, DynHAMR, Stride, and MediaPipe together.",
     )
     args = parser.parse_args()
 

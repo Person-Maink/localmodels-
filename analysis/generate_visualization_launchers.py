@@ -4,7 +4,7 @@ import shutil
 from pathlib import Path
 
 import FILENAME as CONFIG
-from npy_io import discover_frame_files, load_wilor_record
+from npy_io import iter_model_frame_records
 from whim_io import DEFAULT_WHIM_DATA_ROOT
 
 
@@ -27,7 +27,7 @@ HAS_WHIM_COMBINED_SCRIPT = WHIM_SCRIPT.is_file()
 
 WHIM_DATA_ROOT = DEFAULT_WHIM_DATA_ROOT
 
-FAMILY_NAMES = ("wilor", "wilor_finetune", "hamba", "dynhamr", "vipe", "mediapipe", "whim_train", "whim_test")
+FAMILY_NAMES = ("wilor", "wilor_finetune", "hamba", "dynhamr", "stride", "vipe", "mediapipe", "whim_train", "whim_test")
 
 
 def _quote(value):
@@ -86,6 +86,21 @@ def _discover_vipe_clips():
     return clips
 
 
+def _discover_stride_clips():
+    family_root = OUTPUTS_ROOT / "stride"
+    clips = {}
+    if not family_root.exists():
+        return clips
+
+    for clip_dir in sorted(family_root.iterdir(), key=lambda path: path.name):
+        if not clip_dir.is_dir() or clip_dir.name.startswith("_"):
+            continue
+        if not (clip_dir / "refined_sequence.npz").is_file():
+            continue
+        clips[clip_dir.name] = clip_dir.resolve()
+    return clips
+
+
 def _discover_mediapipe_clips():
     keypoints_root = OUTPUTS_ROOT / "mediapipe" / "keypoints"
     clips = {}
@@ -114,17 +129,12 @@ def _discover_whim_clips(split):
 
 def _has_bbox_metadata(frames_root):
     try:
-        discovered = discover_frame_files(frames_root, frame_dirs_glob="frame_*", file_glob="*.npy")
+        for _, records in iter_model_frame_records(frames_root, pattern="*.npy"):
+            for record in records:
+                if record.get("box_center") is not None and record.get("box_size") is not None:
+                    return True
     except FileNotFoundError:
         return False
-
-    for _, file_path in discovered:
-        try:
-            record = load_wilor_record(file_path)
-        except Exception:
-            continue
-        if record.get("box_center") is not None and record.get("box_size") is not None:
-            return True
     return False
 
 
@@ -215,14 +225,15 @@ def _config_injection_wrapper(target_script, config_attr, source_path):
 
 def _model_clip_launchers(meshes_root, camera_poses_file=None, use_meshes_for_camera=True):
     clip_launchers = {
-        "camera": _camera_cli_wrapper(
-            frames_root=meshes_root if use_meshes_for_camera else None,
-            vipe_pose_file=None,
-            camera_poses_file=camera_poses_file,
-        ),
         "free": _config_injection_wrapper(FREE_SCRIPT, "FREE_SOURCE", meshes_root),
         "wrist_grounding": _config_injection_wrapper(WRIST_GROUNDING_SCRIPT, "WRIST_GROUNDING_SOURCE", meshes_root),
     }
+    if use_meshes_for_camera or camera_poses_file is not None:
+        clip_launchers["camera"] = _camera_cli_wrapper(
+            frames_root=meshes_root if use_meshes_for_camera else None,
+            vipe_pose_file=None,
+            camera_poses_file=camera_poses_file,
+        )
     if _has_bbox_metadata(meshes_root):
         clip_launchers["bounding_boxes"] = _bbox_cli_wrapper(meshes_root)
     return clip_launchers
@@ -246,6 +257,14 @@ def _build_family_launchers():
         camera_poses_file = meshes_root.parent / "camera_poses.npz"
         launchers["dynhamr"][clip_name] = _model_clip_launchers(
             meshes_root,
+            camera_poses_file=camera_poses_file if camera_poses_file.is_file() else None,
+            use_meshes_for_camera=False,
+        )
+
+    for clip_name, clip_root in _discover_stride_clips().items():
+        camera_poses_file = clip_root / "camera_poses.npz"
+        launchers["stride"][clip_name] = _model_clip_launchers(
+            clip_root,
             camera_poses_file=camera_poses_file if camera_poses_file.is_file() else None,
             use_meshes_for_camera=False,
         )

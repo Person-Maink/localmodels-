@@ -5,7 +5,7 @@ import numpy as np
 
 from _path_setup import PROJECT_ROOT  # ensures root imports work
 import FILENAME as CONFIG
-from npy_io import discover_frame_files, load_wilor_record
+from npy_io import iter_model_frame_records
 
 try:
     from vedo import Lines, Plotter, Sphere
@@ -68,54 +68,39 @@ def _make_box_segments(box_center, box_size, depth):
 
 
 def load_bbox_tracks(frames_root, frame_dirs_glob="frame_*", file_glob="*.npy"):
-    discovered = discover_frame_files(
-        frames_root=frames_root,
-        frame_dirs_glob=frame_dirs_glob,
-        file_glob=file_glob,
-    )
-
     entries = []
-    loaded_files = 0
-    skipped_files = 0
+    loaded_records = 0
     skipped_missing_bbox = 0
 
-    for frame_idx, file_path in discovered:
-        try:
-            record = load_wilor_record(file_path)
-        except Exception:
-            skipped_files += 1
-            continue
+    for frame_idx, records in iter_model_frame_records(frames_root, pattern=file_glob):
+        for record in records:
+            loaded_records += 1
 
-        loaded_files += 1
+            if record["box_center"] is None or record["box_size"] is None:
+                skipped_missing_bbox += 1
+                continue
 
-        if record["box_center"] is None or record["box_size"] is None:
-            skipped_missing_bbox += 1
-            continue
-
-        entries.append(
-            {
-                "frame_id": int(frame_idx),
-                "right": int(record["right"]),
-                "box_center": np.asarray(record["box_center"], dtype=np.float32).reshape(2),
-                "box_size": float(record["box_size"]),
-                "path": str(file_path),
-            }
-        )
+            entries.append(
+                {
+                    "frame_id": int(record.get("frame_id", frame_idx)),
+                    "right": int(record["right"]),
+                    "box_center": np.asarray(record["box_center"], dtype=np.float32).reshape(2),
+                    "box_size": float(record["box_size"]),
+                    "path": str(record["path"]),
+                }
+            )
 
     if not entries:
         raise ValueError(
             f"No usable bbox entries found under {frames_root}. "
-            f"Checked {len(discovered)} files, loaded {loaded_files}, "
-            f"skipped {skipped_files} invalid files, skipped {skipped_missing_bbox} files without bbox metadata."
+            f"Loaded {loaded_records} records, skipped {skipped_missing_bbox} records without bbox metadata."
         )
 
     entries.sort(key=lambda item: (item["frame_id"], Path(item["path"]).name))
     return {
         "entries": entries,
-        "loaded_files": loaded_files,
-        "skipped_files": skipped_files,
+        "loaded_records": loaded_records,
         "skipped_missing_bbox": skipped_missing_bbox,
-        "total_files": len(discovered),
     }
 
 
@@ -182,12 +167,12 @@ def visualize_bbox_tracks(entries, hand="all", box_stride=5, center_radius=4.0, 
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Visualize WiLoR bounding-box tracks from per-frame npy outputs.")
+    parser = argparse.ArgumentParser(description="Visualize model bounding-box tracks from per-frame or stride outputs.")
     parser.add_argument(
         "--frames_root",
         type=str,
         default=str(DEFAULT_FRAMES_ROOT) if DEFAULT_FRAMES_ROOT is not None else None,
-        help="Frame bbox folder (e.g. model meshes/frame_*/...).",
+        help="Frame bbox folder (e.g. model meshes/frame_*/...) or a stride clip directory.",
     )
     parser.add_argument("--frame_dirs_glob", type=str, default="frame_*", help="Glob for frame folders.")
     parser.add_argument(
@@ -213,9 +198,8 @@ def main():
         file_glob=args.file_glob,
     )
     print(
-        f"Loaded {bbox_data['loaded_files']} files from {bbox_data['total_files']} discovered files. "
+        f"Loaded {bbox_data['loaded_records']} records. "
         f"Usable bbox records: {len(bbox_data['entries'])}. "
-        f"Skipped invalid files: {bbox_data['skipped_files']}. "
         f"Skipped missing bbox metadata: {bbox_data['skipped_missing_bbox']}."
     )
 

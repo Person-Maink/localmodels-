@@ -27,25 +27,37 @@ SCENARIOS = (
     ("wilor_vs_wilor_comp", "wilor_all", "wilor_comp"),
     ("wilor_finetune_vs_wilor_finetune", "wilor_finetune_all", "wilor_finetune_all"),
     ("wilor_finetune_vs_wilor_finetune_comp", "wilor_finetune_all", "wilor_finetune_comp"),
+    ("stride_vs_stride_comp", "stride_all", "stride_comp"),
     ("mediapipe_vs_mediapipe_comp", "mediapipe_all", "mediapipe_comp"),
     ("wilor_finetune_vs_wilor", "wilor_finetune_all", "wilor_all"),
     ("wilor_finetune_vs_hamba", "wilor_finetune_all", "hamba_all"),
     ("wilor_finetune_vs_dynhamr", "wilor_finetune_all", "dynhamr_all"),
+    ("wilor_finetune_vs_stride", "wilor_finetune_all", "stride_all"),
     ("wilor_finetune_vs_mediapipe", "wilor_finetune_all", "mediapipe_all"),
     ("wilor_vs_hamba", "wilor_all", "hamba_all"),
     ("dynhamr_vs_wilor", "dynhamr_all", "wilor_all"),
     ("dynhamr_vs_hamba", "dynhamr_all", "hamba_all"),
+    ("dynhamr_vs_stride", "dynhamr_all", "stride_all"),
     ("dynhamr_vs_mediapipe", "dynhamr_all", "mediapipe_all"),
+    ("wilor_vs_stride", "wilor_all", "stride_all"),
     ("wilor_vs_mediapipe", "wilor_all", "mediapipe_all"),
+    ("stride_vs_hamba", "stride_all", "hamba_all"),
+    ("stride_vs_mediapipe", "stride_all", "mediapipe_all"),
     ("mediapipe_vs_hamba", "mediapipe_all", "hamba_all"),
 )
 THREE_MODEL_SCENARIOS = (
     ("wilor_vs_hamba_vs_dynhamr", ("wilor_all", "hamba_all", "dynhamr_all")),
+    ("wilor_vs_hamba_vs_stride", ("wilor_all", "hamba_all", "stride_all")),
     ("wilor_vs_hamba_vs_mediapipe", ("wilor_all", "hamba_all", "mediapipe_all")),
+    ("wilor_vs_dynhamr_vs_stride", ("wilor_all", "dynhamr_all", "stride_all")),
     ("wilor_vs_dynhamr_vs_mediapipe", ("wilor_all", "dynhamr_all", "mediapipe_all")),
+    ("wilor_vs_stride_vs_mediapipe", ("wilor_all", "stride_all", "mediapipe_all")),
     ("hamba_vs_dynhamr_vs_mediapipe", ("hamba_all", "dynhamr_all", "mediapipe_all")),
+    ("hamba_vs_dynhamr_vs_stride", ("hamba_all", "dynhamr_all", "stride_all")),
+    ("hamba_vs_stride_vs_mediapipe", ("hamba_all", "stride_all", "mediapipe_all")),
+    ("dynhamr_vs_stride_vs_mediapipe", ("dynhamr_all", "stride_all", "mediapipe_all")),
 )
-ALL_MODELS_SCENARIO_ID = "wilor_vs_hamba_vs_dynhamr_vs_mediapipe"
+ALL_MODELS_SCENARIO_ID = "wilor_vs_hamba_vs_dynhamr_vs_stride_vs_mediapipe"
 SCENARIO_OPTIONS = (
     tuple(scenario_id for scenario_id, _, _ in SCENARIOS)
     + tuple(scenario_id for scenario_id, _ in THREE_MODEL_SCENARIOS)
@@ -55,6 +67,7 @@ SAME_CLIP_COMP_SCENARIOS = {
     "hamba_vs_hamba_comp",
     "wilor_vs_wilor_comp",
     "wilor_finetune_vs_wilor_finetune_comp",
+    "stride_vs_stride_comp",
     "mediapipe_vs_mediapipe_comp",
 }
 SAME_CLIP_WITHIN_POOL_SCENARIOS = {
@@ -64,12 +77,17 @@ CROSS_MODEL_SAME_CLIP_SCENARIOS = {
     "wilor_finetune_vs_wilor",
     "wilor_finetune_vs_hamba",
     "wilor_finetune_vs_dynhamr",
+    "wilor_finetune_vs_stride",
     "wilor_finetune_vs_mediapipe",
     "wilor_vs_hamba",
     "dynhamr_vs_wilor",
     "dynhamr_vs_hamba",
+    "dynhamr_vs_stride",
     "dynhamr_vs_mediapipe",
+    "wilor_vs_stride",
     "wilor_vs_mediapipe",
+    "stride_vs_hamba",
+    "stride_vs_mediapipe",
     "mediapipe_vs_hamba",
 }
 _ANALYSIS_MODULES = None
@@ -147,9 +165,9 @@ def _parse_args():
         "--only-missing",
         action="store_true",
         default=True,
-        help="Run only pair/4-way items whose expected output graph files are not both already present in --output-dir.",
+        help="Run only pair/multi-model items whose expected output graph files are not both already present in --output-dir.",
     )
-    parser.add_argument("--max-pairs", type=int, default=None, help="Run only the first N discovered pair/4-way items after deterministic ordering.")
+    parser.add_argument("--max-pairs", type=int, default=None, help="Run only the first N discovered pair/multi-model items after deterministic ordering.")
     parser.add_argument(
         "--workers",
         type=int,
@@ -166,7 +184,7 @@ def _parse_args():
         "--all-models",
         action="store_true",
         default=True,
-        help="Add same-clip WiLoR/Hamba/DynHAMR/MediaPipe 4-way analyses on top of the existing pairwise runs.",
+        help="Add same-clip WiLoR/Hamba/DynHAMR/Stride/MediaPipe multi-model analyses on top of the existing pairwise runs.",
     )
     return parser.parse_args()
 
@@ -251,6 +269,33 @@ def _discover_mediapipe(outputs_root):
     return items
 
 
+def _discover_stride(outputs_root):
+    stride_root = Path(outputs_root) / "stride"
+    items = []
+    if not stride_root.exists():
+        return items
+
+    for clip_dir in sorted(stride_root.iterdir(), key=lambda p: p.name):
+        if not clip_dir.is_dir() or clip_dir.name.startswith("_"):
+            continue
+        if not (clip_dir / "refined_sequence.npz").is_file():
+            continue
+
+        clip_id = clip_dir.name
+        items.append(
+            SourceItem(
+                family="stride",
+                kind="model",
+                clip_id=clip_id,
+                display_id=clip_id,
+                path=str(clip_dir.resolve()),
+                is_comp=_is_comp_clip(clip_id),
+            )
+        )
+
+    return items
+
+
 def _source_display_id(source):
     return source.display_id or source.clip_id
 
@@ -291,6 +336,7 @@ def _build_source_pools(outputs_root):
     wilor_all = _discover_model_family(outputs_root, "wilor")
     wilor_finetune_all = _discover_experiment_model_family(outputs_root, "wilor_finetune")
     dynhamr_all = _discover_model_family(outputs_root, "dynhamr")
+    stride_all = _discover_stride(outputs_root)
     mediapipe_all = _discover_mediapipe(outputs_root)
 
     pools = {
@@ -302,6 +348,8 @@ def _build_source_pools(outputs_root):
         "wilor_finetune_comp": [item for item in wilor_finetune_all if item.is_comp],
         "dynhamr_all": dynhamr_all,
         "dynhamr_comp": [item for item in dynhamr_all if item.is_comp],
+        "stride_all": stride_all,
+        "stride_comp": [item for item in stride_all if item.is_comp],
         "mediapipe_all": mediapipe_all,
         "mediapipe_comp": [item for item in mediapipe_all if item.is_comp],
     }
@@ -314,6 +362,7 @@ def _build_source_pools(outputs_root):
             "comp": len(pools["wilor_finetune_comp"]),
         },
         "dynhamr": {"all": len(pools["dynhamr_all"]), "comp": len(pools["dynhamr_comp"])},
+        "stride": {"all": len(pools["stride_all"]), "comp": len(pools["stride_comp"])},
         "mediapipe": {"all": len(pools["mediapipe_all"]), "comp": len(pools["mediapipe_comp"])},
     }
 
@@ -512,7 +561,7 @@ def _build_scenarios_and_pairs(pools, requested_scenarios=None, include_all_mode
 
         all_groups = _build_multi_model_groups(
             ALL_MODELS_SCENARIO_ID,
-            ("wilor_all", "hamba_all", "dynhamr_all", "mediapipe_all"),
+            ("wilor_all", "hamba_all", "dynhamr_all", "stride_all", "mediapipe_all"),
             pools,
         )
         scenario_rows.append(
@@ -521,14 +570,16 @@ def _build_scenarios_and_pairs(pools, requested_scenarios=None, include_all_mode
                 "source_a_pool": "wilor_all",
                 "source_b_pool": "hamba_all",
                 "source_c_pool": "dynhamr_all",
-                "source_d_pool": "mediapipe_all",
+                "source_d_pool": "stride_all",
+                "source_e_pool": "mediapipe_all",
                 "source_a_count": len(pools["wilor_all"]),
                 "source_b_count": len(pools["hamba_all"]),
                 "source_c_count": len(pools["dynhamr_all"]),
-                "source_d_count": len(pools["mediapipe_all"]),
+                "source_d_count": len(pools["stride_all"]),
+                "source_e_count": len(pools["mediapipe_all"]),
                 "item_kind": "multi_models",
                 "item_count_total": len(all_groups),
-                "group_size": 4,
+                "group_size": 5,
                 "enabled": ALL_MODELS_SCENARIO_ID in enabled,
             }
         )
@@ -605,7 +656,7 @@ def _summarize_entries(entries):
 
 def _print_discovery(discovery, scenario_rows, selected_pairs, selected_all_models):
     print("Discovery counts:")
-    for family in ("hamba", "wilor", "wilor_finetune", "dynhamr", "mediapipe"):
+    for family in ("hamba", "wilor", "wilor_finetune", "dynhamr", "stride", "mediapipe"):
         counts = discovery[family]
         print(f"  {family}: all={counts['all']}, comp={counts['comp']}")
 
@@ -616,7 +667,7 @@ def _print_discovery(discovery, scenario_rows, selected_pairs, selected_all_mode
             group_size = int(row.get("group_size", 0))
             pools_text = " x ".join(
                 f"{row[f'source_{slot}_pool']}({row[f'source_{slot}_count']})"
-                for slot in ("a", "b", "c", "d")
+                for slot in ("a", "b", "c", "d", "e")
                 if row.get(f"source_{slot}_pool") is not None
             )
             print(

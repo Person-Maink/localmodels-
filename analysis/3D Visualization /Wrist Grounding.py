@@ -8,7 +8,7 @@ from _path_setup import PROJECT_ROOT  # ensures root imports work
 import FILENAME as CONFIG
 from FILENAME import HAND_IDX as DEFAULT_HAND_IDX, WRIST_JOINT_IDX
 from mano_pickle import load_mano_pickle
-from npy_io import list_frame_folders, load_frame_records
+from npy_io import iter_model_frame_records
 
 np.bool = bool
 np.int = int
@@ -81,8 +81,7 @@ def _load_frames_from_model(root_dir):
 
     frames = []
 
-    for folder in list_frame_folders(root_dir):
-        records = load_frame_records(folder, pattern="*.npy")
+    for _, records in iter_model_frame_records(root_dir, pattern="*.npy"):
         if not records:
             continue
 
@@ -196,7 +195,7 @@ def main():
         print(f"Loaded {len(frames)} frames from MediaPipe CSV")
     else:
         frames = _load_frames_from_model(source_path)
-        print(f"Loaded {len(frames)} frames from model npy records")
+        print(f"Loaded {len(frames)} frames from model/stride records")
 
     if not frames:
         raise RuntimeError(f"No valid records found for source: {source_path}")

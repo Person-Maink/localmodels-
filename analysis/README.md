@@ -30,7 +30,7 @@ These scripts render hand geometry, camera motion, or related scene elements in 
   - Source is injected through `WRIST_GROUNDING_SOURCE` in `FILENAME.py` or via generated launchers.
 
 - `3D Visualization /Bounding Boxes.py`
-  - Visualizes WiLoR bounding-box tracks from per-frame outputs.
+  - Visualizes model bounding-box tracks from per-frame outputs or stride sequence exports.
   - Useful for checking box tracking behavior over time.
   - Supports frame directory globs and subsampling controls.
 
@@ -61,7 +61,7 @@ These scripts generate time-series and frequency-domain plots for hand motion si
   - Compares multiple sources in one figure.
   - Plots displacement over time, power spectral density, and per-axis filtered displacement.
   - Default mode compares two sources.
-  - `--all-models` compares WiLoR, Hamba, DynHAMR, and MediaPipe together.
+  - `--all-models` compares WiLoR, WiLoR finetune, Hamba, DynHAMR, Stride, and MediaPipe together.
 
 - `Frequency Analysis/Point to Point.py`
   - Measures motion between two points or regions.
@@ -109,6 +109,10 @@ Each launcher corresponds to a specific clip and visualization type, for example
 - `launchers/wilor/<clip>/free`
 - `launchers/wilor/<clip>/wrist_grounding`
 - `launchers/wilor/<clip>/bounding_boxes`
+- `launchers/stride/<clip>/camera`
+- `launchers/stride/<clip>/free`
+- `launchers/stride/<clip>/wrist_grounding`
+- `launchers/stride/<clip>/bounding_boxes`
 - `launchers/wilor_finetune/<experiment>/<clip>/camera`
 - `launchers/wilor_finetune/<experiment>/<clip>/free`
 - `launchers/wilor_finetune/<experiment>/<clip>/wrist_grounding`
@@ -157,6 +161,7 @@ The visualization scripts can work with several source types:
 - WiLoR finetune mesh/frame outputs
 - Hamba mesh/frame outputs
 - DynHAMR mesh/frame outputs
+- Stride sequence outputs
 - ViPE pose outputs
 - MediaPipe CSV keypoint outputs
 - WHIM per-video annotation directories
@@ -166,6 +171,7 @@ The visualization scripts can work with several source types:
 Most paths and defaults come from `FILENAME.py`. That file is the main place to configure:
 
 - input roots
+- commented clip/file selections for WiLoR, Hamba, DynHAMR, Stride, MediaPipe, and ViPE
 - default clip selections
 - analysis parameters
 - frequency-analysis source choices

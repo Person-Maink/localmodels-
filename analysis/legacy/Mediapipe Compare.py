@@ -8,7 +8,7 @@ from scipy.signal import butter, filtfilt, welch
 
 from _path_setup import PROJECT_ROOT  # ensures root imports work
 import FILENAME as CONFIG
-from npy_io import list_frame_folders, load_frame_records
+from npy_io import iter_model_frame_records
 
 # NumPy legacy aliases for old pickle compatibility.
 np.bool = bool
@@ -74,8 +74,7 @@ def _bandpass_filter(signal):
 def _analyze_model(root_dir, hand_idx, wrist_joint_idx, j_reg):
     centroids = []
 
-    for folder in list_frame_folders(root_dir):
-        records = load_frame_records(folder, pattern="*.npy")
+    for _, records in iter_model_frame_records(root_dir, pattern="*.npy"):
         selected = [r for r in records if int(r.get("right", -1)) == int(hand_idx)]
         if not selected:
             continue

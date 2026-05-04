@@ -11,7 +11,7 @@ from scipy.signal import butter, filtfilt, welch
 from _path_setup import PROJECT_ROOT  # ensures root imports work
 import FILENAME as CONFIG
 from mano_pickle import load_mano_pickle
-from npy_io import list_frame_folders, load_frame_records
+from npy_io import iter_model_frame_records
 
 # NumPy legacy aliases for old pickle compatibility.
 np.bool = bool
@@ -29,8 +29,8 @@ FPS = 30.0
 FILTER_ORDER = 3
 HIGHPASS_CUTOFF = 2.0
 LOWPASS_CUTOFF = 12.0
-DEFAULT_SLOT_NAMES = ("A", "B", "C", "D", "E")
-LINE_STYLES = ("-", "--", "-.", ":")
+DEFAULT_SLOT_NAMES = ("A", "B", "C", "D", "E", "F")
+LINE_STYLES = ("-", "--", "-.", ":", (0, (6, 2)), (0, (3, 1, 1, 1)))
 
 
 @lru_cache(maxsize=1)
@@ -66,12 +66,13 @@ def _default_all_model_sources():
         getattr(CONFIG, "WILOR_FINETUNE_ROOT", None),
         getattr(CONFIG, "HAMBA_ROOT", None),
         getattr(CONFIG, "DYNHAMR_ROOT", None),
+        getattr(CONFIG, "STRIDE_ROOT", None),
         getattr(CONFIG, "MEDIAPIPE_ROOT", None),
     ]
 
 
 def _default_all_model_labels():
-    return ["WILOR", "WILOR FINETUNE", "HAMBA", "DYNHAMR", "MEDIAPIPE"]
+    return ["WILOR", "WILOR FINETUNE", "HAMBA", "DYNHAMR", "STRIDE", "MEDIAPIPE"]
 
 
 def _source_kind(path_text):
@@ -133,8 +134,7 @@ def _analyze_model(root_dir, hand_idx, wrist_joint_idx, j_reg):
     total_records = 0
     matched_records = 0
 
-    for folder in list_frame_folders(root_dir):
-        records = load_frame_records(folder, pattern="*.npy")
+    for _, records in iter_model_frame_records(root_dir, pattern="*.npy"):
         total_records += len(records)
 
         centered_meshes = []
@@ -214,7 +214,7 @@ def _resolve_entries(overrides):
     if not sources:
         raise ValueError(
             "No analysis sources resolved. Set ANALYSIS_SOURCE_A/B in FILENAME.py, "
-            "pass explicit sources, or use --all-models with configured WILOR/HAMBA/MEDIAPIPE roots."
+            "pass explicit sources, or use --all-models with configured WiLoR/Hamba/DynHAMR/Stride/MediaPipe roots."
         )
 
     if labels_override is not None:
@@ -352,7 +352,7 @@ def main():
     parser.add_argument(
         "--all-models",
         action="store_true",
-        help="Compare WiLoR, WiLoR finetune, Hamba, DynHAMR, and MediaPipe together.",
+        help="Compare WiLoR, WiLoR finetune, Hamba, DynHAMR, Stride, and MediaPipe together.",
     )
     args = parser.parse_args()
 

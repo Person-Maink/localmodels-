@@ -11,7 +11,7 @@ from scipy.signal import butter, filtfilt, welch
 from _path_setup import PROJECT_ROOT  # ensures root imports work
 import FILENAME as CONFIG
 from mano_pickle import load_mano_pickle
-from npy_io import list_frame_folders, load_frame_records
+from npy_io import iter_model_frame_records
 
 
 # NumPy legacy aliases for old pickle compatibility.
@@ -34,6 +34,7 @@ SOURCE_STYLE = {
     "wilor_finetune": (0, (6, 2)),
     "hamba": "--",
     "dynhamr": "-.",
+    "stride": (0, (3, 1, 1, 1)),
     "mediapipe": ":",
 }
 AXIS_ALPHA = {
@@ -230,6 +231,7 @@ def _resolve_sources(config_overrides):
         "wilor": _normalize_optional_path(config_overrides.get("wilor_source", getattr(CONFIG, "WILOR_ROOT", None))),
         "hamba": _normalize_optional_path(config_overrides.get("hamba_source", getattr(CONFIG, "HAMBA_ROOT", None))),
         "dynhamr": _normalize_optional_path(config_overrides.get("dynhamr_source", getattr(CONFIG, "DYNHAMR_ROOT", None))),
+        "stride": _normalize_optional_path(config_overrides.get("stride_source", getattr(CONFIG, "STRIDE_ROOT", None))),
         "mediapipe": _normalize_optional_path(config_overrides.get("mediapipe_source", getattr(CONFIG, "MEDIAPIPE_ROOT", None))),
     }
     return {name: path for name, path in sources.items() if path is not None}
@@ -251,8 +253,7 @@ def _resolve_pair_lists(config_overrides):
 
 def _collect_model_frames(root_dir, j_reg, hand_idx, wrist_joint_idx, n_verts):
     frames = []
-    for folder in list_frame_folders(root_dir):
-        records = load_frame_records(folder)
+    for _, records in iter_model_frame_records(root_dir):
         if not records:
             continue
 

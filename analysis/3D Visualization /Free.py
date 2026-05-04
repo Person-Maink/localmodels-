@@ -7,7 +7,7 @@ from vedo.applications import AnimationPlayer
 from _path_setup import PROJECT_ROOT  # ensures root imports work
 import FILENAME as CONFIG
 from mano_pickle import load_mano_pickle
-from npy_io import list_frame_folders, load_frame_records
+from npy_io import iter_model_frame_records
 
 
 HAND_CONNECTIONS = [
@@ -123,8 +123,7 @@ def _load_frames_from_model(root_dir, apply_x180=True, mesh_alpha=0.5):
     frames = []
     loaded_records = 0
 
-    for folder in list_frame_folders(root_dir):
-        records = load_frame_records(folder, pattern="*.npy")
+    for _, records in iter_model_frame_records(root_dir, pattern="*.npy"):
         if not records:
             continue
 
@@ -188,7 +187,7 @@ def main():
         print(f"Loaded {len(frames)} frames from MediaPipe CSV ({n_records} hand records)")
     else:
         frames, n_records = _load_frames_from_model(source_path, apply_x180=True, mesh_alpha=0.5)
-        print(f"Loaded {len(frames)} frames from model npy records ({n_records} hand records)")
+        print(f"Loaded {len(frames)} frames from model/stride records ({n_records} hand records)")
 
     if not frames:
         raise RuntimeError(f"No valid frames found for source: {source_path}")

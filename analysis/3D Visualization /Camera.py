@@ -7,6 +7,11 @@ import numpy as np
 
 from _path_setup import PROJECT_ROOT  # ensures root imports work
 from FILENAME import *
+from npy_io import (
+    is_stride_source,
+    load_stride_right_values,
+    resolve_model_camera_poses_file,
+)
 
 try:
     from vedo import Lines, Plotter, Sphere
@@ -16,12 +21,14 @@ except ModuleNotFoundError:
 VIPE_POSE_FILE_CFG = None
 PRIMARY_MODEL_FRAMES_ROOT_CFG = None
 ALT_MODEL_FRAMES_ROOT_CFG = None
+MODEL_CAMERA_POSES_FILE_CFG = None
 
 VIPE_POSE_FILE_CFG = VIPE_POSE_FILE
 PRIMARY_MODEL_FRAMES_ROOT_CFG = MODEL_ROOT
 if PRIMARY_MODEL_FRAMES_ROOT_CFG is None:
     PRIMARY_MODEL_FRAMES_ROOT_CFG = WILOR_ROOT
 ALT_MODEL_FRAMES_ROOT_CFG = HAMBA_ROOT
+MODEL_CAMERA_POSES_FILE_CFG = MODEL_CAMERA_POSES
 
 def _normalize_optional_path(value):
     if value is None:
@@ -36,6 +43,7 @@ DEFAULT_VIPE_POSE_FILE = _normalize_optional_path(VIPE_POSE_FILE_CFG)
 DEFAULT_MODEL_FRAMES_ROOT = _normalize_optional_path(PRIMARY_MODEL_FRAMES_ROOT_CFG)
 if DEFAULT_MODEL_FRAMES_ROOT is None:
     DEFAULT_MODEL_FRAMES_ROOT = _normalize_optional_path(ALT_MODEL_FRAMES_ROOT_CFG)
+DEFAULT_CAMERA_POSES_FILE = _normalize_optional_path(MODEL_CAMERA_POSES_FILE_CFG)
 
 
 def extract_camera_params_from_results(results):
@@ -113,6 +121,35 @@ def _parse_right_from_filename(path):
     return None
 
 
+def _normalize_pose_stack(poses_wc, source_name):
+    poses_wc = np.asarray(poses_wc, dtype=np.float32)
+    if poses_wc.ndim == 4 and poses_wc.shape[0] == 1:
+        poses_wc = poses_wc[0]
+    if poses_wc.ndim != 3 or poses_wc.shape[1:] != (4, 4):
+        raise ValueError(f"Invalid poses_wc shape in {source_name}: {poses_wc.shape}")
+    return poses_wc
+
+
+def _normalize_rotation_stack(rotations, source_name, n_expected=None):
+    rotations = np.asarray(rotations, dtype=np.float32)
+    if rotations.ndim == 4 and rotations.shape[0] == 1:
+        rotations = rotations[0]
+    if rotations.ndim != 3 or rotations.shape[1:] != (3, 3):
+        raise ValueError(f"Invalid rotation stack in {source_name}: {rotations.shape}")
+    if n_expected is not None and rotations.shape[0] != int(n_expected):
+        raise ValueError(
+            f"Rotation stack length {rotations.shape[0]} does not match translation length {n_expected} in {source_name}"
+        )
+    return rotations
+
+
+def _poses_from_rotation_translation(rotations, translations):
+    poses_wc = np.repeat(np.eye(4, dtype=np.float32)[None, :, :], len(translations), axis=0)
+    poses_wc[:, :3, :3] = rotations
+    poses_wc[:, :3, 3] = translations
+    return poses_wc
+
+
 def load_camera_file(camera_file):
     camera_file = Path(camera_file)
     data = np.load(camera_file, allow_pickle=True)
@@ -144,20 +181,28 @@ def load_camera_file(camera_file):
 def load_camera_poses_file(camera_poses_file):
     camera_poses_file = Path(camera_poses_file)
     data = np.load(camera_poses_file, allow_pickle=True)
-    if "poses_wc" not in data:
-        raise KeyError(f"'poses_wc' not found in {camera_poses_file}")
+    try:
+        if "poses_wc" in data:
+            poses_wc = _normalize_pose_stack(data["poses_wc"], camera_poses_file)
+        elif "cam_R" in data and "cam_t" in data:
+            cam_t = np.asarray(data["cam_t"], dtype=np.float32).reshape(-1, 3)
+            cam_R = _normalize_rotation_stack(data["cam_R"], camera_poses_file, len(cam_t))
+            poses_wc = _poses_from_rotation_translation(cam_R, cam_t)
+        else:
+            raise KeyError(
+                f"Neither 'poses_wc' nor ('cam_R', 'cam_t') found in {camera_poses_file}"
+            )
 
-    poses_wc = np.asarray(data["poses_wc"], dtype=np.float32)
-    if poses_wc.ndim != 3 or poses_wc.shape[1:] != (4, 4):
-        raise ValueError(f"Invalid poses_wc shape in {camera_poses_file}: {poses_wc.shape}")
-
-    right = np.asarray(data["right"], dtype=np.int32).reshape(-1) if "right" in data else None
-    frame_id = np.asarray(data["frame_id"], dtype=np.int32).reshape(-1) if "frame_id" in data else None
-    track_id = np.asarray(data["track_id"], dtype=np.int32).reshape(-1) if "track_id" in data else None
-    intrinsics = np.asarray(data["intrinsics"], dtype=np.float32) if "intrinsics" in data else None
-    data.close()
+        right = np.asarray(data["right"], dtype=np.int32).reshape(-1) if "right" in data else None
+        frame_id = np.asarray(data["frame_id"], dtype=np.int32).reshape(-1) if "frame_id" in data else None
+        track_id = np.asarray(data["track_id"], dtype=np.int32).reshape(-1) if "track_id" in data else None
+        intrinsics = np.asarray(data["intrinsics"], dtype=np.float32) if "intrinsics" in data else None
+    finally:
+        data.close()
 
     n = len(poses_wc)
+    if right is None:
+        right = load_stride_right_values(camera_poses_file.parent, n)
     if right is not None and len(right) != n:
         raise ValueError(f"right length {len(right)} does not match poses_wc length {n} in {camera_poses_file}")
     if frame_id is not None and len(frame_id) != n:
@@ -472,8 +517,8 @@ def main():
     parser.add_argument(
         "--camera_poses_file",
         type=str,
-        default=None,
-        help="Explicit model camera-poses .npz file with poses_wc/right/frame_id arrays. Use 'None' to disable it.",
+        default=str(DEFAULT_CAMERA_POSES_FILE) if DEFAULT_CAMERA_POSES_FILE is not None else None,
+        help="Explicit model camera-poses .npz file with either poses_wc or cam_R/cam_t arrays. Use 'None' to disable it.",
     )
     parser.add_argument("--frame_dirs_glob", type=str, default="frame_*", help="Glob for frame folders.")
     parser.add_argument(
@@ -501,6 +546,12 @@ def main():
     vipe_pose_path = _normalize_optional_path(args.vipe_pose_file)
     model_frames_root = _normalize_optional_path(args.frames_root)
     camera_poses_path = _normalize_optional_path(args.camera_poses_file)
+
+    if camera_poses_path is None and model_frames_root is not None and is_stride_source(model_frames_root):
+        auto_camera_poses = resolve_model_camera_poses_file(model_frames_root)
+        if auto_camera_poses is not None:
+            camera_poses_path = auto_camera_poses
+            print(f"Auto-detected stride camera poses from: {camera_poses_path}")
 
     if vipe_pose_path is None and model_frames_root is None and camera_poses_path is None:
         raise ValueError(
