@@ -114,6 +114,9 @@ Thumbs.db
 **/logs/
 **/results/
 **/experiments/
+!**/experiments/finetuning.yaml
+!**/experiments/lora/finetuning.yaml
+!**/experiments/frozen wilor/finetuning.yaml
 *outputs*
 *renders*
 *cache*

@@ -37,8 +37,8 @@ def make_argparser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--loss-config",
         type=str,
-        default="experiments/temporal_ablations.yaml",
-        help="Path to the temporal ablation YAML file.",
+        default="experiments/finetuning.yaml",
+        help="Path to a finetuning or stage YAML file.",
     )
     parser.add_argument(
         "--experiment",
