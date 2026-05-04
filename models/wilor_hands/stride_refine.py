@@ -6,6 +6,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
+from frame_store import FrameStore
 from utils_new import render_rgba_multiple
 from visualize import images_to_video
 from wilor.models import MANO
@@ -138,7 +139,7 @@ def _second_difference(sequence: torch.Tensor):
     return sequence[2:] - 2.0 * sequence[1:-1] + sequence[:-2]
 
 
-def _stack_records(records, image_folder=None, video_name=None):
+def _stack_records(records, video_name=None):
     frame_ids = np.asarray([int(record["frame_id"]) for record in records], dtype=np.int32)
     full_frame_ids = np.arange(frame_ids.min(), frame_ids.max() + 1, dtype=np.int32)
     observed_mask = np.isin(full_frame_ids, frame_ids)
@@ -202,14 +203,8 @@ def _stack_records(records, image_folder=None, video_name=None):
         ).astype(np.int32),
     }
 
-    if image_folder is not None and video_name is not None:
-        image_dir = Path(image_folder)
-        if image_dir.name != f"{video_name}_frames":
-            image_dir = image_dir / f"{video_name}_frames"
-        seq["image_paths"] = [
-            image_dir / f"frame_{int(frame_id):06d}.jpg"
-            for frame_id in full_frame_ids
-        ]
+    if video_name is not None:
+        seq["video_name"] = video_name
 
     return seq
 
@@ -402,7 +397,7 @@ def _optimize_sequence(sequence, config: StrideConfig, mano_model_path: str, dev
     }
 
 
-def _save_outputs(video_name, sequence, refined, output_root: Path, visualize: bool, mano_faces):
+def _save_outputs(video_name, sequence, refined, output_root: Path, visualize: bool, mano_faces, frame_store: FrameStore | None = None):
     base_dir = output_root / video_name
     mesh_root = base_dir / "meshes"
     vis_root = base_dir / "visualizations"
@@ -438,27 +433,25 @@ def _save_outputs(video_name, sequence, refined, output_root: Path, visualize: b
         np.save(frame_dir / f"{frame_name}_0_{float(refined['right']):.1f}_verts.npy", payload)
         frame_rows.append(int(frame_id))
 
-        if visualize and sequence.get("image_paths"):
+        if visualize and frame_store is not None and sequence.get("video_name"):
             import cv2
 
-            image_path = sequence["image_paths"][index]
-            if image_path.exists():
-                img_cv2 = cv2.imread(str(image_path))
-                if img_cv2 is not None:
-                    cam_view = render_rgba_multiple(
-                        [payload["verts"]],
-                        mano_faces,
-                        cam_t=[payload["cam_t"]],
-                        render_res=tuple(payload["img_res"]),
-                        is_right=[refined["right"]],
-                        mesh_base_color=LIGHT_PURPLE,
-                        scene_bg_color=(1, 1, 1),
-                        focal_length=payload["focal_length"],
-                    )
-                    input_img = img_cv2.astype(np.float32)[:, :, ::-1] / 255.0
-                    input_img = np.concatenate([input_img, np.ones_like(input_img[:, :, :1])], axis=2)
-                    overlay = input_img[:, :, :3] * (1 - cam_view[:, :, 3:]) + cam_view[:, :, :3] * cam_view[:, :, 3:]
-                    cv2.imwrite(str(vis_root / f"{frame_name}.jpg"), (255 * overlay[:, :, ::-1]).astype(np.uint8))
+            img_cv2 = frame_store.get_frame(str(sequence["video_name"]), int(frame_id))
+            if img_cv2 is not None:
+                cam_view = render_rgba_multiple(
+                    [payload["verts"]],
+                    mano_faces,
+                    cam_t=[payload["cam_t"]],
+                    render_res=tuple(payload["img_res"]),
+                    is_right=[refined["right"]],
+                    mesh_base_color=LIGHT_PURPLE,
+                    scene_bg_color=(1, 1, 1),
+                    focal_length=payload["focal_length"],
+                )
+                input_img = img_cv2.astype(np.float32)[:, :, ::-1] / 255.0
+                input_img = np.concatenate([input_img, np.ones_like(input_img[:, :, :1])], axis=2)
+                overlay = input_img[:, :, :3] * (1 - cam_view[:, :, 3:]) + cam_view[:, :, :3] * cam_view[:, :, 3:]
+                cv2.imwrite(str(vis_root / f"{frame_name}.jpg"), (255 * overlay[:, :, ::-1]).astype(np.uint8))
 
     np.savez(
         base_dir / "refined_sequence.npz",
@@ -532,6 +525,7 @@ def run_stride_refinement(
     output_root,
     video_name,
     image_folder=None,
+    frame_store: FrameStore | None = None,
     visualize=False,
     target_hand="auto",
     mano_model_path="./mano_data",
@@ -546,7 +540,7 @@ def run_stride_refinement(
 
     records_by_frame = _frame_records(mesh_root)
     selected_records = _pick_track(records_by_frame, target_hand=_parse_target_hand(target_hand))
-    sequence = _stack_records(selected_records, image_folder=image_folder, video_name=video_name)
+    sequence = _stack_records(selected_records, video_name=video_name)
 
     config = stride_config or StrideConfig()
     device = torch.device("cuda" if use_gpu and torch.cuda.is_available() else "cpu")
@@ -557,7 +551,7 @@ def run_stride_refinement(
         batch_size=1,
         create_body_pose=False,
     ).faces
-    _save_outputs(video_name, sequence, refined, output_root, visualize, mano_faces)
+    _save_outputs(video_name, sequence, refined, output_root, visualize, mano_faces, frame_store=frame_store)
     return {
         "video": video_name,
         "frames_refined": int(len(refined["frame_ids"])),

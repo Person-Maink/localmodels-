@@ -243,16 +243,19 @@ def build_detection_samples(
                 sample["img_path"] = str(image_root / img_path_rel)
         selected_videos = set(video_names)
         if not selected_videos:
+            limited_samples = _limit_samples_by_frame(cached_samples, sample_limit)
             print(
-                f"[progress] Loaded {len(cached_samples)} cached detection samples.",
+                f"[progress] Loaded {len(cached_samples)} cached detection samples; "
+                f"using {len(limited_samples)} after frame limiting.",
                 flush=True,
             )
-            return cached_samples
+            return limited_samples
         filtered_samples = [
             sample
             for sample in cached_samples
             if sample.get("video_name") in selected_videos
         ]
+        filtered_samples = _limit_samples_by_frame(filtered_samples, sample_limit)
         print(
             "[progress] Detection cache contains "
             f"{len(cached_samples)} samples; using {len(filtered_samples)} "
@@ -374,6 +377,25 @@ def get_sample_frame_key(sample: Dict[str, Any]) -> Hashable:
     return str(frame_path)
 
 
+def _limit_samples_by_frame(
+    samples: Sequence[Dict[str, Any]],
+    sample_limit: int,
+) -> List[Dict[str, Any]]:
+    if sample_limit <= 0:
+        return list(samples)
+
+    kept_frame_keys: set[Hashable] = set()
+    limited_samples: List[Dict[str, Any]] = []
+    for sample in samples:
+        frame_key = get_sample_frame_key(sample)
+        if frame_key not in kept_frame_keys:
+            if len(kept_frame_keys) >= sample_limit:
+                continue
+            kept_frame_keys.add(frame_key)
+        limited_samples.append(sample)
+    return limited_samples
+
+
 def split_samples_by_frame(
     samples: Sequence[Dict[str, Any]],
     validation_split: float,
@@ -436,24 +458,46 @@ class DetectedVideoHandDataset(Dataset):
         self.samples = samples
         self.rescale_factor = rescale_factor
         self.include_path_metadata = include_path_metadata
+        self._sample_local_index_by_global_idx: Dict[int, int] = {}
+        self._samples_by_frame_path: Dict[str, List[Dict[str, Any]]] = {}
+        self._frame_cache: Dict[str, List[Dict[str, Any]]] = {}
+
+        for idx, sample in enumerate(self.samples):
+            frame_path = str(sample["img_path"])
+            frame_samples = self._samples_by_frame_path.setdefault(frame_path, [])
+            self._sample_local_index_by_global_idx[idx] = len(frame_samples)
+            frame_samples.append(sample)
 
     def __len__(self) -> int:
         return len(self.samples)
 
-    def __getitem__(self, idx: int) -> Dict:
-        sample = self.samples[idx]
-        img_cv2 = cv2.imread(sample["img_path"])
-        if img_cv2 is None:
-            raise RuntimeError(f"Failed to read image: {sample['img_path']}")
+    def _get_frame_items(self, frame_path: str) -> List[Dict[str, Any]]:
+        cached_items = self._frame_cache.get(frame_path)
+        if cached_items is not None:
+            return cached_items
 
+        img_cv2 = cv2.imread(frame_path)
+        if img_cv2 is None:
+            raise RuntimeError(f"Failed to read image: {frame_path}")
+
+        frame_samples = self._samples_by_frame_path[frame_path]
         crop_dataset = ViTDetDataset(
             self.model_cfg,
             img_cv2,
-            np.asarray([sample["bbox"]], dtype=np.float32),
-            np.asarray([sample["right"]], dtype=np.float32),
+            np.asarray([sample["bbox"] for sample in frame_samples], dtype=np.float32),
+            np.asarray([sample["right"] for sample in frame_samples], dtype=np.float32),
             rescale_factor=self.rescale_factor,
         )
-        item = crop_dataset[0]
+        cached_items = [dict(crop_dataset[item_idx]) for item_idx in range(len(frame_samples))]
+        self._frame_cache[frame_path] = cached_items
+        return cached_items
+
+    def __getitem__(self, idx: int) -> Dict:
+        sample = self.samples[idx]
+        frame_path = str(sample["img_path"])
+        frame_items = self._get_frame_items(frame_path)
+        frame_item_index = self._sample_local_index_by_global_idx[idx]
+        item = dict(frame_items[frame_item_index])
         if self.include_path_metadata:
             item["imgname"] = sample["img_path"]
             item["imgname_rel"] = sample["img_path_rel"]

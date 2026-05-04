@@ -9,6 +9,16 @@ from utils_new import *
 
 LIGHT_PURPLE = (0.25098039, 0.274117647, 0.65882353)
 
+
+def _record_base_path(out_folder, img_fn, detection_index, is_right):
+    hand_suffix = int(round(float(is_right)))
+    return os.path.join(out_folder, f"{img_fn}_{detection_index}_{hand_suffix}")
+
+
+def _save_result_record(out_folder, img_fn, detection_index, is_right, result):
+    np.save(f"{_record_base_path(out_folder, img_fn, detection_index, is_right)}_record.npy", result)
+
+
 def setup_models(
     device="cuda" if torch.cuda.is_available() else "cpu",
     checkpoint_path="./pretrained_models/wilor_final.ckpt",
@@ -27,11 +37,11 @@ def setup_models(
         kwargs["weights_only"] = False
         return old_load(*args, **kwargs)
     torch.load = unsafe_load
-
-    print(f"[progress] Loading detector: {detector_path}", flush=True)
-    detector = YOLO(detector_path)
-
-    torch.load = old_load  # restore safe default
+    try:
+        print(f"[progress] Loading detector: {detector_path}", flush=True)
+        detector = YOLO(detector_path)
+    finally:
+        torch.load = old_load  # restore safe default
 
     model = model.to(device).eval()
     detector = detector.to(device)
@@ -125,7 +135,13 @@ def run_wilor_inference(
 
             if save_mesh and out_folder:
                 os.makedirs(out_folder, exist_ok=True)
-                np.save(os.path.join(out_folder, f"{img_fn}_{n}_{is_right}_verts.npy"), result)
+                _save_result_record(
+                    out_folder,
+                    img_fn,
+                    detection_index,
+                    is_right,
+                    result,
+                )
 
         detection_offset += batch["img"].shape[0]
 

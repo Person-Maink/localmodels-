@@ -7,6 +7,7 @@ from types import SimpleNamespace
 import numpy as np
 import torch
 
+from frame_store import FrameStore
 from hmp_prior.arguments import Arguments
 from hmp_prior.fitting import fitting_prior
 from hmp_prior.rotations import axis_angle_to_matrix, matrix_to_axis_angle
@@ -43,7 +44,11 @@ def _require_hmp_assets(assets_root: Path, config_name: str):
         )
 
 
-def _resolve_vid_path(image_folder, cache_root: Path, video_name: str):
+def _resolve_vid_path(image_folder, cache_root: Path, video_name: str, frame_store: FrameStore | None = None):
+    if frame_store is not None:
+        source_path = frame_store.get_source_path(video_name)
+        if source_path is not None:
+            return source_path
     if image_folder:
         image_dir = Path(image_folder)
         if image_dir.name != f"{video_name}_frames":
@@ -193,7 +198,7 @@ def _reconstruct_sequence(sequence, result_dict, mano_model_path: str, device: t
     }
 
 
-def _save_outputs(video_name, sequence, refined, output_root: Path, raw_result_path: Path, visualize: bool, mano_faces):
+def _save_outputs(video_name, sequence, refined, output_root: Path, raw_result_path: Path, visualize: bool, mano_faces, frame_store: FrameStore | None = None):
     base_dir = output_root / video_name
     mesh_root = base_dir / "meshes"
     vis_root = base_dir / "visualizations"
@@ -230,27 +235,25 @@ def _save_outputs(video_name, sequence, refined, output_root: Path, raw_result_p
         }
         np.save(frame_dir / f"{frame_name}_0_{float(refined['right']):.1f}_verts.npy", payload)
 
-        if visualize and sequence.get("image_paths"):
+        if visualize and frame_store is not None and sequence.get("video_name"):
             import cv2
 
-            image_path = sequence["image_paths"][index]
-            if image_path.exists():
-                img_cv2 = cv2.imread(str(image_path))
-                if img_cv2 is not None:
-                    cam_view = render_rgba_multiple(
-                        [payload["verts"]],
-                        mano_faces,
-                        cam_t=[payload["cam_t"]],
-                        render_res=tuple(payload["img_res"]),
-                        is_right=[refined["right"]],
-                        mesh_base_color=LIGHT_PURPLE,
-                        scene_bg_color=(1, 1, 1),
-                        focal_length=payload["focal_length"],
-                    )
-                    input_img = img_cv2.astype(np.float32)[:, :, ::-1] / 255.0
-                    input_img = np.concatenate([input_img, np.ones_like(input_img[:, :, :1])], axis=2)
-                    overlay = input_img[:, :, :3] * (1 - cam_view[:, :, 3:]) + cam_view[:, :, :3] * cam_view[:, :, 3:]
-                    cv2.imwrite(str(vis_root / f"{frame_name}.jpg"), (255 * overlay[:, :, ::-1]).astype(np.uint8))
+            img_cv2 = frame_store.get_frame(str(sequence["video_name"]), int(frame_id))
+            if img_cv2 is not None:
+                cam_view = render_rgba_multiple(
+                    [payload["verts"]],
+                    mano_faces,
+                    cam_t=[payload["cam_t"]],
+                    render_res=tuple(payload["img_res"]),
+                    is_right=[refined["right"]],
+                    mesh_base_color=LIGHT_PURPLE,
+                    scene_bg_color=(1, 1, 1),
+                    focal_length=payload["focal_length"],
+                )
+                input_img = img_cv2.astype(np.float32)[:, :, ::-1] / 255.0
+                input_img = np.concatenate([input_img, np.ones_like(input_img[:, :, :1])], axis=2)
+                overlay = input_img[:, :, :3] * (1 - cam_view[:, :, 3:]) + cam_view[:, :, :3] * cam_view[:, :, 3:]
+                cv2.imwrite(str(vis_root / f"{frame_name}.jpg"), (255 * overlay[:, :, ::-1]).astype(np.uint8))
 
     np.savez(
         base_dir / "refined_sequence.npz",
@@ -320,6 +323,7 @@ def run_stride_hmp(
     output_root,
     video_name,
     image_folder=None,
+    frame_store: FrameStore | None = None,
     target_hand="auto",
     mano_model_path="./mano_data",
     use_gpu=True,
@@ -339,12 +343,12 @@ def run_stride_hmp(
     device = torch.device("cuda" if use_gpu and torch.cuda.is_available() else "cpu")
     records_by_frame = _frame_records(mesh_root)
     selected_records = _pick_track(records_by_frame, target_hand=_parse_target_hand(target_hand))
-    sequence = _stack_records(selected_records, image_folder=image_folder, video_name=video_name)
+    sequence = _stack_records(selected_records, video_name=video_name)
     obs_data, res_dict = _sequence_to_hmp_inputs(sequence, device)
 
     out_dir = output_root / video_name
     out_dir.mkdir(parents=True, exist_ok=True)
-    vid_path = _resolve_vid_path(image_folder, cache_root, video_name)
+    vid_path = _resolve_vid_path(image_folder, cache_root, video_name, frame_store=frame_store)
 
     opt = SimpleNamespace(
         paths=SimpleNamespace(base_dir=str(Path(__file__).resolve().parent)),
@@ -379,7 +383,7 @@ def run_stride_hmp(
         create_body_pose=False,
         use_pca=False,
     ).faces
-    _save_outputs(video_name, sequence, refined, output_root, raw_result_path, visualize, mano_faces)
+    _save_outputs(video_name, sequence, refined, output_root, raw_result_path, visualize, mano_faces, frame_store=frame_store)
 
     metadata = {
         "video": video_name,

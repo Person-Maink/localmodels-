@@ -717,6 +717,12 @@ def multi_stage_opt(opt, device, obs_data, res_dict, hand_model, config_f, exp_s
     print('loading data...')
     assert len(res_dict) == 1
     res_dict = res_dict[0]
+    if args.N_frames == 0:
+        pose_body = res_dict.get("pose_body", None)
+        if pose_body is not None:
+            args.N_frames = int(pose_body.shape[1])
+        elif "vis_mask" in obs_data:
+            args.N_frames = int(obs_data["vis_mask"].shape[1])
     print('obs_data: ', obs_data.keys())
     print('res_dict: ', res_dict.keys())
     for i in res_dict.keys():

@@ -3,7 +3,9 @@ import cv2
 import numpy as np
 import os
 from pathlib import Path
+import torch
 
+from frame_store import FrameStore
 from inference import * 
 from loader import * 
 from stride_refine import StrideConfig, run_stride_refinement
@@ -15,31 +17,28 @@ from utils_new import *
 LIGHT_PURPLE = (0.25098039, 0.274117647, 0.65882353)
 
 
-def _resolve_image_paths(image_folder, video_name=None):
-    img_paths = load_images_from_folder(image_folder)
-    if not video_name:
-        return img_paths
+def _make_frame_store(args):
+    return FrameStore(args.image_folder, cache_root=args.frame_cache_root)
 
-    target_parent = f"{video_name}_frames"
-    selected = [img_path for img_path in img_paths if Path(img_path).parent.name == target_parent]
-    if selected:
-        return selected
 
-    available_videos = sorted(
-        {
-            Path(img_path).parent.name.replace("_frames", "")
-            for img_path in load_images_from_folder(image_folder)
-            if Path(img_path).parent.name.endswith("_frames")
-        }
-    )
-    print(f"[ERROR] No frames found for video '{video_name}' in {image_folder}")
-    if available_videos:
-        print("Available videos:", ", ".join(available_videos))
-    return []
+def _resolve_video_names(frame_store, image_folder, video_name=None):
+    if video_name:
+        if frame_store.has_video(video_name):
+            return [video_name]
+        message = frame_store.explain_unavailable(video_name)
+        if message:
+            print(f"[ERROR] {message}")
+        else:
+            print(f"[ERROR] No frames found for video '{video_name}' in {image_folder}")
+            available_videos = frame_store.list_videos()
+            if available_videos:
+                print("Available videos:", ", ".join(available_videos))
+        return []
+    return frame_store.list_videos()
 
 
 def _run_wilor_pass(args):
-    device = "cuda" if args.use_gpu and cv2.cuda.getCudaEnabledDeviceCount() > 0 else "cpu"
+    device = "cuda" if args.use_gpu and torch.cuda.is_available() else "cpu"
     model, model_cfg, detector = setup_models(
         device=device,
         checkpoint_path=args.checkpoint_path,
@@ -47,20 +46,14 @@ def _run_wilor_pass(args):
         detector_path=args.detector_path,
     )
 
-    img_paths = _resolve_image_paths(args.image_folder, args.video)
-    if not img_paths:
+    frame_store = _make_frame_store(args)
+    video_names = _resolve_video_names(frame_store, args.image_folder, args.video)
+    if not video_names:
         return []
 
-    processed_videos = []
+    processed_videos = set()
 
-    for img_path in img_paths:
-        parent_name = Path(img_path).parent.name
-        if parent_name.endswith("_frames"):
-            video_name = parent_name.replace("_frames", "")
-        else:
-            video_name = "single_images"
-        processed_videos.append(video_name)
-
+    for video_name in video_names:
         base_out_dir = Path(args.output_folder) / video_name
 
         vis_dir = base_out_dir / "visualizations"
@@ -69,60 +62,63 @@ def _run_wilor_pass(args):
         for d in [vis_dir, mesh_dir]:
             d.mkdir(parents=True, exist_ok=True)
 
-        base = Path(img_path).stem
-        out_vis = vis_dir / f"{base}.jpg"
-        out_mesh = mesh_dir / f"{base}/"
+        for frame_record in frame_store.iter_video_frames(video_name):
+            base = frame_record.frame_name
+            out_vis = vis_dir / f"{base}.jpg"
+            out_mesh = mesh_dir / f"{base}/"
 
-        print(f"\nProcessing: {img_path}")
-        img_cv2 = cv2.imread(str(img_path))
-        detections = detector(img_cv2, conf=0.3, verbose=False)[0]
+            print(f"\nProcessing: {video_name}:{base}")
+            img_cv2 = frame_store.get_frame(video_name, frame_record.frame_id)
+            if img_cv2 is None:
+                print(f"[WARN] Failed to decode frame, skipping: {video_name}:{base}")
+                continue
+            detections = detector(img_cv2, conf=0.3, verbose=False)[0]
 
-        if len(detections) == 0:
-            print("No detections, skipping.")
-            continue
+            if len(detections) == 0:
+                print("No detections, skipping.")
+                continue
 
-        bboxes = []
-        is_right = []
-        detection_scores = []
-        for det in detections:
-            bbox = det.boxes.data.cpu().detach().squeeze().numpy()
-            bboxes.append(bbox[:4].tolist())
-            is_right.append(det.boxes.cls.cpu().detach().squeeze().item())
-            detection_scores.append(float(det.boxes.conf.cpu().detach().squeeze().item()))
+            bboxes = []
+            is_right = []
+            detection_scores = []
+            for det in detections:
+                bbox = det.boxes.data.cpu().detach().squeeze().numpy()
+                bboxes.append(bbox[:4].tolist())
+                is_right.append(det.boxes.cls.cpu().detach().squeeze().item())
+                detection_scores.append(float(det.boxes.conf.cpu().detach().squeeze().item()))
 
-        dataloader = make_dataloader(model_cfg, img_cv2, np.array(bboxes), np.array(is_right), args.rescale_factor)
+            dataloader = make_dataloader(model_cfg, img_cv2, np.array(bboxes), np.array(is_right), args.rescale_factor)
+            frame_id = None if frame_record.source_kind == "single_image" else int(frame_record.frame_id)
+            results = run_wilor_inference(model, model_cfg, detector, dataloader, img_cv2,
+                                          device=device, out_folder=out_mesh, img_fn=base, save_mesh=args.save_mesh,
+                                          frame_id=frame_id, detection_scores=detection_scores)
+            if results:
+                processed_videos.add(video_name)
 
-        frame_id = int(base.split("_")[-1]) if base.startswith("frame_") else None
-        results = run_wilor_inference(model, model_cfg, detector, dataloader, img_cv2,
-                                      device=device, out_folder=out_mesh, img_fn=base, save_mesh=args.save_mesh,
-                                      frame_id=frame_id, detection_scores=detection_scores)
+            if args.visualize and results:
+                all_verts = [r["verts"] for r in results]
+                all_cam_t = [r["cam_t"] for r in results]
+                all_right = [r["right"] for r in results]
 
+                focal_length = results[0]["focal_length"]
+                render_res   = tuple(results[0]["img_res"])  # (W, H)
 
-        if args.visualize and results:
-            all_verts = [r["verts"] for r in results]
-            all_cam_t = [r["cam_t"] for r in results]
-            all_right = [r["right"] for r in results]
+                misc_args = dict(
+                    mesh_base_color=LIGHT_PURPLE,
+                    scene_bg_color=(1, 1, 1),
+                    focal_length=focal_length,
+                )
 
-            focal_length = results[0]["focal_length"]
-            render_res   = tuple(results[0]["img_res"])  # (W, H)
+                cam_view = render_rgba_multiple(
+                    all_verts, model.mano.faces, cam_t=all_cam_t, render_res=render_res, is_right=all_right, **misc_args
+                )
 
-            misc_args = dict(
-                mesh_base_color=LIGHT_PURPLE,
-                scene_bg_color=(1, 1, 1),
-                # focal_length=model_cfg.EXTRA.FOCAL_LENGTH,
-                focal_length=focal_length,
-            )
+                input_img = img_cv2.astype(np.float32)[:, :, ::-1] / 255.0
+                input_img = np.concatenate([input_img, np.ones_like(input_img[:, :, :1])], axis=2)
+                overlay = input_img[:, :, :3] * (1 - cam_view[:, :, 3:]) + cam_view[:, :, :3] * cam_view[:, :, 3:]
 
-            cam_view = render_rgba_multiple(
-                all_verts, model.mano.faces, cam_t=all_cam_t, render_res=render_res, is_right=all_right, **misc_args
-            )
-
-            input_img = img_cv2.astype(np.float32)[:, :, ::-1] / 255.0
-            input_img = np.concatenate([input_img, np.ones_like(input_img[:, :, :1])], axis=2)
-            overlay = input_img[:, :, :3] * (1 - cam_view[:, :, 3:]) + cam_view[:, :, :3] * cam_view[:, :, 3:]
-
-            cv2.imwrite(out_vis, (255 * overlay[:, :, ::-1]).astype(np.uint8))
-            print(f"Saved visualization: {out_vis}")
+                cv2.imwrite(out_vis, (255 * overlay[:, :, ::-1]).astype(np.uint8))
+                print(f"Saved visualization: {out_vis}")
 
 
     if args.visualize:
@@ -148,12 +144,15 @@ def _run_wilor_pass(args):
                 images_to_video(subdir / "visualizations", output_path, fps=30)
 
     print("\nAll images processed.")
-    return sorted(set(processed_videos))
+    return sorted(processed_videos)
 
 
 def _run_stride_pass(args):
     source_root = args.wilor_cache_root or args.output_folder
     processed_videos = [args.video] if args.video else []
+    frame_store = None
+    if args.image_folder and Path(args.image_folder).is_dir():
+        frame_store = _make_frame_store(args)
     if not args.stride_from_cache:
         processed_videos = _run_wilor_pass(args)
     elif not processed_videos:
@@ -181,6 +180,7 @@ def _run_stride_pass(args):
                     output_root=args.stride_output_folder,
                     video_name=video_name,
                     image_folder=args.image_folder,
+                    frame_store=frame_store,
                     target_hand=args.target_hand,
                     mano_model_path=args.mano_model_path,
                     use_gpu=args.use_gpu,
@@ -198,6 +198,7 @@ def _run_stride_pass(args):
                     output_root=args.stride_output_folder,
                     video_name=video_name,
                     image_folder=args.image_folder,
+                    frame_store=frame_store,
                     visualize=args.visualize,
                     target_hand=args.target_hand,
                     mano_model_path=args.mano_model_path,
@@ -234,12 +235,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run WiLoR inference on image folder.")
     parser.add_argument("--mode", choices=["wilor", "stride"], default="wilor", help="Inference mode to run.")
     parser.add_argument("--image_folder", type=str, default="../../data/images/", help="Folder with input images.")
+    parser.add_argument("--frame_cache_root", type=str, default=None, help="Optional root containing sidecar ZIP frame caches. Defaults to image_folder.")
     parser.add_argument("--output_folder", type=str, default="../../outputs/wilor/", help="Folder for results.")
     parser.add_argument("--wilor_cache_root", type=str, default=None, help="WiLoR cache root used as STRIDE input. Defaults to output_folder.")
     parser.add_argument("--stride_output_folder", type=str, default="../../outputs/stride/", help="Folder for STRIDE-refined results.")
     parser.add_argument("--stride_backend", choices=["hmp", "simple"], default="hmp", help="STRIDE backend to run.")
     parser.add_argument("--rescale_factor", type=float, default=2.0, help="BBox padding scale.")
-    parser.add_argument("--video", type=str, default=None, help="Video name to process (expects <video>_frames folder).")
+    parser.add_argument("--video", type=str, default=None, help="Video stem to process.")
     parser.add_argument("--target_hand", default="auto", help="Target hand for STRIDE refinement: auto, 0, or 1.")
     parser.add_argument("--overwrite", action=argparse.BooleanOptionalAction, default=False, help="Overwrite existing STRIDE output for the selected video.")
     parser.add_argument(
