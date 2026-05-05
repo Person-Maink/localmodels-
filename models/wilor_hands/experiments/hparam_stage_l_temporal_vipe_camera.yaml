@@ -1,8 +1,8 @@
 defaults:
   # Stage L: tune the temporal ViPE camera head once the main WiLoR baseline
-  # is already fixed. The current forward baseline comes from the Stage H
-  # family sweep, so this stage adds the temporal ViPE branch on top of the
-  # static temporal penalties that won there.
+  # is already fixed. The current forward baseline includes the Stage K
+  # detection-crop winner, so this stage adds the temporal ViPE branch on top
+  # of the static temporal penalties that won earlier.
   train_mode: distill
   train_scope: refine_net
   videos:
@@ -14,7 +14,7 @@ defaults:
   validation_split: 0.2
   sample_limit: 256
   detection_conf: 0.3
-  rescale_factor: 2.0
+  rescale_factor: 2.5
   batch_size: 8
   num_workers: 2
   max_steps: 200

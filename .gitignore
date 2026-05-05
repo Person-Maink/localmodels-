@@ -114,6 +114,12 @@ Thumbs.db
 **/logs/
 **/results/
 **/experiments/
+!/models/wilor_hands/experiments/
+!/models/wilor_hands/experiments/finetuning.yaml
+!/models/wilor_hands/experiments/lora/
+!/models/wilor_hands/experiments/lora/finetuning.yaml
+!/models/wilor_hands/experiments/frozen wilor/
+!/models/wilor_hands/experiments/frozen wilor/finetuning.yaml
 !**/experiments/finetuning.yaml
 !**/experiments/lora/finetuning.yaml
 !**/experiments/frozen wilor/finetuning.yaml

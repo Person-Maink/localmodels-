@@ -36,16 +36,17 @@ defaults:
       enabled: false
       formulation: learnable
       weight: 0.0
-      scorer_weight: 0.0
+      scorer_weight: 0.0001
     temporal_bbox_projected:
       enabled: false
       formulation: learnable
       weight: 0.0
-      scorer_weight: 0.0
+      scorer_weight: 0.0001
     temporal_vipe_camera:
       enabled: true
       formulation: learnable
       weight: 0.01
+      scorer_weight: 0.0
       smoothness_weight: 0.005
       anchor_weight: 0.001
 

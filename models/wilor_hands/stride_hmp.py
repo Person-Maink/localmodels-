@@ -8,9 +8,9 @@ import numpy as np
 import torch
 
 from frame_store import FrameStore
-from hmp_prior.arguments import Arguments
-from hmp_prior.fitting import fitting_prior
-from hmp_prior.rotations import axis_angle_to_matrix, matrix_to_axis_angle
+from hmp_clean.rotations import axis_angle_to_matrix, matrix_to_axis_angle
+from hmp_stride_adapter import fitting_prior
+from hmp_stride_adapter_args import Arguments
 from stride_refine import LIGHT_PURPLE, _frame_records, _parse_target_hand, _pick_track, _stack_records
 from utils_new import render_rgba_multiple
 from visualize import images_to_video
@@ -27,8 +27,9 @@ class HMPConfig:
 def _require_hmp_assets(assets_root: Path, config_name: str):
     config = Arguments(
         str(Path(__file__).resolve().parent),
-        str(Path(__file__).resolve().parent / "hmp_prior"),
+        str(Path(__file__).resolve().parent / "hmp_clean"),
         filename=config_name,
+        mano_dir=Path(__file__).resolve().parent / "mano_data",
     )
     required = [
         assets_root / f"mean-{config.data.gender}-{config.data.clip_length}-{config.data.fps}fps.pt",

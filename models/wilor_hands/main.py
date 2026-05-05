@@ -266,7 +266,7 @@ if __name__ == "__main__":
         "--hmp_config_name",
         type=str,
         default="hmp_config.yaml",
-        help="HMP config file inside wilor_hands/hmp_prior.",
+        help="HMP config file inside wilor_hands/hmp_clean.",
     )
     parser.add_argument("--stride_iters", type=int, default=300, help="Number of STRIDE optimization steps.")
     parser.add_argument("--stride_lr", type=float, default=0.05, help="Learning rate for STRIDE optimization.")
