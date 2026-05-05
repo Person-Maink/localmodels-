@@ -1,10 +1,13 @@
 defaults:
-  # Shared baseline uses the current main-suite finetuning baseline from the
-  # Stage H family sweep before applying the overrides below.
+  # Combined winner-locked full-dataset finetuning launcher for the three
+  # comparison regimes: main, frozen WiLoR, and LoRA.
+  # Keep the long-run schedule shared across all experiments in this file and
+  # only override regime-specific winner settings inside each experiment.
+  # Future edits should preserve this 3-regime comparison structure unless the
+  # evaluation protocol itself changes.
   train_mode: distill
   train_scope: refine_net
-  videos:
-    - 120-2_clip_1
+  all_videos: true
   validation_split: 0.15
   sample_limit: 0
   detection_conf: 0.3
@@ -12,7 +15,7 @@ defaults:
   batch_size: 8
   num_workers: 2
   max_steps: 10000
-  log_every: 1
+  log_every: 25
   save_every: 250
   seed: 42
   optimizer:
@@ -41,31 +44,37 @@ defaults:
       weight: 0.01
       scorer_weight: 0.0
     temporal_vipe_camera:
-      enabled: false
+      enabled: true
       formulation: learnable
       weight: 0.01
       smoothness_weight: 0.005
       anchor_weight: 0.001
 
 experiments:
+  - name: main_finetuning
+    run_name_suffix: main_finetuning
 
-  - name: test_temporal_all_losses_smoke
-    run_name_suffix: test_temp_all
-    train_mode: test
-    max_steps: 100
-    log_every: 10
-    save_every: 50
+  - name: frozen_wilor_finetuning
+    run_name_suffix: frozen_wilor_finetuning
+    train_scope: temporal_only
+    optimizer:
+      weight_decay: 0.0
+    temporal:
+      reduction: smooth_l1
     losses:
+      vipe_camera:
+        enabled: false
+        weight: 0.0
       temporal_camera:
-        enabled: true
+        enabled: false
         formulation: learnable
-        weight: 0.01
-        scorer_weight: 0.001
+        weight: 0.0
+        scorer_weight: 0.0
       temporal_bbox_projected:
-        enabled: true
+        enabled: false
         formulation: learnable
-        weight: 0.01
-        scorer_weight: 0.001
+        weight: 0.0
+        scorer_weight: 0.0
       temporal_vipe_camera:
         enabled: true
         formulation: learnable
@@ -73,33 +82,35 @@ experiments:
         smoothness_weight: 0.005
         anchor_weight: 0.001
 
-  - name: test_temporal_all_losses
-    run_name_suffix: temp_all
+  - name: lora_finetuning
+    run_name_suffix: lora_finetuning
+    optimizer:
+      weight_decay: 1.0e-4
+    temporal:
+      reduction: smooth_l1
+    lora:
+      enabled: true
+      rank: 8
+      alpha: 16.0
+      dropout: 0.0
+      block_start: 24
+      block_end: 32
+      target_modules:
+        - qkv
     losses:
+      vipe_camera:
+        enabled: true
+        weight: 0.05
       temporal_camera:
         enabled: true
         formulation: learnable
-        weight: 0.01
+        weight: 0.1
         scorer_weight: 0.001
       temporal_bbox_projected:
         enabled: true
         formulation: learnable
-        weight: 0.01
+        weight: 0.1
         scorer_weight: 0.001
-      temporal_vipe_camera:
-        enabled: true
-        formulation: learnable
-        weight: 0.01
-        smoothness_weight: 0.005
-        anchor_weight: 0.001
-
-  - name: temporal_vipe_camera_only
-    run_name_suffix: temp_vipe_only
-    losses:
-      temporal_camera:
-        enabled: false
-      temporal_bbox_projected:
-        enabled: false
       temporal_vipe_camera:
         enabled: true
         formulation: learnable

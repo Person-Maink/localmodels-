@@ -22,7 +22,8 @@ Hyperparameter sweeps live under [experiments](/home/mayank/Documents/Uni/TUD/Th
 Typical files:
 
 - `hparam_stage_*.yaml`: one tuning stage
-- `temporal_ablations.yaml`: a standalone config for manual testing or one-off runs
+- `finetuning.yaml`: the winner-locked full-dataset finetuning config
+  The root file can contain multiple regime experiments for joint comparison.
 - `README.md`: setup-specific notes such as stage ordering or scope differences
 
 The setup-specific docs are:
@@ -32,7 +33,7 @@ The setup-specific docs are:
 
 ## YAML Format
 
-Stage and ablation configs use the same basic schema:
+Stage and finetuning configs use the same basic schema:
 
 - `defaults`: shared settings merged into every experiment
 - `experiments`: a list or mapping of named overrides
@@ -207,8 +208,8 @@ If you want to bypass the sweep helpers and run one experiment directly, export
 `LOSS_CONFIG` and `EXPERIMENT_NAME` into [train.sh](/home/mayank/Documents/Uni/TUD/Thesis%20Extra/comparative%20study/models/wilor_hands/train.sh):
 
 ```bash
-LOSS_CONFIG=wilor_hands/experiments/temporal_ablations.yaml \
-EXPERIMENT_NAME=test_temporal_all_losses \
+LOSS_CONFIG=wilor_hands/experiments/finetuning.yaml \
+EXPERIMENT_NAME=main_finetuning \
 bash wilor_hands/train.sh
 ```
 
