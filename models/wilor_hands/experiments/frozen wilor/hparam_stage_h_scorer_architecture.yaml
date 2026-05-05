@@ -34,15 +34,22 @@ defaults:
       enabled: false
       weight: 0.0
     temporal_camera:
-      enabled: true
+      enabled: false
       formulation: learnable
       weight: 0.0
       scorer_weight: 0.0001
     temporal_bbox_projected:
-      enabled: true
+      enabled: false
       formulation: learnable
       weight: 0.0
       scorer_weight: 0.0001
+    temporal_vipe_camera:
+      enabled: true
+      formulation: learnable
+      weight: 0.01
+      scorer_weight: 0.0
+      smoothness_weight: 0.005
+      anchor_weight: 0.001
 
 experiments:
   - name: hp_h_sc32_l2_d0
