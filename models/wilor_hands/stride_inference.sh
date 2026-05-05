@@ -9,10 +9,20 @@
 #   memory                 : High-memory CPU jobs (>250 GB RAM)
 #   visual                 : Visualization jobs
 
+#SBATCH --job-name=stride-inference
+#SBATCH --partition=gpu-a100-small
+#SBATCH --time=00:15:00
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=2
+#SBATCH --gpus-per-task=1
+#SBATCH --mem-per-gpu=10G
+#SBATCH --account=Education-EEMCS-MSc-DSAIT
+#SBATCH --output=%x.out
+
 set -euo pipefail
 
 # ================ OUTPUT FILES ================
-base_name="${SLURM_JOB_NAME:-stride-inference}"
+base_name="${SLURM_JOB_NAME}"
 dir="SLURM_logs"
 mkdir -p "$dir"
 count=$(printf "%03d" $(($(ls "$dir" 2>/dev/null | grep -c "^${base_name}_[0-9]\+\.out$") + 1)))
@@ -36,33 +46,31 @@ module list 2>&1
 nvidia-smi
 
 echo "================ SLURM JOB INFO ================"
-echo "Job ID:         ${SLURM_JOB_ID:-n/a}"
-echo "Job Name:       ${SLURM_JOB_NAME:-stride-inference}"
-echo "Partition:      ${SLURM_JOB_PARTITION:-n/a}"
-echo "Node List:      ${SLURM_JOB_NODELIST:-n/a}"
-echo "CPUs per task:  ${SLURM_CPUS_PER_TASK:-n/a}"
-echo "GPUs per task:  ${SLURM_GPUS_PER_TASK:-n/a}"
-echo "Memory per GPU: ${SLURM_MEM_PER_GPU:-n/a}"
-echo "Submit dir:     ${SLURM_SUBMIT_DIR:-$(pwd)}"
+echo "Job ID:         $SLURM_JOB_ID"
+echo "Job Name:       $SLURM_JOB_NAME"
+echo "Partition:      $SLURM_JOB_PARTITION"
+echo "Node List:      $SLURM_JOB_NODELIST"
+echo "CPUs per task:  $SLURM_CPUS_PER_TASK"
+echo "GPUs per task:  $SLURM_GPUS_PER_TASK"
+echo "Memory per GPU: $SLURM_MEM_PER_GPU"
+echo "Submit dir:     $SLURM_SUBMIT_DIR"
 echo "Work dir:       $(pwd)"
 echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
 
-VIDEO_DIR="${VIDEO_DIR:-${PROJECT_ROOT}/data/test/me}"
-VIDEO_NAME="${VIDEO_NAME:-me 1}"
-VIDEO_FILE="${VIDEO_FILE:-me 1.mp4}"
-WILOR_CACHE_ROOT="${WILOR_CACHE_ROOT:-${PROJECT_ROOT}/outputs/wilor}"
-STRIDE_OUTPUT_ROOT="${STRIDE_OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/stride}"
-VIPE_OUTPUT_ROOT="${VIPE_OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/vipe}"
-HMP_ASSETS_ROOT="${HMP_ASSETS_ROOT:-${MODEL_ROOT}/_DATA/hmp_model}"
-MANO_MODEL_PATH="${MANO_MODEL_PATH:-${MODEL_ROOT}/mano_data}"
+VIDEO_DIR="/scratch/mthakur/manifold/data/test/me"
+VIDEO_NAME="me 1"
+VIDEO_FILE="me 1.mp4"
+WILOR_CACHE_ROOT="${PROJECT_ROOT}/outputs/wilor"
+OUTPUT_ROOT="${PROJECT_ROOT}/outputs/stride"
+VIPE_OUTPUT_ROOT="${PROJECT_ROOT}/outputs/vipe"
 APPTAINER_IMAGE="${APPTAINER_IMAGE:-${MODEL_ROOT}/apptainer/template.sif}"
+HMP_ASSETS_ROOT="${HMP_ASSETS_ROOT:-${MODEL_ROOT}/_DATA/hmp_model}"
 OVERWRITE="${OVERWRITE:-false}"
 KEEP_TEMP_FRAMES="${KEEP_TEMP_FRAMES:-false}"
 VISUALIZE="${VISUALIZE:-false}"
 USE_GPU="${USE_GPU:-true}"
-TARGET_HAND="${TARGET_HAND:-auto}"
 TEMP_PARENT="${TEMP_ROOT:-$(pick_temp_root)}"
 
 if ! VIDEO_PATH=$(resolve_video_path "${VIDEO_DIR}" "${VIDEO_NAME}" "${VIDEO_FILE}"); then
@@ -72,9 +80,9 @@ fi
 
 VIDEO_PATH=$(cd "$(dirname "${VIDEO_PATH}")" && pwd)/$(basename "${VIDEO_PATH}")
 VIDEO_STEM="$(basename "${VIDEO_PATH%.*}")"
-MARKER_PATH="$(completion_marker_path "${STRIDE_OUTPUT_ROOT}" "${VIDEO_STEM}")"
-VIDEO_OUTPUT_DIR="${STRIDE_OUTPUT_ROOT}/${VIDEO_STEM}"
-VIDEO_OUTPUT_FILE="${STRIDE_OUTPUT_ROOT}/videos/${VIDEO_STEM}.mp4"
+MARKER_PATH="$(completion_marker_path "${OUTPUT_ROOT}" "${VIDEO_STEM}")"
+VIDEO_OUTPUT_DIR="${OUTPUT_ROOT}/${VIDEO_STEM}"
+VIDEO_OUTPUT_FILE="${OUTPUT_ROOT}/videos/${VIDEO_STEM}.mp4"
 
 if [[ ! -f "${APPTAINER_IMAGE}" ]]; then
     echo "Apptainer image not found: ${APPTAINER_IMAGE}" >&2
@@ -92,11 +100,10 @@ if is_truthy "${OVERWRITE}" || [[ ! -f "${MARKER_PATH}" ]]; then
     rm -f "${MARKER_PATH}"
 fi
 
-mkdir -p "${STRIDE_OUTPUT_ROOT}"
+mkdir -p "${OUTPUT_ROOT}"
 mkdir -p "${TEMP_PARENT}"
-TEMP_WORKDIR=$(mktemp -d "${TEMP_PARENT%/}/stride_${VIDEO_STEM}.XXXXXX")
-TEMP_FRAME_ROOT="${TEMP_WORKDIR}/frames"
-TEMP_FRAME_DIR="${TEMP_FRAME_ROOT}/${VIDEO_STEM}_frames"
+TEMP_WORKDIR=$(mktemp -d "${TEMP_PARENT%/}/wilor_${VIDEO_STEM}.XXXXXX")
+TEMP_FRAME_DIR="${TEMP_WORKDIR}/${VIDEO_STEM}_frames"
 
 cleanup_temp() {
     if is_truthy "${KEEP_TEMP_FRAMES}"; then
@@ -120,19 +127,17 @@ fi
 container_cmd=$(cat <<EOF
 set -euo pipefail
 cd $(printf '%q' "${MODEL_ROOT}")
-python $(printf '%q' "${COMMON_PY}") --video $(printf '%q' "${VIDEO_PATH}") --output-dir $(printf '%q' "${TEMP_FRAME_ROOT}")
+python $(printf '%q' "${COMMON_PY}") --video $(printf '%q' "${VIDEO_PATH}") --output-dir $(printf '%q' "${TEMP_FRAME_DIR}")
 python main.py \
   --mode stride-vipe \
-  --stride_backend hmp \
   --video $(printf '%q' "${VIDEO_STEM}") \
-  --image_folder $(printf '%q' "${TEMP_FRAME_ROOT}") \
+  --image_folder $(printf '%q' "${TEMP_WORKDIR}") \
   --wilor_cache_root $(printf '%q' "${WILOR_CACHE_ROOT}") \
-  --stride_output_folder $(printf '%q' "${STRIDE_OUTPUT_ROOT}") \
+  --stride_output_folder $(printf '%q' "${OUTPUT_ROOT}") \
+  --stride_backend hmp \
   --stride_from_cache \
   --vipe_output_root $(printf '%q' "${VIPE_OUTPUT_ROOT}") \
   --hmp_assets_root $(printf '%q' "${HMP_ASSETS_ROOT}") \
-  --mano_model_path $(printf '%q' "${MANO_MODEL_PATH}") \
-  --target_hand $(printf '%q' "${TARGET_HAND}") \
   ${visualize_flag} \
   ${gpu_flag}
 EOF
@@ -140,11 +145,8 @@ EOF
 
 echo "STRIDE video: ${VIDEO_PATH}"
 echo "WiLoR cache root: ${WILOR_CACHE_ROOT}"
-echo "STRIDE output root: ${STRIDE_OUTPUT_ROOT}"
-echo "STRIDE mode: stride-vipe"
-echo "STRIDE backend: hmp"
+echo "STRIDE output root: ${OUTPUT_ROOT}"
 echo "ViPE output root: ${VIPE_OUTPUT_ROOT}"
-echo "HMP assets root: ${HMP_ASSETS_ROOT}"
 echo "STRIDE completion marker: ${MARKER_PATH}"
 echo "STRIDE temp frame dir: ${TEMP_FRAME_DIR}"
 
