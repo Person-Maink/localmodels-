@@ -1,0 +1,924 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Fri May  1 17:45:55 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:2C:00.0 Off |                   On |
+| N/A   48C    P0            104W /  300W |    3708MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    8   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9805882
+Job Name:       stride-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Fri May  1 17:45:56 CEST 2026
+===============================================
+STRIDE video: /scratch/mthakur/manifold/data/test/me 1.mp4
+WiLoR cache root: /scratch/mthakur/manifold/outputs/wilor
+STRIDE output root: /scratch/mthakur/manifold/outputs/stride
+STRIDE backend: hmp
+HMP assets root: /scratch/mthakur/manifold/models/wilor_hands/_DATA/hmp_model
+STRIDE completion marker: /scratch/mthakur/manifold/outputs/stride/_completed/me 1.json
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+[INFO] Running STRIDE refinement for me 1
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+2
+[0, 1]
+/scratch/mthakur/manifold/models/wilor_hands ... /scratch/mthakur/manifold/models/wilor_hands/_DATA/hmp_model/mean-neutral-128-30fps.pt
+mean: ['rotmat', 'pos', 'trans', 'root_vel', 'height', 'rot6d', 'angular', 'global_xform', 'velocity', 'root_orient']
+std: ['rotmat', 'pos', 'trans', 'root_vel', 'height', 'rot6d', 'angular', 'global_xform', 'velocity', 'root_orient']
+Loading from /scratch/mthakur/manifold/models/wilor_hands/_DATA/hmp_model/results/model
+Load succeeded
+[INFO] Running reconstruction with prior
+loading data...
+obs_data:  dict_keys(['joints2d', 'vis_mask', 'is_right'])
+res_dict:  dict_keys(['pose_body', 'betas', 'trans', 'root_orient', 'is_right', 'cam_R', 'cam_t', 'intrins'])
+pose_body (1, 115, 15, 3)
+betas (1, 10)
+trans (1, 115, 3)
+root_orient (1, 115, 3)
+is_right (1, 115)
+cam_R (1, 115, 3, 3)
+cam_t (1, 115, 3)
+intrins (4,)
+Sequence has 128 frames
+/scratch/mthakur/manifold/models/wilor_hands/hmp_prior/fitting.py:303: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  "cam_center": torch.tensor(npz_init_dict['cam_center']).to(device),
+/scratch/mthakur/manifold/models/wilor_hands/hmp_prior/fitting.py:304: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  "cam_f": torch.tensor(npz_init_dict['cam_f']).to(device),
+/scratch/mthakur/manifold/models/wilor_hands/hmp_prior/fitting.py:933: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  vis_mask = torch.tensor(target["vis_mask"])
+[INFO] Saved intermediate results to /scratch/mthakur/manifold/outputs/stride/me 1/pkls/stg_0.pkl
+[INFO] Stage 1: Learning rate: 0.05
+[INFO] Running optimization stage 1 ...
+start latent optimization... 400 iters
+[INFO] Stage 1 [000/400]bio: 7.983	reproj: 63.583	trans: 0.000	orient_sm: 3.748	trans_sm: 1.103	betas_prior: 0.000	loss: 76.417	
+[INFO] Stage 1 [001/400]bio: 7.919	reproj: 63.101	trans: 0.500	orient_sm: 5.628	trans_sm: 11.471	betas_prior: 0.025	loss: 88.645	
+[INFO] Stage 1 [002/400]bio: 7.874	reproj: 59.345	trans: 0.573	orient_sm: 3.000	trans_sm: 6.599	betas_prior: 0.061	loss: 77.452	
+[INFO] Stage 1 [003/400]bio: 7.838	reproj: 52.508	trans: 0.641	orient_sm: 1.887	trans_sm: 4.767	betas_prior: 0.103	loss: 67.744	
+[INFO] Stage 1 [004/400]bio: 7.821	reproj: 52.516	trans: 0.748	orient_sm: 1.737	trans_sm: 3.557	betas_prior: 0.123	loss: 66.502	
+[INFO] Stage 1 [005/400]bio: 7.819	reproj: 55.413	trans: 0.818	orient_sm: 1.478	trans_sm: 3.356	betas_prior: 0.126	loss: 69.010	
+[INFO] Stage 1 [006/400]bio: 7.824	reproj: 56.601	trans: 0.820	orient_sm: 1.196	trans_sm: 3.316	betas_prior: 0.117	loss: 69.874	
+[INFO] Stage 1 [007/400]bio: 7.832	reproj: 55.840	trans: 0.791	orient_sm: 1.074	trans_sm: 2.712	betas_prior: 0.105	loss: 68.355	
+[INFO] Stage 1 [008/400]bio: 7.842	reproj: 54.028	trans: 0.741	orient_sm: 0.979	trans_sm: 2.033	betas_prior: 0.093	loss: 65.715	
+[INFO] Stage 1 [009/400]bio: 7.856	reproj: 52.447	trans: 0.693	orient_sm: 0.890	trans_sm: 1.814	betas_prior: 0.078	loss: 63.779	
+[INFO] Stage 1 [010/400]bio: 7.873	reproj: 51.616	trans: 0.643	orient_sm: 0.811	trans_sm: 1.866	betas_prior: 0.062	loss: 62.870	
+[INFO] Stage 1 [011/400]bio: 7.889	reproj: 52.147	trans: 0.587	orient_sm: 0.716	trans_sm: 1.702	betas_prior: 0.047	loss: 63.089	
+[INFO] Stage 1 [012/400]bio: 7.904	reproj: 53.530	trans: 0.552	orient_sm: 0.565	trans_sm: 1.279	betas_prior: 0.036	loss: 63.865	
+[INFO] Stage 1 [013/400]bio: 7.914	reproj: 53.879	trans: 0.548	orient_sm: 0.453	trans_sm: 1.166	betas_prior: 0.030	loss: 63.991	
+[INFO] Stage 1 [014/400]bio: 7.920	reproj: 52.963	trans: 0.565	orient_sm: 0.388	trans_sm: 1.233	betas_prior: 0.028	loss: 63.097	
+[INFO] Stage 1 [015/400]bio: 7.923	reproj: 51.885	trans: 0.588	orient_sm: 0.329	trans_sm: 1.170	betas_prior: 0.029	loss: 61.925	
+[INFO] Stage 1 [016/400]bio: 7.924	reproj: 51.198	trans: 0.614	orient_sm: 0.265	trans_sm: 0.924	betas_prior: 0.033	loss: 60.958	
+[INFO] Stage 1 [017/400]bio: 7.924	reproj: 51.632	trans: 0.632	orient_sm: 0.235	trans_sm: 0.621	betas_prior: 0.041	loss: 61.086	
+[INFO] Stage 1 [018/400]bio: 7.923	reproj: 51.746	trans: 0.641	orient_sm: 0.240	trans_sm: 0.648	betas_prior: 0.053	loss: 61.250	
+[INFO] Stage 1 [019/400]bio: 7.923	reproj: 51.773	trans: 0.647	orient_sm: 0.250	trans_sm: 0.900	betas_prior: 0.067	loss: 61.560	
+[INFO] Stage 1 [020/400]bio: 7.924	reproj: 51.767	trans: 0.646	orient_sm: 0.255	trans_sm: 1.009	betas_prior: 0.079	loss: 61.680	
+[INFO] Stage 1 [021/400]bio: 7.926	reproj: 51.568	trans: 0.636	orient_sm: 0.232	trans_sm: 0.809	betas_prior: 0.089	loss: 61.259	
+[INFO] Stage 1 [022/400]bio: 7.928	reproj: 51.433	trans: 0.622	orient_sm: 0.182	trans_sm: 0.547	betas_prior: 0.096	loss: 60.809	
+[INFO] Stage 1 [023/400]bio: 7.931	reproj: 51.244	trans: 0.608	orient_sm: 0.146	trans_sm: 0.468	betas_prior: 0.102	loss: 60.500	
+[INFO] Stage 1 [024/400]bio: 7.934	reproj: 51.160	trans: 0.605	orient_sm: 0.139	trans_sm: 0.517	betas_prior: 0.107	loss: 60.462	
+[INFO] Stage 1 [025/400]bio: 7.937	reproj: 51.002	trans: 0.601	orient_sm: 0.144	trans_sm: 0.534	betas_prior: 0.109	loss: 60.328	
+[INFO] Stage 1 [026/400]bio: 7.939	reproj: 50.937	trans: 0.596	orient_sm: 0.139	trans_sm: 0.467	betas_prior: 0.108	loss: 60.187	
+[INFO] Stage 1 [027/400]bio: 7.941	reproj: 51.003	trans: 0.591	orient_sm: 0.131	trans_sm: 0.451	betas_prior: 0.105	loss: 60.221	
+[INFO] Stage 1 [028/400]bio: 7.942	reproj: 50.926	trans: 0.587	orient_sm: 0.124	trans_sm: 0.419	betas_prior: 0.098	loss: 60.096	
+[INFO] Stage 1 [029/400]bio: 7.942	reproj: 50.840	trans: 0.584	orient_sm: 0.114	trans_sm: 0.324	betas_prior: 0.091	loss: 59.895	
+[INFO] Stage 1 [030/400]bio: 7.941	reproj: 50.769	trans: 0.587	orient_sm: 0.096	trans_sm: 0.311	betas_prior: 0.083	loss: 59.787	
+[INFO] Stage 1 [031/400]bio: 7.939	reproj: 50.774	trans: 0.591	orient_sm: 0.092	trans_sm: 0.342	betas_prior: 0.076	loss: 59.814	
+[INFO] Stage 1 [032/400]bio: 7.935	reproj: 50.766	trans: 0.595	orient_sm: 0.096	trans_sm: 0.306	betas_prior: 0.072	loss: 59.772	
+[INFO] Stage 1 [033/400]bio: 7.931	reproj: 50.713	trans: 0.597	orient_sm: 0.093	trans_sm: 0.235	betas_prior: 0.071	loss: 59.640	
+[INFO] Stage 1 [034/400]bio: 7.926	reproj: 50.736	trans: 0.597	orient_sm: 0.087	trans_sm: 0.241	betas_prior: 0.073	loss: 59.660	
+[INFO] Stage 1 [035/400]bio: 7.921	reproj: 50.706	trans: 0.595	orient_sm: 0.076	trans_sm: 0.246	betas_prior: 0.076	loss: 59.620	
+[INFO] Stage 1 [036/400]bio: 7.918	reproj: 50.643	trans: 0.593	orient_sm: 0.066	trans_sm: 0.206	betas_prior: 0.079	loss: 59.506	
+[INFO] Stage 1 [037/400]bio: 7.917	reproj: 50.584	trans: 0.593	orient_sm: 0.062	trans_sm: 0.165	betas_prior: 0.082	loss: 59.403	
+[INFO] Stage 1 [038/400]bio: 7.917	reproj: 50.629	trans: 0.595	orient_sm: 0.063	trans_sm: 0.193	betas_prior: 0.084	loss: 59.481	
+[INFO] Stage 1 [039/400]bio: 7.919	reproj: 50.568	trans: 0.595	orient_sm: 0.064	trans_sm: 0.194	betas_prior: 0.085	loss: 59.425	
+[INFO] Stage 1 [040/400]bio: 7.921	reproj: 50.478	trans: 0.592	orient_sm: 0.057	trans_sm: 0.141	betas_prior: 0.085	loss: 59.275	
+[INFO] Stage 1 [041/400]bio: 7.925	reproj: 50.527	trans: 0.590	orient_sm: 0.055	trans_sm: 0.144	betas_prior: 0.085	loss: 59.326	
+[INFO] Stage 1 [042/400]bio: 7.928	reproj: 50.506	trans: 0.591	orient_sm: 0.053	trans_sm: 0.157	betas_prior: 0.085	loss: 59.320	
+[INFO] Stage 1 [043/400]bio: 7.932	reproj: 50.362	trans: 0.593	orient_sm: 0.053	trans_sm: 0.113	betas_prior: 0.086	loss: 59.138	
+[INFO] Stage 1 [044/400]bio: 7.934	reproj: 50.401	trans: 0.595	orient_sm: 0.052	trans_sm: 0.111	betas_prior: 0.087	loss: 59.180	
+[INFO] Stage 1 [045/400]bio: 7.935	reproj: 50.401	trans: 0.595	orient_sm: 0.052	trans_sm: 0.141	betas_prior: 0.089	loss: 59.213	
+[INFO] Stage 1 [046/400]bio: 7.935	reproj: 50.325	trans: 0.592	orient_sm: 0.054	trans_sm: 0.112	betas_prior: 0.090	loss: 59.109	
+[INFO] Stage 1 [047/400]bio: 7.935	reproj: 50.299	trans: 0.592	orient_sm: 0.055	trans_sm: 0.091	betas_prior: 0.092	loss: 59.064	
+[INFO] Stage 1 [048/400]bio: 7.933	reproj: 50.291	trans: 0.595	orient_sm: 0.052	trans_sm: 0.106	betas_prior: 0.093	loss: 59.069	
+[INFO] Stage 1 [049/400]bio: 7.931	reproj: 50.241	trans: 0.596	orient_sm: 0.052	trans_sm: 0.099	betas_prior: 0.092	loss: 59.011	
+[INFO] Stage 1 [050/400]bio: 7.928	reproj: 50.215	trans: 0.594	orient_sm: 0.054	trans_sm: 0.084	betas_prior: 0.091	loss: 58.967	
+[INFO] Stage 1 [051/400]bio: 7.926	reproj: 50.191	trans: 0.593	orient_sm: 0.051	trans_sm: 0.088	betas_prior: 0.089	loss: 58.938	
+[INFO] Stage 1 [052/400]bio: 7.925	reproj: 50.156	trans: 0.593	orient_sm: 0.054	trans_sm: 0.089	betas_prior: 0.087	loss: 58.903	
+[INFO] Stage 1 [053/400]bio: 7.925	reproj: 50.142	trans: 0.593	orient_sm: 0.060	trans_sm: 0.080	betas_prior: 0.084	loss: 58.884	
+[INFO] Stage 1 [054/400]bio: 7.925	reproj: 50.095	trans: 0.594	orient_sm: 0.063	trans_sm: 0.085	betas_prior: 0.082	loss: 58.845	
+[INFO] Stage 1 [055/400]bio: 7.927	reproj: 50.068	trans: 0.594	orient_sm: 0.056	trans_sm: 0.081	betas_prior: 0.081	loss: 58.808	
+[INFO] Stage 1 [056/400]bio: 7.928	reproj: 50.020	trans: 0.592	orient_sm: 0.062	trans_sm: 0.084	betas_prior: 0.081	loss: 58.767	
+[INFO] Stage 1 [057/400]bio: 7.930	reproj: 49.948	trans: 0.589	orient_sm: 0.060	trans_sm: 0.077	betas_prior: 0.083	loss: 58.687	
+[INFO] Stage 1 [058/400]bio: 7.930	reproj: 49.945	trans: 0.591	orient_sm: 0.068	trans_sm: 0.090	betas_prior: 0.085	loss: 58.709	
+[INFO] Stage 1 [059/400]bio: 7.931	reproj: 49.864	trans: 0.591	orient_sm: 0.068	trans_sm: 0.084	betas_prior: 0.087	loss: 58.626	
+[INFO] Stage 1 [060/400]bio: 7.931	reproj: 49.760	trans: 0.591	orient_sm: 0.075	trans_sm: 0.072	betas_prior: 0.088	loss: 58.518	
+[INFO] Stage 1 [061/400]bio: 7.932	reproj: 49.738	trans: 0.593	orient_sm: 0.097	trans_sm: 0.094	betas_prior: 0.088	loss: 58.541	
+[INFO] Stage 1 [062/400]bio: 7.932	reproj: 49.630	trans: 0.590	orient_sm: 0.084	trans_sm: 0.078	betas_prior: 0.088	loss: 58.402	
+[INFO] Stage 1 [063/400]bio: 7.933	reproj: 49.548	trans: 0.589	orient_sm: 0.101	trans_sm: 0.080	betas_prior: 0.086	loss: 58.337	
+[INFO] Stage 1 [064/400]bio: 7.933	reproj: 49.478	trans: 0.592	orient_sm: 0.105	trans_sm: 0.088	betas_prior: 0.084	loss: 58.281	
+[INFO] Stage 1 [065/400]bio: 7.934	reproj: 49.343	trans: 0.592	orient_sm: 0.095	trans_sm: 0.069	betas_prior: 0.083	loss: 58.115	
+[INFO] Stage 1 [066/400]bio: 7.933	reproj: 49.257	trans: 0.591	orient_sm: 0.136	trans_sm: 0.092	betas_prior: 0.083	loss: 58.092	
+[INFO] Stage 1 [067/400]bio: 7.933	reproj: 49.121	trans: 0.589	orient_sm: 0.124	trans_sm: 0.072	betas_prior: 0.083	loss: 57.923	
+[INFO] Stage 1 [068/400]bio: 7.933	reproj: 48.968	trans: 0.590	orient_sm: 0.134	trans_sm: 0.077	betas_prior: 0.083	loss: 57.784	
+[INFO] Stage 1 [069/400]bio: 7.935	reproj: 48.823	trans: 0.590	orient_sm: 0.126	trans_sm: 0.076	betas_prior: 0.081	loss: 57.632	
+[INFO] Stage 1 [070/400]bio: 7.936	reproj: 48.628	trans: 0.590	orient_sm: 0.144	trans_sm: 0.069	betas_prior: 0.080	loss: 57.446	
+[INFO] Stage 1 [071/400]bio: 7.937	reproj: 48.398	trans: 0.590	orient_sm: 0.160	trans_sm: 0.073	betas_prior: 0.079	loss: 57.236	
+[INFO] Stage 1 [072/400]bio: 7.938	reproj: 48.165	trans: 0.590	orient_sm: 0.154	trans_sm: 0.073	betas_prior: 0.079	loss: 56.998	
+[INFO] Stage 1 [073/400]bio: 7.940	reproj: 47.840	trans: 0.591	orient_sm: 0.155	trans_sm: 0.069	betas_prior: 0.079	loss: 56.673	
+[INFO] Stage 1 [074/400]bio: 7.941	reproj: 47.493	trans: 0.591	orient_sm: 0.193	trans_sm: 0.072	betas_prior: 0.079	loss: 56.369	
+[INFO] Stage 1 [075/400]bio: 7.942	reproj: 47.099	trans: 0.589	orient_sm: 0.185	trans_sm: 0.066	betas_prior: 0.079	loss: 55.960	
+[INFO] Stage 1 [076/400]bio: 7.943	reproj: 46.650	trans: 0.588	orient_sm: 0.210	trans_sm: 0.069	betas_prior: 0.077	loss: 55.538	
+[INFO] Stage 1 [077/400]bio: 7.944	reproj: 46.199	trans: 0.589	orient_sm: 0.232	trans_sm: 0.076	betas_prior: 0.075	loss: 55.115	
+[INFO] Stage 1 [078/400]bio: 7.945	reproj: 45.739	trans: 0.591	orient_sm: 0.258	trans_sm: 0.068	betas_prior: 0.072	loss: 54.673	
+[INFO] Stage 1 [079/400]bio: 7.944	reproj: 45.241	trans: 0.592	orient_sm: 0.274	trans_sm: 0.064	betas_prior: 0.067	loss: 54.182	
+[INFO] Stage 1 [080/400]bio: 7.943	reproj: 44.879	trans: 0.591	orient_sm: 0.310	trans_sm: 0.067	betas_prior: 0.063	loss: 53.853	
+[INFO] Stage 1 [081/400]bio: 7.940	reproj: 44.432	trans: 0.594	orient_sm: 0.341	trans_sm: 0.066	betas_prior: 0.060	loss: 53.433	
+[INFO] Stage 1 [082/400]bio: 7.937	reproj: 44.123	trans: 0.595	orient_sm: 0.367	trans_sm: 0.059	betas_prior: 0.058	loss: 53.138	
+[INFO] Stage 1 [083/400]bio: 7.933	reproj: 43.856	trans: 0.596	orient_sm: 0.406	trans_sm: 0.065	betas_prior: 0.058	loss: 52.914	
+[INFO] Stage 1 [084/400]bio: 7.929	reproj: 43.475	trans: 0.596	orient_sm: 0.409	trans_sm: 0.057	betas_prior: 0.059	loss: 52.524	
+[INFO] Stage 1 [085/400]bio: 7.925	reproj: 43.442	trans: 0.599	orient_sm: 0.434	trans_sm: 0.069	betas_prior: 0.062	loss: 52.531	
+[INFO] Stage 1 [086/400]bio: 7.922	reproj: 43.052	trans: 0.601	orient_sm: 0.432	trans_sm: 0.061	betas_prior: 0.066	loss: 52.135	
+[INFO] Stage 1 [087/400]bio: 7.920	reproj: 42.988	trans: 0.600	orient_sm: 0.457	trans_sm: 0.065	betas_prior: 0.069	loss: 52.100	
+[INFO] Stage 1 [088/400]bio: 7.919	reproj: 42.739	trans: 0.601	orient_sm: 0.467	trans_sm: 0.067	betas_prior: 0.072	loss: 51.865	
+[INFO] Stage 1 [089/400]bio: 7.920	reproj: 42.359	trans: 0.601	orient_sm: 0.448	trans_sm: 0.054	betas_prior: 0.074	loss: 51.456	
+[INFO] Stage 1 [090/400]bio: 7.922	reproj: 42.434	trans: 0.602	orient_sm: 0.501	trans_sm: 0.083	betas_prior: 0.075	loss: 51.617	
+[INFO] Stage 1 [091/400]bio: 7.924	reproj: 42.014	trans: 0.602	orient_sm: 0.477	trans_sm: 0.075	betas_prior: 0.075	loss: 51.168	
+[INFO] Stage 1 [092/400]bio: 7.926	reproj: 41.869	trans: 0.600	orient_sm: 0.479	trans_sm: 0.078	betas_prior: 0.075	loss: 51.026	
+[INFO] Stage 1 [093/400]bio: 7.928	reproj: 41.463	trans: 0.599	orient_sm: 0.487	trans_sm: 0.073	betas_prior: 0.073	loss: 50.623	
+[INFO] Stage 1 [094/400]bio: 7.930	reproj: 41.234	trans: 0.599	orient_sm: 0.448	trans_sm: 0.071	betas_prior: 0.072	loss: 50.354	
+[INFO] Stage 1 [095/400]bio: 7.931	reproj: 40.852	trans: 0.599	orient_sm: 0.448	trans_sm: 0.071	betas_prior: 0.072	loss: 49.973	
+[INFO] Stage 1 [096/400]bio: 7.930	reproj: 40.490	trans: 0.598	orient_sm: 0.425	trans_sm: 0.060	betas_prior: 0.071	loss: 49.574	
+[INFO] Stage 1 [097/400]bio: 7.928	reproj: 40.286	trans: 0.595	orient_sm: 0.413	trans_sm: 0.065	betas_prior: 0.072	loss: 49.359	
+[INFO] Stage 1 [098/400]bio: 7.925	reproj: 39.951	trans: 0.596	orient_sm: 0.433	trans_sm: 0.055	betas_prior: 0.075	loss: 49.035	
+[INFO] Stage 1 [099/400]bio: 7.921	reproj: 39.885	trans: 0.596	orient_sm: 0.461	trans_sm: 0.061	betas_prior: 0.080	loss: 49.004	
+[INFO] Stage 1 [100/400]bio: 7.916	reproj: 39.689	trans: 0.596	orient_sm: 0.434	trans_sm: 0.059	betas_prior: 0.086	loss: 48.780	
+[INFO] Stage 1 [101/400]bio: 7.911	reproj: 39.535	trans: 0.593	orient_sm: 0.394	trans_sm: 0.055	betas_prior: 0.091	loss: 48.579	
+[INFO] Stage 1 [102/400]bio: 7.907	reproj: 39.509	trans: 0.593	orient_sm: 0.396	trans_sm: 0.062	betas_prior: 0.098	loss: 48.564	
+[INFO] Stage 1 [103/400]bio: 7.903	reproj: 39.288	trans: 0.594	orient_sm: 0.350	trans_sm: 0.055	betas_prior: 0.105	loss: 48.295	
+[INFO] Stage 1 [104/400]bio: 7.901	reproj: 39.233	trans: 0.594	orient_sm: 0.347	trans_sm: 0.055	betas_prior: 0.110	loss: 48.239	
+[INFO] Stage 1 [105/400]bio: 7.900	reproj: 39.100	trans: 0.593	orient_sm: 0.383	trans_sm: 0.058	betas_prior: 0.114	loss: 48.147	
+[INFO] Stage 1 [106/400]bio: 7.901	reproj: 38.969	trans: 0.594	orient_sm: 0.347	trans_sm: 0.055	betas_prior: 0.116	loss: 47.981	
+[INFO] Stage 1 [107/400]bio: 7.903	reproj: 38.857	trans: 0.595	orient_sm: 0.317	trans_sm: 0.056	betas_prior: 0.116	loss: 47.844	
+[INFO] Stage 1 [108/400]bio: 7.905	reproj: 38.722	trans: 0.595	orient_sm: 0.371	trans_sm: 0.053	betas_prior: 0.115	loss: 47.762	
+[INFO] Stage 1 [109/400]bio: 7.908	reproj: 38.660	trans: 0.596	orient_sm: 0.364	trans_sm: 0.055	betas_prior: 0.112	loss: 47.696	
+[INFO] Stage 1 [110/400]bio: 7.911	reproj: 38.524	trans: 0.596	orient_sm: 0.326	trans_sm: 0.054	betas_prior: 0.110	loss: 47.521	
+[INFO] Stage 1 [111/400]bio: 7.914	reproj: 38.483	trans: 0.598	orient_sm: 0.348	trans_sm: 0.057	betas_prior: 0.108	loss: 47.508	
+[INFO] Stage 1 [112/400]bio: 7.916	reproj: 38.328	trans: 0.598	orient_sm: 0.293	trans_sm: 0.057	betas_prior: 0.106	loss: 47.298	
+[INFO] Stage 1 [113/400]bio: 7.917	reproj: 38.237	trans: 0.598	orient_sm: 0.242	trans_sm: 0.056	betas_prior: 0.106	loss: 47.156	
+[INFO] Stage 1 [114/400]bio: 7.917	reproj: 38.082	trans: 0.599	orient_sm: 0.222	trans_sm: 0.055	betas_prior: 0.106	loss: 46.981	
+[INFO] Stage 1 [115/400]bio: 7.916	reproj: 38.022	trans: 0.599	orient_sm: 0.174	trans_sm: 0.060	betas_prior: 0.106	loss: 46.877	
+[INFO] Stage 1 [116/400]bio: 7.915	reproj: 37.823	trans: 0.600	orient_sm: 0.161	trans_sm: 0.052	betas_prior: 0.107	loss: 46.658	
+[INFO] Stage 1 [117/400]bio: 7.913	reproj: 37.796	trans: 0.601	orient_sm: 0.148	trans_sm: 0.061	betas_prior: 0.108	loss: 46.627	
+[INFO] Stage 1 [118/400]bio: 7.910	reproj: 37.569	trans: 0.601	orient_sm: 0.110	trans_sm: 0.050	betas_prior: 0.109	loss: 46.349	
+[INFO] Stage 1 [119/400]bio: 7.907	reproj: 37.655	trans: 0.602	orient_sm: 0.114	trans_sm: 0.061	betas_prior: 0.111	loss: 46.450	
+[INFO] Stage 1 [120/400]bio: 7.905	reproj: 37.397	trans: 0.603	orient_sm: 0.092	trans_sm: 0.049	betas_prior: 0.113	loss: 46.158	
+[INFO] Stage 1 [121/400]bio: 7.902	reproj: 37.611	trans: 0.604	orient_sm: 0.139	trans_sm: 0.069	betas_prior: 0.116	loss: 46.441	
+[INFO] Stage 1 [122/400]bio: 7.900	reproj: 37.412	trans: 0.603	orient_sm: 0.102	trans_sm: 0.056	betas_prior: 0.118	loss: 46.192	
+[INFO] Stage 1 [123/400]bio: 7.900	reproj: 37.572	trans: 0.602	orient_sm: 0.127	trans_sm: 0.068	betas_prior: 0.119	loss: 46.388	
+[INFO] Stage 1 [124/400]bio: 7.900	reproj: 37.547	trans: 0.604	orient_sm: 0.126	trans_sm: 0.065	betas_prior: 0.119	loss: 46.361	
+[INFO] Stage 1 [125/400]bio: 7.901	reproj: 37.472	trans: 0.603	orient_sm: 0.115	trans_sm: 0.055	betas_prior: 0.117	loss: 46.263	
+[INFO] Stage 1 [126/400]bio: 7.903	reproj: 37.610	trans: 0.601	orient_sm: 0.094	trans_sm: 0.068	betas_prior: 0.115	loss: 46.392	
+[INFO] Stage 1 [127/400]bio: 7.905	reproj: 37.525	trans: 0.602	orient_sm: 0.084	trans_sm: 0.058	betas_prior: 0.113	loss: 46.288	
+[INFO] Stage 1 [128/400]bio: 7.907	reproj: 37.540	trans: 0.602	orient_sm: 0.094	trans_sm: 0.062	betas_prior: 0.112	loss: 46.317	
+[INFO] Stage 1 [129/400]bio: 7.908	reproj: 37.455	trans: 0.600	orient_sm: 0.084	trans_sm: 0.055	betas_prior: 0.111	loss: 46.213	
+[INFO] Stage 1 [130/400]bio: 7.909	reproj: 37.524	trans: 0.600	orient_sm: 0.079	trans_sm: 0.062	betas_prior: 0.113	loss: 46.287	
+[INFO] Stage 1 [131/400]bio: 7.908	reproj: 37.391	trans: 0.598	orient_sm: 0.076	trans_sm: 0.057	betas_prior: 0.115	loss: 46.145	
+[INFO] Stage 1 [132/400]bio: 7.907	reproj: 37.461	trans: 0.599	orient_sm: 0.067	trans_sm: 0.059	betas_prior: 0.119	loss: 46.211	
+[INFO] Stage 1 [133/400]bio: 7.905	reproj: 37.407	trans: 0.600	orient_sm: 0.076	trans_sm: 0.059	betas_prior: 0.123	loss: 46.171	
+[INFO] Stage 1 [134/400]bio: 7.904	reproj: 37.375	trans: 0.599	orient_sm: 0.059	trans_sm: 0.055	betas_prior: 0.126	loss: 46.117	
+[INFO] Stage 1 [135/400]bio: 7.902	reproj: 37.440	trans: 0.596	orient_sm: 0.056	trans_sm: 0.063	betas_prior: 0.127	loss: 46.185	
+[INFO] Stage 1 [136/400]bio: 7.902	reproj: 37.395	trans: 0.597	orient_sm: 0.060	trans_sm: 0.056	betas_prior: 0.128	loss: 46.138	
+[INFO] Stage 1 [137/400]bio: 7.902	reproj: 37.407	trans: 0.599	orient_sm: 0.050	trans_sm: 0.056	betas_prior: 0.127	loss: 46.140	
+[INFO] Stage 1 [138/400]bio: 7.902	reproj: 37.395	trans: 0.598	orient_sm: 0.044	trans_sm: 0.057	betas_prior: 0.126	loss: 46.123	
+[INFO] Stage 1 [139/400]bio: 7.903	reproj: 37.405	trans: 0.598	orient_sm: 0.052	trans_sm: 0.056	betas_prior: 0.124	loss: 46.137	
+[INFO] Stage 1 [140/400]bio: 7.904	reproj: 37.350	trans: 0.598	orient_sm: 0.037	trans_sm: 0.054	betas_prior: 0.122	loss: 46.064	
+[INFO] Stage 1 [141/400]bio: 7.904	reproj: 37.422	trans: 0.598	orient_sm: 0.038	trans_sm: 0.057	betas_prior: 0.121	loss: 46.140	
+[INFO] Stage 1 [142/400]bio: 7.905	reproj: 37.340	trans: 0.599	orient_sm: 0.042	trans_sm: 0.057	betas_prior: 0.120	loss: 46.063	
+[INFO] Stage 1 [143/400]bio: 7.905	reproj: 37.381	trans: 0.599	orient_sm: 0.032	trans_sm: 0.055	betas_prior: 0.120	loss: 46.092	
+[INFO] Stage 1 [144/400]bio: 7.905	reproj: 37.365	trans: 0.599	orient_sm: 0.036	trans_sm: 0.059	betas_prior: 0.120	loss: 46.084	
+[INFO] Stage 1 [145/400]bio: 7.905	reproj: 37.331	trans: 0.599	orient_sm: 0.031	trans_sm: 0.055	betas_prior: 0.121	loss: 46.041	
+[INFO] Stage 1 [146/400]bio: 7.904	reproj: 37.330	trans: 0.600	orient_sm: 0.029	trans_sm: 0.055	betas_prior: 0.122	loss: 46.040	
+[INFO] Stage 1 [147/400]bio: 7.904	reproj: 37.339	trans: 0.600	orient_sm: 0.030	trans_sm: 0.058	betas_prior: 0.123	loss: 46.053	
+[INFO] Stage 1 [148/400]bio: 7.903	reproj: 37.324	trans: 0.599	orient_sm: 0.026	trans_sm: 0.053	betas_prior: 0.124	loss: 46.029	
+[INFO] Stage 1 [149/400]bio: 7.903	reproj: 37.298	trans: 0.601	orient_sm: 0.024	trans_sm: 0.054	betas_prior: 0.125	loss: 46.005	
+[INFO] Stage 1 [150/400]bio: 7.903	reproj: 37.356	trans: 0.600	orient_sm: 0.029	trans_sm: 0.056	betas_prior: 0.125	loss: 46.069	
+[INFO] Stage 1 [151/400]bio: 7.904	reproj: 37.269	trans: 0.600	orient_sm: 0.024	trans_sm: 0.050	betas_prior: 0.124	loss: 45.972	
+[INFO] Stage 1 [152/400]bio: 7.904	reproj: 37.389	trans: 0.601	orient_sm: 0.025	trans_sm: 0.061	betas_prior: 0.124	loss: 46.105	
+[INFO] Stage 1 [153/400]bio: 7.905	reproj: 37.261	trans: 0.600	orient_sm: 0.029	trans_sm: 0.050	betas_prior: 0.123	loss: 45.967	
+[INFO] Stage 1 [154/400]bio: 7.905	reproj: 37.402	trans: 0.602	orient_sm: 0.025	trans_sm: 0.063	betas_prior: 0.124	loss: 46.120	
+[INFO] Stage 1 [155/400]bio: 7.905	reproj: 37.252	trans: 0.601	orient_sm: 0.033	trans_sm: 0.049	betas_prior: 0.123	loss: 45.963	
+[INFO] Stage 1 [156/400]bio: 7.905	reproj: 37.425	trans: 0.602	orient_sm: 0.027	trans_sm: 0.068	betas_prior: 0.123	loss: 46.148	
+[INFO] Stage 1 [157/400]bio: 7.904	reproj: 37.285	trans: 0.601	orient_sm: 0.035	trans_sm: 0.055	betas_prior: 0.123	loss: 46.004	
+[INFO] Stage 1 [158/400]bio: 7.904	reproj: 37.337	trans: 0.602	orient_sm: 0.029	trans_sm: 0.066	betas_prior: 0.123	loss: 46.061	
+[INFO] Stage 1 [159/400]bio: 7.904	reproj: 37.375	trans: 0.601	orient_sm: 0.030	trans_sm: 0.059	betas_prior: 0.124	loss: 46.093	
+[INFO] Stage 1 [160/400]bio: 7.904	reproj: 37.250	trans: 0.602	orient_sm: 0.026	trans_sm: 0.059	betas_prior: 0.123	loss: 45.963	
+[INFO] Stage 1 [161/400]bio: 7.904	reproj: 37.443	trans: 0.602	orient_sm: 0.028	trans_sm: 0.068	betas_prior: 0.124	loss: 46.168	
+[INFO] Stage 1 [162/400]bio: 7.904	reproj: 37.263	trans: 0.602	orient_sm: 0.037	trans_sm: 0.062	betas_prior: 0.123	loss: 45.990	
+[INFO] Stage 1 [163/400]bio: 7.904	reproj: 37.399	trans: 0.603	orient_sm: 0.037	trans_sm: 0.080	betas_prior: 0.124	loss: 46.146	
+[INFO] Stage 1 [164/400]bio: 7.904	reproj: 37.337	trans: 0.603	orient_sm: 0.045	trans_sm: 0.069	betas_prior: 0.124	loss: 46.081	
+[INFO] Stage 1 [165/400]bio: 7.904	reproj: 37.315	trans: 0.602	orient_sm: 0.035	trans_sm: 0.073	betas_prior: 0.123	loss: 46.052	
+[INFO] Stage 1 [166/400]bio: 7.903	reproj: 37.339	trans: 0.601	orient_sm: 0.030	trans_sm: 0.061	betas_prior: 0.124	loss: 46.058	
+[INFO] Stage 1 [167/400]bio: 7.903	reproj: 37.309	trans: 0.602	orient_sm: 0.042	trans_sm: 0.073	betas_prior: 0.124	loss: 46.053	
+[INFO] Stage 1 [168/400]bio: 7.904	reproj: 37.358	trans: 0.601	orient_sm: 0.025	trans_sm: 0.064	betas_prior: 0.124	loss: 46.075	
+[INFO] Stage 1 [169/400]bio: 7.904	reproj: 37.250	trans: 0.603	orient_sm: 0.038	trans_sm: 0.065	betas_prior: 0.124	loss: 45.984	
+[INFO] Stage 1 [170/400]bio: 7.904	reproj: 37.366	trans: 0.601	orient_sm: 0.028	trans_sm: 0.072	betas_prior: 0.124	loss: 46.095	
+[INFO] Stage 1 [171/400]bio: 7.904	reproj: 37.306	trans: 0.601	orient_sm: 0.035	trans_sm: 0.069	betas_prior: 0.124	loss: 46.039	
+[INFO] Stage 1 [172/400]bio: 7.904	reproj: 37.290	trans: 0.603	orient_sm: 0.026	trans_sm: 0.072	betas_prior: 0.124	loss: 46.019	
+[INFO] Stage 1 [173/400]bio: 7.904	reproj: 37.336	trans: 0.601	orient_sm: 0.028	trans_sm: 0.063	betas_prior: 0.124	loss: 46.057	
+[INFO] Stage 1 [174/400]bio: 7.904	reproj: 37.278	trans: 0.602	orient_sm: 0.031	trans_sm: 0.068	betas_prior: 0.124	loss: 46.007	
+[INFO] Stage 1 [175/400]bio: 7.904	reproj: 37.338	trans: 0.601	orient_sm: 0.027	trans_sm: 0.062	betas_prior: 0.124	loss: 46.055	
+[INFO] Stage 1 [176/400]bio: 7.904	reproj: 37.288	trans: 0.601	orient_sm: 0.025	trans_sm: 0.066	betas_prior: 0.124	loss: 46.007	
+[INFO] Stage 1 [177/400]bio: 7.904	reproj: 37.288	trans: 0.601	orient_sm: 0.021	trans_sm: 0.063	betas_prior: 0.124	loss: 46.001	
+[INFO] Stage 1 [178/400]bio: 7.904	reproj: 37.340	trans: 0.600	orient_sm: 0.024	trans_sm: 0.063	betas_prior: 0.124	loss: 46.056	
+[INFO] Stage 1 [179/400]bio: 7.904	reproj: 37.255	trans: 0.602	orient_sm: 0.022	trans_sm: 0.061	betas_prior: 0.124	loss: 45.967	
+[INFO] Stage 1 [180/400]bio: 7.904	reproj: 37.327	trans: 0.601	orient_sm: 0.017	trans_sm: 0.065	betas_prior: 0.124	loss: 46.038	
+[INFO] Stage 1 [181/400]bio: 7.904	reproj: 37.299	trans: 0.600	orient_sm: 0.024	trans_sm: 0.060	betas_prior: 0.124	loss: 46.011	
+[INFO] Stage 1 [182/400]bio: 7.904	reproj: 37.264	trans: 0.601	orient_sm: 0.020	trans_sm: 0.059	betas_prior: 0.124	loss: 45.973	
+[INFO] Stage 1 [183/400]bio: 7.904	reproj: 37.370	trans: 0.601	orient_sm: 0.023	trans_sm: 0.065	betas_prior: 0.124	loss: 46.088	
+[INFO] Stage 1 [184/400]bio: 7.904	reproj: 37.221	trans: 0.600	orient_sm: 0.016	trans_sm: 0.055	betas_prior: 0.123	loss: 45.920	
+[INFO] Stage 1 [185/400]bio: 7.904	reproj: 37.475	trans: 0.604	orient_sm: 0.026	trans_sm: 0.093	betas_prior: 0.125	loss: 46.226	
+[INFO] Stage 1 [186/400]bio: 7.904	reproj: 37.214	trans: 0.603	orient_sm: 0.024	trans_sm: 0.069	betas_prior: 0.124	loss: 45.938	
+[INFO] Stage 1 [187/400]bio: 7.904	reproj: 37.510	trans: 0.608	orient_sm: 0.040	trans_sm: 0.182	betas_prior: 0.125	loss: 46.369	
+[INFO] Stage 1 [188/400]bio: 7.904	reproj: 37.375	trans: 0.609	orient_sm: 0.057	trans_sm: 0.155	betas_prior: 0.124	loss: 46.225	
+[INFO] Stage 1 [189/400]bio: 7.904	reproj: 37.337	trans: 0.606	orient_sm: 0.033	trans_sm: 0.125	betas_prior: 0.124	loss: 46.129	
+[INFO] Stage 1 [190/400]bio: 7.904	reproj: 37.448	trans: 0.606	orient_sm: 0.045	trans_sm: 0.140	betas_prior: 0.122	loss: 46.266	
+[INFO] Stage 1 [191/400]bio: 7.904	reproj: 37.270	trans: 0.605	orient_sm: 0.044	trans_sm: 0.087	betas_prior: 0.121	loss: 46.030	
+[INFO] Stage 1 [192/400]bio: 7.904	reproj: 37.443	trans: 0.606	orient_sm: 0.034	trans_sm: 0.114	betas_prior: 0.123	loss: 46.224	
+[INFO] Stage 1 [193/400]bio: 7.904	reproj: 37.330	trans: 0.606	orient_sm: 0.058	trans_sm: 0.106	betas_prior: 0.122	loss: 46.126	
+[INFO] Stage 1 [194/400]bio: 7.904	reproj: 37.331	trans: 0.604	orient_sm: 0.040	trans_sm: 0.100	betas_prior: 0.122	loss: 46.101	
+[INFO] Stage 1 [195/400]bio: 7.903	reproj: 37.341	trans: 0.606	orient_sm: 0.037	trans_sm: 0.091	betas_prior: 0.123	loss: 46.102	
+[INFO] Stage 1 [196/400]bio: 7.903	reproj: 37.313	trans: 0.604	orient_sm: 0.050	trans_sm: 0.093	betas_prior: 0.123	loss: 46.085	
+[INFO] Stage 1 [197/400]bio: 7.903	reproj: 37.309	trans: 0.603	orient_sm: 0.024	trans_sm: 0.077	betas_prior: 0.123	loss: 46.040	
+[INFO] Stage 1 [198/400]bio: 7.904	reproj: 37.372	trans: 0.605	orient_sm: 0.041	trans_sm: 0.093	betas_prior: 0.125	loss: 46.140	
+[INFO] Stage 1 [199/400]bio: 7.904	reproj: 37.244	trans: 0.603	orient_sm: 0.029	trans_sm: 0.068	betas_prior: 0.124	loss: 45.973	
+[INFO] Stage 1 [200/400]bio: 7.904	reproj: 37.363	trans: 0.604	orient_sm: 0.040	trans_sm: 0.102	betas_prior: 0.124	loss: 46.137	
+[INFO] Stage 1 [201/400]bio: 7.904	reproj: 37.247	trans: 0.603	orient_sm: 0.036	trans_sm: 0.073	betas_prior: 0.124	loss: 45.988	
+[INFO] Stage 1 [202/400]bio: 7.904	reproj: 37.285	trans: 0.603	orient_sm: 0.023	trans_sm: 0.086	betas_prior: 0.125	loss: 46.027	
+[INFO] Stage 1 [203/400]bio: 7.904	reproj: 37.268	trans: 0.604	orient_sm: 0.037	trans_sm: 0.088	betas_prior: 0.126	loss: 46.028	
+[INFO] Stage 1 [204/400]bio: 7.904	reproj: 37.267	trans: 0.602	orient_sm: 0.027	trans_sm: 0.065	betas_prior: 0.126	loss: 45.991	
+[INFO] Stage 1 [205/400]bio: 7.904	reproj: 37.237	trans: 0.603	orient_sm: 0.023	trans_sm: 0.078	betas_prior: 0.126	loss: 45.971	
+[INFO] Stage 1 [206/400]bio: 7.904	reproj: 37.265	trans: 0.603	orient_sm: 0.029	trans_sm: 0.067	betas_prior: 0.126	loss: 45.995	
+[INFO] Stage 1 [207/400]bio: 7.904	reproj: 37.252	trans: 0.603	orient_sm: 0.025	trans_sm: 0.080	betas_prior: 0.126	loss: 45.990	
+[INFO] Stage 1 [208/400]bio: 7.904	reproj: 37.204	trans: 0.603	orient_sm: 0.022	trans_sm: 0.057	betas_prior: 0.126	loss: 45.916	
+[INFO] Stage 1 [209/400]bio: 7.904	reproj: 37.270	trans: 0.602	orient_sm: 0.025	trans_sm: 0.070	betas_prior: 0.126	loss: 45.998	
+[INFO] Stage 1 [210/400]bio: 7.904	reproj: 37.199	trans: 0.603	orient_sm: 0.029	trans_sm: 0.059	betas_prior: 0.126	loss: 45.921	
+[INFO] Stage 1 [211/400]bio: 7.904	reproj: 37.262	trans: 0.604	orient_sm: 0.030	trans_sm: 0.081	betas_prior: 0.127	loss: 46.007	
+[INFO] Stage 1 [212/400]bio: 7.904	reproj: 37.221	trans: 0.602	orient_sm: 0.044	trans_sm: 0.071	betas_prior: 0.126	loss: 45.969	
+[INFO] Stage 1 [213/400]bio: 7.904	reproj: 37.225	trans: 0.603	orient_sm: 0.027	trans_sm: 0.076	betas_prior: 0.126	loss: 45.960	
+[INFO] Stage 1 [214/400]bio: 7.904	reproj: 37.234	trans: 0.602	orient_sm: 0.034	trans_sm: 0.066	betas_prior: 0.126	loss: 45.966	
+[INFO] Stage 1 [215/400]bio: 7.904	reproj: 37.223	trans: 0.603	orient_sm: 0.026	trans_sm: 0.067	betas_prior: 0.126	loss: 45.950	
+[INFO] Stage 1 [216/400]bio: 7.904	reproj: 37.215	trans: 0.602	orient_sm: 0.027	trans_sm: 0.064	betas_prior: 0.126	loss: 45.938	
+[INFO] Stage 1 [217/400]bio: 7.904	reproj: 37.263	trans: 0.602	orient_sm: 0.024	trans_sm: 0.066	betas_prior: 0.126	loss: 45.985	
+[INFO] Stage 1 [218/400]bio: 7.904	reproj: 37.201	trans: 0.602	orient_sm: 0.025	trans_sm: 0.066	betas_prior: 0.126	loss: 45.926	
+[INFO] Stage 1 [219/400]bio: 7.904	reproj: 37.252	trans: 0.603	orient_sm: 0.020	trans_sm: 0.071	betas_prior: 0.127	loss: 45.976	
+[INFO] Stage 1 [220/400]bio: 7.904	reproj: 37.231	trans: 0.602	orient_sm: 0.030	trans_sm: 0.074	betas_prior: 0.126	loss: 45.968	
+[INFO] Stage 1 [221/400]bio: 7.904	reproj: 37.222	trans: 0.603	orient_sm: 0.019	trans_sm: 0.063	betas_prior: 0.127	loss: 45.937	
+[INFO] Stage 1 [222/400]bio: 7.904	reproj: 37.216	trans: 0.602	orient_sm: 0.020	trans_sm: 0.066	betas_prior: 0.126	loss: 45.934	
+[INFO] Stage 1 [223/400]bio: 7.904	reproj: 37.251	trans: 0.602	orient_sm: 0.021	trans_sm: 0.064	betas_prior: 0.126	loss: 45.969	
+[INFO] Stage 1 [224/400]bio: 7.904	reproj: 37.205	trans: 0.602	orient_sm: 0.015	trans_sm: 0.066	betas_prior: 0.126	loss: 45.919	
+[INFO] Stage 1 [225/400]bio: 7.904	reproj: 37.250	trans: 0.603	orient_sm: 0.020	trans_sm: 0.066	betas_prior: 0.127	loss: 45.969	
+[INFO] Stage 1 [226/400]bio: 7.904	reproj: 37.211	trans: 0.603	orient_sm: 0.018	trans_sm: 0.068	betas_prior: 0.127	loss: 45.931	
+[INFO] Stage 1 [227/400]bio: 7.904	reproj: 37.232	trans: 0.603	orient_sm: 0.014	trans_sm: 0.065	betas_prior: 0.127	loss: 45.946	
+[INFO] Stage 1 [228/400]bio: 7.904	reproj: 37.220	trans: 0.602	orient_sm: 0.018	trans_sm: 0.067	betas_prior: 0.126	loss: 45.936	
+[INFO] Stage 1 [229/400]bio: 7.904	reproj: 37.241	trans: 0.603	orient_sm: 0.014	trans_sm: 0.063	betas_prior: 0.127	loss: 45.952	
+[INFO] Stage 1 [230/400]bio: 7.904	reproj: 37.220	trans: 0.603	orient_sm: 0.016	trans_sm: 0.066	betas_prior: 0.127	loss: 45.935	
+[INFO] Stage 1 [231/400]bio: 7.904	reproj: 37.219	trans: 0.603	orient_sm: 0.013	trans_sm: 0.060	betas_prior: 0.126	loss: 45.925	
+[INFO] Stage 1 [232/400]bio: 7.904	reproj: 37.246	trans: 0.601	orient_sm: 0.013	trans_sm: 0.064	betas_prior: 0.126	loss: 45.955	
+[INFO] Stage 1 [233/400]bio: 7.904	reproj: 37.221	trans: 0.602	orient_sm: 0.014	trans_sm: 0.059	betas_prior: 0.126	loss: 45.926	
+[INFO] Stage 1 [234/400]bio: 7.904	reproj: 37.215	trans: 0.602	orient_sm: 0.013	trans_sm: 0.056	betas_prior: 0.126	loss: 45.917	
+[INFO] Stage 1 [235/400]bio: 7.904	reproj: 37.249	trans: 0.602	orient_sm: 0.012	trans_sm: 0.062	betas_prior: 0.127	loss: 45.955	
+[INFO] Stage 1 [236/400]bio: 7.904	reproj: 37.202	trans: 0.600	orient_sm: 0.011	trans_sm: 0.053	betas_prior: 0.126	loss: 45.898	
+[INFO] Stage 1 [237/400]bio: 7.904	reproj: 37.235	trans: 0.602	orient_sm: 0.012	trans_sm: 0.061	betas_prior: 0.127	loss: 45.940	
+[INFO] Stage 1 [238/400]bio: 7.904	reproj: 37.229	trans: 0.601	orient_sm: 0.014	trans_sm: 0.055	betas_prior: 0.127	loss: 45.930	
+[INFO] Stage 1 [239/400]bio: 7.904	reproj: 37.212	trans: 0.602	orient_sm: 0.011	trans_sm: 0.057	betas_prior: 0.127	loss: 45.913	
+[INFO] Stage 1 [240/400]bio: 7.904	reproj: 37.242	trans: 0.601	orient_sm: 0.011	trans_sm: 0.055	betas_prior: 0.127	loss: 45.940	
+[INFO] Stage 1 [241/400]bio: 7.904	reproj: 37.213	trans: 0.600	orient_sm: 0.012	trans_sm: 0.055	betas_prior: 0.126	loss: 45.911	
+[INFO] Stage 1 [242/400]bio: 7.904	reproj: 37.228	trans: 0.601	orient_sm: 0.011	trans_sm: 0.053	betas_prior: 0.127	loss: 45.924	
+[INFO] Stage 1 [243/400]bio: 7.904	reproj: 37.224	trans: 0.601	orient_sm: 0.012	trans_sm: 0.054	betas_prior: 0.127	loss: 45.921	
+[INFO] Stage 1 [244/400]bio: 7.904	reproj: 37.215	trans: 0.600	orient_sm: 0.011	trans_sm: 0.051	betas_prior: 0.126	loss: 45.908	
+[INFO] Stage 1 [245/400]bio: 7.904	reproj: 37.240	trans: 0.601	orient_sm: 0.010	trans_sm: 0.055	betas_prior: 0.127	loss: 45.937	
+[INFO] Stage 1 [246/400]bio: 7.904	reproj: 37.207	trans: 0.600	orient_sm: 0.009	trans_sm: 0.050	betas_prior: 0.126	loss: 45.896	
+[INFO] Stage 1 [247/400]bio: 7.904	reproj: 37.237	trans: 0.601	orient_sm: 0.010	trans_sm: 0.056	betas_prior: 0.127	loss: 45.935	
+[INFO] Stage 1 [248/400]bio: 7.904	reproj: 37.215	trans: 0.601	orient_sm: 0.011	trans_sm: 0.051	betas_prior: 0.127	loss: 45.908	
+[INFO] Stage 1 [249/400]bio: 7.904	reproj: 37.223	trans: 0.601	orient_sm: 0.009	trans_sm: 0.055	betas_prior: 0.127	loss: 45.919	
+[INFO] Stage 1 [250/400]bio: 7.904	reproj: 37.225	trans: 0.600	orient_sm: 0.010	trans_sm: 0.051	betas_prior: 0.127	loss: 45.917	
+[INFO] Stage 1 [251/400]bio: 7.904	reproj: 37.212	trans: 0.601	orient_sm: 0.009	trans_sm: 0.051	betas_prior: 0.127	loss: 45.904	
+[INFO] Stage 1 [252/400]bio: 7.904	reproj: 37.237	trans: 0.601	orient_sm: 0.009	trans_sm: 0.052	betas_prior: 0.127	loss: 45.930	
+[INFO] Stage 1 [253/400]bio: 7.904	reproj: 37.204	trans: 0.601	orient_sm: 0.009	trans_sm: 0.051	betas_prior: 0.126	loss: 45.895	
+[INFO] Stage 1 [254/400]bio: 7.904	reproj: 37.251	trans: 0.601	orient_sm: 0.010	trans_sm: 0.055	betas_prior: 0.127	loss: 45.948	
+[INFO] Stage 1 [255/400]bio: 7.904	reproj: 37.192	trans: 0.601	orient_sm: 0.009	trans_sm: 0.049	betas_prior: 0.126	loss: 45.881	
+[INFO] Stage 1 [256/400]bio: 7.904	reproj: 37.260	trans: 0.602	orient_sm: 0.010	trans_sm: 0.060	betas_prior: 0.127	loss: 45.963	
+[INFO] Stage 1 [257/400]bio: 7.904	reproj: 37.188	trans: 0.601	orient_sm: 0.010	trans_sm: 0.051	betas_prior: 0.127	loss: 45.881	
+[INFO] Stage 1 [258/400]bio: 7.904	reproj: 37.278	trans: 0.604	orient_sm: 0.013	trans_sm: 0.077	betas_prior: 0.127	loss: 46.002	
+[INFO] Stage 1 [259/400]bio: 7.904	reproj: 37.187	trans: 0.603	orient_sm: 0.012	trans_sm: 0.067	betas_prior: 0.127	loss: 45.900	
+[INFO] Stage 1 [260/400]bio: 7.904	reproj: 37.252	trans: 0.606	orient_sm: 0.016	trans_sm: 0.104	betas_prior: 0.127	loss: 46.009	
+[INFO] Stage 1 [261/400]bio: 7.904	reproj: 37.216	trans: 0.605	orient_sm: 0.016	trans_sm: 0.096	betas_prior: 0.127	loss: 45.964	
+[INFO] Stage 1 [262/400]bio: 7.904	reproj: 37.195	trans: 0.605	orient_sm: 0.013	trans_sm: 0.084	betas_prior: 0.127	loss: 45.928	
+[INFO] Stage 1 [263/400]bio: 7.904	reproj: 37.234	trans: 0.604	orient_sm: 0.014	trans_sm: 0.076	betas_prior: 0.127	loss: 45.959	
+[INFO] Stage 1 [264/400]bio: 7.904	reproj: 37.226	trans: 0.603	orient_sm: 0.013	trans_sm: 0.070	betas_prior: 0.127	loss: 45.944	
+[INFO] Stage 1 [265/400]bio: 7.904	reproj: 37.198	trans: 0.604	orient_sm: 0.011	trans_sm: 0.071	betas_prior: 0.127	loss: 45.915	
+[INFO] Stage 1 [266/400]bio: 7.904	reproj: 37.251	trans: 0.603	orient_sm: 0.013	trans_sm: 0.072	betas_prior: 0.127	loss: 45.971	
+[INFO] Stage 1 [267/400]bio: 7.904	reproj: 37.203	trans: 0.604	orient_sm: 0.011	trans_sm: 0.079	betas_prior: 0.127	loss: 45.928	
+[INFO] Stage 1 [268/400]bio: 7.904	reproj: 37.208	trans: 0.604	orient_sm: 0.011	trans_sm: 0.068	betas_prior: 0.127	loss: 45.921	
+[INFO] Stage 1 [269/400]bio: 7.904	reproj: 37.249	trans: 0.603	orient_sm: 0.014	trans_sm: 0.074	betas_prior: 0.127	loss: 45.971	
+[INFO] Stage 1 [270/400]bio: 7.904	reproj: 37.185	trans: 0.603	orient_sm: 0.010	trans_sm: 0.055	betas_prior: 0.127	loss: 45.883	
+[INFO] Stage 1 [271/400]bio: 7.904	reproj: 37.266	trans: 0.604	orient_sm: 0.012	trans_sm: 0.076	betas_prior: 0.127	loss: 45.990	
+[INFO] Stage 1 [272/400]bio: 7.904	reproj: 37.188	trans: 0.603	orient_sm: 0.012	trans_sm: 0.067	betas_prior: 0.127	loss: 45.900	
+[INFO] Stage 1 [273/400]bio: 7.904	reproj: 37.254	trans: 0.607	orient_sm: 0.020	trans_sm: 0.102	betas_prior: 0.127	loss: 46.015	
+[INFO] Stage 1 [274/400]bio: 7.904	reproj: 37.198	trans: 0.606	orient_sm: 0.017	trans_sm: 0.093	betas_prior: 0.127	loss: 45.946	
+[INFO] Stage 1 [275/400]bio: 7.904	reproj: 37.230	trans: 0.606	orient_sm: 0.020	trans_sm: 0.108	betas_prior: 0.127	loss: 45.994	
+[INFO] Stage 1 [276/400]bio: 7.904	reproj: 37.209	trans: 0.606	orient_sm: 0.017	trans_sm: 0.102	betas_prior: 0.127	loss: 45.965	
+[INFO] Stage 1 [277/400]bio: 7.904	reproj: 37.219	trans: 0.605	orient_sm: 0.017	trans_sm: 0.096	betas_prior: 0.127	loss: 45.968	
+[INFO] Stage 1 [278/400]bio: 7.904	reproj: 37.205	trans: 0.607	orient_sm: 0.016	trans_sm: 0.095	betas_prior: 0.127	loss: 45.954	
+[INFO] Stage 1 [279/400]bio: 7.904	reproj: 37.215	trans: 0.605	orient_sm: 0.019	trans_sm: 0.088	betas_prior: 0.127	loss: 45.957	
+[INFO] Stage 1 [280/400]bio: 7.904	reproj: 37.226	trans: 0.605	orient_sm: 0.016	trans_sm: 0.093	betas_prior: 0.127	loss: 45.970	
+[INFO] Stage 1 [281/400]bio: 7.904	reproj: 37.201	trans: 0.604	orient_sm: 0.012	trans_sm: 0.077	betas_prior: 0.127	loss: 45.925	
+[INFO] Stage 1 [282/400]bio: 7.904	reproj: 37.237	trans: 0.605	orient_sm: 0.012	trans_sm: 0.085	betas_prior: 0.127	loss: 45.970	
+[INFO] Stage 1 [283/400]bio: 7.904	reproj: 37.188	trans: 0.605	orient_sm: 0.014	trans_sm: 0.080	betas_prior: 0.127	loss: 45.917	
+[INFO] Stage 1 [284/400]bio: 7.904	reproj: 37.251	trans: 0.605	orient_sm: 0.023	trans_sm: 0.098	betas_prior: 0.127	loss: 46.008	
+[INFO] Stage 1 [285/400]bio: 7.904	reproj: 37.192	trans: 0.606	orient_sm: 0.015	trans_sm: 0.107	betas_prior: 0.127	loss: 45.950	
+[INFO] Stage 1 [286/400]bio: 7.904	reproj: 37.230	trans: 0.607	orient_sm: 0.022	trans_sm: 0.108	betas_prior: 0.127	loss: 45.998	
+[INFO] Stage 1 [287/400]bio: 7.904	reproj: 37.203	trans: 0.608	orient_sm: 0.021	trans_sm: 0.121	betas_prior: 0.127	loss: 45.985	
+[INFO] Stage 1 [288/400]bio: 7.904	reproj: 37.230	trans: 0.605	orient_sm: 0.025	trans_sm: 0.100	betas_prior: 0.127	loss: 45.990	
+[INFO] Stage 1 [289/400]bio: 7.904	reproj: 37.192	trans: 0.607	orient_sm: 0.021	trans_sm: 0.120	betas_prior: 0.127	loss: 45.972	
+[INFO] Stage 1 [290/400]bio: 7.904	reproj: 37.235	trans: 0.607	orient_sm: 0.032	trans_sm: 0.113	betas_prior: 0.127	loss: 46.019	
+[INFO] Stage 1 [291/400]bio: 7.904	reproj: 37.201	trans: 0.609	orient_sm: 0.026	trans_sm: 0.127	betas_prior: 0.127	loss: 45.994	
+[INFO] Stage 1 [292/400]bio: 7.904	reproj: 37.213	trans: 0.606	orient_sm: 0.029	trans_sm: 0.110	betas_prior: 0.127	loss: 45.989	
+[INFO] Stage 1 [293/400]bio: 7.904	reproj: 37.203	trans: 0.606	orient_sm: 0.025	trans_sm: 0.111	betas_prior: 0.127	loss: 45.976	
+[INFO] Stage 1 [294/400]bio: 7.904	reproj: 37.245	trans: 0.606	orient_sm: 0.032	trans_sm: 0.109	betas_prior: 0.127	loss: 46.024	
+[INFO] Stage 1 [295/400]bio: 7.904	reproj: 37.192	trans: 0.608	orient_sm: 0.028	trans_sm: 0.119	betas_prior: 0.127	loss: 45.978	
+[INFO] Stage 1 [296/400]bio: 7.904	reproj: 37.217	trans: 0.606	orient_sm: 0.034	trans_sm: 0.113	betas_prior: 0.127	loss: 46.001	
+[INFO] Stage 1 [297/400]bio: 7.904	reproj: 37.217	trans: 0.606	orient_sm: 0.028	trans_sm: 0.121	betas_prior: 0.127	loss: 46.003	
+[INFO] Stage 1 [298/400]bio: 7.904	reproj: 37.226	trans: 0.605	orient_sm: 0.027	trans_sm: 0.087	betas_prior: 0.127	loss: 45.975	
+[INFO] Stage 1 [299/400]bio: 7.904	reproj: 37.201	trans: 0.608	orient_sm: 0.025	trans_sm: 0.115	betas_prior: 0.127	loss: 45.980	
+[INFO] Stage 1 [300/400]bio: 7.904	reproj: 37.216	trans: 0.604	orient_sm: 0.027	trans_sm: 0.081	betas_prior: 0.127	loss: 45.959	
+[INFO] Stage 1 [301/400]bio: 7.904	reproj: 37.218	trans: 0.605	orient_sm: 0.023	trans_sm: 0.108	betas_prior: 0.127	loss: 45.985	
+[INFO] Stage 1 [302/400]bio: 7.904	reproj: 37.214	trans: 0.603	orient_sm: 0.021	trans_sm: 0.072	betas_prior: 0.127	loss: 45.942	
+[INFO] Stage 1 [303/400]bio: 7.904	reproj: 37.216	trans: 0.606	orient_sm: 0.019	trans_sm: 0.094	betas_prior: 0.127	loss: 45.966	
+[INFO] Stage 1 [304/400]bio: 7.904	reproj: 37.221	trans: 0.603	orient_sm: 0.021	trans_sm: 0.073	betas_prior: 0.127	loss: 45.949	
+[INFO] Stage 1 [305/400]bio: 7.904	reproj: 37.211	trans: 0.604	orient_sm: 0.018	trans_sm: 0.079	betas_prior: 0.127	loss: 45.942	
+[INFO] Stage 1 [306/400]bio: 7.904	reproj: 37.221	trans: 0.604	orient_sm: 0.017	trans_sm: 0.073	betas_prior: 0.127	loss: 45.945	
+[INFO] Stage 1 [307/400]bio: 7.904	reproj: 37.211	trans: 0.604	orient_sm: 0.017	trans_sm: 0.070	betas_prior: 0.127	loss: 45.933	
+[INFO] Stage 1 [308/400]bio: 7.904	reproj: 37.207	trans: 0.604	orient_sm: 0.016	trans_sm: 0.068	betas_prior: 0.127	loss: 45.925	
+[INFO] Stage 1 [309/400]bio: 7.904	reproj: 37.222	trans: 0.602	orient_sm: 0.016	trans_sm: 0.066	betas_prior: 0.127	loss: 45.936	
+[INFO] Stage 1 [310/400]bio: 7.904	reproj: 37.205	trans: 0.603	orient_sm: 0.011	trans_sm: 0.065	betas_prior: 0.127	loss: 45.915	
+[INFO] Stage 1 [311/400]bio: 7.904	reproj: 37.217	trans: 0.603	orient_sm: 0.014	trans_sm: 0.062	betas_prior: 0.127	loss: 45.927	
+[INFO] Stage 1 [312/400]bio: 7.904	reproj: 37.218	trans: 0.603	orient_sm: 0.011	trans_sm: 0.063	betas_prior: 0.127	loss: 45.926	
+[INFO] Stage 1 [313/400]bio: 7.904	reproj: 37.207	trans: 0.602	orient_sm: 0.013	trans_sm: 0.059	betas_prior: 0.127	loss: 45.911	
+[INFO] Stage 1 [314/400]bio: 7.904	reproj: 37.228	trans: 0.602	orient_sm: 0.010	trans_sm: 0.061	betas_prior: 0.127	loss: 45.932	
+[INFO] Stage 1 [315/400]bio: 7.904	reproj: 37.205	trans: 0.602	orient_sm: 0.012	trans_sm: 0.058	betas_prior: 0.127	loss: 45.908	
+[INFO] Stage 1 [316/400]bio: 7.904	reproj: 37.226	trans: 0.602	orient_sm: 0.009	trans_sm: 0.059	betas_prior: 0.127	loss: 45.928	
+[INFO] Stage 1 [317/400]bio: 7.904	reproj: 37.210	trans: 0.602	orient_sm: 0.013	trans_sm: 0.060	betas_prior: 0.127	loss: 45.915	
+[INFO] Stage 1 [318/400]bio: 7.904	reproj: 37.211	trans: 0.602	orient_sm: 0.008	trans_sm: 0.054	betas_prior: 0.127	loss: 45.906	
+[INFO] Stage 1 [319/400]bio: 7.904	reproj: 37.224	trans: 0.603	orient_sm: 0.012	trans_sm: 0.059	betas_prior: 0.127	loss: 45.929	
+[INFO] Stage 1 [320/400]bio: 7.904	reproj: 37.199	trans: 0.601	orient_sm: 0.007	trans_sm: 0.050	betas_prior: 0.127	loss: 45.888	
+[INFO] Stage 1 [321/400]bio: 7.904	reproj: 37.238	trans: 0.602	orient_sm: 0.011	trans_sm: 0.061	betas_prior: 0.127	loss: 45.944	
+[INFO] Stage 1 [322/400]bio: 7.904	reproj: 37.190	trans: 0.601	orient_sm: 0.008	trans_sm: 0.051	betas_prior: 0.127	loss: 45.880	
+[INFO] Stage 1 [323/400]bio: 7.904	reproj: 37.249	trans: 0.603	orient_sm: 0.012	trans_sm: 0.065	betas_prior: 0.127	loss: 45.961	
+[INFO] Stage 1 [324/400]bio: 7.904	reproj: 37.187	trans: 0.602	orient_sm: 0.011	trans_sm: 0.058	betas_prior: 0.127	loss: 45.890	
+[INFO] Stage 1 [325/400]bio: 7.904	reproj: 37.254	trans: 0.603	orient_sm: 0.018	trans_sm: 0.076	betas_prior: 0.127	loss: 45.982	
+[INFO] Stage 1 [326/400]bio: 7.904	reproj: 37.189	trans: 0.603	orient_sm: 0.017	trans_sm: 0.075	betas_prior: 0.127	loss: 45.915	
+[INFO] Stage 1 [327/400]bio: 7.904	reproj: 37.221	trans: 0.606	orient_sm: 0.018	trans_sm: 0.084	betas_prior: 0.127	loss: 45.961	
+[INFO] Stage 1 [328/400]bio: 7.904	reproj: 37.211	trans: 0.605	orient_sm: 0.024	trans_sm: 0.085	betas_prior: 0.127	loss: 45.957	
+[INFO] Stage 1 [329/400]bio: 7.904	reproj: 37.206	trans: 0.603	orient_sm: 0.016	trans_sm: 0.071	betas_prior: 0.127	loss: 45.927	
+[INFO] Stage 1 [330/400]bio: 7.904	reproj: 37.227	trans: 0.604	orient_sm: 0.020	trans_sm: 0.082	betas_prior: 0.127	loss: 45.964	
+[INFO] Stage 1 [331/400]bio: 7.904	reproj: 37.204	trans: 0.603	orient_sm: 0.009	trans_sm: 0.064	betas_prior: 0.127	loss: 45.912	
+[INFO] Stage 1 [332/400]bio: 7.904	reproj: 37.215	trans: 0.604	orient_sm: 0.018	trans_sm: 0.073	betas_prior: 0.127	loss: 45.941	
+[INFO] Stage 1 [333/400]bio: 7.904	reproj: 37.222	trans: 0.603	orient_sm: 0.012	trans_sm: 0.067	betas_prior: 0.126	loss: 45.933	
+[INFO] Stage 1 [334/400]bio: 7.904	reproj: 37.201	trans: 0.603	orient_sm: 0.015	trans_sm: 0.063	betas_prior: 0.127	loss: 45.912	
+[INFO] Stage 1 [335/400]bio: 7.904	reproj: 37.236	trans: 0.604	orient_sm: 0.009	trans_sm: 0.068	betas_prior: 0.127	loss: 45.948	
+[INFO] Stage 1 [336/400]bio: 7.904	reproj: 37.189	trans: 0.602	orient_sm: 0.013	trans_sm: 0.060	betas_prior: 0.127	loss: 45.894	
+[INFO] Stage 1 [337/400]bio: 7.904	reproj: 37.243	trans: 0.604	orient_sm: 0.012	trans_sm: 0.080	betas_prior: 0.127	loss: 45.971	
+[INFO] Stage 1 [338/400]bio: 7.904	reproj: 37.192	trans: 0.604	orient_sm: 0.015	trans_sm: 0.071	betas_prior: 0.127	loss: 45.912	
+[INFO] Stage 1 [339/400]bio: 7.904	reproj: 37.229	trans: 0.606	orient_sm: 0.014	trans_sm: 0.089	betas_prior: 0.127	loss: 45.970	
+[INFO] Stage 1 [340/400]bio: 7.904	reproj: 37.203	trans: 0.606	orient_sm: 0.017	trans_sm: 0.083	betas_prior: 0.127	loss: 45.940	
+[INFO] Stage 1 [341/400]bio: 7.904	reproj: 37.207	trans: 0.604	orient_sm: 0.012	trans_sm: 0.081	betas_prior: 0.127	loss: 45.936	
+[INFO] Stage 1 [342/400]bio: 7.904	reproj: 37.218	trans: 0.605	orient_sm: 0.018	trans_sm: 0.080	betas_prior: 0.127	loss: 45.951	
+[INFO] Stage 1 [343/400]bio: 7.904	reproj: 37.213	trans: 0.604	orient_sm: 0.011	trans_sm: 0.071	betas_prior: 0.127	loss: 45.930	
+[INFO] Stage 1 [344/400]bio: 7.904	reproj: 37.203	trans: 0.605	orient_sm: 0.015	trans_sm: 0.075	betas_prior: 0.127	loss: 45.929	
+[INFO] Stage 1 [345/400]bio: 7.904	reproj: 37.221	trans: 0.603	orient_sm: 0.009	trans_sm: 0.068	betas_prior: 0.127	loss: 45.932	
+[INFO] Stage 1 [346/400]bio: 7.904	reproj: 37.206	trans: 0.603	orient_sm: 0.015	trans_sm: 0.071	betas_prior: 0.127	loss: 45.926	
+[INFO] Stage 1 [347/400]bio: 7.904	reproj: 37.208	trans: 0.604	orient_sm: 0.009	trans_sm: 0.063	betas_prior: 0.127	loss: 45.916	
+[INFO] Stage 1 [348/400]bio: 7.904	reproj: 37.217	trans: 0.603	orient_sm: 0.015	trans_sm: 0.066	betas_prior: 0.127	loss: 45.932	
+[INFO] Stage 1 [349/400]bio: 7.904	reproj: 37.204	trans: 0.602	orient_sm: 0.009	trans_sm: 0.059	betas_prior: 0.127	loss: 45.904	
+[INFO] Stage 1 [350/400]bio: 7.904	reproj: 37.221	trans: 0.602	orient_sm: 0.012	trans_sm: 0.064	betas_prior: 0.127	loss: 45.929	
+[INFO] Stage 1 [351/400]bio: 7.904	reproj: 37.203	trans: 0.602	orient_sm: 0.009	trans_sm: 0.056	betas_prior: 0.127	loss: 45.901	
+[INFO] Stage 1 [352/400]bio: 7.904	reproj: 37.221	trans: 0.603	orient_sm: 0.013	trans_sm: 0.061	betas_prior: 0.127	loss: 45.928	
+[INFO] Stage 1 [353/400]bio: 7.904	reproj: 37.205	trans: 0.601	orient_sm: 0.009	trans_sm: 0.054	betas_prior: 0.127	loss: 45.900	
+[INFO] Stage 1 [354/400]bio: 7.904	reproj: 37.213	trans: 0.602	orient_sm: 0.010	trans_sm: 0.060	betas_prior: 0.127	loss: 45.916	
+[INFO] Stage 1 [355/400]bio: 7.904	reproj: 37.209	trans: 0.602	orient_sm: 0.010	trans_sm: 0.052	betas_prior: 0.127	loss: 45.905	
+[INFO] Stage 1 [356/400]bio: 7.904	reproj: 37.209	trans: 0.602	orient_sm: 0.009	trans_sm: 0.058	betas_prior: 0.127	loss: 45.909	
+[INFO] Stage 1 [357/400]bio: 7.904	reproj: 37.209	trans: 0.601	orient_sm: 0.009	trans_sm: 0.052	betas_prior: 0.127	loss: 45.902	
+[INFO] Stage 1 [358/400]bio: 7.904	reproj: 37.211	trans: 0.601	orient_sm: 0.009	trans_sm: 0.055	betas_prior: 0.127	loss: 45.907	
+[INFO] Stage 1 [359/400]bio: 7.904	reproj: 37.211	trans: 0.601	orient_sm: 0.010	trans_sm: 0.052	betas_prior: 0.127	loss: 45.905	
+[INFO] Stage 1 [360/400]bio: 7.904	reproj: 37.209	trans: 0.602	orient_sm: 0.008	trans_sm: 0.053	betas_prior: 0.127	loss: 45.902	
+[INFO] Stage 1 [361/400]bio: 7.904	reproj: 37.211	trans: 0.601	orient_sm: 0.008	trans_sm: 0.051	betas_prior: 0.127	loss: 45.902	
+[INFO] Stage 1 [362/400]bio: 7.904	reproj: 37.207	trans: 0.602	orient_sm: 0.007	trans_sm: 0.053	betas_prior: 0.127	loss: 45.900	
+[INFO] Stage 1 [363/400]bio: 7.904	reproj: 37.212	trans: 0.601	orient_sm: 0.010	trans_sm: 0.050	betas_prior: 0.127	loss: 45.904	
+[INFO] Stage 1 [364/400]bio: 7.904	reproj: 37.207	trans: 0.601	orient_sm: 0.007	trans_sm: 0.052	betas_prior: 0.127	loss: 45.898	
+[INFO] Stage 1 [365/400]bio: 7.904	reproj: 37.214	trans: 0.601	orient_sm: 0.008	trans_sm: 0.050	betas_prior: 0.127	loss: 45.903	
+[INFO] Stage 1 [366/400]bio: 7.904	reproj: 37.207	trans: 0.601	orient_sm: 0.007	trans_sm: 0.052	betas_prior: 0.127	loss: 45.897	
+[INFO] Stage 1 [367/400]bio: 7.904	reproj: 37.214	trans: 0.601	orient_sm: 0.008	trans_sm: 0.050	betas_prior: 0.127	loss: 45.904	
+[INFO] Stage 1 [368/400]bio: 7.904	reproj: 37.206	trans: 0.601	orient_sm: 0.007	trans_sm: 0.050	betas_prior: 0.127	loss: 45.895	
+[INFO] Stage 1 [369/400]bio: 7.904	reproj: 37.216	trans: 0.600	orient_sm: 0.007	trans_sm: 0.051	betas_prior: 0.127	loss: 45.905	
+[INFO] Stage 1 [370/400]bio: 7.904	reproj: 37.206	trans: 0.600	orient_sm: 0.007	trans_sm: 0.050	betas_prior: 0.127	loss: 45.895	
+[INFO] Stage 1 [371/400]bio: 7.904	reproj: 37.221	trans: 0.601	orient_sm: 0.009	trans_sm: 0.052	betas_prior: 0.127	loss: 45.913	
+[INFO] Stage 1 [372/400]bio: 7.904	reproj: 37.203	trans: 0.601	orient_sm: 0.007	trans_sm: 0.049	betas_prior: 0.127	loss: 45.890	
+[INFO] Stage 1 [373/400]bio: 7.904	reproj: 37.226	trans: 0.601	orient_sm: 0.009	trans_sm: 0.052	betas_prior: 0.127	loss: 45.919	
+[INFO] Stage 1 [374/400]bio: 7.904	reproj: 37.196	trans: 0.600	orient_sm: 0.008	trans_sm: 0.048	betas_prior: 0.127	loss: 45.883	
+[INFO] Stage 1 [375/400]bio: 7.904	reproj: 37.235	trans: 0.601	orient_sm: 0.011	trans_sm: 0.056	betas_prior: 0.127	loss: 45.934	
+[INFO] Stage 1 [376/400]bio: 7.904	reproj: 37.187	trans: 0.601	orient_sm: 0.008	trans_sm: 0.048	betas_prior: 0.127	loss: 45.875	
+[INFO] Stage 1 [377/400]bio: 7.904	reproj: 37.248	trans: 0.602	orient_sm: 0.012	trans_sm: 0.064	betas_prior: 0.127	loss: 45.956	
+[INFO] Stage 1 [378/400]bio: 7.904	reproj: 37.177	trans: 0.601	orient_sm: 0.008	trans_sm: 0.051	betas_prior: 0.127	loss: 45.869	
+[INFO] Stage 1 [379/400]bio: 7.904	reproj: 37.261	trans: 0.605	orient_sm: 0.013	trans_sm: 0.085	betas_prior: 0.128	loss: 45.996	
+[INFO] Stage 1 [380/400]bio: 7.904	reproj: 37.170	trans: 0.605	orient_sm: 0.011	trans_sm: 0.073	betas_prior: 0.127	loss: 45.891	
+[INFO] Stage 1 [381/400]bio: 7.904	reproj: 37.251	trans: 0.610	orient_sm: 0.025	trans_sm: 0.165	betas_prior: 0.128	loss: 46.084	
+[INFO] Stage 1 [382/400]bio: 7.904	reproj: 37.186	trans: 0.611	orient_sm: 0.028	trans_sm: 0.166	betas_prior: 0.127	loss: 46.023	
+[INFO] Stage 1 [383/400]bio: 7.904	reproj: 37.192	trans: 0.611	orient_sm: 0.027	trans_sm: 0.157	betas_prior: 0.128	loss: 46.019	
+[INFO] Stage 1 [384/400]bio: 7.904	reproj: 37.204	trans: 0.611	orient_sm: 0.024	trans_sm: 0.152	betas_prior: 0.128	loss: 46.023	
+[INFO] Stage 1 [385/400]bio: 7.904	reproj: 37.230	trans: 0.606	orient_sm: 0.017	trans_sm: 0.107	betas_prior: 0.127	loss: 45.990	
+[INFO] Stage 1 [386/400]bio: 7.904	reproj: 37.179	trans: 0.611	orient_sm: 0.032	trans_sm: 0.165	betas_prior: 0.127	loss: 46.018	
+[INFO] Stage 1 [387/400]bio: 7.904	reproj: 37.218	trans: 0.609	orient_sm: 0.024	trans_sm: 0.115	betas_prior: 0.128	loss: 45.998	
+[INFO] Stage 1 [388/400]bio: 7.904	reproj: 37.204	trans: 0.613	orient_sm: 0.036	trans_sm: 0.190	betas_prior: 0.127	loss: 46.075	
+[INFO] Stage 1 [389/400]bio: 7.904	reproj: 37.190	trans: 0.604	orient_sm: 0.010	trans_sm: 0.079	betas_prior: 0.127	loss: 45.913	
+[INFO] Stage 1 [390/400]bio: 7.904	reproj: 37.216	trans: 0.612	orient_sm: 0.033	trans_sm: 0.160	betas_prior: 0.127	loss: 46.052	
+[INFO] Stage 1 [391/400]bio: 7.904	reproj: 37.219	trans: 0.607	orient_sm: 0.010	trans_sm: 0.100	betas_prior: 0.127	loss: 45.967	
+[INFO] Stage 1 [392/400]bio: 7.904	reproj: 37.174	trans: 0.608	orient_sm: 0.020	trans_sm: 0.103	betas_prior: 0.127	loss: 45.936	
+[INFO] Stage 1 [393/400]bio: 7.904	reproj: 37.263	trans: 0.605	orient_sm: 0.012	trans_sm: 0.096	betas_prior: 0.127	loss: 46.007	
+[INFO] Stage 1 [394/400]bio: 7.904	reproj: 37.185	trans: 0.607	orient_sm: 0.029	trans_sm: 0.106	betas_prior: 0.127	loss: 45.957	
+[INFO] Stage 1 [395/400]bio: 7.904	reproj: 37.209	trans: 0.607	orient_sm: 0.019	trans_sm: 0.113	betas_prior: 0.128	loss: 45.980	
+[INFO] Stage 1 [396/400]bio: 7.904	reproj: 37.210	trans: 0.607	orient_sm: 0.027	trans_sm: 0.111	betas_prior: 0.127	loss: 45.987	
+[INFO] Stage 1 [397/400]bio: 7.904	reproj: 37.214	trans: 0.604	orient_sm: 0.012	trans_sm: 0.088	betas_prior: 0.127	loss: 45.950	
+[INFO] Stage 1 [398/400]bio: 7.904	reproj: 37.204	trans: 0.606	orient_sm: 0.026	trans_sm: 0.107	betas_prior: 0.127	loss: 45.974	
+[INFO] Stage 1 [399/400]bio: 7.904	reproj: 37.214	trans: 0.604	orient_sm: 0.011	trans_sm: 0.072	betas_prior: 0.127	loss: 45.931	
+Stage 1 finished in 00:00:17
+[INFO] mean_betas: [   0.043005   -0.027817   -0.052846   -0.010573    0.010659   -0.014875   -0.032885     0.04485   0.0037937    0.011069]
+[INFO] betas: [[    0.17913    -0.18852    0.071146    0.079914    0.041447    0.075735     0.09922     0.21978   0.0012567     0.05777]]
+[INFO] Saved intermediate results to /scratch/mthakur/manifold/outputs/stride/me 1/pkls/stg_1.pkl
+[INFO] Stage 2: Learning rate: 0.05
+[INFO] Running optimization stage 2 ...
+start latent optimization... 400 iters
+[INFO] Stage 2 [000/400]bio: 7.904	reproj: 37.214	trans: 0.606	orient_sm: 0.023	trans_sm: 0.101	mot_prior: 8.996	betas_prior: 0.127	loss: 54.971	
+[INFO] Stage 2 [001/400]bio: 7.887	reproj: 60.933	trans: 0.857	orient_sm: 12.938	trans_sm: 30.090	mot_prior: 7.172	betas_prior: 0.138	loss: 120.015	
+[INFO] Stage 2 [002/400]bio: 7.903	reproj: 58.785	trans: 0.697	orient_sm: 3.616	trans_sm: 14.744	mot_prior: 6.188	betas_prior: 0.071	loss: 92.004	
+[INFO] Stage 2 [003/400]bio: 7.898	reproj: 52.734	trans: 0.629	orient_sm: 1.757	trans_sm: 7.388	mot_prior: 5.522	betas_prior: 0.044	loss: 75.971	
+[INFO] Stage 2 [004/400]bio: 7.882	reproj: 50.610	trans: 0.706	orient_sm: 4.292	trans_sm: 10.046	mot_prior: 5.040	betas_prior: 0.045	loss: 78.622	
+[INFO] Stage 2 [005/400]bio: 7.868	reproj: 49.867	trans: 0.722	orient_sm: 4.561	trans_sm: 10.552	mot_prior: 4.686	betas_prior: 0.058	loss: 78.316	
+[INFO] Stage 2 [006/400]bio: 7.859	reproj: 50.320	trans: 0.680	orient_sm: 2.921	trans_sm: 7.787	mot_prior: 4.409	betas_prior: 0.074	loss: 74.050	
+[INFO] Stage 2 [007/400]bio: 7.855	reproj: 49.980	trans: 0.617	orient_sm: 1.412	trans_sm: 4.635	mot_prior: 4.176	betas_prior: 0.084	loss: 68.758	
+[INFO] Stage 2 [008/400]bio: 7.855	reproj: 48.348	trans: 0.622	orient_sm: 1.165	trans_sm: 4.071	mot_prior: 3.972	betas_prior: 0.087	loss: 66.121	
+[INFO] Stage 2 [009/400]bio: 7.857	reproj: 46.495	trans: 0.655	orient_sm: 1.710	trans_sm: 5.222	mot_prior: 3.791	betas_prior: 0.087	loss: 65.818	
+[INFO] Stage 2 [010/400]bio: 7.859	reproj: 45.720	trans: 0.668	orient_sm: 2.044	trans_sm: 5.363	mot_prior: 3.626	betas_prior: 0.084	loss: 65.364	
+[INFO] Stage 2 [011/400]bio: 7.860	reproj: 45.854	trans: 0.650	orient_sm: 1.736	trans_sm: 3.842	mot_prior: 3.472	betas_prior: 0.082	loss: 63.495	
+[INFO] Stage 2 [012/400]bio: 7.860	reproj: 44.506	trans: 0.619	orient_sm: 1.122	trans_sm: 2.075	mot_prior: 3.328	betas_prior: 0.080	loss: 59.589	
+[INFO] Stage 2 [013/400]bio: 7.860	reproj: 43.797	trans: 0.615	orient_sm: 0.678	trans_sm: 1.446	mot_prior: 3.191	betas_prior: 0.080	loss: 57.667	
+[INFO] Stage 2 [014/400]bio: 7.861	reproj: 43.142	trans: 0.640	orient_sm: 0.649	trans_sm: 2.071	mot_prior: 3.063	betas_prior: 0.080	loss: 57.507	
+[INFO] Stage 2 [015/400]bio: 7.864	reproj: 42.765	trans: 0.659	orient_sm: 0.860	trans_sm: 2.780	mot_prior: 2.936	betas_prior: 0.080	loss: 57.943	
+[INFO] Stage 2 [016/400]bio: 7.870	reproj: 42.133	trans: 0.658	orient_sm: 0.990	trans_sm: 2.621	mot_prior: 2.811	betas_prior: 0.078	loss: 57.161	
+[INFO] Stage 2 [017/400]bio: 7.878	reproj: 41.288	trans: 0.638	orient_sm: 0.878	trans_sm: 1.711	mot_prior: 2.693	betas_prior: 0.073	loss: 55.159	
+[INFO] Stage 2 [018/400]bio: 7.887	reproj: 40.282	trans: 0.616	orient_sm: 0.607	trans_sm: 0.915	mot_prior: 2.589	betas_prior: 0.067	loss: 52.964	
+[INFO] Stage 2 [019/400]bio: 7.895	reproj: 40.099	trans: 0.617	orient_sm: 0.374	trans_sm: 0.890	mot_prior: 2.499	betas_prior: 0.062	loss: 52.437	
+[INFO] Stage 2 [020/400]bio: 7.901	reproj: 39.904	trans: 0.630	orient_sm: 0.308	trans_sm: 1.380	mot_prior: 2.420	betas_prior: 0.060	loss: 52.602	
+[INFO] Stage 2 [021/400]bio: 7.902	reproj: 39.613	trans: 0.637	orient_sm: 0.370	trans_sm: 1.580	mot_prior: 2.354	betas_prior: 0.062	loss: 52.518	
+[INFO] Stage 2 [022/400]bio: 7.899	reproj: 38.962	trans: 0.632	orient_sm: 0.437	trans_sm: 1.188	mot_prior: 2.301	betas_prior: 0.067	loss: 51.486	
+[INFO] Stage 2 [023/400]bio: 7.893	reproj: 38.202	trans: 0.621	orient_sm: 0.422	trans_sm: 0.639	mot_prior: 2.261	betas_prior: 0.073	loss: 50.111	
+[INFO] Stage 2 [024/400]bio: 7.885	reproj: 38.175	trans: 0.615	orient_sm: 0.339	trans_sm: 0.466	mot_prior: 2.235	betas_prior: 0.079	loss: 49.794	
+[INFO] Stage 2 [025/400]bio: 7.877	reproj: 37.819	trans: 0.623	orient_sm: 0.250	trans_sm: 0.662	mot_prior: 2.213	betas_prior: 0.082	loss: 49.526	
+[INFO] Stage 2 [026/400]bio: 7.871	reproj: 37.142	trans: 0.629	orient_sm: 0.198	trans_sm: 0.842	mot_prior: 2.195	betas_prior: 0.081	loss: 48.958	
+[INFO] Stage 2 [027/400]bio: 7.866	reproj: 36.579	trans: 0.627	orient_sm: 0.180	trans_sm: 0.683	mot_prior: 2.188	betas_prior: 0.078	loss: 48.201	
+[INFO] Stage 2 [028/400]bio: 7.862	reproj: 36.692	trans: 0.619	orient_sm: 0.183	trans_sm: 0.372	mot_prior: 2.191	betas_prior: 0.075	loss: 47.994	
+[INFO] Stage 2 [029/400]bio: 7.855	reproj: 36.403	trans: 0.615	orient_sm: 0.189	trans_sm: 0.274	mot_prior: 2.181	betas_prior: 0.071	loss: 47.589	
+[INFO] Stage 2 [030/400]bio: 7.846	reproj: 36.040	trans: 0.618	orient_sm: 0.169	trans_sm: 0.418	mot_prior: 2.153	betas_prior: 0.069	loss: 47.312	
+[INFO] Stage 2 [031/400]bio: 7.834	reproj: 35.978	trans: 0.618	orient_sm: 0.132	trans_sm: 0.506	mot_prior: 2.122	betas_prior: 0.071	loss: 47.261	
+[INFO] Stage 2 [032/400]bio: 7.823	reproj: 35.620	trans: 0.614	orient_sm: 0.113	trans_sm: 0.381	mot_prior: 2.101	betas_prior: 0.073	loss: 46.726	
+[INFO] Stage 2 [033/400]bio: 7.814	reproj: 35.085	trans: 0.609	orient_sm: 0.106	trans_sm: 0.204	mot_prior: 2.088	betas_prior: 0.076	loss: 45.982	
+[INFO] Stage 2 [034/400]bio: 7.806	reproj: 35.122	trans: 0.609	orient_sm: 0.096	trans_sm: 0.207	mot_prior: 2.070	betas_prior: 0.079	loss: 45.989	
+[INFO] Stage 2 [035/400]bio: 7.799	reproj: 35.023	trans: 0.612	orient_sm: 0.091	trans_sm: 0.317	mot_prior: 2.044	betas_prior: 0.080	loss: 45.966	
+[INFO] Stage 2 [036/400]bio: 7.796	reproj: 34.839	trans: 0.612	orient_sm: 0.082	trans_sm: 0.304	mot_prior: 2.021	betas_prior: 0.079	loss: 45.732	
+[INFO] Stage 2 [037/400]bio: 7.794	reproj: 34.570	trans: 0.608	orient_sm: 0.067	trans_sm: 0.177	mot_prior: 2.012	betas_prior: 0.076	loss: 45.304	
+[INFO] Stage 2 [038/400]bio: 7.792	reproj: 34.463	trans: 0.606	orient_sm: 0.060	trans_sm: 0.134	mot_prior: 2.000	betas_prior: 0.075	loss: 45.129	
+[INFO] Stage 2 [039/400]bio: 7.790	reproj: 34.441	trans: 0.607	orient_sm: 0.060	trans_sm: 0.194	mot_prior: 1.969	betas_prior: 0.075	loss: 45.135	
+[INFO] Stage 2 [040/400]bio: 7.790	reproj: 34.270	trans: 0.607	orient_sm: 0.052	trans_sm: 0.197	mot_prior: 1.935	betas_prior: 0.073	loss: 44.924	
+[INFO] Stage 2 [041/400]bio: 7.791	reproj: 34.098	trans: 0.603	orient_sm: 0.048	trans_sm: 0.127	mot_prior: 1.894	betas_prior: 0.070	loss: 44.632	
+[INFO] Stage 2 [042/400]bio: 7.793	reproj: 34.168	trans: 0.599	orient_sm: 0.042	trans_sm: 0.100	mot_prior: 1.847	betas_prior: 0.068	loss: 44.618	
+[INFO] Stage 2 [043/400]bio: 7.796	reproj: 33.947	trans: 0.603	orient_sm: 0.039	trans_sm: 0.146	mot_prior: 1.804	betas_prior: 0.064	loss: 44.399	
+[INFO] Stage 2 [044/400]bio: 7.798	reproj: 34.028	trans: 0.604	orient_sm: 0.035	trans_sm: 0.138	mot_prior: 1.766	betas_prior: 0.063	loss: 44.433	
+[INFO] Stage 2 [045/400]bio: 7.797	reproj: 33.881	trans: 0.599	orient_sm: 0.031	trans_sm: 0.092	mot_prior: 1.718	betas_prior: 0.065	loss: 44.183	
+[INFO] Stage 2 [046/400]bio: 7.795	reproj: 34.010	trans: 0.599	orient_sm: 0.027	trans_sm: 0.092	mot_prior: 1.670	betas_prior: 0.068	loss: 44.261	
+[INFO] Stage 2 [047/400]bio: 7.794	reproj: 33.808	trans: 0.600	orient_sm: 0.029	trans_sm: 0.121	mot_prior: 1.629	betas_prior: 0.069	loss: 44.051	
+[INFO] Stage 2 [048/400]bio: 7.795	reproj: 34.054	trans: 0.599	orient_sm: 0.026	trans_sm: 0.105	mot_prior: 1.596	betas_prior: 0.068	loss: 44.243	
+[INFO] Stage 2 [049/400]bio: 7.794	reproj: 33.711	trans: 0.596	orient_sm: 0.023	trans_sm: 0.075	mot_prior: 1.549	betas_prior: 0.069	loss: 43.816	
+[INFO] Stage 2 [050/400]bio: 7.793	reproj: 34.131	trans: 0.598	orient_sm: 0.021	trans_sm: 0.099	mot_prior: 1.523	betas_prior: 0.069	loss: 44.234	
+[INFO] Stage 2 [051/400]bio: 7.792	reproj: 33.922	trans: 0.598	orient_sm: 0.021	trans_sm: 0.107	mot_prior: 1.493	betas_prior: 0.069	loss: 44.003	
+[INFO] Stage 2 [052/400]bio: 7.791	reproj: 33.870	trans: 0.596	orient_sm: 0.026	trans_sm: 0.081	mot_prior: 1.461	betas_prior: 0.070	loss: 43.893	
+[INFO] Stage 2 [053/400]bio: 7.791	reproj: 33.869	trans: 0.596	orient_sm: 0.026	trans_sm: 0.076	mot_prior: 1.433	betas_prior: 0.069	loss: 43.860	
+[INFO] Stage 2 [054/400]bio: 7.792	reproj: 33.770	trans: 0.596	orient_sm: 0.017	trans_sm: 0.086	mot_prior: 1.408	betas_prior: 0.067	loss: 43.735	
+[INFO] Stage 2 [055/400]bio: 7.793	reproj: 33.732	trans: 0.595	orient_sm: 0.016	trans_sm: 0.082	mot_prior: 1.390	betas_prior: 0.065	loss: 43.673	
+[INFO] Stage 2 [056/400]bio: 7.793	reproj: 33.791	trans: 0.592	orient_sm: 0.017	trans_sm: 0.070	mot_prior: 1.360	betas_prior: 0.065	loss: 43.689	
+[INFO] Stage 2 [057/400]bio: 7.796	reproj: 33.832	trans: 0.597	orient_sm: 0.017	trans_sm: 0.072	mot_prior: 1.372	betas_prior: 0.063	loss: 43.750	
+[INFO] Stage 2 [058/400]bio: 7.792	reproj: 33.846	trans: 0.593	orient_sm: 0.016	trans_sm: 0.074	mot_prior: 1.326	betas_prior: 0.066	loss: 43.712	
+[INFO] Stage 2 [059/400]bio: 7.795	reproj: 33.691	trans: 0.597	orient_sm: 0.013	trans_sm: 0.066	mot_prior: 1.333	betas_prior: 0.064	loss: 43.558	
+[INFO] Stage 2 [060/400]bio: 7.794	reproj: 33.875	trans: 0.593	orient_sm: 0.013	trans_sm: 0.063	mot_prior: 1.299	betas_prior: 0.066	loss: 43.702	
+[INFO] Stage 2 [061/400]bio: 7.797	reproj: 33.586	trans: 0.596	orient_sm: 0.012	trans_sm: 0.062	mot_prior: 1.307	betas_prior: 0.063	loss: 43.424	
+[INFO] Stage 2 [062/400]bio: 7.797	reproj: 33.819	trans: 0.594	orient_sm: 0.012	trans_sm: 0.065	mot_prior: 1.294	betas_prior: 0.064	loss: 43.645	
+[INFO] Stage 2 [063/400]bio: 7.797	reproj: 33.508	trans: 0.594	orient_sm: 0.012	trans_sm: 0.060	mot_prior: 1.287	betas_prior: 0.064	loss: 43.321	
+[INFO] Stage 2 [064/400]bio: 7.795	reproj: 33.844	trans: 0.595	orient_sm: 0.011	trans_sm: 0.065	mot_prior: 1.287	betas_prior: 0.066	loss: 43.662	
+[INFO] Stage 2 [065/400]bio: 7.793	reproj: 33.551	trans: 0.594	orient_sm: 0.011	trans_sm: 0.063	mot_prior: 1.269	betas_prior: 0.067	loss: 43.348	
+[INFO] Stage 2 [066/400]bio: 7.795	reproj: 33.874	trans: 0.597	orient_sm: 0.011	trans_sm: 0.070	mot_prior: 1.280	betas_prior: 0.065	loss: 43.692	
+[INFO] Stage 2 [067/400]bio: 7.793	reproj: 33.715	trans: 0.594	orient_sm: 0.011	trans_sm: 0.065	mot_prior: 1.256	betas_prior: 0.065	loss: 43.499	
+[INFO] Stage 2 [068/400]bio: 7.795	reproj: 33.619	trans: 0.597	orient_sm: 0.010	trans_sm: 0.062	mot_prior: 1.271	betas_prior: 0.062	loss: 43.416	
+[INFO] Stage 2 [069/400]bio: 7.792	reproj: 33.772	trans: 0.594	orient_sm: 0.010	trans_sm: 0.063	mot_prior: 1.245	betas_prior: 0.064	loss: 43.539	
+[INFO] Stage 2 [070/400]bio: 7.793	reproj: 33.581	trans: 0.596	orient_sm: 0.008	trans_sm: 0.055	mot_prior: 1.260	betas_prior: 0.062	loss: 43.357	
+[INFO] Stage 2 [071/400]bio: 7.791	reproj: 34.022	trans: 0.594	orient_sm: 0.009	trans_sm: 0.063	mot_prior: 1.243	betas_prior: 0.065	loss: 43.785	
+[INFO] Stage 2 [072/400]bio: 7.791	reproj: 33.397	trans: 0.597	orient_sm: 0.009	trans_sm: 0.057	mot_prior: 1.260	betas_prior: 0.064	loss: 43.176	
+[INFO] Stage 2 [073/400]bio: 7.790	reproj: 33.795	trans: 0.596	orient_sm: 0.010	trans_sm: 0.067	mot_prior: 1.250	betas_prior: 0.065	loss: 43.574	
+[INFO] Stage 2 [074/400]bio: 7.791	reproj: 33.544	trans: 0.596	orient_sm: 0.009	trans_sm: 0.063	mot_prior: 1.246	betas_prior: 0.064	loss: 43.313	
+[INFO] Stage 2 [075/400]bio: 7.794	reproj: 33.826	trans: 0.599	orient_sm: 0.010	trans_sm: 0.063	mot_prior: 1.272	betas_prior: 0.061	loss: 43.625	
+[INFO] Stage 2 [076/400]bio: 7.791	reproj: 33.754	trans: 0.595	orient_sm: 0.010	trans_sm: 0.068	mot_prior: 1.239	betas_prior: 0.064	loss: 43.522	
+[INFO] Stage 2 [077/400]bio: 7.793	reproj: 33.636	trans: 0.598	orient_sm: 0.008	trans_sm: 0.062	mot_prior: 1.261	betas_prior: 0.063	loss: 43.421	
+[INFO] Stage 2 [078/400]bio: 7.790	reproj: 33.556	trans: 0.595	orient_sm: 0.009	trans_sm: 0.061	mot_prior: 1.236	betas_prior: 0.065	loss: 43.312	
+[INFO] Stage 2 [079/400]bio: 7.793	reproj: 33.669	trans: 0.599	orient_sm: 0.008	trans_sm: 0.059	mot_prior: 1.264	betas_prior: 0.063	loss: 43.455	
+[INFO] Stage 2 [080/400]bio: 7.791	reproj: 33.557	trans: 0.597	orient_sm: 0.008	trans_sm: 0.053	mot_prior: 1.238	betas_prior: 0.064	loss: 43.308	
+[INFO] Stage 2 [081/400]bio: 7.791	reproj: 33.675	trans: 0.598	orient_sm: 0.008	trans_sm: 0.061	mot_prior: 1.251	betas_prior: 0.064	loss: 43.450	
+[INFO] Stage 2 [082/400]bio: 7.791	reproj: 33.392	trans: 0.598	orient_sm: 0.008	trans_sm: 0.052	mot_prior: 1.252	betas_prior: 0.064	loss: 43.157	
+[INFO] Stage 2 [083/400]bio: 7.792	reproj: 33.815	trans: 0.597	orient_sm: 0.009	trans_sm: 0.062	mot_prior: 1.253	betas_prior: 0.063	loss: 43.591	
+[INFO] Stage 2 [084/400]bio: 7.792	reproj: 33.491	trans: 0.599	orient_sm: 0.008	trans_sm: 0.060	mot_prior: 1.257	betas_prior: 0.062	loss: 43.269	
+[INFO] Stage 2 [085/400]bio: 7.790	reproj: 33.646	trans: 0.597	orient_sm: 0.007	trans_sm: 0.059	mot_prior: 1.249	betas_prior: 0.064	loss: 43.411	
+[INFO] Stage 2 [086/400]bio: 7.791	reproj: 33.533	trans: 0.599	orient_sm: 0.008	trans_sm: 0.062	mot_prior: 1.259	betas_prior: 0.063	loss: 43.315	
+[INFO] Stage 2 [087/400]bio: 7.790	reproj: 33.557	trans: 0.598	orient_sm: 0.007	trans_sm: 0.055	mot_prior: 1.256	betas_prior: 0.063	loss: 43.326	
+[INFO] Stage 2 [088/400]bio: 7.790	reproj: 33.480	trans: 0.598	orient_sm: 0.007	trans_sm: 0.056	mot_prior: 1.252	betas_prior: 0.064	loss: 43.247	
+[INFO] Stage 2 [089/400]bio: 7.790	reproj: 33.525	trans: 0.600	orient_sm: 0.007	trans_sm: 0.057	mot_prior: 1.259	betas_prior: 0.064	loss: 43.302	
+[INFO] Stage 2 [090/400]bio: 7.787	reproj: 33.531	trans: 0.596	orient_sm: 0.007	trans_sm: 0.056	mot_prior: 1.237	betas_prior: 0.067	loss: 43.282	
+[INFO] Stage 2 [091/400]bio: 7.792	reproj: 33.715	trans: 0.602	orient_sm: 0.007	trans_sm: 0.055	mot_prior: 1.280	betas_prior: 0.062	loss: 43.514	
+[INFO] Stage 2 [092/400]bio: 7.790	reproj: 33.609	trans: 0.596	orient_sm: 0.007	trans_sm: 0.056	mot_prior: 1.240	betas_prior: 0.064	loss: 43.361	
+[INFO] Stage 2 [093/400]bio: 7.792	reproj: 33.307	trans: 0.600	orient_sm: 0.007	trans_sm: 0.051	mot_prior: 1.266	betas_prior: 0.061	loss: 43.084	
+[INFO] Stage 2 [094/400]bio: 7.789	reproj: 33.682	trans: 0.597	orient_sm: 0.007	trans_sm: 0.054	mot_prior: 1.242	betas_prior: 0.065	loss: 43.436	
+[INFO] Stage 2 [095/400]bio: 7.790	reproj: 33.298	trans: 0.600	orient_sm: 0.006	trans_sm: 0.050	mot_prior: 1.267	betas_prior: 0.065	loss: 43.076	
+[INFO] Stage 2 [096/400]bio: 7.790	reproj: 33.620	trans: 0.599	orient_sm: 0.007	trans_sm: 0.057	mot_prior: 1.259	betas_prior: 0.065	loss: 43.397	
+[INFO] Stage 2 [097/400]bio: 7.792	reproj: 33.279	trans: 0.600	orient_sm: 0.006	trans_sm: 0.051	mot_prior: 1.267	betas_prior: 0.062	loss: 43.059	
+[INFO] Stage 2 [098/400]bio: 7.791	reproj: 33.669	trans: 0.598	orient_sm: 0.007	trans_sm: 0.059	mot_prior: 1.257	betas_prior: 0.063	loss: 43.444	
+[INFO] Stage 2 [099/400]bio: 7.791	reproj: 33.333	trans: 0.600	orient_sm: 0.007	trans_sm: 0.054	mot_prior: 1.265	betas_prior: 0.062	loss: 43.113	
+[INFO] Stage 2 [100/400]bio: 7.790	reproj: 33.481	trans: 0.601	orient_sm: 0.007	trans_sm: 0.061	mot_prior: 1.272	betas_prior: 0.063	loss: 43.276	
+[INFO] Stage 2 [101/400]bio: 7.789	reproj: 33.392	trans: 0.601	orient_sm: 0.007	trans_sm: 0.054	mot_prior: 1.266	betas_prior: 0.064	loss: 43.174	
+[INFO] Stage 2 [102/400]bio: 7.789	reproj: 33.523	trans: 0.601	orient_sm: 0.007	trans_sm: 0.058	mot_prior: 1.265	betas_prior: 0.064	loss: 43.307	
+[INFO] Stage 2 [103/400]bio: 7.790	reproj: 33.522	trans: 0.601	orient_sm: 0.007	trans_sm: 0.060	mot_prior: 1.271	betas_prior: 0.062	loss: 43.314	
+[INFO] Stage 2 [104/400]bio: 7.789	reproj: 33.348	trans: 0.600	orient_sm: 0.006	trans_sm: 0.053	mot_prior: 1.263	betas_prior: 0.063	loss: 43.122	
+[INFO] Stage 2 [105/400]bio: 7.791	reproj: 33.592	trans: 0.604	orient_sm: 0.007	trans_sm: 0.056	mot_prior: 1.290	betas_prior: 0.062	loss: 43.400	
+[INFO] Stage 2 [106/400]bio: 7.787	reproj: 33.447	trans: 0.598	orient_sm: 0.007	trans_sm: 0.053	mot_prior: 1.251	betas_prior: 0.066	loss: 43.209	
+[INFO] Stage 2 [107/400]bio: 7.791	reproj: 33.478	trans: 0.605	orient_sm: 0.006	trans_sm: 0.054	mot_prior: 1.291	betas_prior: 0.062	loss: 43.286	
+[INFO] Stage 2 [108/400]bio: 7.788	reproj: 33.442	trans: 0.598	orient_sm: 0.006	trans_sm: 0.053	mot_prior: 1.254	betas_prior: 0.065	loss: 43.206	
+[INFO] Stage 2 [109/400]bio: 7.791	reproj: 33.315	trans: 0.604	orient_sm: 0.006	trans_sm: 0.051	mot_prior: 1.287	betas_prior: 0.062	loss: 43.115	
+[INFO] Stage 2 [110/400]bio: 7.788	reproj: 33.529	trans: 0.598	orient_sm: 0.007	trans_sm: 0.053	mot_prior: 1.258	betas_prior: 0.066	loss: 43.298	
+[INFO] Stage 2 [111/400]bio: 7.791	reproj: 33.322	trans: 0.604	orient_sm: 0.006	trans_sm: 0.051	mot_prior: 1.289	betas_prior: 0.063	loss: 43.127	
+[INFO] Stage 2 [112/400]bio: 7.789	reproj: 33.453	trans: 0.599	orient_sm: 0.006	trans_sm: 0.052	mot_prior: 1.261	betas_prior: 0.064	loss: 43.225	
+[INFO] Stage 2 [113/400]bio: 7.792	reproj: 33.333	trans: 0.604	orient_sm: 0.006	trans_sm: 0.050	mot_prior: 1.290	betas_prior: 0.061	loss: 43.136	
+[INFO] Stage 2 [114/400]bio: 7.790	reproj: 33.375	trans: 0.599	orient_sm: 0.006	trans_sm: 0.048	mot_prior: 1.267	betas_prior: 0.063	loss: 43.148	
+[INFO] Stage 2 [115/400]bio: 7.793	reproj: 33.435	trans: 0.605	orient_sm: 0.006	trans_sm: 0.052	mot_prior: 1.298	betas_prior: 0.061	loss: 43.250	
+[INFO] Stage 2 [116/400]bio: 7.789	reproj: 33.196	trans: 0.599	orient_sm: 0.005	trans_sm: 0.047	mot_prior: 1.271	betas_prior: 0.064	loss: 42.973	
+[INFO] Stage 2 [117/400]bio: 7.792	reproj: 33.487	trans: 0.605	orient_sm: 0.006	trans_sm: 0.051	mot_prior: 1.302	betas_prior: 0.062	loss: 43.305	
+[INFO] Stage 2 [118/400]bio: 7.789	reproj: 33.205	trans: 0.600	orient_sm: 0.006	trans_sm: 0.048	mot_prior: 1.273	betas_prior: 0.064	loss: 42.984	
+[INFO] Stage 2 [119/400]bio: 7.792	reproj: 33.474	trans: 0.607	orient_sm: 0.006	trans_sm: 0.057	mot_prior: 1.303	betas_prior: 0.061	loss: 43.299	
+[INFO] Stage 2 [120/400]bio: 7.789	reproj: 33.254	trans: 0.600	orient_sm: 0.005	trans_sm: 0.050	mot_prior: 1.271	betas_prior: 0.064	loss: 43.033	
+[INFO] Stage 2 [121/400]bio: 7.791	reproj: 33.570	trans: 0.607	orient_sm: 0.006	trans_sm: 0.056	mot_prior: 1.308	betas_prior: 0.062	loss: 43.399	
+[INFO] Stage 2 [122/400]bio: 7.788	reproj: 33.208	trans: 0.602	orient_sm: 0.006	trans_sm: 0.054	mot_prior: 1.279	betas_prior: 0.064	loss: 43.002	
+[INFO] Stage 2 [123/400]bio: 7.790	reproj: 33.453	trans: 0.605	orient_sm: 0.006	trans_sm: 0.064	mot_prior: 1.290	betas_prior: 0.063	loss: 43.271	
+[INFO] Stage 2 [124/400]bio: 7.789	reproj: 33.271	trans: 0.603	orient_sm: 0.006	trans_sm: 0.059	mot_prior: 1.280	betas_prior: 0.063	loss: 43.070	
+[INFO] Stage 2 [125/400]bio: 7.789	reproj: 33.440	trans: 0.605	orient_sm: 0.007	trans_sm: 0.068	mot_prior: 1.289	betas_prior: 0.064	loss: 43.261	
+[INFO] Stage 2 [126/400]bio: 7.789	reproj: 33.294	trans: 0.604	orient_sm: 0.006	trans_sm: 0.059	mot_prior: 1.290	betas_prior: 0.064	loss: 43.107	
+[INFO] Stage 2 [127/400]bio: 7.789	reproj: 33.383	trans: 0.604	orient_sm: 0.006	trans_sm: 0.065	mot_prior: 1.278	betas_prior: 0.064	loss: 43.187	
+[INFO] Stage 2 [128/400]bio: 7.790	reproj: 33.307	trans: 0.605	orient_sm: 0.006	trans_sm: 0.060	mot_prior: 1.292	betas_prior: 0.062	loss: 43.122	
+[INFO] Stage 2 [129/400]bio: 7.789	reproj: 33.334	trans: 0.602	orient_sm: 0.006	trans_sm: 0.063	mot_prior: 1.279	betas_prior: 0.063	loss: 43.136	
+[INFO] Stage 2 [130/400]bio: 7.790	reproj: 33.359	trans: 0.606	orient_sm: 0.006	trans_sm: 0.056	mot_prior: 1.303	betas_prior: 0.062	loss: 43.182	
+[INFO] Stage 2 [131/400]bio: 7.788	reproj: 33.284	trans: 0.602	orient_sm: 0.005	trans_sm: 0.059	mot_prior: 1.277	betas_prior: 0.065	loss: 43.080	
+[INFO] Stage 2 [132/400]bio: 7.791	reproj: 33.351	trans: 0.606	orient_sm: 0.006	trans_sm: 0.055	mot_prior: 1.304	betas_prior: 0.061	loss: 43.175	
+[INFO] Stage 2 [133/400]bio: 7.789	reproj: 33.254	trans: 0.601	orient_sm: 0.006	trans_sm: 0.058	mot_prior: 1.277	betas_prior: 0.064	loss: 43.048	
+[INFO] Stage 2 [134/400]bio: 7.792	reproj: 33.447	trans: 0.607	orient_sm: 0.006	trans_sm: 0.053	mot_prior: 1.308	betas_prior: 0.061	loss: 43.274	
+[INFO] Stage 2 [135/400]bio: 7.788	reproj: 33.180	trans: 0.602	orient_sm: 0.005	trans_sm: 0.055	mot_prior: 1.279	betas_prior: 0.065	loss: 42.974	
+[INFO] Stage 2 [136/400]bio: 7.791	reproj: 33.514	trans: 0.608	orient_sm: 0.006	trans_sm: 0.058	mot_prior: 1.307	betas_prior: 0.062	loss: 43.346	
+[INFO] Stage 2 [137/400]bio: 7.789	reproj: 33.102	trans: 0.603	orient_sm: 0.006	trans_sm: 0.060	mot_prior: 1.286	betas_prior: 0.063	loss: 42.911	
+[INFO] Stage 2 [138/400]bio: 7.791	reproj: 33.604	trans: 0.609	orient_sm: 0.007	trans_sm: 0.082	mot_prior: 1.303	betas_prior: 0.062	loss: 43.458	
+[INFO] Stage 2 [139/400]bio: 7.790	reproj: 33.269	trans: 0.606	orient_sm: 0.006	trans_sm: 0.081	mot_prior: 1.292	betas_prior: 0.063	loss: 43.108	
+[INFO] Stage 2 [140/400]bio: 7.791	reproj: 33.267	trans: 0.607	orient_sm: 0.006	trans_sm: 0.085	mot_prior: 1.296	betas_prior: 0.062	loss: 43.116	
+[INFO] Stage 2 [141/400]bio: 7.791	reproj: 33.353	trans: 0.606	orient_sm: 0.007	trans_sm: 0.078	mot_prior: 1.300	betas_prior: 0.062	loss: 43.196	
+[INFO] Stage 2 [142/400]bio: 7.789	reproj: 33.353	trans: 0.605	orient_sm: 0.006	trans_sm: 0.072	mot_prior: 1.288	betas_prior: 0.064	loss: 43.177	
+[INFO] Stage 2 [143/400]bio: 7.790	reproj: 33.427	trans: 0.609	orient_sm: 0.007	trans_sm: 0.075	mot_prior: 1.304	betas_prior: 0.063	loss: 43.273	
+[INFO] Stage 2 [144/400]bio: 7.788	reproj: 33.164	trans: 0.605	orient_sm: 0.006	trans_sm: 0.063	mot_prior: 1.287	betas_prior: 0.063	loss: 42.976	
+[INFO] Stage 2 [145/400]bio: 7.790	reproj: 33.454	trans: 0.608	orient_sm: 0.007	trans_sm: 0.074	mot_prior: 1.307	betas_prior: 0.061	loss: 43.300	
+[INFO] Stage 2 [146/400]bio: 7.788	reproj: 33.143	trans: 0.603	orient_sm: 0.006	trans_sm: 0.066	mot_prior: 1.285	betas_prior: 0.063	loss: 42.954	
+[INFO] Stage 2 [147/400]bio: 7.790	reproj: 33.614	trans: 0.611	orient_sm: 0.006	trans_sm: 0.084	mot_prior: 1.318	betas_prior: 0.062	loss: 43.486	
+[INFO] Stage 2 [148/400]bio: 7.787	reproj: 33.271	trans: 0.606	orient_sm: 0.007	trans_sm: 0.092	mot_prior: 1.292	betas_prior: 0.065	loss: 43.120	
+[INFO] Stage 2 [149/400]bio: 7.789	reproj: 33.286	trans: 0.609	orient_sm: 0.006	trans_sm: 0.090	mot_prior: 1.300	betas_prior: 0.062	loss: 43.143	
+[INFO] Stage 2 [150/400]bio: 7.790	reproj: 33.417	trans: 0.605	orient_sm: 0.007	trans_sm: 0.093	mot_prior: 1.288	betas_prior: 0.062	loss: 43.262	
+[INFO] Stage 2 [151/400]bio: 7.791	reproj: 33.250	trans: 0.608	orient_sm: 0.006	trans_sm: 0.076	mot_prior: 1.304	betas_prior: 0.061	loss: 43.097	
+[INFO] Stage 2 [152/400]bio: 7.790	reproj: 33.309	trans: 0.607	orient_sm: 0.006	trans_sm: 0.078	mot_prior: 1.295	betas_prior: 0.064	loss: 43.149	
+[INFO] Stage 2 [153/400]bio: 7.790	reproj: 33.467	trans: 0.607	orient_sm: 0.007	trans_sm: 0.077	mot_prior: 1.297	betas_prior: 0.063	loss: 43.308	
+[INFO] Stage 2 [154/400]bio: 7.791	reproj: 33.176	trans: 0.605	orient_sm: 0.006	trans_sm: 0.072	mot_prior: 1.290	betas_prior: 0.062	loss: 43.002	
+[INFO] Stage 2 [155/400]bio: 7.790	reproj: 33.447	trans: 0.608	orient_sm: 0.007	trans_sm: 0.092	mot_prior: 1.297	betas_prior: 0.062	loss: 43.304	
+[INFO] Stage 2 [156/400]bio: 7.790	reproj: 33.223	trans: 0.608	orient_sm: 0.007	trans_sm: 0.075	mot_prior: 1.305	betas_prior: 0.063	loss: 43.070	
+[INFO] Stage 2 [157/400]bio: 7.789	reproj: 33.299	trans: 0.607	orient_sm: 0.007	trans_sm: 0.094	mot_prior: 1.289	betas_prior: 0.064	loss: 43.149	
+[INFO] Stage 2 [158/400]bio: 7.791	reproj: 33.358	trans: 0.609	orient_sm: 0.007	trans_sm: 0.074	mot_prior: 1.306	betas_prior: 0.061	loss: 43.207	
+[INFO] Stage 2 [159/400]bio: 7.789	reproj: 33.258	trans: 0.606	orient_sm: 0.006	trans_sm: 0.079	mot_prior: 1.288	betas_prior: 0.062	loss: 43.089	
+[INFO] Stage 2 [160/400]bio: 7.791	reproj: 33.490	trans: 0.611	orient_sm: 0.007	trans_sm: 0.070	mot_prior: 1.318	betas_prior: 0.061	loss: 43.347	
+[INFO] Stage 2 [161/400]bio: 7.788	reproj: 33.180	trans: 0.606	orient_sm: 0.006	trans_sm: 0.074	mot_prior: 1.289	betas_prior: 0.065	loss: 43.008	
+[INFO] Stage 2 [162/400]bio: 7.790	reproj: 33.409	trans: 0.610	orient_sm: 0.007	trans_sm: 0.080	mot_prior: 1.309	betas_prior: 0.062	loss: 43.267	
+[INFO] Stage 2 [163/400]bio: 7.789	reproj: 33.244	trans: 0.606	orient_sm: 0.007	trans_sm: 0.080	mot_prior: 1.288	betas_prior: 0.062	loss: 43.077	
+[INFO] Stage 2 [164/400]bio: 7.791	reproj: 33.381	trans: 0.611	orient_sm: 0.006	trans_sm: 0.080	mot_prior: 1.312	betas_prior: 0.061	loss: 43.243	
+[INFO] Stage 2 [165/400]bio: 7.788	reproj: 33.342	trans: 0.607	orient_sm: 0.007	trans_sm: 0.086	mot_prior: 1.290	betas_prior: 0.064	loss: 43.185	
+[INFO] Stage 2 [166/400]bio: 7.790	reproj: 33.194	trans: 0.610	orient_sm: 0.006	trans_sm: 0.077	mot_prior: 1.306	betas_prior: 0.063	loss: 43.046	
+[INFO] Stage 2 [167/400]bio: 7.789	reproj: 33.347	trans: 0.606	orient_sm: 0.008	trans_sm: 0.082	mot_prior: 1.290	betas_prior: 0.063	loss: 43.184	
+[INFO] Stage 2 [168/400]bio: 7.791	reproj: 33.279	trans: 0.610	orient_sm: 0.007	trans_sm: 0.072	mot_prior: 1.308	betas_prior: 0.061	loss: 43.128	
+[INFO] Stage 2 [169/400]bio: 7.789	reproj: 33.273	trans: 0.606	orient_sm: 0.006	trans_sm: 0.071	mot_prior: 1.291	betas_prior: 0.063	loss: 43.100	
+[INFO] Stage 2 [170/400]bio: 7.790	reproj: 33.303	trans: 0.609	orient_sm: 0.007	trans_sm: 0.070	mot_prior: 1.310	betas_prior: 0.062	loss: 43.151	
+[INFO] Stage 2 [171/400]bio: 7.788	reproj: 33.206	trans: 0.605	orient_sm: 0.006	trans_sm: 0.065	mot_prior: 1.290	betas_prior: 0.064	loss: 43.024	
+[INFO] Stage 2 [172/400]bio: 7.790	reproj: 33.382	trans: 0.609	orient_sm: 0.007	trans_sm: 0.070	mot_prior: 1.309	betas_prior: 0.062	loss: 43.230	
+[INFO] Stage 2 [173/400]bio: 7.789	reproj: 33.162	trans: 0.606	orient_sm: 0.007	trans_sm: 0.063	mot_prior: 1.291	betas_prior: 0.063	loss: 42.980	
+[INFO] Stage 2 [174/400]bio: 7.791	reproj: 33.369	trans: 0.611	orient_sm: 0.006	trans_sm: 0.075	mot_prior: 1.313	betas_prior: 0.061	loss: 43.226	
+[INFO] Stage 2 [175/400]bio: 7.789	reproj: 33.222	trans: 0.605	orient_sm: 0.007	trans_sm: 0.067	mot_prior: 1.293	betas_prior: 0.063	loss: 43.046	
+[INFO] Stage 2 [176/400]bio: 7.791	reproj: 33.342	trans: 0.611	orient_sm: 0.006	trans_sm: 0.075	mot_prior: 1.315	betas_prior: 0.060	loss: 43.202	
+[INFO] Stage 2 [177/400]bio: 7.789	reproj: 33.256	trans: 0.605	orient_sm: 0.007	trans_sm: 0.072	mot_prior: 1.288	betas_prior: 0.063	loss: 43.080	
+[INFO] Stage 2 [178/400]bio: 7.791	reproj: 33.303	trans: 0.612	orient_sm: 0.006	trans_sm: 0.072	mot_prior: 1.316	betas_prior: 0.061	loss: 43.161	
+[INFO] Stage 2 [179/400]bio: 7.787	reproj: 33.390	trans: 0.603	orient_sm: 0.006	trans_sm: 0.069	mot_prior: 1.285	betas_prior: 0.065	loss: 43.206	
+[INFO] Stage 2 [180/400]bio: 7.790	reproj: 33.268	trans: 0.611	orient_sm: 0.006	trans_sm: 0.068	mot_prior: 1.311	betas_prior: 0.062	loss: 43.117	
+[INFO] Stage 2 [181/400]bio: 7.789	reproj: 33.277	trans: 0.605	orient_sm: 0.006	trans_sm: 0.061	mot_prior: 1.288	betas_prior: 0.063	loss: 43.088	
+[INFO] Stage 2 [182/400]bio: 7.791	reproj: 33.401	trans: 0.610	orient_sm: 0.007	trans_sm: 0.068	mot_prior: 1.308	betas_prior: 0.060	loss: 43.245	
+[INFO] Stage 2 [183/400]bio: 7.790	reproj: 33.072	trans: 0.605	orient_sm: 0.006	trans_sm: 0.056	mot_prior: 1.296	betas_prior: 0.062	loss: 42.887	
+[INFO] Stage 2 [184/400]bio: 7.790	reproj: 33.603	trans: 0.611	orient_sm: 0.007	trans_sm: 0.082	mot_prior: 1.313	betas_prior: 0.062	loss: 43.469	
+[INFO] Stage 2 [185/400]bio: 7.788	reproj: 33.262	trans: 0.607	orient_sm: 0.007	trans_sm: 0.070	mot_prior: 1.300	betas_prior: 0.064	loss: 43.098	
+[INFO] Stage 2 [186/400]bio: 7.790	reproj: 33.277	trans: 0.610	orient_sm: 0.006	trans_sm: 0.091	mot_prior: 1.307	betas_prior: 0.062	loss: 43.143	
+[INFO] Stage 2 [187/400]bio: 7.790	reproj: 33.470	trans: 0.608	orient_sm: 0.008	trans_sm: 0.073	mot_prior: 1.308	betas_prior: 0.062	loss: 43.319	
+[INFO] Stage 2 [188/400]bio: 7.789	reproj: 33.182	trans: 0.609	orient_sm: 0.007	trans_sm: 0.083	mot_prior: 1.304	betas_prior: 0.063	loss: 43.037	
+[INFO] Stage 2 [189/400]bio: 7.790	reproj: 33.679	trans: 0.612	orient_sm: 0.008	trans_sm: 0.083	mot_prior: 1.316	betas_prior: 0.062	loss: 43.550	
+[INFO] Stage 2 [190/400]bio: 7.788	reproj: 33.127	trans: 0.609	orient_sm: 0.008	trans_sm: 0.086	mot_prior: 1.292	betas_prior: 0.064	loss: 42.974	
+[INFO] Stage 2 [191/400]bio: 7.792	reproj: 33.491	trans: 0.617	orient_sm: 0.009	trans_sm: 0.136	mot_prior: 1.316	betas_prior: 0.060	loss: 43.420	
+[INFO] Stage 2 [192/400]bio: 7.790	reproj: 33.305	trans: 0.609	orient_sm: 0.011	trans_sm: 0.117	mot_prior: 1.290	betas_prior: 0.062	loss: 43.183	
+[INFO] Stage 2 [193/400]bio: 7.790	reproj: 33.322	trans: 0.615	orient_sm: 0.007	trans_sm: 0.143	mot_prior: 1.310	betas_prior: 0.061	loss: 43.249	
+[INFO] Stage 2 [194/400]bio: 7.787	reproj: 33.337	trans: 0.610	orient_sm: 0.011	trans_sm: 0.111	mot_prior: 1.296	betas_prior: 0.065	loss: 43.216	
+[INFO] Stage 2 [195/400]bio: 7.788	reproj: 33.397	trans: 0.615	orient_sm: 0.007	trans_sm: 0.132	mot_prior: 1.308	betas_prior: 0.064	loss: 43.311	
+[INFO] Stage 2 [196/400]bio: 7.788	reproj: 33.140	trans: 0.612	orient_sm: 0.009	trans_sm: 0.102	mot_prior: 1.303	betas_prior: 0.064	loss: 43.017	
+[INFO] Stage 2 [197/400]bio: 7.789	reproj: 33.655	trans: 0.612	orient_sm: 0.008	trans_sm: 0.150	mot_prior: 1.298	betas_prior: 0.062	loss: 43.574	
+[INFO] Stage 2 [198/400]bio: 7.791	reproj: 33.280	trans: 0.614	orient_sm: 0.009	trans_sm: 0.153	mot_prior: 1.299	betas_prior: 0.061	loss: 43.207	
+[INFO] Stage 2 [199/400]bio: 7.790	reproj: 33.397	trans: 0.616	orient_sm: 0.008	trans_sm: 0.228	mot_prior: 1.294	betas_prior: 0.061	loss: 43.394	
+[INFO] Stage 2 [200/400]bio: 7.791	reproj: 33.333	trans: 0.617	orient_sm: 0.008	trans_sm: 0.162	mot_prior: 1.315	betas_prior: 0.061	loss: 43.288	
+[INFO] Stage 2 [201/400]bio: 7.789	reproj: 33.041	trans: 0.608	orient_sm: 0.007	trans_sm: 0.077	mot_prior: 1.299	betas_prior: 0.063	loss: 42.884	
+[INFO] Stage 2 [202/400]bio: 7.789	reproj: 33.235	trans: 0.614	orient_sm: 0.007	trans_sm: 0.130	mot_prior: 1.306	betas_prior: 0.063	loss: 43.145	
+[INFO] Stage 2 [203/400]bio: 7.788	reproj: 33.152	trans: 0.610	orient_sm: 0.008	trans_sm: 0.086	mot_prior: 1.297	betas_prior: 0.064	loss: 43.005	
+[INFO] Stage 2 [204/400]bio: 7.788	reproj: 33.072	trans: 0.611	orient_sm: 0.007	trans_sm: 0.100	mot_prior: 1.300	betas_prior: 0.064	loss: 42.941	
+[INFO] Stage 2 [205/400]bio: 7.790	reproj: 33.180	trans: 0.611	orient_sm: 0.007	trans_sm: 0.093	mot_prior: 1.311	betas_prior: 0.063	loss: 43.055	
+[INFO] Stage 2 [206/400]bio: 7.788	reproj: 33.101	trans: 0.609	orient_sm: 0.007	trans_sm: 0.081	mot_prior: 1.300	betas_prior: 0.063	loss: 42.948	
+[INFO] Stage 2 [207/400]bio: 7.790	reproj: 33.115	trans: 0.612	orient_sm: 0.006	trans_sm: 0.081	mot_prior: 1.312	betas_prior: 0.061	loss: 42.978	
+[INFO] Stage 2 [208/400]bio: 7.789	reproj: 33.130	trans: 0.608	orient_sm: 0.007	trans_sm: 0.080	mot_prior: 1.293	betas_prior: 0.063	loss: 42.969	
+[INFO] Stage 2 [209/400]bio: 7.790	reproj: 33.118	trans: 0.610	orient_sm: 0.006	trans_sm: 0.075	mot_prior: 1.309	betas_prior: 0.062	loss: 42.969	
+[INFO] Stage 2 [210/400]bio: 7.788	reproj: 33.011	trans: 0.609	orient_sm: 0.006	trans_sm: 0.074	mot_prior: 1.299	betas_prior: 0.064	loss: 42.850	
+[INFO] Stage 2 [211/400]bio: 7.789	reproj: 33.110	trans: 0.611	orient_sm: 0.007	trans_sm: 0.074	mot_prior: 1.313	betas_prior: 0.063	loss: 42.965	
+[INFO] Stage 2 [212/400]bio: 7.787	reproj: 33.090	trans: 0.608	orient_sm: 0.007	trans_sm: 0.074	mot_prior: 1.295	betas_prior: 0.064	loss: 42.926	
+[INFO] Stage 2 [213/400]bio: 7.789	reproj: 33.015	trans: 0.609	orient_sm: 0.006	trans_sm: 0.067	mot_prior: 1.307	betas_prior: 0.062	loss: 42.856	
+[INFO] Stage 2 [214/400]bio: 7.788	reproj: 33.128	trans: 0.606	orient_sm: 0.007	trans_sm: 0.070	mot_prior: 1.295	betas_prior: 0.063	loss: 42.957	
+[INFO] Stage 2 [215/400]bio: 7.790	reproj: 32.978	trans: 0.609	orient_sm: 0.006	trans_sm: 0.064	mot_prior: 1.312	betas_prior: 0.061	loss: 42.821	
+[INFO] Stage 2 [216/400]bio: 7.787	reproj: 33.244	trans: 0.605	orient_sm: 0.006	trans_sm: 0.067	mot_prior: 1.290	betas_prior: 0.064	loss: 43.063	
+[INFO] Stage 2 [217/400]bio: 7.789	reproj: 33.003	trans: 0.610	orient_sm: 0.007	trans_sm: 0.077	mot_prior: 1.306	betas_prior: 0.063	loss: 42.854	
+[INFO] Stage 2 [218/400]bio: 7.788	reproj: 33.037	trans: 0.608	orient_sm: 0.006	trans_sm: 0.071	mot_prior: 1.302	betas_prior: 0.063	loss: 42.875	
+[INFO] Stage 2 [219/400]bio: 7.789	reproj: 33.058	trans: 0.609	orient_sm: 0.006	trans_sm: 0.076	mot_prior: 1.307	betas_prior: 0.063	loss: 42.908	
+[INFO] Stage 2 [220/400]bio: 7.789	reproj: 33.042	trans: 0.607	orient_sm: 0.006	trans_sm: 0.063	mot_prior: 1.300	betas_prior: 0.063	loss: 42.869	
+[INFO] Stage 2 [221/400]bio: 7.789	reproj: 33.145	trans: 0.609	orient_sm: 0.006	trans_sm: 0.069	mot_prior: 1.304	betas_prior: 0.062	loss: 42.985	
+[INFO] Stage 2 [222/400]bio: 7.789	reproj: 32.979	trans: 0.609	orient_sm: 0.006	trans_sm: 0.064	mot_prior: 1.302	betas_prior: 0.062	loss: 42.810	
+[INFO] Stage 2 [223/400]bio: 7.789	reproj: 33.126	trans: 0.609	orient_sm: 0.006	trans_sm: 0.071	mot_prior: 1.306	betas_prior: 0.062	loss: 42.969	
+[INFO] Stage 2 [224/400]bio: 7.789	reproj: 33.063	trans: 0.607	orient_sm: 0.006	trans_sm: 0.073	mot_prior: 1.301	betas_prior: 0.062	loss: 42.901	
+[INFO] Stage 2 [225/400]bio: 7.789	reproj: 33.005	trans: 0.608	orient_sm: 0.006	trans_sm: 0.063	mot_prior: 1.306	betas_prior: 0.062	loss: 42.839	
+[INFO] Stage 2 [226/400]bio: 7.788	reproj: 33.122	trans: 0.607	orient_sm: 0.006	trans_sm: 0.068	mot_prior: 1.296	betas_prior: 0.064	loss: 42.951	
+[INFO] Stage 2 [227/400]bio: 7.789	reproj: 33.058	trans: 0.609	orient_sm: 0.006	trans_sm: 0.068	mot_prior: 1.307	betas_prior: 0.063	loss: 42.900	
+[INFO] Stage 2 [228/400]bio: 7.788	reproj: 33.003	trans: 0.606	orient_sm: 0.006	trans_sm: 0.057	mot_prior: 1.299	betas_prior: 0.063	loss: 42.823	
+[INFO] Stage 2 [229/400]bio: 7.790	reproj: 33.129	trans: 0.609	orient_sm: 0.006	trans_sm: 0.069	mot_prior: 1.311	betas_prior: 0.061	loss: 42.974	
+[INFO] Stage 2 [230/400]bio: 7.788	reproj: 32.980	trans: 0.605	orient_sm: 0.006	trans_sm: 0.057	mot_prior: 1.298	betas_prior: 0.063	loss: 42.797	
+[INFO] Stage 2 [231/400]bio: 7.789	reproj: 33.190	trans: 0.610	orient_sm: 0.006	trans_sm: 0.069	mot_prior: 1.314	betas_prior: 0.062	loss: 43.041	
+[INFO] Stage 2 [232/400]bio: 7.788	reproj: 32.995	trans: 0.607	orient_sm: 0.006	trans_sm: 0.072	mot_prior: 1.299	betas_prior: 0.064	loss: 42.830	
+[INFO] Stage 2 [233/400]bio: 7.789	reproj: 33.109	trans: 0.611	orient_sm: 0.007	trans_sm: 0.077	mot_prior: 1.311	betas_prior: 0.062	loss: 42.965	
+[INFO] Stage 2 [234/400]bio: 7.788	reproj: 33.105	trans: 0.607	orient_sm: 0.006	trans_sm: 0.081	mot_prior: 1.296	betas_prior: 0.063	loss: 42.947	
+[INFO] Stage 2 [235/400]bio: 7.790	reproj: 33.052	trans: 0.610	orient_sm: 0.006	trans_sm: 0.067	mot_prior: 1.311	betas_prior: 0.062	loss: 42.897	
+[INFO] Stage 2 [236/400]bio: 7.788	reproj: 33.149	trans: 0.607	orient_sm: 0.006	trans_sm: 0.072	mot_prior: 1.296	betas_prior: 0.064	loss: 42.981	
+[INFO] Stage 2 [237/400]bio: 7.789	reproj: 33.022	trans: 0.610	orient_sm: 0.006	trans_sm: 0.073	mot_prior: 1.305	betas_prior: 0.062	loss: 42.868	
+[INFO] Stage 2 [238/400]bio: 7.789	reproj: 33.036	trans: 0.607	orient_sm: 0.006	trans_sm: 0.066	mot_prior: 1.298	betas_prior: 0.063	loss: 42.865	
+[INFO] Stage 2 [239/400]bio: 7.790	reproj: 33.106	trans: 0.609	orient_sm: 0.006	trans_sm: 0.069	mot_prior: 1.310	betas_prior: 0.061	loss: 42.952	
+[INFO] Stage 2 [240/400]bio: 7.788	reproj: 33.044	trans: 0.606	orient_sm: 0.006	trans_sm: 0.061	mot_prior: 1.299	betas_prior: 0.063	loss: 42.868	
+[INFO] Stage 2 [241/400]bio: 7.789	reproj: 33.025	trans: 0.609	orient_sm: 0.006	trans_sm: 0.062	mot_prior: 1.308	betas_prior: 0.063	loss: 42.862	
+[INFO] Stage 2 [242/400]bio: 7.788	reproj: 33.106	trans: 0.605	orient_sm: 0.006	trans_sm: 0.060	mot_prior: 1.296	betas_prior: 0.064	loss: 42.925	
+[INFO] Stage 2 [243/400]bio: 7.790	reproj: 33.009	trans: 0.608	orient_sm: 0.006	trans_sm: 0.056	mot_prior: 1.312	betas_prior: 0.061	loss: 42.841	
+[INFO] Stage 2 [244/400]bio: 7.788	reproj: 33.153	trans: 0.605	orient_sm: 0.006	trans_sm: 0.059	mot_prior: 1.294	betas_prior: 0.063	loss: 42.968	
+[INFO] Stage 2 [245/400]bio: 7.789	reproj: 32.978	trans: 0.609	orient_sm: 0.006	trans_sm: 0.058	mot_prior: 1.308	betas_prior: 0.062	loss: 42.810	
+[INFO] Stage 2 [246/400]bio: 7.787	reproj: 33.127	trans: 0.606	orient_sm: 0.006	trans_sm: 0.060	mot_prior: 1.297	betas_prior: 0.064	loss: 42.947	
+[INFO] Stage 2 [247/400]bio: 7.789	reproj: 33.050	trans: 0.609	orient_sm: 0.006	trans_sm: 0.060	mot_prior: 1.311	betas_prior: 0.062	loss: 42.887	
+[INFO] Stage 2 [248/400]bio: 7.788	reproj: 32.983	trans: 0.607	orient_sm: 0.006	trans_sm: 0.059	mot_prior: 1.298	betas_prior: 0.063	loss: 42.803	
+[INFO] Stage 2 [249/400]bio: 7.790	reproj: 33.183	trans: 0.609	orient_sm: 0.006	trans_sm: 0.061	mot_prior: 1.316	betas_prior: 0.061	loss: 43.026	
+[INFO] Stage 2 [250/400]bio: 7.788	reproj: 32.936	trans: 0.606	orient_sm: 0.006	trans_sm: 0.065	mot_prior: 1.299	betas_prior: 0.063	loss: 42.763	
+[INFO] Stage 2 [251/400]bio: 7.790	reproj: 33.300	trans: 0.614	orient_sm: 0.007	trans_sm: 0.102	mot_prior: 1.321	betas_prior: 0.061	loss: 43.194	
+[INFO] Stage 2 [252/400]bio: 7.788	reproj: 33.039	trans: 0.611	orient_sm: 0.007	trans_sm: 0.115	mot_prior: 1.301	betas_prior: 0.063	loss: 42.924	
+[INFO] Stage 2 [253/400]bio: 7.789	reproj: 33.114	trans: 0.611	orient_sm: 0.007	trans_sm: 0.117	mot_prior: 1.302	betas_prior: 0.062	loss: 43.002	
+[INFO] Stage 2 [254/400]bio: 7.790	reproj: 33.190	trans: 0.612	orient_sm: 0.007	trans_sm: 0.105	mot_prior: 1.312	betas_prior: 0.061	loss: 43.077	
+[INFO] Stage 2 [255/400]bio: 7.789	reproj: 33.028	trans: 0.609	orient_sm: 0.006	trans_sm: 0.100	mot_prior: 1.296	betas_prior: 0.063	loss: 42.890	
+[INFO] Stage 2 [256/400]bio: 7.789	reproj: 33.107	trans: 0.611	orient_sm: 0.006	trans_sm: 0.076	mot_prior: 1.313	betas_prior: 0.062	loss: 42.965	
+[INFO] Stage 2 [257/400]bio: 7.787	reproj: 33.086	trans: 0.609	orient_sm: 0.007	trans_sm: 0.102	mot_prior: 1.296	betas_prior: 0.064	loss: 42.950	
+[INFO] Stage 2 [258/400]bio: 7.789	reproj: 33.007	trans: 0.610	orient_sm: 0.006	trans_sm: 0.070	mot_prior: 1.308	betas_prior: 0.062	loss: 42.853	
+[INFO] Stage 2 [259/400]bio: 7.788	reproj: 33.142	trans: 0.609	orient_sm: 0.006	trans_sm: 0.091	mot_prior: 1.297	betas_prior: 0.063	loss: 42.997	
+[INFO] Stage 2 [260/400]bio: 7.789	reproj: 32.963	trans: 0.611	orient_sm: 0.006	trans_sm: 0.082	mot_prior: 1.307	betas_prior: 0.062	loss: 42.819	
+[INFO] Stage 2 [261/400]bio: 7.787	reproj: 33.191	trans: 0.610	orient_sm: 0.006	trans_sm: 0.102	mot_prior: 1.298	betas_prior: 0.064	loss: 43.059	
+[INFO] Stage 2 [262/400]bio: 7.788	reproj: 33.066	trans: 0.611	orient_sm: 0.006	trans_sm: 0.104	mot_prior: 1.306	betas_prior: 0.063	loss: 42.944	
+[INFO] Stage 2 [263/400]bio: 7.788	reproj: 33.002	trans: 0.610	orient_sm: 0.006	trans_sm: 0.095	mot_prior: 1.302	betas_prior: 0.063	loss: 42.866	
+[INFO] Stage 2 [264/400]bio: 7.790	reproj: 33.062	trans: 0.611	orient_sm: 0.006	trans_sm: 0.081	mot_prior: 1.308	betas_prior: 0.061	loss: 42.919	
+[INFO] Stage 2 [265/400]bio: 7.788	reproj: 33.098	trans: 0.610	orient_sm: 0.006	trans_sm: 0.093	mot_prior: 1.300	betas_prior: 0.062	loss: 42.957	
+[INFO] Stage 2 [266/400]bio: 7.789	reproj: 33.041	trans: 0.609	orient_sm: 0.006	trans_sm: 0.071	mot_prior: 1.306	betas_prior: 0.062	loss: 42.885	
+[INFO] Stage 2 [267/400]bio: 7.788	reproj: 32.992	trans: 0.609	orient_sm: 0.006	trans_sm: 0.084	mot_prior: 1.301	betas_prior: 0.063	loss: 42.844	
+[INFO] Stage 2 [268/400]bio: 7.789	reproj: 33.098	trans: 0.610	orient_sm: 0.006	trans_sm: 0.065	mot_prior: 1.313	betas_prior: 0.062	loss: 42.943	
+[INFO] Stage 2 [269/400]bio: 7.788	reproj: 33.035	trans: 0.608	orient_sm: 0.006	trans_sm: 0.074	mot_prior: 1.299	betas_prior: 0.063	loss: 42.873	
+[INFO] Stage 2 [270/400]bio: 7.789	reproj: 33.073	trans: 0.609	orient_sm: 0.006	trans_sm: 0.064	mot_prior: 1.312	betas_prior: 0.062	loss: 42.916	
+[INFO] Stage 2 [271/400]bio: 7.788	reproj: 33.022	trans: 0.607	orient_sm: 0.006	trans_sm: 0.068	mot_prior: 1.297	betas_prior: 0.064	loss: 42.852	
+[INFO] Stage 2 [272/400]bio: 7.790	reproj: 33.094	trans: 0.610	orient_sm: 0.006	trans_sm: 0.061	mot_prior: 1.316	betas_prior: 0.061	loss: 42.939	
+[INFO] Stage 2 [273/400]bio: 7.788	reproj: 32.986	trans: 0.607	orient_sm: 0.006	trans_sm: 0.068	mot_prior: 1.298	betas_prior: 0.063	loss: 42.816	
+[INFO] Stage 2 [274/400]bio: 7.790	reproj: 33.115	trans: 0.611	orient_sm: 0.006	trans_sm: 0.067	mot_prior: 1.314	betas_prior: 0.061	loss: 42.964	
+[INFO] Stage 2 [275/400]bio: 7.788	reproj: 32.995	trans: 0.607	orient_sm: 0.006	trans_sm: 0.070	mot_prior: 1.294	betas_prior: 0.063	loss: 42.823	
+[INFO] Stage 2 [276/400]bio: 7.790	reproj: 33.112	trans: 0.613	orient_sm: 0.006	trans_sm: 0.079	mot_prior: 1.320	betas_prior: 0.061	loss: 42.981	
+[INFO] Stage 2 [277/400]bio: 7.788	reproj: 33.023	trans: 0.607	orient_sm: 0.006	trans_sm: 0.080	mot_prior: 1.297	betas_prior: 0.064	loss: 42.866	
+[INFO] Stage 2 [278/400]bio: 7.790	reproj: 33.035	trans: 0.613	orient_sm: 0.006	trans_sm: 0.080	mot_prior: 1.313	betas_prior: 0.062	loss: 42.898	
+[INFO] Stage 2 [279/400]bio: 7.788	reproj: 33.073	trans: 0.608	orient_sm: 0.006	trans_sm: 0.072	mot_prior: 1.294	betas_prior: 0.063	loss: 42.904	
+[INFO] Stage 2 [280/400]bio: 7.790	reproj: 33.023	trans: 0.612	orient_sm: 0.006	trans_sm: 0.072	mot_prior: 1.316	betas_prior: 0.061	loss: 42.880	
+[INFO] Stage 2 [281/400]bio: 7.788	reproj: 33.065	trans: 0.607	orient_sm: 0.006	trans_sm: 0.066	mot_prior: 1.296	betas_prior: 0.063	loss: 42.891	
+[INFO] Stage 2 [282/400]bio: 7.790	reproj: 33.017	trans: 0.611	orient_sm: 0.005	trans_sm: 0.065	mot_prior: 1.313	betas_prior: 0.062	loss: 42.864	
+[INFO] Stage 2 [283/400]bio: 7.788	reproj: 33.065	trans: 0.606	orient_sm: 0.005	trans_sm: 0.061	mot_prior: 1.294	betas_prior: 0.064	loss: 42.882	
+[INFO] Stage 2 [284/400]bio: 7.789	reproj: 33.015	trans: 0.611	orient_sm: 0.006	trans_sm: 0.057	mot_prior: 1.315	betas_prior: 0.062	loss: 42.855	
+[INFO] Stage 2 [285/400]bio: 7.787	reproj: 33.066	trans: 0.605	orient_sm: 0.006	trans_sm: 0.059	mot_prior: 1.295	betas_prior: 0.064	loss: 42.883	
+[INFO] Stage 2 [286/400]bio: 7.790	reproj: 32.995	trans: 0.610	orient_sm: 0.005	trans_sm: 0.054	mot_prior: 1.314	betas_prior: 0.062	loss: 42.830	
+[INFO] Stage 2 [287/400]bio: 7.788	reproj: 33.102	trans: 0.605	orient_sm: 0.006	trans_sm: 0.056	mot_prior: 1.294	betas_prior: 0.064	loss: 42.913	
+[INFO] Stage 2 [288/400]bio: 7.790	reproj: 32.972	trans: 0.609	orient_sm: 0.005	trans_sm: 0.053	mot_prior: 1.314	betas_prior: 0.062	loss: 42.805	
+[INFO] Stage 2 [289/400]bio: 7.788	reproj: 33.112	trans: 0.605	orient_sm: 0.006	trans_sm: 0.055	mot_prior: 1.296	betas_prior: 0.064	loss: 42.925	
+[INFO] Stage 2 [290/400]bio: 7.790	reproj: 32.978	trans: 0.609	orient_sm: 0.005	trans_sm: 0.053	mot_prior: 1.314	betas_prior: 0.062	loss: 42.810	
+[INFO] Stage 2 [291/400]bio: 7.788	reproj: 33.120	trans: 0.606	orient_sm: 0.006	trans_sm: 0.057	mot_prior: 1.297	betas_prior: 0.064	loss: 42.937	
+[INFO] Stage 2 [292/400]bio: 7.789	reproj: 32.971	trans: 0.609	orient_sm: 0.006	trans_sm: 0.055	mot_prior: 1.313	betas_prior: 0.062	loss: 42.805	
+[INFO] Stage 2 [293/400]bio: 7.788	reproj: 33.128	trans: 0.606	orient_sm: 0.006	trans_sm: 0.063	mot_prior: 1.299	betas_prior: 0.063	loss: 42.953	
+[INFO] Stage 2 [294/400]bio: 7.789	reproj: 32.975	trans: 0.609	orient_sm: 0.006	trans_sm: 0.058	mot_prior: 1.310	betas_prior: 0.062	loss: 42.809	
+[INFO] Stage 2 [295/400]bio: 7.789	reproj: 33.141	trans: 0.608	orient_sm: 0.006	trans_sm: 0.070	mot_prior: 1.301	betas_prior: 0.063	loss: 42.979	
+[INFO] Stage 2 [296/400]bio: 7.789	reproj: 33.001	trans: 0.609	orient_sm: 0.006	trans_sm: 0.067	mot_prior: 1.306	betas_prior: 0.062	loss: 42.840	
+[INFO] Stage 2 [297/400]bio: 7.789	reproj: 33.044	trans: 0.609	orient_sm: 0.006	trans_sm: 0.076	mot_prior: 1.304	betas_prior: 0.062	loss: 42.890	
+[INFO] Stage 2 [298/400]bio: 7.789	reproj: 33.021	trans: 0.608	orient_sm: 0.006	trans_sm: 0.064	mot_prior: 1.304	betas_prior: 0.062	loss: 42.855	
+[INFO] Stage 2 [299/400]bio: 7.789	reproj: 33.123	trans: 0.611	orient_sm: 0.006	trans_sm: 0.070	mot_prior: 1.311	betas_prior: 0.062	loss: 42.972	
+[INFO] Stage 2 [300/400]bio: 7.788	reproj: 33.000	trans: 0.609	orient_sm: 0.006	trans_sm: 0.073	mot_prior: 1.302	betas_prior: 0.063	loss: 42.841	
+[INFO] Stage 2 [301/400]bio: 7.789	reproj: 33.045	trans: 0.610	orient_sm: 0.006	trans_sm: 0.076	mot_prior: 1.309	betas_prior: 0.063	loss: 42.898	
+[INFO] Stage 2 [302/400]bio: 7.788	reproj: 33.048	trans: 0.608	orient_sm: 0.006	trans_sm: 0.072	mot_prior: 1.302	betas_prior: 0.063	loss: 42.887	
+[INFO] Stage 2 [303/400]bio: 7.789	reproj: 33.084	trans: 0.611	orient_sm: 0.006	trans_sm: 0.070	mot_prior: 1.314	betas_prior: 0.062	loss: 42.935	
+[INFO] Stage 2 [304/400]bio: 7.788	reproj: 33.023	trans: 0.608	orient_sm: 0.006	trans_sm: 0.073	mot_prior: 1.300	betas_prior: 0.063	loss: 42.861	
+[INFO] Stage 2 [305/400]bio: 7.790	reproj: 33.035	trans: 0.611	orient_sm: 0.006	trans_sm: 0.072	mot_prior: 1.309	betas_prior: 0.062	loss: 42.884	
+[INFO] Stage 2 [306/400]bio: 7.788	reproj: 33.067	trans: 0.606	orient_sm: 0.006	trans_sm: 0.068	mot_prior: 1.299	betas_prior: 0.063	loss: 42.898	
+[INFO] Stage 2 [307/400]bio: 7.790	reproj: 33.030	trans: 0.610	orient_sm: 0.006	trans_sm: 0.065	mot_prior: 1.314	betas_prior: 0.061	loss: 42.877	
+[INFO] Stage 2 [308/400]bio: 7.788	reproj: 33.067	trans: 0.606	orient_sm: 0.006	trans_sm: 0.064	mot_prior: 1.296	betas_prior: 0.063	loss: 42.890	
+[INFO] Stage 2 [309/400]bio: 7.789	reproj: 33.023	trans: 0.610	orient_sm: 0.006	trans_sm: 0.062	mot_prior: 1.311	betas_prior: 0.062	loss: 42.864	
+[INFO] Stage 2 [310/400]bio: 7.788	reproj: 33.038	trans: 0.606	orient_sm: 0.006	trans_sm: 0.061	mot_prior: 1.297	betas_prior: 0.064	loss: 42.858	
+[INFO] Stage 2 [311/400]bio: 7.790	reproj: 33.022	trans: 0.610	orient_sm: 0.005	trans_sm: 0.060	mot_prior: 1.315	betas_prior: 0.062	loss: 42.863	
+[INFO] Stage 2 [312/400]bio: 7.788	reproj: 33.071	trans: 0.605	orient_sm: 0.005	trans_sm: 0.056	mot_prior: 1.295	betas_prior: 0.064	loss: 42.884	
+[INFO] Stage 2 [313/400]bio: 7.790	reproj: 33.009	trans: 0.609	orient_sm: 0.005	trans_sm: 0.058	mot_prior: 1.312	betas_prior: 0.062	loss: 42.845	
+[INFO] Stage 2 [314/400]bio: 7.788	reproj: 33.037	trans: 0.605	orient_sm: 0.006	trans_sm: 0.054	mot_prior: 1.297	betas_prior: 0.064	loss: 42.850	
+[INFO] Stage 2 [315/400]bio: 7.790	reproj: 33.038	trans: 0.609	orient_sm: 0.005	trans_sm: 0.057	mot_prior: 1.316	betas_prior: 0.061	loss: 42.878	
+[INFO] Stage 2 [316/400]bio: 7.788	reproj: 33.027	trans: 0.605	orient_sm: 0.005	trans_sm: 0.050	mot_prior: 1.297	betas_prior: 0.063	loss: 42.837	
+[INFO] Stage 2 [317/400]bio: 7.790	reproj: 33.077	trans: 0.609	orient_sm: 0.006	trans_sm: 0.056	mot_prior: 1.315	betas_prior: 0.062	loss: 42.914	
+[INFO] Stage 2 [318/400]bio: 7.788	reproj: 32.995	trans: 0.605	orient_sm: 0.006	trans_sm: 0.051	mot_prior: 1.300	betas_prior: 0.064	loss: 42.807	
+[INFO] Stage 2 [319/400]bio: 7.790	reproj: 33.085	trans: 0.609	orient_sm: 0.006	trans_sm: 0.057	mot_prior: 1.315	betas_prior: 0.062	loss: 42.924	
+[INFO] Stage 2 [320/400]bio: 7.789	reproj: 32.992	trans: 0.607	orient_sm: 0.005	trans_sm: 0.051	mot_prior: 1.302	betas_prior: 0.063	loss: 42.809	
+[INFO] Stage 2 [321/400]bio: 7.790	reproj: 33.097	trans: 0.609	orient_sm: 0.006	trans_sm: 0.059	mot_prior: 1.312	betas_prior: 0.062	loss: 42.935	
+[INFO] Stage 2 [322/400]bio: 7.789	reproj: 32.983	trans: 0.607	orient_sm: 0.006	trans_sm: 0.057	mot_prior: 1.304	betas_prior: 0.063	loss: 42.808	
+[INFO] Stage 2 [323/400]bio: 7.789	reproj: 33.073	trans: 0.609	orient_sm: 0.006	trans_sm: 0.066	mot_prior: 1.312	betas_prior: 0.062	loss: 42.917	
+[INFO] Stage 2 [324/400]bio: 7.789	reproj: 33.005	trans: 0.608	orient_sm: 0.006	trans_sm: 0.060	mot_prior: 1.305	betas_prior: 0.063	loss: 42.835	
+[INFO] Stage 2 [325/400]bio: 7.789	reproj: 33.066	trans: 0.609	orient_sm: 0.006	trans_sm: 0.067	mot_prior: 1.309	betas_prior: 0.062	loss: 42.907	
+[INFO] Stage 2 [326/400]bio: 7.789	reproj: 33.020	trans: 0.607	orient_sm: 0.006	trans_sm: 0.065	mot_prior: 1.303	betas_prior: 0.063	loss: 42.853	
+[INFO] Stage 2 [327/400]bio: 7.789	reproj: 33.006	trans: 0.609	orient_sm: 0.006	trans_sm: 0.063	mot_prior: 1.309	betas_prior: 0.062	loss: 42.844	
+[INFO] Stage 2 [328/400]bio: 7.788	reproj: 33.051	trans: 0.608	orient_sm: 0.006	trans_sm: 0.058	mot_prior: 1.305	betas_prior: 0.063	loss: 42.879	
+[INFO] Stage 2 [329/400]bio: 7.789	reproj: 33.039	trans: 0.608	orient_sm: 0.006	trans_sm: 0.056	mot_prior: 1.308	betas_prior: 0.062	loss: 42.867	
+[INFO] Stage 2 [330/400]bio: 7.788	reproj: 33.030	trans: 0.607	orient_sm: 0.006	trans_sm: 0.058	mot_prior: 1.304	betas_prior: 0.063	loss: 42.856	
+[INFO] Stage 2 [331/400]bio: 7.789	reproj: 33.009	trans: 0.608	orient_sm: 0.006	trans_sm: 0.054	mot_prior: 1.307	betas_prior: 0.063	loss: 42.834	
+[INFO] Stage 2 [332/400]bio: 7.788	reproj: 33.089	trans: 0.608	orient_sm: 0.005	trans_sm: 0.053	mot_prior: 1.309	betas_prior: 0.063	loss: 42.915	
+[INFO] Stage 2 [333/400]bio: 7.789	reproj: 32.961	trans: 0.606	orient_sm: 0.005	trans_sm: 0.049	mot_prior: 1.305	betas_prior: 0.063	loss: 42.778	
+[INFO] Stage 2 [334/400]bio: 7.789	reproj: 33.145	trans: 0.608	orient_sm: 0.005	trans_sm: 0.054	mot_prior: 1.311	betas_prior: 0.062	loss: 42.974	
+[INFO] Stage 2 [335/400]bio: 7.789	reproj: 32.928	trans: 0.606	orient_sm: 0.005	trans_sm: 0.050	mot_prior: 1.303	betas_prior: 0.063	loss: 42.744	
+[INFO] Stage 2 [336/400]bio: 7.789	reproj: 33.186	trans: 0.610	orient_sm: 0.006	trans_sm: 0.066	mot_prior: 1.316	betas_prior: 0.062	loss: 43.035	
+[INFO] Stage 2 [337/400]bio: 7.788	reproj: 32.933	trans: 0.608	orient_sm: 0.006	trans_sm: 0.062	mot_prior: 1.303	betas_prior: 0.063	loss: 42.763	
+[INFO] Stage 2 [338/400]bio: 7.790	reproj: 33.123	trans: 0.613	orient_sm: 0.006	trans_sm: 0.103	mot_prior: 1.313	betas_prior: 0.062	loss: 43.010	
+[INFO] Stage 2 [339/400]bio: 7.788	reproj: 33.022	trans: 0.610	orient_sm: 0.006	trans_sm: 0.088	mot_prior: 1.299	betas_prior: 0.063	loss: 42.876	
+[INFO] Stage 2 [340/400]bio: 7.789	reproj: 33.046	trans: 0.613	orient_sm: 0.006	trans_sm: 0.102	mot_prior: 1.314	betas_prior: 0.062	loss: 42.933	
+[INFO] Stage 2 [341/400]bio: 7.788	reproj: 33.105	trans: 0.610	orient_sm: 0.006	trans_sm: 0.087	mot_prior: 1.298	betas_prior: 0.064	loss: 42.958	
+[INFO] Stage 2 [342/400]bio: 7.790	reproj: 32.935	trans: 0.612	orient_sm: 0.006	trans_sm: 0.075	mot_prior: 1.310	betas_prior: 0.062	loss: 42.788	
+[INFO] Stage 2 [343/400]bio: 7.788	reproj: 33.151	trans: 0.608	orient_sm: 0.006	trans_sm: 0.077	mot_prior: 1.294	betas_prior: 0.063	loss: 42.987	
+[INFO] Stage 2 [344/400]bio: 7.790	reproj: 32.967	trans: 0.612	orient_sm: 0.006	trans_sm: 0.075	mot_prior: 1.313	betas_prior: 0.061	loss: 42.825	
+[INFO] Stage 2 [345/400]bio: 7.788	reproj: 33.080	trans: 0.609	orient_sm: 0.006	trans_sm: 0.082	mot_prior: 1.296	betas_prior: 0.064	loss: 42.926	
+[INFO] Stage 2 [346/400]bio: 7.789	reproj: 32.983	trans: 0.613	orient_sm: 0.005	trans_sm: 0.077	mot_prior: 1.315	betas_prior: 0.062	loss: 42.846	
+[INFO] Stage 2 [347/400]bio: 7.788	reproj: 33.075	trans: 0.607	orient_sm: 0.006	trans_sm: 0.082	mot_prior: 1.296	betas_prior: 0.064	loss: 42.918	
+[INFO] Stage 2 [348/400]bio: 7.790	reproj: 32.973	trans: 0.613	orient_sm: 0.005	trans_sm: 0.080	mot_prior: 1.317	betas_prior: 0.061	loss: 42.839	
+[INFO] Stage 2 [349/400]bio: 7.788	reproj: 33.148	trans: 0.608	orient_sm: 0.006	trans_sm: 0.077	mot_prior: 1.293	betas_prior: 0.064	loss: 42.983	
+[INFO] Stage 2 [350/400]bio: 7.790	reproj: 32.939	trans: 0.615	orient_sm: 0.005	trans_sm: 0.089	mot_prior: 1.312	betas_prior: 0.062	loss: 42.812	
+[INFO] Stage 2 [351/400]bio: 7.788	reproj: 33.126	trans: 0.609	orient_sm: 0.006	trans_sm: 0.105	mot_prior: 1.297	betas_prior: 0.063	loss: 42.994	
+[INFO] Stage 2 [352/400]bio: 7.790	reproj: 32.980	trans: 0.614	orient_sm: 0.006	trans_sm: 0.116	mot_prior: 1.313	betas_prior: 0.062	loss: 42.879	
+[INFO] Stage 2 [353/400]bio: 7.788	reproj: 33.046	trans: 0.612	orient_sm: 0.006	trans_sm: 0.105	mot_prior: 1.298	betas_prior: 0.063	loss: 42.918	
+[INFO] Stage 2 [354/400]bio: 7.789	reproj: 33.016	trans: 0.616	orient_sm: 0.006	trans_sm: 0.106	mot_prior: 1.310	betas_prior: 0.062	loss: 42.906	
+[INFO] Stage 2 [355/400]bio: 7.788	reproj: 33.088	trans: 0.609	orient_sm: 0.006	trans_sm: 0.096	mot_prior: 1.299	betas_prior: 0.063	loss: 42.949	
+[INFO] Stage 2 [356/400]bio: 7.789	reproj: 32.979	trans: 0.612	orient_sm: 0.006	trans_sm: 0.107	mot_prior: 1.312	betas_prior: 0.062	loss: 42.868	
+[INFO] Stage 2 [357/400]bio: 7.788	reproj: 33.056	trans: 0.610	orient_sm: 0.006	trans_sm: 0.101	mot_prior: 1.298	betas_prior: 0.064	loss: 42.923	
+[INFO] Stage 2 [358/400]bio: 7.789	reproj: 33.032	trans: 0.615	orient_sm: 0.006	trans_sm: 0.096	mot_prior: 1.311	betas_prior: 0.062	loss: 42.910	
+[INFO] Stage 2 [359/400]bio: 7.788	reproj: 33.019	trans: 0.610	orient_sm: 0.006	trans_sm: 0.091	mot_prior: 1.298	betas_prior: 0.063	loss: 42.874	
+[INFO] Stage 2 [360/400]bio: 7.789	reproj: 33.024	trans: 0.612	orient_sm: 0.006	trans_sm: 0.083	mot_prior: 1.313	betas_prior: 0.062	loss: 42.888	
+[INFO] Stage 2 [361/400]bio: 7.788	reproj: 33.064	trans: 0.609	orient_sm: 0.006	trans_sm: 0.085	mot_prior: 1.294	betas_prior: 0.064	loss: 42.910	
+[INFO] Stage 2 [362/400]bio: 7.789	reproj: 33.000	trans: 0.613	orient_sm: 0.006	trans_sm: 0.072	mot_prior: 1.312	betas_prior: 0.062	loss: 42.854	
+[INFO] Stage 2 [363/400]bio: 7.788	reproj: 33.034	trans: 0.609	orient_sm: 0.006	trans_sm: 0.082	mot_prior: 1.297	betas_prior: 0.063	loss: 42.879	
+[INFO] Stage 2 [364/400]bio: 7.790	reproj: 33.027	trans: 0.610	orient_sm: 0.006	trans_sm: 0.068	mot_prior: 1.314	betas_prior: 0.061	loss: 42.877	
+[INFO] Stage 2 [365/400]bio: 7.788	reproj: 33.035	trans: 0.608	orient_sm: 0.006	trans_sm: 0.074	mot_prior: 1.297	betas_prior: 0.064	loss: 42.871	
+[INFO] Stage 2 [366/400]bio: 7.789	reproj: 33.017	trans: 0.612	orient_sm: 0.006	trans_sm: 0.062	mot_prior: 1.315	betas_prior: 0.062	loss: 42.863	
+[INFO] Stage 2 [367/400]bio: 7.787	reproj: 33.038	trans: 0.608	orient_sm: 0.006	trans_sm: 0.069	mot_prior: 1.299	betas_prior: 0.064	loss: 42.871	
+[INFO] Stage 2 [368/400]bio: 7.789	reproj: 33.006	trans: 0.610	orient_sm: 0.005	trans_sm: 0.060	mot_prior: 1.316	betas_prior: 0.062	loss: 42.848	
+[INFO] Stage 2 [369/400]bio: 7.788	reproj: 33.069	trans: 0.606	orient_sm: 0.005	trans_sm: 0.065	mot_prior: 1.298	betas_prior: 0.063	loss: 42.895	
+[INFO] Stage 2 [370/400]bio: 7.790	reproj: 32.979	trans: 0.611	orient_sm: 0.005	trans_sm: 0.058	mot_prior: 1.314	betas_prior: 0.061	loss: 42.818	
+[INFO] Stage 2 [371/400]bio: 7.788	reproj: 33.068	trans: 0.607	orient_sm: 0.006	trans_sm: 0.064	mot_prior: 1.299	betas_prior: 0.063	loss: 42.895	
+[INFO] Stage 2 [372/400]bio: 7.789	reproj: 32.977	trans: 0.610	orient_sm: 0.005	trans_sm: 0.059	mot_prior: 1.315	betas_prior: 0.062	loss: 42.818	
+[INFO] Stage 2 [373/400]bio: 7.788	reproj: 33.089	trans: 0.606	orient_sm: 0.005	trans_sm: 0.065	mot_prior: 1.297	betas_prior: 0.063	loss: 42.913	
+[INFO] Stage 2 [374/400]bio: 7.790	reproj: 32.969	trans: 0.611	orient_sm: 0.005	trans_sm: 0.062	mot_prior: 1.314	betas_prior: 0.062	loss: 42.813	
+[INFO] Stage 2 [375/400]bio: 7.788	reproj: 33.079	trans: 0.608	orient_sm: 0.006	trans_sm: 0.069	mot_prior: 1.298	betas_prior: 0.064	loss: 42.911	
+[INFO] Stage 2 [376/400]bio: 7.789	reproj: 32.972	trans: 0.612	orient_sm: 0.005	trans_sm: 0.067	mot_prior: 1.316	betas_prior: 0.062	loss: 42.824	
+[INFO] Stage 2 [377/400]bio: 7.788	reproj: 33.102	trans: 0.607	orient_sm: 0.005	trans_sm: 0.071	mot_prior: 1.296	betas_prior: 0.064	loss: 42.934	
+[INFO] Stage 2 [378/400]bio: 7.790	reproj: 32.963	trans: 0.612	orient_sm: 0.006	trans_sm: 0.078	mot_prior: 1.312	betas_prior: 0.062	loss: 42.823	
+[INFO] Stage 2 [379/400]bio: 7.788	reproj: 33.066	trans: 0.609	orient_sm: 0.006	trans_sm: 0.081	mot_prior: 1.299	betas_prior: 0.063	loss: 42.912	
+[INFO] Stage 2 [380/400]bio: 7.790	reproj: 32.984	trans: 0.614	orient_sm: 0.006	trans_sm: 0.084	mot_prior: 1.315	betas_prior: 0.062	loss: 42.853	
+[INFO] Stage 2 [381/400]bio: 7.788	reproj: 33.063	trans: 0.607	orient_sm: 0.006	trans_sm: 0.078	mot_prior: 1.296	betas_prior: 0.063	loss: 42.902	
+[INFO] Stage 2 [382/400]bio: 7.790	reproj: 32.987	trans: 0.613	orient_sm: 0.006	trans_sm: 0.089	mot_prior: 1.313	betas_prior: 0.062	loss: 42.859	
+[INFO] Stage 2 [383/400]bio: 7.788	reproj: 33.055	trans: 0.608	orient_sm: 0.006	trans_sm: 0.074	mot_prior: 1.298	betas_prior: 0.063	loss: 42.892	
+[INFO] Stage 2 [384/400]bio: 7.789	reproj: 32.998	trans: 0.615	orient_sm: 0.006	trans_sm: 0.091	mot_prior: 1.317	betas_prior: 0.062	loss: 42.878	
+[INFO] Stage 2 [385/400]bio: 7.787	reproj: 33.063	trans: 0.606	orient_sm: 0.006	trans_sm: 0.066	mot_prior: 1.295	betas_prior: 0.064	loss: 42.888	
+[INFO] Stage 2 [386/400]bio: 7.789	reproj: 33.013	trans: 0.614	orient_sm: 0.006	trans_sm: 0.092	mot_prior: 1.314	betas_prior: 0.062	loss: 42.889	
+[INFO] Stage 2 [387/400]bio: 7.788	reproj: 33.008	trans: 0.606	orient_sm: 0.006	trans_sm: 0.058	mot_prior: 1.298	betas_prior: 0.063	loss: 42.826	
+[INFO] Stage 2 [388/400]bio: 7.789	reproj: 33.049	trans: 0.614	orient_sm: 0.006	trans_sm: 0.078	mot_prior: 1.318	betas_prior: 0.061	loss: 42.915	
+[INFO] Stage 2 [389/400]bio: 7.788	reproj: 33.038	trans: 0.605	orient_sm: 0.006	trans_sm: 0.052	mot_prior: 1.296	betas_prior: 0.063	loss: 42.848	
+[INFO] Stage 2 [390/400]bio: 7.789	reproj: 33.003	trans: 0.611	orient_sm: 0.006	trans_sm: 0.071	mot_prior: 1.313	betas_prior: 0.062	loss: 42.856	
+[INFO] Stage 2 [391/400]bio: 7.788	reproj: 33.073	trans: 0.605	orient_sm: 0.006	trans_sm: 0.053	mot_prior: 1.296	betas_prior: 0.063	loss: 42.883	
+[INFO] Stage 2 [392/400]bio: 7.789	reproj: 32.980	trans: 0.611	orient_sm: 0.006	trans_sm: 0.064	mot_prior: 1.313	betas_prior: 0.062	loss: 42.826	
+[INFO] Stage 2 [393/400]bio: 7.788	reproj: 33.083	trans: 0.606	orient_sm: 0.006	trans_sm: 0.053	mot_prior: 1.297	betas_prior: 0.064	loss: 42.896	
+[INFO] Stage 2 [394/400]bio: 7.789	reproj: 32.987	trans: 0.610	orient_sm: 0.006	trans_sm: 0.063	mot_prior: 1.310	betas_prior: 0.062	loss: 42.827	
+[INFO] Stage 2 [395/400]bio: 7.789	reproj: 33.060	trans: 0.606	orient_sm: 0.006	trans_sm: 0.055	mot_prior: 1.301	betas_prior: 0.063	loss: 42.879	
+[INFO] Stage 2 [396/400]bio: 7.789	reproj: 33.001	trans: 0.609	orient_sm: 0.006	trans_sm: 0.060	mot_prior: 1.310	betas_prior: 0.062	loss: 42.838	
+[INFO] Stage 2 [397/400]bio: 7.789	reproj: 33.051	trans: 0.608	orient_sm: 0.006	trans_sm: 0.054	mot_prior: 1.303	betas_prior: 0.063	loss: 42.872	
+[INFO] Stage 2 [398/400]bio: 7.789	reproj: 32.997	trans: 0.608	orient_sm: 0.006	trans_sm: 0.060	mot_prior: 1.306	betas_prior: 0.063	loss: 42.828	
+[INFO] Stage 2 [399/400]bio: 7.789	reproj: 33.064	trans: 0.608	orient_sm: 0.005	trans_sm: 0.054	mot_prior: 1.309	betas_prior: 0.062	loss: 42.891	
+Stage 2 finished in 00:00:21
+[INFO] mean_betas: [   0.043005   -0.027817   -0.052846   -0.010573    0.010659   -0.014875   -0.032885     0.04485   0.0037937    0.011069]
+[INFO] betas: [[  -0.012895    -0.12762  -0.0025023    0.039735   -0.031815     0.10833    0.018463      0.2022   0.0022087    0.030158]]
+[INFO] Saved intermediate results to /scratch/mthakur/manifold/outputs/stride/me 1/pkls/stg_2.pkl
+[INFO] Stage 3: Learning rate: 0.0
+pose_body (1, 115, 15, 3)
+betas (1, 10)
+trans (1, 115, 3)
+root_orient (1, 115, 3)
+is_right (1, 115)
+cam_R (1, 115, 3, 3)
+cam_t (1, 115, 3)
+intrins (4,)
+latent_pose (1, 115, 45)
+decode_root (1, 115, 3)
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+
+Refined 1 video(s) into /scratch/mthakur/manifold/outputs/stride.
+===============================================
+Job finished at: Fri May  1 17:48:19 CEST 2026
+Execution took 0.04 hours
+Writing output to SLURM_logs/stride-inference_007.out
+Retained STRIDE outputs: /scratch/mthakur/manifold/outputs/stride/me 1
+===============================================

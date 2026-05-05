@@ -58,7 +58,7 @@ echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
 
-VIDEO_DIR="${VIDEO_DIR:-${PROJECT_ROOT}/data/images}"
+VIDEO_DIR="${VIDEO_DIR:-${PROJECT_ROOT}/data/test}"
 VIDEO_NAME="${VIDEO_NAME:-__NAME__}"
 VIDEO_FILE="${VIDEO_FILE:-__VIDEO_FILE__}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/vipe}"

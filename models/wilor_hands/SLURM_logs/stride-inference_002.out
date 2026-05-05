@@ -1,0 +1,60 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Thu Apr 30 21:34:23 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:AE:00.0 Off |                    0 |
+| N/A   54C    P0             53W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9797952
+Job Name:       stride-inference
+Partition:      gpu-a100
+Node List:      gpu016
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Thu Apr 30 21:34:23 CEST 2026
+===============================================
+STRIDE video: /scratch/mthakur/manifold/data/test/me 1.mp4
+WiLoR cache root: /scratch/mthakur/manifold/outputs/wilor
+STRIDE output root: /scratch/mthakur/manifold/outputs/stride
+STRIDE backend: hmp
+HMP assets root: /scratch/mthakur/manifold/models/wilor_hands/_DATA/hmp_model
+STRIDE completion marker: /scratch/mthakur/manifold/outputs/stride/_completed/me 1.json
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+Traceback (most recent call last):
+  File "/scratch/mthakur/manifold/models/wilor_hands/main.py", line 10, in <module>
+    from stride_hmp import HMPConfig, run_stride_hmp
+  File "/scratch/mthakur/manifold/models/wilor_hands/stride_hmp.py", line 11, in <module>
+    from hmp_prior.fitting import fitting_prior
+  File "/scratch/mthakur/manifold/models/wilor_hands/hmp_prior/fitting.py", line 36, in <module>
+    from nemf.generative import Architecture
+  File "/scratch/mthakur/manifold/models/wilor_hands/hmp_prior/nemf/generative.py", line 12, in <module>
+    from utils import align_joints, compute_trajectory, estimate_angular_velocity, estimate_linear_velocity, normalize
+  File "/scratch/mthakur/manifold/models/wilor_hands/hmp_prior/utils.py", line 4, in <module>
+    import plyfile
+ModuleNotFoundError: No module named 'plyfile'

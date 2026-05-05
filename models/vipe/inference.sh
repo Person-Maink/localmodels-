@@ -1,5 +1,4 @@
 #!/bin/bash
-set -euo pipefail
 
 # ================ SLURM SETUP ================
 # Available HPC Partitions:
@@ -21,6 +20,7 @@ set -euo pipefail
 #SBATCH --account=Education-EEMCS-MSc-DSAIT
 #SBATCH --output=%x.out
 
+set -euo pipefail
 # ================ OUTPUT FILES ================
 base_name="${SLURM_JOB_NAME}"
 dir="SLURM_logs"
@@ -58,7 +58,7 @@ echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
 
-VIDEO_DIR="${VIDEO_DIR:-${PROJECT_ROOT}/data/images}"
+VIDEO_DIR="${VIDEO_DIR:-${PROJECT_ROOT}/data/test}"
 VIDEO_NAME="${VIDEO_NAME:-}"
 VIDEO_FILE="${VIDEO_FILE:-}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/vipe}"

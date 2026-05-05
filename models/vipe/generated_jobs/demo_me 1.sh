@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # ================ SLURM SETUP ================
 
 # Available HPC Partitions:
@@ -17,29 +16,28 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
-#SBATCH --mem-per-gpu=64G
+#SBATCH --mem-per-gpu=80G
 #SBATCH --account=Education-EEMCS-MSc-DSAIT
 #SBATCH --output=%x.out
+set -euo pipefail
+
 
 # ================ OUTPUT FILES ================
-
-# compute a small incremental index based on existing files
 base_name="${SLURM_JOB_NAME}"
 dir="SLURM_logs"
 mkdir -p "$dir"
 count=$(printf "%03d" $(($(ls "$dir" 2>/dev/null | grep -c "^${base_name}_[0-9]\+\.out$") + 1)))
 outfile="${dir}/${base_name}_${count}.out"
-
-# redirect stdout and stderr
 exec >"$outfile" 2>&1
 
-# ================ SLURM SETUP ================
-
-# Load modules:
 module load 2024r1
 module load cuda/12.9
 
-# ================ CODE EXECUTION ================
+PROJECT_ROOT="/scratch/mthakur/manifold"
+MODEL_ROOT="${PROJECT_ROOT}/models/vipe"
+COMMON_SH="${PROJECT_ROOT}/models/common/inference_common.sh"
+
+source "${COMMON_SH}"
 
 echo "Loaded modules:"
 module list 2>&1
@@ -52,7 +50,6 @@ echo "Job Name:       $SLURM_JOB_NAME"
 echo "Partition:      $SLURM_JOB_PARTITION"
 echo "Node List:      $SLURM_JOB_NODELIST"
 echo "CPUs per task:  $SLURM_CPUS_PER_TASK"
-echo "Memory per CPU: $SLURM_MEM_PER_CPU"
 echo "GPUs per task:  $SLURM_GPUS_PER_TASK"
 echo "Memory per GPU: $SLURM_MEM_PER_GPU"
 echo "Submit dir:     $SLURM_SUBMIT_DIR"
@@ -61,20 +58,76 @@ echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
 
-apptainer exec --nv \
-    --bind /scratch:/scratch \
-    --bind ~/.cache/torch:/home/mthakur/.cache/torch \
-    --bind ~/.cache/huggingface:/home/mthakur/.cache/huggingface \
-    /scratch/mthakur/manifold/models/vipe/apptainer/template.sif \
-    bash -c '/opt/conda/bin/conda run -n vipe vipe infer "/scratch/mthakur/manifold/data/images/me 1.mp4" --output /scratch/mthakur/manifold/outputs/vipe/ --pipeline no_vda'
+VIDEO_DIR="${VIDEO_DIR:-${PROJECT_ROOT}/data/test}"
+VIDEO_NAME="${VIDEO_NAME:-me 1}"
+VIDEO_FILE="${VIDEO_FILE:-me 1.mp4}"
+OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/vipe}"
+MODEL_ASSETS_ROOT="${MODEL_ASSETS_ROOT:-${PROJECT_ROOT}/models/model_assets}"
+APPTAINER_IMAGE="${APPTAINER_IMAGE:-${MODEL_ROOT}/apptainer/template.sif}"
+CHUNK_SECONDS="${CHUNK_SECONDS:-300}"
+MAX_CHUNK_FRAMES="${MAX_CHUNK_FRAMES:-960}"
+MIN_CHUNK_FRAMES="${MIN_CHUNK_FRAMES:-256}"
+FRAME_SKIP="${FRAME_SKIP:-1}"
+SAVE_VIZ="${SAVE_VIZ:-false}"
+SKIP_EXISTING="${SKIP_EXISTING:-true}"
+OVERWRITE="${OVERWRITE:-false}"
 
-# apptainer exec --nv \
-#     --bind /scratch/mthakur/manifold/data/:/data/ \
-#     --bind /scratch/mthakur/manifold/outputs/vipe/:/output/ \
-#     --bind ~/.cache/torch:/home/mthakur/.cache/torch \
-#     --bind ~/.cache/huggingface:/home/mthakur/.cache/huggingface \
-#     /scratch/mthakur/manifold/models/vipe/apptainer/template.sif \
-#     bash -c '/opt/conda/bin/conda run -n vipe vipe infer "data/me 1.mp4" --output /output/ --pipeline no_vda'
+if ! VIDEO_PATH=$(resolve_video_path "${VIDEO_DIR}" "${VIDEO_NAME}" "${VIDEO_FILE}"); then
+    echo "Could not resolve a supported video under ${VIDEO_DIR} for VIDEO_NAME='${VIDEO_NAME}' VIDEO_FILE='${VIDEO_FILE}'" >&2
+    exit 1
+fi
+
+VIDEO_PATH=$(cd "$(dirname "${VIDEO_PATH}")" && pwd)/$(basename "${VIDEO_PATH}")
+VIDEO_STEM="$(basename "${VIDEO_PATH%.*}")"
+MARKER_PATH="$(completion_marker_path "${OUTPUT_ROOT}" "${VIDEO_STEM}")"
+
+REQUIRED_ASSETS=(
+  "${MODEL_ASSETS_ROOT}/vipe/droid_slam/droid.pth"
+  "${MODEL_ASSETS_ROOT}/vipe/geocalib/pinhole.tar"
+  "${MODEL_ASSETS_ROOT}/vipe/track_anything/sam_vit_b_01ec64.pth"
+  "${MODEL_ASSETS_ROOT}/vipe/track_anything/R50_DeAOTL_PRE_YTB_DAV.pth"
+  "${MODEL_ASSETS_ROOT}/vipe/track_anything/groundingdino_swint_ogc.pth"
+  "${MODEL_ASSETS_ROOT}/vipe/huggingface/bert-base-uncased"
+  "${MODEL_ASSETS_ROOT}/vipe/huggingface/unidepth-v2-vitl14"
+  "${MODEL_ASSETS_ROOT}/vipe/priorda/depth_anything_v2_vitb.pth"
+  "${MODEL_ASSETS_ROOT}/vipe/priorda/prior_depth_anything_vitb.pth"
+)
+
+for asset in "${REQUIRED_ASSETS[@]}"; do
+  if [[ ! -e "${asset}" ]]; then
+    echo "Required ViPE asset not found: ${asset}" >&2
+    exit 1
+  fi
+done
+
+if [[ ! -f "${APPTAINER_IMAGE}" ]]; then
+    echo "Apptainer image not found: ${APPTAINER_IMAGE}" >&2
+    exit 1
+fi
+
+if [[ -f "${MARKER_PATH}" ]] && ! is_truthy "${OVERWRITE}"; then
+    echo "Skipping ${VIDEO_STEM}: completion marker already exists at ${MARKER_PATH}"
+    exit 0
+fi
+
+export APPTAINERENV_MODEL_ASSETS_ROOT="${MODEL_ASSETS_ROOT}"
+export APPTAINERENV_HF_HUB_OFFLINE=1
+export APPTAINERENV_TRANSFORMERS_OFFLINE=1
+
+echo "ViPE video: ${VIDEO_PATH}"
+echo "ViPE output root: ${OUTPUT_ROOT}"
+echo "ViPE completion marker: ${MARKER_PATH}"
+
+container_cmd=$(cat <<EOF
+cd $(printf '%q' "${MODEL_ROOT}") && /opt/conda/bin/conda run -n vipe python run_chunked.py --video $(printf '%q' "${VIDEO_PATH}") --output $(printf '%q' "${OUTPUT_ROOT}") --pipeline no_vda --chunk-seconds $(printf '%q' "${CHUNK_SECONDS}") --max-chunk-frames $(printf '%q' "${MAX_CHUNK_FRAMES}") --min-chunk-frames $(printf '%q' "${MIN_CHUNK_FRAMES}") --frame-skip $(printf '%q' "${FRAME_SKIP}") --skip-existing $(printf '%q' "${SKIP_EXISTING}") --save-viz $(printf '%q' "${SAVE_VIZ}") --overwrite $(printf '%q' "${OVERWRITE}")
+EOF
+)
+
+srun apptainer exec \
+  --nv \
+  --bind /scratch:/scratch \
+  "${APPTAINER_IMAGE}" \
+  bash -lc "${container_cmd}"
 
 echo "==============================================="
 end_time=$(date +%s)
@@ -84,4 +137,5 @@ hours=$(printf "%.2f" "$(echo "$elapsed/3600" | bc -l)")
 echo "Job finished at: $(date)"
 echo "Execution took $hours hours"
 echo "Writing output to $outfile"
+echo "Retained ViPE outputs: ${OUTPUT_ROOT}/pose/${VIDEO_STEM}.npz and ${OUTPUT_ROOT}/intrinsics/${VIDEO_STEM}.npz"
 echo "==============================================="
