@@ -13,6 +13,7 @@ from hmp_stride_adapter import fitting_prior
 from hmp_stride_adapter_args import Arguments
 from stride_refine import LIGHT_PURPLE, _frame_records, _parse_target_hand, _pick_track, _stack_records
 from utils_new import render_rgba_multiple
+from vipe_artifacts import resolve_vipe_camera_sequence
 from visualize import images_to_video
 from wilor.models import MANO
 from wilor.utils.geometry import perspective_projection
@@ -59,7 +60,7 @@ def _resolve_vid_path(image_folder, cache_root: Path, video_name: str, frame_sto
     return cache_root / video_name / "meshes"
 
 
-def _sequence_to_hmp_inputs(sequence, device: torch.device):
+def _sequence_to_hmp_observations(sequence, device: torch.device):
     seq_len = len(sequence["frame_ids"])
     right = int(sequence["right"])
 
@@ -68,7 +69,6 @@ def _sequence_to_hmp_inputs(sequence, device: torch.device):
 
     root_orient = matrix_to_axis_angle(global_orient_rot[:, 0]).detach().cpu().numpy().astype(np.float32)
     pose_body = matrix_to_axis_angle(hand_pose_rot.reshape(-1, 3, 3)).reshape(seq_len, 15, 3).detach().cpu().numpy().astype(np.float32)
-    cam_t = np.asarray(sequence["cam_t"], dtype=np.float32)
     betas = np.asarray(sequence["betas"], dtype=np.float32)
     if betas.ndim == 2:
         # WiLoR stores per-frame betas, but HMP's reconstruction path assumes
@@ -76,33 +76,81 @@ def _sequence_to_hmp_inputs(sequence, device: torch.device):
         betas = betas.mean(axis=0)
     elif betas.ndim > 2:
         betas = betas.reshape(-1, betas.shape[-1]).mean(axis=0)
-    focal = np.asarray(sequence["focal_length"], dtype=np.float32)
-    img_res = np.asarray(sequence["img_res"], dtype=np.float32)
-    cam_r = np.tile(np.eye(3, dtype=np.float32), (seq_len, 1, 1))
 
     conf = np.asarray(sequence["detection_confidence"], dtype=np.float32)
     joints2d_xy = np.asarray(sequence["pred_keypoints_2d"], dtype=np.float32)
     joints2d = np.concatenate([joints2d_xy, np.repeat(conf[:, None, None], joints2d_xy.shape[1], axis=1)], axis=-1)
     vis_mask = np.asarray(sequence["observed_mask"], dtype=np.bool_)
-    intrins = np.asarray(
-        [float(focal.mean()), float(focal.mean()), float(img_res[0, 0] / 2.0), float(img_res[0, 1] / 2.0)],
-        dtype=np.float32,
-    )
 
     obs_data = {
         "joints2d": torch.from_numpy(joints2d[None]).to(device),
         "vis_mask": torch.from_numpy(vis_mask[None]).to(device),
         "is_right": torch.from_numpy(np.full((1, seq_len), right, dtype=np.float32)).to(device),
     }
+    return obs_data, {
+        "pose_body": pose_body,
+        "betas": betas,
+        "root_orient": root_orient,
+        "is_right": np.full((seq_len,), right, dtype=np.float32),
+    }
+
+
+def _wilor_camera_inputs(sequence):
+    cam_t = np.asarray(sequence["cam_t"], dtype=np.float32)
+    focal = np.asarray(sequence["focal_length"], dtype=np.float32)
+    img_res = np.asarray(sequence["img_res"], dtype=np.float32)
+    cam_r = np.tile(np.eye(3, dtype=np.float32), (len(sequence["frame_ids"]), 1, 1))
+    camera_intrinsics = np.stack(
+        [
+            focal,
+            focal,
+            img_res[:, 0] / 2.0,
+            img_res[:, 1] / 2.0,
+        ],
+        axis=-1,
+    ).astype(np.float32)
+    return {
+        "cam_R": cam_r,
+        "cam_t": cam_t,
+        "trans": cam_t,
+        "intrinsics": camera_intrinsics,
+        "img_res": img_res.astype(np.int32),
+        "box_center": np.asarray(sequence["box_center"], dtype=np.float32),
+        "box_size": np.asarray(sequence["box_size"], dtype=np.float32),
+        "focal_length": focal.astype(np.float32),
+    }
+
+
+def _vipe_camera_inputs(sequence, video_name: str, vipe_output_root):
+    vipe_camera = resolve_vipe_camera_sequence(video_name, sequence["frame_ids"], vipe_output_root)
+    intrinsics = vipe_camera["intrinsics"].astype(np.float32)
+    return {
+        "cam_R": vipe_camera["cam_R"].astype(np.float32),
+        "cam_t": vipe_camera["cam_t"].astype(np.float32),
+        "trans": vipe_camera["cam_t"].astype(np.float32),
+        "intrinsics": intrinsics,
+        "img_res": np.asarray(sequence["img_res"], dtype=np.int32),
+        "box_center": np.asarray(sequence["box_center"], dtype=np.float32),
+        "box_size": np.asarray(sequence["box_size"], dtype=np.float32),
+        "focal_length": intrinsics[:, :2].mean(axis=-1).astype(np.float32),
+        "pose_frame_ids": vipe_camera["pose_frame_ids"],
+        "intrinsics_frame_ids": vipe_camera["intrinsics_frame_ids"],
+        "pose_fallback_mask": vipe_camera["pose_fallback_mask"],
+        "intrinsics_fallback_mask": vipe_camera["intrinsics_fallback_mask"],
+    }
+
+
+def _sequence_to_hmp_inputs(sequence, device: torch.device, camera_inputs: dict):
+    obs_data, hand_inputs = _sequence_to_hmp_observations(sequence, device)
     res_dict = [{
-        "pose_body": torch.from_numpy(pose_body[None]).to(device),
-        "betas": torch.from_numpy(betas[None]).to(device),
-        "trans": torch.from_numpy(cam_t[None]).to(device),
-        "root_orient": torch.from_numpy(root_orient[None]).to(device),
-        "is_right": torch.from_numpy(np.full((1, seq_len), right, dtype=np.float32)).to(device),
-        "cam_R": torch.from_numpy(cam_r[None]).to(device),
-        "cam_t": torch.from_numpy(cam_t[None]).to(device),
-        "intrins": torch.from_numpy(intrins).to(device),
+        "pose_body": torch.from_numpy(hand_inputs["pose_body"][None]).to(device),
+        "betas": torch.from_numpy(hand_inputs["betas"][None]).to(device),
+        "trans": torch.from_numpy(camera_inputs["trans"][None]).to(device),
+        "root_orient": torch.from_numpy(hand_inputs["root_orient"][None]).to(device),
+        "is_right": torch.from_numpy(hand_inputs["is_right"][None]).to(device),
+        "cam_R": torch.from_numpy(camera_inputs["cam_R"][None]).to(device),
+        "cam_t": torch.from_numpy(camera_inputs["cam_t"][None]).to(device),
+        "intrins": torch.from_numpy(camera_inputs["intrinsics"][None]).to(device),
     }]
     return obs_data, res_dict
 
@@ -114,6 +162,18 @@ def _result_stem(vid_path: Path):
 def _load_world_result(path: Path):
     payload = np.load(path, allow_pickle=True)
     return {key: payload[key] for key in payload.files}
+
+
+def _resolve_intrinsics(result_dict, seq_len: int, fallback_intrinsics):
+    raw_intrinsics = result_dict.get("intrins", fallback_intrinsics)
+    intrinsics = np.asarray(raw_intrinsics, dtype=np.float32)
+    if intrinsics.ndim == 1:
+        intrinsics = np.repeat(intrinsics[None], seq_len, axis=0)
+    elif intrinsics.ndim == 3:
+        intrinsics = intrinsics[0]
+    if intrinsics.shape[0] < seq_len:
+        intrinsics = np.concatenate([intrinsics, np.repeat(intrinsics[-1:], seq_len - intrinsics.shape[0], axis=0)], axis=0)
+    return intrinsics[:seq_len].astype(np.float32)
 
 
 def _reconstruct_sequence(sequence, result_dict, mano_model_path: str, device: torch.device):
@@ -147,6 +207,10 @@ def _reconstruct_sequence(sequence, result_dict, mano_model_path: str, device: t
     cam_t = cam_t[:seq_len]
     cam_r = cam_r[:seq_len]
     betas = betas[:seq_len]
+    camera_intrinsics = _resolve_intrinsics(result_dict, seq_len, sequence["camera_intrinsics"])
+    focal_xy = camera_intrinsics[:, :2]
+    camera_center = camera_intrinsics[:, 2:]
+    focal = focal_xy.mean(axis=-1).astype(np.float32)
 
     mano = MANO(
         model_path=mano_model_path,
@@ -171,8 +235,8 @@ def _reconstruct_sequence(sequence, result_dict, mano_model_path: str, device: t
         kp2d = perspective_projection(
             torch.from_numpy(joints).to(device),
             translation=torch.from_numpy(cam_t).to(device),
-            focal_length=torch.from_numpy(np.stack([focal, focal], axis=-1)).to(device),
-            camera_center=torch.from_numpy(np.stack([img_res[:, 0] / 2.0, img_res[:, 1] / 2.0], axis=-1).astype(np.float32)).to(device),
+            focal_length=torch.from_numpy(focal_xy).to(device),
+            camera_center=torch.from_numpy(camera_center).to(device),
         ).detach().cpu().numpy().astype(np.float32)
 
     global_rot = axis_angle_to_matrix(torch.from_numpy(root_orient_aa)).numpy().astype(np.float32)[:, None]
@@ -186,6 +250,7 @@ def _reconstruct_sequence(sequence, result_dict, mano_model_path: str, device: t
         "box_center": box_center,
         "box_size": box_size,
         "focal_length": focal,
+        "camera_intrinsics": camera_intrinsics,
         "cam_t": cam_t.astype(np.float32),
         "cam_R": cam_r.astype(np.float32),
         "global_orient": global_rot,
@@ -262,6 +327,7 @@ def _save_outputs(video_name, sequence, refined, output_root: Path, raw_result_p
         observed_mask=np.asarray(refined["observed_mask"], dtype=bool),
         cam_t=refined["cam_t"].astype(np.float32),
         cam_R=refined["cam_R"].astype(np.float32),
+        camera_intrinsics=refined["camera_intrinsics"].astype(np.float32),
         box_center=refined["box_center"].astype(np.float32),
         box_size=refined["box_size"].astype(np.float32),
         global_orient=refined["global_orient"].astype(np.float32),
@@ -278,21 +344,14 @@ def _save_outputs(video_name, sequence, refined, output_root: Path, raw_result_p
         frame_id=np.asarray(refined["frame_ids"], dtype=np.int32),
         cam_R=refined["cam_R"].astype(np.float32),
         cam_t=refined["cam_t"].astype(np.float32),
+        intrinsics=refined["camera_intrinsics"].astype(np.float32),
         focal_length=np.asarray(refined["focal_length"], dtype=np.float32),
         img_res=np.asarray(refined["img_res"], dtype=np.int32),
     )
     cameras_json = {
         "rotation": refined["cam_R"].reshape(len(refined["frame_ids"]), 9).astype(np.float32).tolist(),
         "translation": refined["cam_t"].astype(np.float32).tolist(),
-        "intrinsics": np.stack(
-            [
-                refined["focal_length"].astype(np.float32),
-                refined["focal_length"].astype(np.float32),
-                refined["img_res"][:, 0].astype(np.float32) / 2.0,
-                refined["img_res"][:, 1].astype(np.float32) / 2.0,
-            ],
-            axis=-1,
-        ).tolist(),
+        "intrinsics": refined["camera_intrinsics"].astype(np.float32).tolist(),
     }
     with open(base_dir / "cameras.json", "w", encoding="utf-8") as handle:
         json.dump(cameras_json, handle, indent=2)
@@ -319,36 +378,37 @@ def _save_outputs(video_name, sequence, refined, output_root: Path, raw_result_p
         images_to_video(vis_root, video_root / f"{video_name}.mp4", fps=30)
 
 
-def run_stride_hmp(
+def _run_hmp_pipeline(
+    sequence,
+    camera_inputs,
     cache_root,
     output_root,
     video_name,
-    image_folder=None,
-    frame_store: FrameStore | None = None,
-    target_hand="auto",
-    mano_model_path="./mano_data",
-    use_gpu=True,
-    visualize=False,
-    hmp_config: HMPConfig | None = None,
+    image_folder,
+    frame_store,
+    mano_model_path,
+    use_gpu,
+    visualize,
+    config: HMPConfig,
 ):
-    config = hmp_config or HMPConfig(assets_root=str(Path(__file__).resolve().parent / "_DATA" / "hmp_model"))
     assets_root = Path(config.assets_root)
     _require_hmp_assets(assets_root, config.config_name)
 
     cache_root = Path(cache_root)
     output_root = Path(output_root)
-    mesh_root = cache_root / video_name / "meshes"
-    if not mesh_root.is_dir():
-        raise FileNotFoundError(f"WiLoR mesh cache not found: {mesh_root}")
-
-    device = torch.device("cuda" if use_gpu and torch.cuda.is_available() else "cpu")
-    records_by_frame = _frame_records(mesh_root)
-    selected_records = _pick_track(records_by_frame, target_hand=_parse_target_hand(target_hand))
-    sequence = _stack_records(selected_records, video_name=video_name)
-    obs_data, res_dict = _sequence_to_hmp_inputs(sequence, device)
-
     out_dir = output_root / video_name
     out_dir.mkdir(parents=True, exist_ok=True)
+
+    sequence = dict(sequence)
+    sequence["camera_intrinsics"] = np.asarray(camera_inputs["intrinsics"], dtype=np.float32)
+    sequence["cam_t"] = np.asarray(camera_inputs["cam_t"], dtype=np.float32)
+    sequence["img_res"] = np.asarray(camera_inputs["img_res"], dtype=np.int32)
+    sequence["box_center"] = np.asarray(camera_inputs["box_center"], dtype=np.float32)
+    sequence["box_size"] = np.asarray(camera_inputs["box_size"], dtype=np.float32)
+    sequence["focal_length"] = np.asarray(camera_inputs["focal_length"], dtype=np.float32)
+
+    device = torch.device("cuda" if use_gpu and torch.cuda.is_available() else "cpu")
+    obs_data, res_dict = _sequence_to_hmp_inputs(sequence, device, camera_inputs)
     vid_path = _resolve_vid_path(image_folder, cache_root, video_name, frame_store=frame_store)
 
     opt = SimpleNamespace(
@@ -385,11 +445,120 @@ def run_stride_hmp(
         use_pca=False,
     ).faces
     _save_outputs(video_name, sequence, refined, output_root, raw_result_path, visualize, mano_faces, frame_store=frame_store)
+    return refined, raw_result_path, assets_root
+
+
+def run_stride_hmp(
+    cache_root,
+    output_root,
+    video_name,
+    image_folder=None,
+    frame_store: FrameStore | None = None,
+    target_hand="auto",
+    mano_model_path="./mano_data",
+    use_gpu=True,
+    visualize=False,
+    hmp_config: HMPConfig | None = None,
+):
+    config = hmp_config or HMPConfig(assets_root=str(Path(__file__).resolve().parent / "_DATA" / "hmp_model"))
+
+    cache_root = Path(cache_root)
+    output_root = Path(output_root)
+    out_dir = output_root / video_name
+    mesh_root = cache_root / video_name / "meshes"
+    if not mesh_root.is_dir():
+        raise FileNotFoundError(f"WiLoR mesh cache not found: {mesh_root}")
+
+    records_by_frame = _frame_records(mesh_root)
+    selected_records = _pick_track(records_by_frame, target_hand=_parse_target_hand(target_hand))
+    sequence = _stack_records(selected_records, video_name=video_name)
+    camera_inputs = _wilor_camera_inputs(sequence)
+    refined, raw_result_path, assets_root = _run_hmp_pipeline(
+        sequence=sequence,
+        camera_inputs=camera_inputs,
+        cache_root=cache_root,
+        output_root=output_root,
+        video_name=video_name,
+        image_folder=image_folder,
+        frame_store=frame_store,
+        mano_model_path=mano_model_path,
+        use_gpu=use_gpu,
+        visualize=visualize,
+        config=config,
+    )
 
     metadata = {
         "video": video_name,
         "frames_refined": int(len(refined["frame_ids"])),
         "backend": "hmp",
+        "mode": "stride",
+        "camera_source": "wilor",
+        "source_cache_root": str(cache_root),
+        "source_mesh_root": str(mesh_root),
+        "hmp_assets_root": str(assets_root),
+        "hmp_config_name": config.config_name,
+        "target_hand": target_hand,
+        "right": int(refined["right"]),
+        "result_path": str(out_dir / "refined_world_results.npz"),
+        "raw_result_path": str(raw_result_path),
+    }
+    with open(out_dir / "stride_metadata.json", "w", encoding="utf-8") as handle:
+        json.dump(metadata, handle, indent=2)
+    return metadata
+
+
+def run_stride_vipe_hmp(
+    cache_root,
+    output_root,
+    video_name,
+    vipe_output_root,
+    image_folder=None,
+    frame_store: FrameStore | None = None,
+    target_hand="auto",
+    mano_model_path="./mano_data",
+    use_gpu=True,
+    visualize=False,
+    hmp_config: HMPConfig | None = None,
+):
+    config = hmp_config or HMPConfig(assets_root=str(Path(__file__).resolve().parent / "_DATA" / "hmp_model"))
+
+    cache_root = Path(cache_root)
+    output_root = Path(output_root)
+    mesh_root = cache_root / video_name / "meshes"
+    if not mesh_root.is_dir():
+        raise FileNotFoundError(f"WiLoR mesh cache not found: {mesh_root}")
+
+    records_by_frame = _frame_records(mesh_root)
+    selected_records = _pick_track(records_by_frame, target_hand=_parse_target_hand(target_hand))
+    sequence = _stack_records(selected_records, video_name=video_name)
+    camera_inputs = _vipe_camera_inputs(sequence, video_name, vipe_output_root)
+
+    refined, raw_result_path, assets_root = _run_hmp_pipeline(
+        sequence=sequence,
+        camera_inputs=camera_inputs,
+        cache_root=cache_root,
+        output_root=output_root,
+        video_name=video_name,
+        image_folder=image_folder,
+        frame_store=frame_store,
+        mano_model_path=mano_model_path,
+        use_gpu=use_gpu,
+        visualize=visualize,
+        config=config,
+    )
+
+    out_dir = output_root / video_name
+    metadata = {
+        "video": video_name,
+        "frames_refined": int(len(refined["frame_ids"])),
+        "backend": "hmp",
+        "mode": "stride-vipe",
+        "camera_source": "vipe",
+        "vipe_output_root": str(Path(vipe_output_root)),
+        "vipe_pose_fallback_count": int(camera_inputs["pose_fallback_mask"].sum()),
+        "vipe_intrinsics_fallback_count": int(camera_inputs["intrinsics_fallback_mask"].sum()),
+        "vipe_pose_fallback_rate": float(camera_inputs["pose_fallback_mask"].mean()),
+        "vipe_intrinsics_fallback_rate": float(camera_inputs["intrinsics_fallback_mask"].mean()),
         "source_cache_root": str(cache_root),
         "source_mesh_root": str(mesh_root),
         "hmp_assets_root": str(assets_root),

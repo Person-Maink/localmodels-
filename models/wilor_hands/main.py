@@ -9,7 +9,7 @@ from frame_store import FrameStore
 from inference import * 
 from loader import * 
 from stride_refine import StrideConfig, run_stride_refinement
-from stride_hmp import HMPConfig, run_stride_hmp
+from stride_hmp import HMPConfig, run_stride_hmp, run_stride_vipe_hmp
 from visualize import *
 
 from utils_new import *
@@ -225,21 +225,77 @@ def _run_stride_pass(args):
     print(f"\nRefined {len(summaries)} video(s) into {args.stride_output_folder}.")
 
 
+def _run_stride_vipe_pass(args):
+    if args.stride_backend != "hmp":
+        raise ValueError("--mode stride-vipe only supports --stride_backend hmp.")
+    if not args.vipe_output_root:
+        raise ValueError("--mode stride-vipe requires --vipe_output_root.")
+
+    source_root = args.wilor_cache_root or args.output_folder
+    processed_videos = [args.video] if args.video else []
+    frame_store = None
+    if args.image_folder and Path(args.image_folder).is_dir():
+        frame_store = _make_frame_store(args)
+    if not args.stride_from_cache:
+        processed_videos = _run_wilor_pass(args)
+    elif not processed_videos:
+        processed_videos = [
+            path.name for path in Path(source_root).iterdir()
+            if path.is_dir() and path.name not in {"videos", "single_images"}
+        ]
+
+    if not processed_videos:
+        raise RuntimeError("No videos available for STRIDE refinement.")
+
+    summaries = []
+    for video_name in processed_videos:
+        print(f"\n[INFO] Running STRIDE-ViPE HMP refinement for {video_name}")
+        if args.overwrite:
+            target_dir = Path(args.stride_output_folder) / video_name
+            if target_dir.exists():
+                import shutil
+                shutil.rmtree(target_dir)
+
+        summaries.append(
+            run_stride_vipe_hmp(
+                cache_root=source_root,
+                output_root=args.stride_output_folder,
+                video_name=video_name,
+                vipe_output_root=args.vipe_output_root,
+                image_folder=args.image_folder,
+                frame_store=frame_store,
+                target_hand=args.target_hand,
+                mano_model_path=args.mano_model_path,
+                use_gpu=args.use_gpu,
+                visualize=args.visualize,
+                hmp_config=HMPConfig(
+                    assets_root=args.hmp_assets_root,
+                    config_name=args.hmp_config_name,
+                ),
+            )
+        )
+    print(f"\nRefined {len(summaries)} video(s) into {args.stride_output_folder}.")
+
+
 def main(args):
     if args.mode == "stride":
         _run_stride_pass(args)
+        return
+    if args.mode == "stride-vipe":
+        _run_stride_vipe_pass(args)
         return
     _run_wilor_pass(args)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run WiLoR inference on image folder.")
-    parser.add_argument("--mode", choices=["wilor", "stride"], default="wilor", help="Inference mode to run.")
+    parser.add_argument("--mode", choices=["wilor", "stride", "stride-vipe"], default="wilor", help="Inference mode to run.")
     parser.add_argument("--image_folder", type=str, default="../../data/images/", help="Folder with input images.")
     parser.add_argument("--frame_cache_root", type=str, default=None, help="Optional root containing sidecar ZIP frame caches. Defaults to image_folder.")
     parser.add_argument("--output_folder", type=str, default="../../outputs/wilor/", help="Folder for results.")
     parser.add_argument("--wilor_cache_root", type=str, default=None, help="WiLoR cache root used as STRIDE input. Defaults to output_folder.")
     parser.add_argument("--stride_output_folder", type=str, default="../../outputs/stride/", help="Folder for STRIDE-refined results.")
     parser.add_argument("--stride_backend", choices=["hmp", "simple"], default="hmp", help="STRIDE backend to run.")
+    parser.add_argument("--vipe_output_root", type=str, default=None, help="Root containing ViPE pose/ and intrinsics/ artifacts for stride-vipe mode.")
     parser.add_argument("--rescale_factor", type=float, default=2.0, help="BBox padding scale.")
     parser.add_argument("--video", type=str, default=None, help="Video stem to process.")
     parser.add_argument("--target_hand", default="auto", help="Target hand for STRIDE refinement: auto, 0, or 1.")

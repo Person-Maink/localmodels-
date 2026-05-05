@@ -5,6 +5,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
+from vipe_artifacts import load_vipe_pose_artifact
 from visualize import images_to_video
 from utils_new import render_rgba_multiple
 from wilor.models import load_wilor
@@ -21,51 +22,6 @@ def parse_frame_index(frame_name: str) -> int:
             "Expected names like 'frame_000123'."
         )
     return int(match.group(1))
-
-
-def load_vipe_pose_artifact(pose_path: Path):
-    if not pose_path.exists():
-        raise FileNotFoundError(f"ViPE pose file not found: {pose_path}")
-
-    if pose_path.suffix == ".npz":
-        data = np.load(pose_path)
-        if "inds" not in data or "data" not in data:
-            raise ValueError(f"{pose_path} must contain 'inds' and 'data'.")
-        inds = np.asarray(data["inds"])
-        poses = np.asarray(data["data"])
-    elif pose_path.suffix == ".npy":
-        raise ValueError(f"Unsupported pose file type '{pose_path.suffix}'. Use or .npy. (Why are you using this bro, the output was different only!)")
-        obj = np.load(pose_path, allow_pickle=True)
-        if isinstance(obj, np.ndarray) and obj.shape == ():
-            obj = obj.item()
-        if not isinstance(obj, dict):
-            raise ValueError(f"{pose_path} must be a dict-like .npy with keys 'inds' and 'data'.")
-        if "inds" not in obj or "data" not in obj:
-            raise ValueError(f"{pose_path} must contain keys 'inds' and 'data'.")
-        inds = np.asarray(obj["inds"])
-        poses = np.asarray(obj["data"])
-    else:
-        raise ValueError(f"Unsupported pose file type '{pose_path.suffix}'. Use .npz or .npy.")
-
-    if inds.ndim != 1:
-        raise ValueError(f"Expected 'inds' to be 1D, got shape {inds.shape} in {pose_path}.")
-    if poses.ndim != 3 or poses.shape[1:] != (4, 4):
-        raise ValueError(
-            f"Expected 'data' to have shape (N,4,4), got {poses.shape} in {pose_path}."
-        )
-    if len(inds) != len(poses):
-        raise ValueError(
-            f"Length mismatch in {pose_path}: len(inds)={len(inds)} vs len(data)={len(poses)}."
-        )
-    if len(inds) == 0:
-        raise ValueError(f"No poses found in {pose_path}.")
-
-    inds = inds.astype(np.int64)
-    order = np.argsort(inds)
-    inds = inds[order]
-    poses = poses[order].astype(np.float32)
-    return inds, poses
-
 
 def pick_pose_for_frame(frame_idx: int, pose_inds: np.ndarray, poses_c2w: np.ndarray):
     pos = np.searchsorted(pose_inds, frame_idx, side="right") - 1

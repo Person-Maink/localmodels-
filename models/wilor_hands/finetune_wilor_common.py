@@ -12,6 +12,11 @@ import torch
 from torch.utils.data import Dataset
 from ultralytics import YOLO
 
+from vipe_artifacts import (
+    load_vipe_intrinsics_artifact,
+    load_vipe_pose_artifact,
+    pick_value_for_frame,
+)
 from wilor.datasets.vitdet_dataset import ViTDetDataset
 from wilor.utils import recursive_to
 from wilor.models.lora import unfreeze_lora_parameters
@@ -128,52 +133,6 @@ def infer_video_name_from_path(path_like: str, override_video_name: Optional[str
     if path.parent.name:
         return path.parent.name
     raise ValueError(f"Could not infer video name from path '{path_like}'.")
-
-
-def load_vipe_pose_artifact(pose_path: Path) -> tuple[np.ndarray, np.ndarray]:
-    if not pose_path.exists():
-        raise FileNotFoundError(f"ViPE pose file not found: {pose_path}")
-
-    data = np.load(pose_path)
-    if "inds" not in data or "data" not in data:
-        raise ValueError(f"{pose_path} must contain 'inds' and 'data'.")
-    inds = np.asarray(data["inds"], dtype=np.int64)
-    poses = np.asarray(data["data"], dtype=np.float32)
-    if inds.ndim != 1 or poses.ndim != 3 or poses.shape[1:] != (4, 4):
-        raise ValueError(
-            f"Unexpected ViPE pose shapes in {pose_path}: inds={inds.shape}, data={poses.shape}"
-        )
-    order = np.argsort(inds)
-    return inds[order], poses[order]
-
-
-def load_vipe_intrinsics_artifact(intrinsics_path: Path) -> tuple[np.ndarray, np.ndarray]:
-    if not intrinsics_path.exists():
-        raise FileNotFoundError(f"ViPE intrinsics file not found: {intrinsics_path}")
-
-    data = np.load(intrinsics_path)
-    if "inds" not in data or "data" not in data:
-        raise ValueError(f"{intrinsics_path} must contain 'inds' and 'data'.")
-    inds = np.asarray(data["inds"], dtype=np.int64)
-    intrinsics = np.asarray(data["data"], dtype=np.float32)
-    if inds.ndim != 1 or intrinsics.ndim != 2 or intrinsics.shape[1] != 4:
-        raise ValueError(
-            f"Unexpected ViPE intrinsics shapes in {intrinsics_path}: inds={inds.shape}, data={intrinsics.shape}"
-        )
-    order = np.argsort(inds)
-    return inds[order], intrinsics[order]
-
-
-def pick_value_for_frame(
-    frame_idx: int,
-    inds: np.ndarray,
-    values: np.ndarray,
-) -> tuple[np.ndarray, int, bool]:
-    pos = np.searchsorted(inds, frame_idx, side="right") - 1
-    if pos >= 0:
-        source_idx = int(inds[pos])
-        return values[pos], source_idx, frame_idx != source_idx
-    return values[0], int(inds[0]), True
 
 
 class ViPECameraIndex:

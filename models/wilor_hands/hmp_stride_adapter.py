@@ -762,6 +762,14 @@ def multi_stage_opt(opt, device, obs_data, res_dict, hand_model, config_f, exp_s
         pad = np.repeat(arr[-1:], pad_repeat, axis=0)
         return np.concatenate([arr, pad], axis=0)
 
+    def chunk_intrinsics(intrins_all, seq_s, seq_e, target_len):
+        intrins_all = np.asarray(intrins_all)
+        if intrins_all.ndim == 1:
+            return np.repeat(intrins_all[None], target_len, axis=0)
+        if intrins_all.ndim == 3:
+            intrins_all = intrins_all[0]
+        return pad_chunk(intrins_all[seq_s:seq_e], target_len)
+
     for idx in range(len(res_dict['pose_body'])):
 
         assert (res_dict['is_right'][idx] == (obs_data['is_right'][idx])).all()
@@ -781,8 +789,9 @@ def multi_stage_opt(opt, device, obs_data, res_dict, hand_model, config_f, exp_s
 
         for chunk_idx, (seq_s, seq_e) in enumerate(seq_intervals):
             chunk_len = seq_e - seq_s
-            cam_center = torch.tensor(res_dict['intrins'][2:][None]).repeat(clip_len, 1)  # (T, 2)
-            cam_f = torch.tensor(res_dict['intrins'][:2][None]).repeat(clip_len, 1)  # (T, 2)
+            chunk_intrins = torch.tensor(chunk_intrinsics(res_dict['intrins'][idx], seq_s, seq_e, clip_len))
+            cam_center = chunk_intrins[:, 2:]  # (T, 2)
+            cam_f = chunk_intrins[:, :2]  # (T, 2)
 
             init_dict = {
                         "keyp2d": pad_chunk(obs_data['joints2d'][idx][seq_s:seq_e], clip_len),
