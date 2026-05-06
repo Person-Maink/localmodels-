@@ -1,0 +1,114 @@
+
+The following have been reloaded with a version change:
+  1) python/3.10.12 => python/3.10.13
+
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1       6) python/3.10.13
+
+ 
+
+Wed May  6 14:04:46 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   60C    P0            114W /  300W |    1034MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    7   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9845419
+Job Name:       wilor-train
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 20480
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Wed May  6 14:04:46 CEST 2026
+===============================================
+[progress] Lazy fine-tuning keeps IMAGE_FOLDER on the source root; skipping upfront frame extraction.
+Project root:    /scratch/mthakur/manifold
+Model root:      /scratch/mthakur/manifold/models/wilor_hands
+Output dir:      /scratch/mthakur/manifold/outputs/wilor_finetune/hp_i_det03_res2p0
+Train mode:      distill
+Loss config:     /scratch/mthakur/manifold/models/wilor_hands/experiments/frozen wilor/hparam_stage_i_detection_crop.yaml
+Experiment:      hp_i_det03_res2p0
+Train scope:     temporal_only
+LoRA:            enabled=false rank=8 alpha=16.0 blocks=24-32 targets=qkv
+Max steps:       500
+Log every:       25
+Save every:      100
+Sample limit:    0
+Validation split:0.2
+Lazy detection:  true
+Checkpoint:      /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/wilor_final.ckpt
+Source images:   /scratch/mthakur/manifold/data//images
+Frame cache root:<image_folder>
+Prepared images: /scratch/mthakur/manifold/data//images
+Videos:          0KuJ2t4S_TY|0gzQAgjx39o|0rq4nkWlO2E|0ElPjqY4Cq8|SlksdQT5JRE
+Temporal win:    size=3 stride=2 gap=1
+Pose dir:        /scratch/mthakur/manifold/outputs/vipe/pose
+Intrinsics dir:  /scratch/mthakur/manifold/outputs/vipe/intrinsics
+Command: python -u /scratch/mthakur/manifold/models/wilor_hands/finetune_wilor_distill_vipe.py --checkpoint /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/wilor_final.ckpt --cfg_path /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/model_config.yaml --detector_path /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/detector.pt --image_folder /scratch/mthakur/manifold/data//images --pose_dir /scratch/mthakur/manifold/outputs/vipe/pose --intrinsics_dir /scratch/mthakur/manifold/outputs/vipe/intrinsics --output_dir /scratch/mthakur/manifold/outputs/wilor_finetune/hp_i_det03_res2p0 --train_scope temporal_only --camera_loss_weight 0.01 --validation_split 0.2 --lr 3e-05 --weight_decay 0.0 --batch_size 8 --num_workers 2 --max_steps 500 --log_every 25 --save_every 100 --seed 42 --rescale_factor 2.0 --detection_conf 0.3 --loss_config /scratch/mthakur/manifold/models/wilor_hands/experiments/frozen\ wilor/hparam_stage_i_detection_crop.yaml --experiment_name hp_i_det03_res2p0 --no-lora_enabled --lora_rank 8 --lora_alpha 16.0 --lora_dropout 0.0 --lora_block_start 24 --lora_block_end 32 --lora_target_modules qkv --detection_cache /scratch/mthakur/manifold/outputs/wilor_finetune/hp_i_det03_res2p0/detections_selected_videos.json --video=0KuJ2t4S_TY --video=0gzQAgjx39o --video=0rq4nkWlO2E --video=0ElPjqY4Cq8 --video=SlksdQT5JRE --temporal_window_size 3 --temporal_window_stride 2 --temporal_max_frame_gap 1 --temporal_reduction smooth_l1 --temporal_scorer_hidden_dim 64 --temporal_scorer_layers 2 --temporal_scorer_dropout 0.0 --vipe_camera_weight 0.0 --no-vipe_camera_enabled --no-temporal_camera_enabled --temporal_camera_formulation learnable --temporal_camera_weight 0.0 --temporal_camera_scorer_weight 0.0001 --no-temporal_bbox_projected_enabled --temporal_bbox_projected_formulation learnable --temporal_bbox_projected_weight 0.0 --temporal_bbox_projected_scorer_weight 0.0001 --temporal_vipe_camera_enabled --temporal_vipe_camera_formulation learnable --temporal_vipe_camera_weight 0.01 --temporal_vipe_camera_smoothness_weight 0.005 --temporal_vipe_camera_anchor_weight 0.001 --use_gpu --amp --lazy_detection
+[progress] About to launch Apptainer via srun.
+[progress] SLURM wrapper log: SLURM_logs/wilor-train_201.out
+[progress] Python run output dir: /scratch/mthakur/manifold/outputs/wilor_finetune/hp_i_det03_res2p0
+[progress] Starting containerized training process now...
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[progress] Starting fine-tuning entrypoint.
+[progress] Resolving experiment config from /scratch/mthakur/manifold/models/wilor_hands/experiments/frozen wilor/hparam_stage_i_detection_crop.yaml (experiment=hp_i_det03_res2p0)
+[progress] Resolved experiment 'hp_i_det03_res2p0'.
+[progress] Using device cuda; output directory is /scratch/mthakur/manifold/outputs/wilor_finetune/hp_i_det03_res2p0
+[progress] Saved resolved experiment snapshot.
+[progress] Loading student checkpoint and cloning teacher model.
+Loading  /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/wilor_final.ckpt
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+[progress] Loading detector and ViPE camera index.
+[progress] Loading YOLO detector from /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/detector.pt onto cuda
+[progress] Detector ready.
+[progress] Lazy detection mode is enabled. Training will assemble frame windows first and run the detector only for frames needed by each batch.
+[progress] Using explicitly requested video selection: 0ElPjqY4Cq8, 0KuJ2t4S_TY, 0gzQAgjx39o, 0rq4nkWlO2E, SlksdQT5JRE
+[progress] Filtering 5 selected video(s) for matching ViPE artifacts.
+Traceback (most recent call last):
+  File "/scratch/mthakur/manifold/models/wilor_hands/finetune_wilor_distill_vipe.py", line 103, in <module>
+    main(parser.parse_args(), parser)
+  File "/scratch/mthakur/manifold/models/wilor_hands/finetune_wilor_distill_vipe.py", line 76, in main
+    data_bundle = build_window_data(
+  File "/scratch/mthakur/manifold/models/wilor_hands/finetune_wilor_data.py", line 916, in build_window_data
+    return _build_lazy_window_data(
+  File "/scratch/mthakur/manifold/models/wilor_hands/finetune_wilor_data.py", line 682, in _build_lazy_window_data
+    video_names = _resolve_lazy_video_names(args, frame_store, log_fn)
+  File "/scratch/mthakur/manifold/models/wilor_hands/finetune_wilor_data.py", line 183, in _resolve_lazy_video_names
+    raise ValueError(
+ValueError: The following requested video(s) do not have a usable lazy frame source:
+SlksdQT5JRE: Found raw video 'SlksdQT5JRE.mp4' but no valid sidecar cache or legacy 'SlksdQT5JRE_frames' directory. Build the cache first.
+srun: error: gpu020: task 0: Exited with exit code 1
+srun: launch/slurm: _step_signal: Terminating StepId=9845419.0
