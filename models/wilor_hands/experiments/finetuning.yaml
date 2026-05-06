@@ -88,7 +88,7 @@ experiments:
     run_name_suffix: lora_finetuning
     rescale_factor: 2.0
     optimizer:
-      weight_decay: 1.0e-4
+      weight_decay: 0.0
     temporal:
       reduction: smooth_l1
     lora:

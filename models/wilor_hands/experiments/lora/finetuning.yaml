@@ -19,7 +19,7 @@ defaults:
   seed: 42
   optimizer:
     lr: 3.0e-5
-    weight_decay: 1.0e-4
+    weight_decay: 0.0
   temporal:
     window_size: 3
     window_stride: 2
