@@ -5,6 +5,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
+from frame_store import FrameStore
 from vipe_artifacts import load_vipe_pose_artifact
 from visualize import images_to_video
 from utils_new import render_rgba_multiple
@@ -59,21 +60,6 @@ def load_mesh_payload(mesh_file: Path):
     return payload, verts, right
 
 
-def build_frame_image_map(image_folder: Path, video_name: str):
-    frame_dir = image_folder / f"{video_name}_frames"
-    if not frame_dir.is_dir():
-        raise FileNotFoundError(f"Frame folder not found: {frame_dir}")
-
-    image_map = {}
-    for pattern in ("*.jpg", "*.jpeg", "*.png"):
-        for img_path in frame_dir.glob(pattern):
-            image_map[img_path.stem] = img_path
-
-    if not image_map:
-        raise FileNotFoundError(f"No frame images found in {frame_dir}")
-    return image_map
-
-
 def discover_processed_videos(output_folder: Path):
     videos = []
     for candidate in sorted(output_folder.iterdir()):
@@ -108,7 +94,7 @@ def resolve_vipe_pose_path(video_name: str, args):
     return override_path
 
 
-def process_video(video_name: str, args, model, model_cfg, pose_path: Path):
+def process_video(video_name: str, args, model, model_cfg, pose_path: Path, frame_store: FrameStore | None = None):
     source_video_dir = Path(args.output_folder) / video_name
     source_mesh_root = source_video_dir / "meshes"
     if not source_mesh_root.is_dir():
@@ -122,7 +108,8 @@ def process_video(video_name: str, args, model, model_cfg, pose_path: Path):
     modified_mesh_root.mkdir(parents=True, exist_ok=True)
 
     pose_inds, poses_c2w = load_vipe_pose_artifact(pose_path)
-    image_map = build_frame_image_map(Path(args.image_folder), video_name) if args.visualize else {}
+    if args.visualize and frame_store is None:
+        frame_store = FrameStore(args.image_folder, cache_root=args.frame_cache_root)
     faces = model.mano.faces
 
     frame_dirs = sorted([p for p in source_mesh_root.iterdir() if p.is_dir()])
@@ -173,15 +160,15 @@ def process_video(video_name: str, args, model, model_cfg, pose_path: Path):
             all_right.append(right)
 
         if args.visualize:
-            frame_img_path = image_map.get(frame_name)
-            if frame_img_path is None:
-                raise FileNotFoundError(
-                    f"No source frame image found for '{frame_name}' in {Path(args.image_folder) / (video_name + '_frames')}"
-                )
+            if frame_store is None:
+                raise RuntimeError("Visualization requires a FrameStore-backed image source.")
 
-            img_cv2 = cv2.imread(str(frame_img_path))
+            img_cv2 = frame_store.get_frame(video_name, frame_idx)
             if img_cv2 is None:
-                raise RuntimeError(f"Failed to read image: {frame_img_path}")
+                raise FileNotFoundError(
+                    f"No source frame image found for '{frame_name}' in video '{video_name}'. "
+                    "Build the sidecar ZIP cache or keep the legacy *_frames directory available."
+                )
 
             height, width = img_cv2.shape[:2]
             render_res = (width, height)
@@ -236,6 +223,9 @@ def main(args):
     total_vis_written = 0
     processed_count = 0
     skipped = []
+    frame_store = None
+    if args.visualize:
+        frame_store = FrameStore(args.image_folder, cache_root=args.frame_cache_root)
 
     for video_name in video_names:
         pose_path = resolve_vipe_pose_path(video_name, args)
@@ -254,6 +244,7 @@ def main(args):
                 model=model,
                 model_cfg=model_cfg,
                 pose_path=pose_path,
+                frame_store=frame_store,
             )
             total_mesh_written += mesh_written
             total_vis_written += vis_written
@@ -277,10 +268,16 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Modify WiLoR mesh visualizations using ViPE camera poses.")
-    parser.add_argument("--image_folder", type=str, default="../../data/images/", help="Folder with input images.")
+    parser.add_argument("--image_folder", type=str, default="../../data/images/", help="Folder containing raw videos, sidecar ZIP frame caches, legacy *_frames folders, or loose images.")
+    parser.add_argument(
+        "--frame_cache_root",
+        type=str,
+        default=None,
+        help="Optional directory containing sidecar *.frames.zip / *.frames.index.json caches. Defaults to image_folder.",
+    )
     parser.add_argument("--output_folder", type=str, default="../../outputs/wilor/", help="Folder for results.")
     parser.add_argument("--rescale_factor", type=float, default=2.0, help="Unused here, kept for compatibility.")
-    parser.add_argument("--video", type=str, default=None, help="Video name to process (expects <video>_frames folder).")
+    parser.add_argument("--video", type=str, default=None, help="Video name to process.")
     parser.add_argument(
         "--all_processed_videos",
         action="store_true",

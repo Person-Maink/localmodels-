@@ -14,6 +14,7 @@ from finetune_wilor_common import (
     evaluate_distillation,
     filter_videos_with_vipe_artifacts,
     load_detector,
+    make_frame_store,
     seed_everything,
     set_optional_loss_weight,
     split_samples_by_frame,
@@ -34,14 +35,25 @@ def make_argparser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--cfg_path", type=str, default="./pretrained_models/model_config.yaml")
     parser.add_argument("--detector_path", type=str, default="./pretrained_models/detector.pt")
-    parser.add_argument("--image_folder", type=str, default="../../data/images/")
+    parser.add_argument(
+        "--image_folder",
+        type=str,
+        default="../../data/images/",
+        help="Folder containing raw videos, sidecar ZIP frame caches, legacy *_frames folders, or loose images.",
+    )
+    parser.add_argument(
+        "--frame_cache_root",
+        type=str,
+        default=None,
+        help="Optional directory containing sidecar *.frames.zip / *.frames.index.json caches. Defaults to image_folder.",
+    )
     parser.add_argument("--pose_dir", type=str, default="../../outputs/vipe/pose")
     parser.add_argument("--intrinsics_dir", type=str, default="../../outputs/vipe/intrinsics")
     parser.add_argument("--video", action="append", dest="videos", default=[])
     parser.add_argument(
         "--all_videos",
         action="store_true",
-        help="Use every *_frames directory under image_folder.",
+        help="Use every video that has a sidecar ZIP cache or legacy *_frames directory under image_folder.",
     )
     parser.add_argument("--sample_limit", type=int, default=0)
     parser.add_argument(
@@ -81,7 +93,10 @@ def infer_teacher_checkpoint(model_checkpoint: str) -> str | None:
 
 def resolve_video_names(args: argparse.Namespace) -> list[str]:
     if args.all_videos:
-        video_names = discover_videos(args.image_folder)
+        video_names = discover_videos(
+            args.image_folder,
+            frame_cache_root=args.frame_cache_root,
+        )
     else:
         video_names = sorted(set(args.videos))
     if not video_names:
@@ -121,6 +136,7 @@ def resolve_video_names(args: argparse.Namespace) -> list[str]:
 def main(args: argparse.Namespace) -> None:
     seed_everything(args.seed)
     device = choose_device(args.use_gpu)
+    frame_store = make_frame_store(args.image_folder, frame_cache_root=args.frame_cache_root)
 
     teacher_checkpoint = args.teacher_checkpoint or infer_teacher_checkpoint(args.checkpoint)
     if teacher_checkpoint is None:
@@ -159,6 +175,7 @@ def main(args: argparse.Namespace) -> None:
         detection_conf=args.detection_conf,
         detection_cache_path=detection_cache,
         sample_limit=args.sample_limit,
+        frame_cache_root=args.frame_cache_root,
     )
     if not samples:
         raise RuntimeError("No detector samples were generated for testing.")
@@ -185,6 +202,7 @@ def main(args: argparse.Namespace) -> None:
         student.cfg,
         eval_samples,
         rescale_factor=args.rescale_factor,
+        frame_store=frame_store,
     )
     dataloader = DataLoader(
         dataset,

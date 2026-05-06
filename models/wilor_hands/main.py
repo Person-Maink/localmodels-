@@ -7,7 +7,7 @@ import torch
 
 from frame_store import FrameStore
 from inference import * 
-from loader import * 
+from loader import make_dataloader
 from stride_refine import StrideConfig, run_stride_refinement
 from stride_hmp import HMPConfig, run_stride_hmp, run_stride_vipe_hmp
 from visualize import *
@@ -287,9 +287,9 @@ def main(args):
     _run_wilor_pass(args)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run WiLoR inference on image folder.")
+    parser = argparse.ArgumentParser(description="Run WiLoR inference on raw videos, sidecar ZIP frame caches, or loose images.")
     parser.add_argument("--mode", choices=["wilor", "stride", "stride-vipe"], default="wilor", help="Inference mode to run.")
-    parser.add_argument("--image_folder", type=str, default="../../data/images/", help="Folder with input images.")
+    parser.add_argument("--image_folder", type=str, default="../../data/images/", help="Folder containing raw videos, sidecar ZIP frame caches, legacy *_frames folders, or loose images.")
     parser.add_argument("--frame_cache_root", type=str, default=None, help="Optional root containing sidecar ZIP frame caches. Defaults to image_folder.")
     parser.add_argument("--output_folder", type=str, default="../../outputs/wilor/", help="Folder for results.")
     parser.add_argument("--wilor_cache_root", type=str, default=None, help="WiLoR cache root used as STRIDE input. Defaults to output_folder.")

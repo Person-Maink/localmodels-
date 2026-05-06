@@ -8,7 +8,18 @@ def make_argparser() -> argparse.ArgumentParser:
     parser.add_argument("--checkpoint", type=str, default="./pretrained_models/wilor_final.ckpt")
     parser.add_argument("--cfg_path", type=str, default="./pretrained_models/model_config.yaml")
     parser.add_argument("--detector_path", type=str, default="./pretrained_models/detector.pt")
-    parser.add_argument("--image_folder", type=str, default="../../data/images/")
+    parser.add_argument(
+        "--image_folder",
+        type=str,
+        default="../../data/images/",
+        help="Folder containing raw videos, sidecar ZIP frame caches, legacy *_frames folders, or loose images.",
+    )
+    parser.add_argument(
+        "--frame_cache_root",
+        type=str,
+        default=None,
+        help="Optional directory containing sidecar *.frames.zip / *.frames.index.json caches. Defaults to image_folder.",
+    )
     parser.add_argument("--pose_dir", type=str, default="../../outputs/vipe/pose")
     parser.add_argument("--intrinsics_dir", type=str, default="../../outputs/vipe/intrinsics")
     parser.add_argument("--output_dir", type=str, default="./finetune_runs/distill_vipe")
@@ -18,7 +29,7 @@ def make_argparser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--all_videos",
         action="store_true",
-        help="Use every *_frames directory under image_folder.",
+        help="Use every video that has a sidecar ZIP cache or legacy *_frames directory under image_folder.",
     )
     parser.add_argument(
         "--sample_limit",
@@ -34,6 +45,12 @@ def make_argparser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--detection_cache", type=str, default=None)
     parser.add_argument("--detection_conf", type=float, default=0.3)
+    parser.add_argument(
+        "--lazy_detection",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="When enabled, run the detector only for frames needed by each batch instead of precomputing the whole dataset.",
+    )
     parser.add_argument("--rescale_factor", type=float, default=2.0)
     parser.add_argument(
         "--train_scope",

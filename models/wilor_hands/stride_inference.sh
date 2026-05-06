@@ -35,7 +35,6 @@ module load cuda/11.7
 
 PROJECT_ROOT="/scratch/mthakur/manifold"
 MODEL_ROOT="${PROJECT_ROOT}/models/wilor_hands"
-COMMON_PY="${PROJECT_ROOT}/models/common/extract_video_frames.py"
 COMMON_SH="${PROJECT_ROOT}/models/common/inference_common.sh"
 
 source "${COMMON_SH}"
@@ -68,10 +67,9 @@ VIPE_OUTPUT_ROOT="${PROJECT_ROOT}/outputs/vipe"
 APPTAINER_IMAGE="${APPTAINER_IMAGE:-${MODEL_ROOT}/apptainer/template.sif}"
 HMP_ASSETS_ROOT="${HMP_ASSETS_ROOT:-${MODEL_ROOT}/_DATA/hmp_model}"
 OVERWRITE="${OVERWRITE:-false}"
-KEEP_TEMP_FRAMES="${KEEP_TEMP_FRAMES:-false}"
 VISUALIZE="${VISUALIZE:-false}"
 USE_GPU="${USE_GPU:-true}"
-TEMP_PARENT="${TEMP_ROOT:-$(pick_temp_root)}"
+FRAME_CACHE_ROOT="${FRAME_CACHE_ROOT:-${VIDEO_DIR}}"
 
 if ! VIDEO_PATH=$(resolve_video_path "${VIDEO_DIR}" "${VIDEO_NAME}" "${VIDEO_FILE}"); then
     echo "Could not resolve a supported video under ${VIDEO_DIR} for VIDEO_NAME='${VIDEO_NAME}' VIDEO_FILE='${VIDEO_FILE}'" >&2
@@ -101,18 +99,6 @@ if is_truthy "${OVERWRITE}" || [[ ! -f "${MARKER_PATH}" ]]; then
 fi
 
 mkdir -p "${OUTPUT_ROOT}"
-mkdir -p "${TEMP_PARENT}"
-TEMP_WORKDIR=$(mktemp -d "${TEMP_PARENT%/}/wilor_${VIDEO_STEM}.XXXXXX")
-TEMP_FRAME_DIR="${TEMP_WORKDIR}/${VIDEO_STEM}_frames"
-
-cleanup_temp() {
-    if is_truthy "${KEEP_TEMP_FRAMES}"; then
-        echo "Keeping temporary STRIDE frames at ${TEMP_WORKDIR}"
-        return
-    fi
-    rm -rf "${TEMP_WORKDIR}"
-}
-trap cleanup_temp EXIT
 
 visualize_flag="--no-visualize"
 if is_truthy "${VISUALIZE}"; then
@@ -127,11 +113,11 @@ fi
 container_cmd=$(cat <<EOF
 set -euo pipefail
 cd $(printf '%q' "${MODEL_ROOT}")
-python $(printf '%q' "${COMMON_PY}") --video $(printf '%q' "${VIDEO_PATH}") --output-dir $(printf '%q' "${TEMP_FRAME_DIR}")
 python main.py \
   --mode stride-vipe \
   --video $(printf '%q' "${VIDEO_STEM}") \
-  --image_folder $(printf '%q' "${TEMP_WORKDIR}") \
+  --image_folder $(printf '%q' "${VIDEO_DIR}") \
+  --frame_cache_root $(printf '%q' "${FRAME_CACHE_ROOT}") \
   --wilor_cache_root $(printf '%q' "${WILOR_CACHE_ROOT}") \
   --stride_output_folder $(printf '%q' "${OUTPUT_ROOT}") \
   --stride_backend hmp \
@@ -148,12 +134,11 @@ echo "WiLoR cache root: ${WILOR_CACHE_ROOT}"
 echo "STRIDE output root: ${OUTPUT_ROOT}"
 echo "ViPE output root: ${VIPE_OUTPUT_ROOT}"
 echo "STRIDE completion marker: ${MARKER_PATH}"
-echo "STRIDE temp frame dir: ${TEMP_FRAME_DIR}"
+echo "STRIDE frame cache root: ${FRAME_CACHE_ROOT}"
 
 srun apptainer exec \
   --nv \
   --bind /scratch:/scratch \
-  --bind "${TEMP_PARENT}:${TEMP_PARENT}" \
   "${APPTAINER_IMAGE}" \
   bash -lc "${container_cmd}"
 

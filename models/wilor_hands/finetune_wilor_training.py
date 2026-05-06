@@ -156,14 +156,16 @@ def print_run_summary(
     device: torch.device,
     resolved_experiment: dict[str, Any],
     video_names: list[str],
-    split_stats: dict[str, int | float],
-    train_window_stats: dict[str, int | float],
-    val_window_stats: dict[str, int | float],
+    split_stats: dict[str, Any],
+    train_window_stats: dict[str, Any],
+    val_window_stats: dict[str, Any],
     train_scope: str,
     lora_cfg: dict[str, Any],
     total_trainable_params: int,
     active_temporal_families: list[str],
     val_dataloader,
+    window_mode: str,
+    sample_count_mode: str,
 ) -> None:
     print(f"Device: {device}", flush=True)
     print(f"Experiment: {resolved_experiment['name']}", flush=True)
@@ -173,18 +175,34 @@ def print_run_summary(
         f"train={split_stats['train_frames']} val={split_stats['val_frames']}",
         flush=True,
     )
-    print(
-        f"Samples: total={split_stats['total_samples']} "
-        f"train={split_stats['train_samples']} val={split_stats['val_samples']}",
-        flush=True,
-    )
-    print(
-        f"Temporal windows: train={train_window_stats['window_count']} "
-        f"val={val_window_stats['window_count']} "
-        f"dropped_train={train_window_stats['dropped_window_count']} "
-        f"dropped_val={val_window_stats['dropped_window_count']}",
-        flush=True,
-    )
+    if sample_count_mode == "lazy_detection":
+        print(
+            "Samples: computed lazily per batch from detector outputs; no global sample count is precomputed upfront.",
+            flush=True,
+        )
+    else:
+        print(
+            f"Samples: total={split_stats['total_samples']} "
+            f"train={split_stats['train_samples']} val={split_stats['val_samples']}",
+            flush=True,
+        )
+    if window_mode == "lazy_frame_windows":
+        print(
+            "Temporal windows: candidate frame windows "
+            f"train={train_window_stats['window_count']} "
+            f"val={val_window_stats['window_count']} "
+            f"dropped_train={train_window_stats['dropped_window_count']} "
+            f"dropped_val={val_window_stats['dropped_window_count']}",
+            flush=True,
+        )
+    else:
+        print(
+            f"Temporal windows: train={train_window_stats['window_count']} "
+            f"val={val_window_stats['window_count']} "
+            f"dropped_train={train_window_stats['dropped_window_count']} "
+            f"dropped_val={val_window_stats['dropped_window_count']}",
+            flush=True,
+        )
     if split_stats["validation_split"] > 0.0 and val_dataloader is None:
         print(
             "Validation split requested, but there were not enough consecutive frames to reserve validation windows.",
@@ -308,6 +326,8 @@ def run_training_loop(
         total_trainable_params=total_trainable_params,
         active_temporal_families=active_temporal_families,
         val_dataloader=data_bundle.val_dataloader,
+        window_mode=data_bundle.window_mode,
+        sample_count_mode=data_bundle.sample_count_mode,
     )
     log_fn("Entering optimization loop.")
 

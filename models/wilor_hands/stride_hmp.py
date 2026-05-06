@@ -7,7 +7,7 @@ from types import SimpleNamespace
 import numpy as np
 import torch
 
-from frame_store import FrameStore
+from frame_store import FrameStore, SUPPORTED_VIDEO_EXTS
 from hmp_clean.rotations import axis_angle_to_matrix, matrix_to_axis_angle
 from hmp_stride_adapter import fitting_prior
 from hmp_stride_adapter_args import Arguments
@@ -51,8 +51,16 @@ def _resolve_vid_path(image_folder, cache_root: Path, video_name: str, frame_sto
         source_path = frame_store.get_source_path(video_name)
         if source_path is not None:
             return source_path
+    zip_path = cache_root / f"{video_name}.frames.zip"
+    if zip_path.is_file():
+        return zip_path
     if image_folder:
-        image_dir = Path(image_folder)
+        image_root = Path(image_folder)
+        for ext in SUPPORTED_VIDEO_EXTS:
+            raw_video = image_root / f"{video_name}{ext}"
+            if raw_video.is_file():
+                return raw_video
+        image_dir = image_root
         if image_dir.name != f"{video_name}_frames":
             image_dir = image_dir / f"{video_name}_frames"
         if image_dir.is_dir():

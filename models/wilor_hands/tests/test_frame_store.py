@@ -84,6 +84,20 @@ class FrameStoreTests(unittest.TestCase):
             self.assertEqual(first[0]["status"], "built")
             self.assertEqual(second[0]["status"], "skipped")
 
+    def test_zip_cache_without_raw_video_is_discovered(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            video_path = root / "cache_only.avi"
+            self._write_video(video_path)
+            build_frame_caches(root)
+            video_path.unlink()
+
+            store = FrameStore(root)
+
+            self.assertEqual(store.list_videos(), ["cache_only"])
+            self.assertEqual(store.get_source_path("cache_only"), root / "cache_only.frames.zip")
+            self.assertIsNotNone(store.get_frame("cache_only", 0))
+
     def _write_video(self, path: Path) -> None:
         size = (8, 8)
         frames = [

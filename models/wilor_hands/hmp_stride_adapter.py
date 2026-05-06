@@ -1,6 +1,8 @@
 import os
 import sys
+import json
 from pathlib import Path
+import zipfile
 
 ADAPTER_PATH = Path(__file__).resolve().parent
 HMP_CLEAN_PATH = ADAPTER_PATH / "hmp_clean"
@@ -58,6 +60,8 @@ POSSIBLE_KEYP_SOURCES = ["mmpose", "mediapipe", "mediapipe_std", "mediapipe_mult
                                     "pymafx", "pymafx_std", "gt", "metro", "blend",
                                     "blend_mediapipe_std_mmpose",
                                       "blend_std", "blend_smooth"]
+
+FRAME_CACHE_ZIP_SUFFIX = ".frames.zip"
 
 MANO_JOINTS = {
     'wrist': 0,
@@ -694,6 +698,42 @@ def get_gt_path(expname):
     return gt_path, subjectname
 
 
+def _count_frames_for_vid_path(vid_path: str) -> int:
+    abs_video_path = os.path.join(os.getcwd(), vid_path)
+
+    if os.path.isdir(abs_video_path):
+        frame_count = len(glob.glob(os.path.join(abs_video_path, "*.jpg")))
+        if frame_count == 0:
+            frame_count = len(glob.glob(os.path.join(abs_video_path, "*.png")))
+        return frame_count
+
+    if abs_video_path.endswith(FRAME_CACHE_ZIP_SUFFIX):
+        index_path = abs_video_path[: -len(".zip")] + ".index.json"
+        if os.path.isfile(index_path):
+            try:
+                with open(index_path, "r", encoding="utf-8") as handle:
+                    payload = json.load(handle)
+                if "frame_count" in payload:
+                    return int(payload["frame_count"])
+                frames = payload.get("frames")
+                if isinstance(frames, list):
+                    return len(frames)
+            except (OSError, ValueError, TypeError, json.JSONDecodeError):
+                pass
+        if os.path.isfile(abs_video_path):
+            try:
+                with zipfile.ZipFile(abs_video_path, "r") as archive:
+                    return sum(
+                        1
+                        for name in archive.namelist()
+                        if name.lower().endswith((".jpg", ".jpeg", ".png"))
+                    )
+            except (OSError, zipfile.BadZipFile):
+                return 0
+
+    return 0
+
+
 def multi_stage_opt(opt, device, obs_data, res_dict, hand_model, config_f, exp_setup_name, init_method_name):
 
     logger.info(f"Running reconstruction with prior")
@@ -704,13 +744,9 @@ def multi_stage_opt(opt, device, obs_data, res_dict, hand_model, config_f, exp_s
 
     keypoint_blend_weight = 1.0
     vid_path = args.vid_path
-    abs_video_path = os.path.join(os.getcwd(), args.vid_path)
 
     args.dataname = args.vid_path.split("/")[3]
-    args.N_frames = len(glob.glob(os.path.join(abs_video_path, "*.jpg")))
-
-    if args.N_frames == 0:
-        args.N_frames = len(glob.glob(os.path.join(abs_video_path, "*.png")))
+    args.N_frames = _count_frames_for_vid_path(args.vid_path)
 
     args.hand_model = hand_model
     gt_path, subjectname = get_gt_path(exp_setup_name)

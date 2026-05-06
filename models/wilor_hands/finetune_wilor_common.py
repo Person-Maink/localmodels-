@@ -12,6 +12,7 @@ import torch
 from torch.utils.data import Dataset
 from ultralytics import YOLO
 
+from frame_store import FrameRecord, FrameStore
 from vipe_artifacts import (
     load_vipe_intrinsics_artifact,
     load_vipe_pose_artifact,
@@ -44,10 +45,18 @@ def choose_device(use_gpu: bool = True) -> torch.device:
     return torch.device("cpu")
 
 
+def make_frame_store(
+    image_folder: str,
+    frame_cache_root: Optional[str] = None,
+) -> FrameStore:
+    return FrameStore(image_folder, cache_root=frame_cache_root)
+
+
 def list_existing_frame_paths(
     image_folder: str,
     file_types: Sequence[str] = FRAME_FILE_PATTERNS,
     video_exts: Sequence[str] = SUPPORTED_VIDEO_EXTS,
+    frame_cache_root: Optional[str] = None,
 ) -> tuple[List[Path], List[Path]]:
     image_root = Path(image_folder)
     if not image_root.exists():
@@ -55,15 +64,19 @@ def list_existing_frame_paths(
     if not image_root.is_dir():
         raise NotADirectoryError(f"Image folder is not a directory: {image_root}")
 
+    frame_store = make_frame_store(image_folder, frame_cache_root=frame_cache_root)
     frame_paths: List[Path] = []
     for ext in file_types:
         frame_paths.extend(sorted(image_root.glob(ext)))
 
-    for frame_dir in sorted(image_root.glob("*_frames")):
-        if not frame_dir.is_dir():
+    for video_name in frame_store.list_videos():
+        if video_name == "single_images":
+            continue
+        source_path = frame_store.get_source_path(video_name)
+        if source_path is None or not source_path.is_dir():
             continue
         for ext in file_types:
-            frame_paths.extend(sorted(frame_dir.glob(ext)))
+            frame_paths.extend(sorted(source_path.glob(ext)))
 
     raw_video_paths = [
         path
@@ -73,15 +86,12 @@ def list_existing_frame_paths(
     return sorted(frame_paths), raw_video_paths
 
 
-def discover_videos(image_folder: str) -> List[str]:
-    frame_paths, _ = list_existing_frame_paths(image_folder)
-    return sorted(
-        {
-            frame_path.parent.name[: -len("_frames")]
-            for frame_path in frame_paths
-            if frame_path.parent.name.endswith("_frames")
-        }
-    )
+def discover_videos(
+    image_folder: str,
+    frame_cache_root: Optional[str] = None,
+) -> List[str]:
+    frame_store = make_frame_store(image_folder, frame_cache_root=frame_cache_root)
+    return [video_name for video_name in frame_store.list_videos() if video_name != "single_images"]
 
 
 def filter_videos_with_vipe_artifacts(
@@ -133,6 +143,20 @@ def infer_video_name_from_path(path_like: str, override_video_name: Optional[str
     if path.parent.name:
         return path.parent.name
     raise ValueError(f"Could not infer video name from path '{path_like}'.")
+
+
+def _frame_record_display_paths(
+    frame_store: FrameStore,
+    record: FrameRecord,
+) -> tuple[str, str]:
+    if record.source_kind in {"loose_frames", "single_image"}:
+        path = Path(record.source_key)
+        return str(path), str(path)
+
+    source_path = frame_store.get_source_path(record.video_name)
+    source_display = str(source_path) if source_path is not None else record.video_name
+    synthetic_name = f"{record.video_name}/{record.frame_name}.jpg"
+    return f"{source_display}::{record.source_key}", synthetic_name
 
 
 class ViPECameraIndex:
@@ -187,7 +211,9 @@ def build_detection_samples(
     detection_conf: float = 0.3,
     detection_cache_path: Optional[str] = None,
     sample_limit: int = 0,
+    frame_cache_root: Optional[str] = None,
 ) -> List[Dict]:
+    frame_store = make_frame_store(image_folder, frame_cache_root=frame_cache_root)
     if detection_cache_path and Path(detection_cache_path).exists():
         print(
             f"[progress] Loading detection cache from {detection_cache_path}",
@@ -195,11 +221,13 @@ def build_detection_samples(
         )
         with open(detection_cache_path, "r", encoding="utf-8") as handle:
             cached_samples = json.load(handle)
-        image_root = Path(image_folder)
+        video_name_to_idx = {name: idx for idx, name in enumerate(sorted(set(video_names)))}
         for sample in cached_samples:
             img_path_rel = sample.get("img_path_rel")
             if img_path_rel:
-                sample["img_path"] = str(image_root / img_path_rel)
+                sample["img_path"] = str(img_path_rel)
+            if "video_name" in sample and sample["video_name"] in video_name_to_idx:
+                sample["video_idx"] = video_name_to_idx[str(sample["video_name"])]
         selected_videos = set(video_names)
         if not selected_videos:
             limited_samples = _limit_samples_by_frame(cached_samples, sample_limit)
@@ -223,61 +251,60 @@ def build_detection_samples(
         )
         return filtered_samples
 
-    print(
-        f"[progress] Scanning image folder for existing extracted frames: {image_folder}",
-        flush=True,
-    )
-    all_frame_paths, raw_video_paths = list_existing_frame_paths(image_folder)
-    if raw_video_paths:
-        print(
-            "[progress] Ignoring raw video files during fine-tuning; "
-            "only pre-extracted *_frames directories are used.",
-            flush=True,
-        )
     selected_videos = set(video_names)
-    selected_frame_paths = [
-        frame_path
-        for frame_path in all_frame_paths
-        if frame_path.parent.name.replace("_frames", "") in selected_videos
-    ]
-    selected_frame_paths = sorted(selected_frame_paths)
+    unavailable_messages = {
+        video_name: frame_store.explain_unavailable(video_name)
+        for video_name in sorted(selected_videos)
+        if not frame_store.has_video(video_name)
+    }
+    if unavailable_messages:
+        for video_name, reason in unavailable_messages.items():
+            print(f"[progress] Skipping unavailable video '{video_name}': {reason}", flush=True)
+
+    selected_frame_records: List[FrameRecord] = []
+    for video_name in sorted(selected_videos):
+        if not frame_store.has_video(video_name):
+            continue
+        selected_frame_records.extend(frame_store.iter_video_frames(video_name))
+    selected_frame_records.sort(key=lambda record: (record.video_name, int(record.frame_id)))
     if sample_limit > 0:
-        selected_frame_paths = selected_frame_paths[:sample_limit]
+        selected_frame_records = selected_frame_records[:sample_limit]
 
     print(
         "[progress] Prepared "
-        f"{len(selected_frame_paths)} frame(s) for detection across "
-        f"{len(selected_videos)} selected video(s).",
+        f"{len(selected_frame_records)} frame(s) for detection across "
+        f"{len(selected_videos) - len(unavailable_messages)} selected video(s).",
         flush=True,
     )
-    if not selected_frame_paths:
+    if not selected_frame_records:
         print(
-            "[progress] No extracted frames matched the selected video(s). "
-            "If raw videos are present, extract them ahead of time instead of relying on on-the-fly extraction.",
+            "[progress] No frame records matched the selected video(s). "
+            "Build sidecar ZIP caches or provide legacy *_frames directories.",
             flush=True,
         )
 
     samples: List[Dict] = []
     video_name_to_idx = {name: idx for idx, name in enumerate(sorted(set(video_names)))}
-    total_frames = len(selected_frame_paths)
+    total_frames = len(selected_frame_records)
     progress_interval = 25
 
-    for frame_number, frame_path in enumerate(selected_frame_paths, start=1):
+    for frame_number, frame_record in enumerate(selected_frame_records, start=1):
         if frame_number == 1 or frame_number % progress_interval == 0 or frame_number == total_frames:
             print(
                 "[progress] Running detector on frame "
-                f"{frame_number}/{total_frames}: {frame_path}",
+                f"{frame_number}/{total_frames}: {frame_record.video_name}:{frame_record.frame_name}",
                 flush=True,
             )
-        video_name = frame_path.parent.name.replace("_frames", "")
-        frame_idx = parse_frame_index(frame_path.stem)
+        video_name = frame_record.video_name
+        frame_idx = int(frame_record.frame_id)
         camera_target = camera_index.resolve(video_name, frame_idx)
 
-        img_cv2 = cv2.imread(str(frame_path))
+        img_cv2 = frame_store.get_frame(video_name, frame_idx)
         if img_cv2 is None:
             continue
 
         detections = detector(img_cv2, conf=detection_conf, verbose=False)[0]
+        img_path, img_path_rel = _frame_record_display_paths(frame_store, frame_record)
         frame_samples = []
         for det in detections:
             bbox = det.boxes.data.cpu().detach().reshape(-1, det.boxes.data.shape[-1])[0].numpy()
@@ -285,11 +312,12 @@ def build_detection_samples(
             x_center = float((bbox[0] + bbox[2]) * 0.5)
             frame_samples.append(
                 {
-                    "img_path": str(frame_path),
-                    "img_path_rel": str(frame_path.relative_to(Path(image_folder))),
+                    "img_path": img_path,
+                    "img_path_rel": img_path_rel,
                     "video_name": video_name,
                     "video_idx": video_name_to_idx[video_name],
                     "frame_idx": frame_idx,
+                    "frame_name": frame_record.frame_name,
                     "bbox": [float(v) for v in bbox[:4]],
                     "right": right,
                     "x_center": x_center,
@@ -412,34 +440,45 @@ class DetectedVideoHandDataset(Dataset):
         samples: List[Dict],
         rescale_factor: float = 2.0,
         include_path_metadata: bool = True,
+        frame_store: Optional[FrameStore] = None,
     ):
         self.model_cfg = model_cfg
         self.samples = samples
         self.rescale_factor = rescale_factor
         self.include_path_metadata = include_path_metadata
+        self.frame_store = frame_store
         self._sample_local_index_by_global_idx: Dict[int, int] = {}
-        self._samples_by_frame_path: Dict[str, List[Dict[str, Any]]] = {}
-        self._frame_cache: Dict[str, List[Dict[str, Any]]] = {}
+        self._samples_by_frame_key: Dict[Hashable, List[Dict[str, Any]]] = {}
+        self._frame_cache: Dict[Hashable, List[Dict[str, Any]]] = {}
 
         for idx, sample in enumerate(self.samples):
-            frame_path = str(sample["img_path"])
-            frame_samples = self._samples_by_frame_path.setdefault(frame_path, [])
+            frame_key = self._sample_frame_key(sample)
+            frame_samples = self._samples_by_frame_key.setdefault(frame_key, [])
             self._sample_local_index_by_global_idx[idx] = len(frame_samples)
             frame_samples.append(sample)
 
     def __len__(self) -> int:
         return len(self.samples)
 
-    def _get_frame_items(self, frame_path: str) -> List[Dict[str, Any]]:
-        cached_items = self._frame_cache.get(frame_path)
+    def _sample_frame_key(self, sample: Dict[str, Any]) -> Hashable:
+        if self.frame_store is not None and "video_name" in sample and "frame_idx" in sample:
+            return str(sample["video_name"]), int(sample["frame_idx"])
+        return str(sample["img_path"])
+
+    def _get_frame_items(self, frame_key: Hashable) -> List[Dict[str, Any]]:
+        cached_items = self._frame_cache.get(frame_key)
         if cached_items is not None:
             return cached_items
 
-        img_cv2 = cv2.imread(frame_path)
+        frame_samples = self._samples_by_frame_key[frame_key]
+        exemplar_sample = frame_samples[0]
+        if self.frame_store is not None and isinstance(frame_key, tuple):
+            img_cv2 = self.frame_store.get_frame(str(frame_key[0]), int(frame_key[1]))
+        else:
+            img_cv2 = cv2.imread(str(exemplar_sample["img_path"]))
         if img_cv2 is None:
-            raise RuntimeError(f"Failed to read image: {frame_path}")
+            raise RuntimeError(f"Failed to read image/frame: {frame_key}")
 
-        frame_samples = self._samples_by_frame_path[frame_path]
         crop_dataset = ViTDetDataset(
             self.model_cfg,
             img_cv2,
@@ -448,13 +487,13 @@ class DetectedVideoHandDataset(Dataset):
             rescale_factor=self.rescale_factor,
         )
         cached_items = [dict(crop_dataset[item_idx]) for item_idx in range(len(frame_samples))]
-        self._frame_cache[frame_path] = cached_items
+        self._frame_cache[frame_key] = cached_items
         return cached_items
 
     def __getitem__(self, idx: int) -> Dict:
         sample = self.samples[idx]
-        frame_path = str(sample["img_path"])
-        frame_items = self._get_frame_items(frame_path)
+        frame_key = self._sample_frame_key(sample)
+        frame_items = self._get_frame_items(frame_key)
         frame_item_index = self._sample_local_index_by_global_idx[idx]
         item = dict(frame_items[frame_item_index])
         if self.include_path_metadata:

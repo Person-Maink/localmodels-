@@ -32,10 +32,12 @@ class _VideoSource:
     loose_dir: Path | None = None
 
     def get_source_path(self) -> Path | None:
+        if self.source_kind == "zip" and self.zip_path is not None:
+            return self.zip_path
+        if self.source_kind == "loose_frames" and self.loose_dir is not None:
+            return self.loose_dir
         if self.raw_video_path is not None:
             return self.raw_video_path
-        if self.loose_dir is not None:
-            return self.loose_dir
         if self.zip_path is not None:
             return self.zip_path
         if self.frame_records:
@@ -262,6 +264,7 @@ class FrameStore:
         self.cache_root = Path(cache_root) if cache_root is not None else self.image_root
         self._sources: dict[str, _VideoSource] = {}
         self._unavailable_videos: dict[str, str] = {}
+        self._zip_handles: dict[Path, zipfile.ZipFile] = {}
         self._scan()
 
     def _scan(self) -> None:
@@ -278,8 +281,19 @@ class FrameStore:
             for path in sorted(self.image_root.glob("*_frames"))
             if path.is_dir()
         }
+        cache_videos = {
+            path.name[: -len(".frames.zip")]
+            for path in sorted(self.cache_root.glob("*.frames.zip"))
+            if path.is_file()
+        }
+        cache_videos.update(
+            path.name[: -len(".frames.index.json")]
+            for path in sorted(self.cache_root.glob("*.frames.index.json"))
+            if path.is_file()
+        )
 
-        for video_name, video_path in raw_videos.items():
+        for video_name in sorted(set(raw_videos) | set(loose_dirs) | cache_videos):
+            video_path = raw_videos.get(video_name)
             zip_path = self.cache_root / f"{video_name}.frames.zip"
             index_path = self.cache_root / f"{video_name}.frames.index.json"
             if zip_path.exists() or index_path.exists():
@@ -296,9 +310,14 @@ class FrameStore:
                     continue
                 except (FileNotFoundError, ValueError) as exc:
                     if video_name not in loose_dirs:
-                        self._unavailable_videos[video_name] = (
-                            f"Invalid sidecar cache for '{video_name}': {exc}"
-                        )
+                        if video_path is not None:
+                            self._unavailable_videos[video_name] = (
+                                f"Invalid sidecar cache for '{video_name}': {exc}"
+                            )
+                        else:
+                            self._unavailable_videos[video_name] = (
+                                f"Found sidecar cache files for '{video_name}', but they are invalid: {exc}"
+                            )
                         continue
 
             if video_name in loose_dirs:
@@ -324,36 +343,11 @@ class FrameStore:
                     raw_video_path=video_path,
                     loose_dir=loose_dirs[video_name],
                 )
-            else:
+            elif video_path is not None:
                 self._unavailable_videos[video_name] = (
                     f"Found raw video '{video_path.name}' but no valid sidecar cache or legacy "
                     f"'{video_name}_frames' directory. Build the cache first."
                 )
-
-        for video_name, frame_dir in loose_dirs.items():
-            if video_name in self._sources:
-                continue
-            frame_paths = sorted(
-                path for path in frame_dir.iterdir()
-                if path.is_file() and path.suffix.lower() in SUPPORTED_IMAGE_EXTS
-            )
-            records = [
-                FrameRecord(
-                    video_name=video_name,
-                    frame_id=_parse_frame_id(path, index),
-                    frame_name=path.stem,
-                    source_key=str(path),
-                    source_kind="loose_frames",
-                )
-                for index, path in enumerate(frame_paths)
-            ]
-            records.sort(key=lambda record: int(record.frame_id))
-            self._sources[video_name] = _VideoSource(
-                video_name=video_name,
-                source_kind="loose_frames",
-                frame_records=records,
-                loose_dir=frame_dir,
-            )
 
         single_images = _sorted_image_paths(self.image_root)
         if single_images:
@@ -377,6 +371,9 @@ class FrameStore:
 
     def has_video(self, video_name: str) -> bool:
         return video_name in self._sources
+
+    def list_unavailable_videos(self) -> list[str]:
+        return sorted(self._unavailable_videos)
 
     def explain_unavailable(self, video_name: str) -> str | None:
         return self._unavailable_videos.get(video_name)
@@ -415,8 +412,16 @@ class FrameStore:
 
         if source.source_kind == "zip":
             assert source.zip_path is not None
-            with zipfile.ZipFile(source.zip_path, "r") as archive:
-                return _decode_image_bytes(archive.read(record.source_key))
+            archive = self._zip_handles.get(source.zip_path)
+            if archive is None:
+                archive = zipfile.ZipFile(source.zip_path, "r")
+                self._zip_handles[source.zip_path] = archive
+            return _decode_image_bytes(archive.read(record.source_key))
         if source.source_kind in {"loose_frames", "single_image"}:
             return cv2.imread(record.source_key)
         raise ValueError(f"Unsupported source kind: {source.source_kind}")
+
+    def close(self) -> None:
+        for archive in self._zip_handles.values():
+            archive.close()
+        self._zip_handles.clear()

@@ -124,11 +124,19 @@ resolve_video_path() {
 
 list_candidate_videos() {
   local image_root="$1"
+  local frame_cache_root="${2:-}"
+  local cache_root="${frame_cache_root:-$image_root}"
   local entry=""
   local video_name=""
   local -a candidates=()
 
   shopt -s nullglob
+  for entry in "${cache_root}"/*.frames.zip; do
+    [[ -f "$entry" ]] || continue
+    video_name="$(basename "$entry")"
+    candidates+=("${video_name%.frames.zip}")
+  done
+
   for entry in "${image_root}"/*_frames; do
     [[ -d "$entry" ]] || continue
     video_name="$(basename "$entry")"
@@ -157,8 +165,9 @@ pick_random_eligible_distill_video() {
   local image_root="$1"
   local pose_dir="$2"
   local intrinsics_dir="$3"
-  local requested_video="${4:-}"
-  local requested_videos="${5:-}"
+  local frame_cache_root="${4:-}"
+  local requested_video="${5:-}"
+  local requested_videos="${6:-}"
   local found_requested="false"
   local video_name=""
   local allowed_requested="false"
@@ -180,7 +189,7 @@ pick_random_eligible_distill_video() {
         found_requested="true"
         break
       fi
-    done < <(list_candidate_videos "$image_root")
+    done < <(list_candidate_videos "$image_root" "$frame_cache_root")
     if [[ "$found_requested" != "true" ]]; then
       echo "Requested VIDEO_NAME was not found under ${image_root}: ${requested_video}" >&2
       return 1
@@ -206,7 +215,7 @@ pick_random_eligible_distill_video() {
       eligible_videos+=("$video_name")
       allowed_requested="true"
     fi
-  done < <(list_candidate_videos "$image_root")
+  done < <(list_candidate_videos "$image_root" "$frame_cache_root")
 
   if (( ${#requested_subset[@]} > 0 )) && [[ "$allowed_requested" != "true" ]]; then
     echo "No eligible requested videos were found under ${image_root} with matching ViPE artifacts." >&2
@@ -219,82 +228,6 @@ pick_random_eligible_distill_video() {
   fi
 
   printf '%s\n' "${eligible_videos[@]}" | shuf -n 1
-}
-
-ensure_temp_image_root() {
-  if [[ -n "${TEMP_IMAGE_ROOT:-}" ]]; then
-    return 0
-  fi
-
-  mkdir -p "${TEMP_PARENT}"
-  TEMP_WORKDIR=$(mktemp -d "${TEMP_PARENT%/}/wilor_train_${SLURM_JOB_ID:-manual}.XXXXXX")
-  TEMP_IMAGE_ROOT="${TEMP_WORKDIR}/images"
-  mkdir -p "${TEMP_IMAGE_ROOT}"
-  echo "[progress] Created temporary training image root: ${TEMP_IMAGE_ROOT}"
-}
-
-cleanup_temp_frames() {
-  if [[ -z "${TEMP_WORKDIR:-}" ]]; then
-    return 0
-  fi
-
-  if is_true "${KEEP_TEMP_FRAMES:-false}"; then
-    echo "Keeping temporary training frames at ${TEMP_WORKDIR}"
-    return 0
-  fi
-
-  rm -rf "${TEMP_WORKDIR}"
-}
-
-stage_video_frames_for_finetune() {
-  local source_image_root="$1"
-  local video_name="$2"
-  local source_frame_dir="${source_image_root}/${video_name}_frames"
-  local target_frame_dir="${TEMP_IMAGE_ROOT}/${video_name}_frames"
-  local video_path=""
-
-  [[ -n "$video_name" ]] || return 0
-
-  if [[ -e "${target_frame_dir}" ]]; then
-    return 0
-  fi
-
-  if [[ -d "${source_frame_dir}" ]]; then
-    ln -s "${source_frame_dir}" "${target_frame_dir}"
-    echo "[progress] Reusing existing frames for ${video_name} via ${source_frame_dir}"
-    return 0
-  fi
-
-  if ! video_path="$(resolve_video_path "${source_image_root}" "${video_name}")"; then
-    echo "Could not find extracted frames or a supported raw video for ${video_name} under ${source_image_root}" >&2
-    return 1
-  fi
-
-  echo "[progress] Extracting frames for ${video_name} into ${target_frame_dir}"
-  apptainer exec \
-    --nv \
-    --bind /scratch:/scratch \
-    --bind "${TEMP_PARENT}:${TEMP_PARENT}" \
-    "${APPTAINER_IMAGE}" \
-    python -u "${COMMON_PY}" --video "${video_path}" --output-dir "${target_frame_dir}"
-}
-
-prepare_image_root_for_finetune() {
-  local source_image_root="$1"
-  shift
-  local video_name=""
-  local -A seen_videos=()
-
-  ensure_temp_image_root
-
-  for video_name in "$@"; do
-    [[ -n "$video_name" ]] || continue
-    if [[ -n "${seen_videos[$video_name]+x}" ]]; then
-      continue
-    fi
-    seen_videos["$video_name"]=1
-    stage_video_frames_for_finetune "${source_image_root}" "${video_name}"
-  done
 }
 
 # ================ JOB INFO ================
@@ -332,14 +265,7 @@ DETECTOR_PATH="${DETECTOR_PATH:-${MODEL_ROOT}/pretrained_models/detector.pt}"
 POSE_DIR="${POSE_DIR:-${VIPE_OUTPUT_ROOT}/pose}"
 INTRINSICS_DIR="${INTRINSICS_DIR:-${VIPE_OUTPUT_ROOT}/intrinsics}"
 APPTAINER_IMAGE="${APPTAINER_IMAGE:-${MODEL_ROOT}/apptainer/template.sif}"
-COMMON_PY="${COMMON_PY:-${PROJECT_ROOT}/models/common/extract_video_frames.py}"
-TEMP_PARENT="${TEMP_PARENT:-/tmp}"
-KEEP_TEMP_FRAMES="${KEEP_TEMP_FRAMES:-false}"
-TEMP_WORKDIR=""
-TEMP_IMAGE_ROOT=""
 SOURCE_IMAGE_FOLDER=""
-
-trap cleanup_temp_frames EXIT
 
 # ================ TRAINING CONFIG ================
 
@@ -410,11 +336,13 @@ TEMPORAL_SCORER_DROPOUT="${TEMPORAL_SCORER_DROPOUT:-}"
 
 # Distillation-specific inputs
 IMAGE_FOLDER="${IMAGE_FOLDER:-${DATA_ROOT}/images}"
+FRAME_CACHE_ROOT="${FRAME_CACHE_ROOT:-}"
 VIDEO_NAME="${VIDEO_NAME:-}"
 VIDEO_NAMES="${VIDEO_NAMES:-}"
 ALL_VIDEOS="${ALL_VIDEOS:-false}"
 DETECTION_CONF="${DETECTION_CONF:-0.3}"
 DETECTION_CACHE="${DETECTION_CACHE:-}"
+LAZY_DETECTION="${LAZY_DETECTION:-true}"
 
 case "$TRAIN_MODE" in
   distill|test) ;;
@@ -444,11 +372,6 @@ if [[ ! -f "${DETECTOR_PATH}" ]]; then
   exit 1
 fi
 
-if [[ ! -f "${COMMON_PY}" ]]; then
-  echo "Frame extraction helper not found: ${COMMON_PY}" >&2
-  exit 1
-fi
-
 case "$TRAIN_MODE" in
   distill)
     if ! is_true "$ALL_VIDEOS" && [[ -z "$VIDEO_NAME" && -z "$VIDEO_NAMES" ]]; then
@@ -464,7 +387,7 @@ case "$TRAIN_MODE" in
       echo "TRAIN_MODE=test uses a single video; ignoring ALL_VIDEOS=${ALL_VIDEOS}."
     fi
     ALL_VIDEOS=false
-    VIDEO_NAME="$(pick_random_eligible_distill_video "$IMAGE_FOLDER" "$POSE_DIR" "$INTRINSICS_DIR" "$VIDEO_NAME" "$VIDEO_NAMES")"
+    VIDEO_NAME="$(pick_random_eligible_distill_video "$IMAGE_FOLDER" "$POSE_DIR" "$INTRINSICS_DIR" "${FRAME_CACHE_ROOT:-}" "$VIDEO_NAME" "$VIDEO_NAMES")"
     : "${MAX_STEPS:=100}"
     : "${LOG_EVERY:=10}"
     : "${SAVE_EVERY:=50}"
@@ -478,7 +401,7 @@ if is_true "$ALL_VIDEOS"; then
   while IFS= read -r selected_video; do
     [[ -n "$selected_video" ]] || continue
     SELECTED_VIDEOS+=("$selected_video")
-  done < <(list_candidate_videos "$IMAGE_FOLDER")
+  done < <(list_candidate_videos "$IMAGE_FOLDER" "${FRAME_CACHE_ROOT:-}")
 elif [[ -n "${VIDEO_NAMES}" ]]; then
   IFS='|' read -r -a SELECTED_VIDEOS <<< "${VIDEO_NAMES}"
 else
@@ -491,8 +414,7 @@ if (( ${#SELECTED_VIDEOS[@]} == 0 )); then
 fi
 
 SOURCE_IMAGE_FOLDER="${IMAGE_FOLDER}"
-prepare_image_root_for_finetune "${SOURCE_IMAGE_FOLDER}" "${SELECTED_VIDEOS[@]}"
-IMAGE_FOLDER="${TEMP_IMAGE_ROOT}"
+echo "[progress] Lazy fine-tuning keeps IMAGE_FOLDER on the source root; skipping upfront frame extraction."
 
 if [[ -z "${RUN_NAME:-}" ]]; then
   if [[ -n "${EXPERIMENT_NAME}" ]]; then
@@ -552,6 +474,7 @@ PYTHON_CMD=(
 
 append_value_flag_if_set "--loss_config" "${LOSS_CONFIG}"
 append_value_flag_if_set "--experiment_name" "${EXPERIMENT_NAME}"
+append_value_flag_if_set "--frame_cache_root" "${FRAME_CACHE_ROOT}"
 append_optional_bool_override "lora_enabled" "${LORA_ENABLED}"
 append_value_flag_if_set "--lora_rank" "${LORA_RANK}"
 append_value_flag_if_set "--lora_alpha" "${LORA_ALPHA}"
@@ -604,6 +527,7 @@ append_value_flag_if_set "--temporal_vipe_camera_anchor_weight" "${TEMPORAL_VIPE
 
 append_bool_flag "use_gpu" "${USE_GPU}"
 append_bool_flag "amp" "${AMP}"
+append_bool_flag "lazy_detection" "${LAZY_DETECTION}"
 
 echo "Project root:    ${PROJECT_ROOT}"
 echo "Model root:      ${MODEL_ROOT}"
@@ -620,8 +544,10 @@ echo "Log every:       ${LOG_EVERY}"
 echo "Save every:      ${SAVE_EVERY}"
 echo "Sample limit:    ${SAMPLE_LIMIT}"
 echo "Validation split:${VALIDATION_SPLIT}"
+echo "Lazy detection:  ${LAZY_DETECTION}"
 echo "Checkpoint:      ${CHECKPOINT}"
 echo "Source images:   ${SOURCE_IMAGE_FOLDER}"
+echo "Frame cache root:${FRAME_CACHE_ROOT:-<image_folder>}"
 echo "Prepared images: ${IMAGE_FOLDER}"
 if is_true "$ALL_VIDEOS"; then
   echo "Videos:          all discovered videos"
@@ -646,7 +572,6 @@ APPTAINER_ARGS=(
   exec
   --nv
   --bind /scratch:/scratch
-  --bind "${TEMP_PARENT}:${TEMP_PARENT}"
 )
 
 echo "[progress] Starting containerized training process now..."
