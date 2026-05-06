@@ -3,6 +3,7 @@ import tempfile
 import unittest
 import zipfile
 from pathlib import Path
+from unittest import mock
 
 import cv2
 import numpy as np
@@ -97,6 +98,26 @@ class FrameStoreTests(unittest.TestCase):
             self.assertEqual(store.list_videos(), ["cache_only"])
             self.assertEqual(store.get_source_path("cache_only"), root / "cache_only.frames.zip")
             self.assertIsNotNone(store.get_frame("cache_only", 0))
+
+    def test_build_frame_caches_skips_videos_with_no_readable_frames(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            video_path = root / "unreadable.avi"
+            video_path.touch()
+
+            mock_capture = mock.Mock()
+            mock_capture.isOpened.return_value = True
+            mock_capture.read.return_value = (False, None)
+
+            with mock.patch("frame_store.cv2.VideoCapture", return_value=mock_capture):
+                results = build_frame_caches(root)
+
+            self.assertEqual(len(results), 1)
+            self.assertEqual(results[0]["status"], "skipped_unreadable")
+            self.assertEqual(results[0]["frame_count"], 0)
+            self.assertFalse((root / "unreadable.frames.zip").exists())
+            self.assertFalse((root / "unreadable.frames.index.json").exists())
+            mock_capture.release.assert_called_once()
 
     def _write_video(self, path: Path) -> None:
         size = (8, 8)

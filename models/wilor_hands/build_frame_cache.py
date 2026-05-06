@@ -32,6 +32,12 @@ def main() -> None:
         return
 
     for result in results:
+        if result["status"] == "skipped_unreadable":
+            print(
+                f"[{result['status']}] {result['video_name']}: "
+                "0 readable frame(s); no cache written"
+            )
+            continue
         print(
             f"[{result['status']}] {result['video_name']}: "
             f"{result['frame_count']} frame(s) -> {result['zip_path']}"

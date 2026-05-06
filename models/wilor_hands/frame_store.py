@@ -195,7 +195,14 @@ def build_video_frame_cache(
 
     if not frames_payload:
         tmp_zip_path.unlink(missing_ok=True)
-        raise RuntimeError(f"Video produced no readable frames: {video_path}")
+        tmp_index_path.unlink(missing_ok=True)
+        return {
+            "video_name": video_name,
+            "status": "skipped_unreadable",
+            "frame_count": 0,
+            "zip_path": str(zip_path),
+            "index_path": str(index_path),
+        }
 
     with zipfile.ZipFile(tmp_zip_path, "r") as archive:
         names = sorted(archive.namelist())
