@@ -407,3 +407,37 @@ Temporal families: temporal_vipe_camera
 [progress] Running validation at step 300.
              val_loss=0.0065 val_cam=392.3716 val_temp_cam=0.0000 val_bbox_p=0.0000 val_vipe_t=0.0000
 [progress] Saved latest checkpoint at step 300.
+[step 00325] loss=0.0082 cam=392.4040 temp_cam=0.0000 bbox_p=0.0000 vipe_t=0.0000
+[progress] Running validation at step 325.
+             val_loss=0.0065 val_cam=392.3716 val_temp_cam=0.0000 val_bbox_p=0.0000 val_vipe_t=0.0000
+[step 00350] loss=0.0070 cam=370.3826 temp_cam=0.0000 bbox_p=0.0000 vipe_t=0.0000
+[progress] Running validation at step 350.
+             val_loss=0.0065 val_cam=392.3716 val_temp_cam=0.0000 val_bbox_p=0.0000 val_vipe_t=0.0000
+[step 00375] loss=0.0071 cam=329.3601 temp_cam=0.0000 bbox_p=0.0000 vipe_t=0.0000
+[progress] Running validation at step 375.
+             val_loss=0.0065 val_cam=392.3716 val_temp_cam=0.0000 val_bbox_p=0.0000 val_vipe_t=0.0000
+[step 00400] loss=0.0070 cam=239.4997 temp_cam=0.0000 bbox_p=0.0000 vipe_t=0.0000
+[progress] Running validation at step 400.
+             val_loss=0.0065 val_cam=392.3716 val_temp_cam=0.0000 val_bbox_p=0.0000 val_vipe_t=0.0000
+[progress] Saved latest checkpoint at step 400.
+[step 00425] loss=0.0062 cam=313.7838 temp_cam=0.0000 bbox_p=0.0000 vipe_t=0.0000
+[progress] Running validation at step 425.
+             val_loss=0.0065 val_cam=392.3716 val_temp_cam=0.0000 val_bbox_p=0.0000 val_vipe_t=0.0000
+[step 00450] loss=0.0082 cam=350.4981 temp_cam=0.0000 bbox_p=0.0000 vipe_t=0.0000
+[progress] Running validation at step 450.
+             val_loss=0.0065 val_cam=392.3716 val_temp_cam=0.0000 val_bbox_p=0.0000 val_vipe_t=0.0000
+[step 00475] loss=0.0085 cam=305.0972 temp_cam=0.0000 bbox_p=0.0000 vipe_t=0.0000
+[progress] Running validation at step 475.
+             val_loss=0.0065 val_cam=392.3716 val_temp_cam=0.0000 val_bbox_p=0.0000 val_vipe_t=0.0000
+[step 00500] loss=0.0070 cam=271.5114 temp_cam=0.0000 bbox_p=0.0000 vipe_t=0.0000
+[progress] Running validation at step 500.
+             val_loss=0.0065 val_cam=392.3716 val_temp_cam=0.0000 val_bbox_p=0.0000 val_vipe_t=0.0000
+[progress] Saved latest checkpoint at step 500.
+Finished fine-tuning. Best val_loss_total: 0.0065
+Saved checkpoints under: /scratch/mthakur/manifold/outputs/wilor_finetune/hp_h_sc64_l2_d0
+[progress] Containerized training process exited cleanly.
+===============================================
+Job finished at: Wed May  6 10:28:45 CEST 2026
+Execution took 0.72 hours
+Writing output to SLURM_logs/wilor-train_195.out
+===============================================
