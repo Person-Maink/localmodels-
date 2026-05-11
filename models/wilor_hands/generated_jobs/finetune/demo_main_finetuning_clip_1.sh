@@ -10,8 +10,8 @@
 #   visual                 : Visualization jobs
 
 #SBATCH --job-name=wilor-inference
-#SBATCH --partition=gpu-a100-small
-#SBATCH --time=__TIME__
+#SBATCH --partition=gpu-v100
+#SBATCH --time=01:58:48
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
@@ -57,14 +57,14 @@ echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
 
-VIDEO_DIR="${VIDEO_DIR:-${PROJECT_ROOT}/data/test/me}"
-VIDEO_NAME="${VIDEO_NAME:-__NAME__}"
+VIDEO_DIR="${VIDEO_DIR:-${PROJECT_ROOT}/data/images}"
+VIDEO_NAME="${VIDEO_NAME:-clip_1}"
 VIDEO_FILE="${VIDEO_FILE:-}"
-EXPERIMENT_NAME="${EXPERIMENT_NAME:-__EXPERIMENT_NAME__}"
+EXPERIMENT_NAME="${EXPERIMENT_NAME:-main_finetuning}"
 CHECKPOINT_PATH="${CHECKPOINT_PATH:-${PROJECT_ROOT}/outputs/wilor_finetune/${EXPERIMENT_NAME}/best.ckpt}"
 CFG_PATH="${CFG_PATH:-${MODEL_ROOT}/pretrained_models/model_config.yaml}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/wilor_finetune/${EXPERIMENT_NAME}}"
-APPTAINER_IMAGE="${APPTAINER_IMAGE:-${MODEL_ROOT}/apptainer/template-hmp.sif}"
+APPTAINER_IMAGE="${APPTAINER_IMAGE:-${MODEL_ROOT}/apptainer/template.sif}"
 OVERWRITE="${OVERWRITE:-false}"
 VISUALIZE="${VISUALIZE:-false}"
 SAVE_MESH="${SAVE_MESH:-true}"
