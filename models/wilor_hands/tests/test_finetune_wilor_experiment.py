@@ -15,6 +15,16 @@ from finetune_wilor_experiment import resolve_runtime_experiment
 
 
 class FinetuneWiLoRExperimentTests(unittest.TestCase):
+    def test_parser_rejects_removed_train_scopes_and_temporal_vipe_flags(self) -> None:
+        parser = make_argparser()
+
+        with self.assertRaises(SystemExit):
+            parser.parse_args(["--train_scope", "camera_head"])
+        with self.assertRaises(SystemExit):
+            parser.parse_args(["--train_scope", "full"])
+        with self.assertRaises(SystemExit):
+            parser.parse_args(["--temporal_vipe_camera_enabled"])
+
     def test_resolve_runtime_experiment_applies_config_defaults(self) -> None:
         payload = {
             "defaults": {

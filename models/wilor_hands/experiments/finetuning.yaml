@@ -43,12 +43,6 @@ defaults:
       formulation: static
       weight: 0.01
       scorer_weight: 0.0
-    temporal_vipe_camera:
-      enabled: true
-      formulation: learnable
-      weight: 0.01
-      smoothness_weight: 0.005
-      anchor_weight: 0.001
 
 experiments:
   - name: main_finetuning
@@ -67,22 +61,15 @@ experiments:
         enabled: false
         weight: 0.0
       temporal_camera:
-        enabled: false
+        enabled: true
         formulation: learnable
         weight: 0.0
         scorer_weight: 0.0001
       temporal_bbox_projected:
-        enabled: false
+        enabled: true
         formulation: learnable
         weight: 0.0
         scorer_weight: 0.0001
-      temporal_vipe_camera:
-        enabled: true
-        formulation: learnable
-        weight: 0.01
-        scorer_weight: 0.0
-        smoothness_weight: 0.005
-        anchor_weight: 0.001
 
   - name: lora_finetuning
     run_name_suffix: lora_finetuning
@@ -114,9 +101,3 @@ experiments:
         formulation: learnable
         weight: 0.1
         scorer_weight: 0.001
-      temporal_vipe_camera:
-        enabled: true
-        formulation: learnable
-        weight: 0.01
-        smoothness_weight: 0.005
-        anchor_weight: 0.001

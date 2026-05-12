@@ -44,12 +44,6 @@ defaults:
       formulation: static
       weight: 0.01
       scorer_weight: 0.0
-    temporal_vipe_camera:
-      enabled: false
-      formulation: learnable
-      weight: 0.01
-      smoothness_weight: 0.005
-      anchor_weight: 0.001
 
 experiments:
   - name: hp_k_det02_res2p0

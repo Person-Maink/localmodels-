@@ -15,8 +15,26 @@ def _record_base_path(out_folder, img_fn, detection_index, is_right):
     return os.path.join(out_folder, f"{img_fn}_{detection_index}_{hand_suffix}")
 
 
+def _serialize_result_record(result):
+    pred_mano_params = result.get("pred_mano_params", {})
+    global_orient = pred_mano_params.get("global_orient")
+    hand_pose = pred_mano_params.get("hand_pose")
+    betas = pred_mano_params.get("betas")
+
+    payload = dict(result)
+    payload["save_format_version"] = 2
+    payload["global_orient"] = None if global_orient is None else np.asarray(global_orient, dtype=np.float32)
+    payload["hand_pose"] = None if hand_pose is None else np.asarray(hand_pose, dtype=np.float32)
+    payload["betas"] = None if betas is None else np.asarray(betas, dtype=np.float32)
+    return payload
+
+
 def _save_result_record(out_folder, img_fn, detection_index, is_right, result):
-    np.save(f"{_record_base_path(out_folder, img_fn, detection_index, is_right)}_record.npy", result)
+    payload = _serialize_result_record(result)
+    base = _record_base_path(out_folder, img_fn, detection_index, is_right)
+    np.save(f"{base}_record.npy", payload)
+    # Keep the legacy filename for compatibility with older analysis scripts.
+    np.save(f"{base}_verts.npy", payload)
 
 
 def setup_models(
@@ -120,6 +138,7 @@ def run_wilor_inference(
                 pred_cam=pred_cam_n,
                 pred_keypoints_2d=pred_keypoints_2d,
                 pred_mano_params=_to_numpy_mano_params(out["pred_mano_params"], n),
+                pred_cam_t=out["pred_cam_t"][n].detach().cpu().numpy(),
                 frame_id=-1 if frame_id is None else int(frame_id),
                 detection_index=int(detection_index),
                 detection_confidence=score,

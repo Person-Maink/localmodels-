@@ -15,7 +15,6 @@ from finetune_wilor_common import (
     save_wilor_checkpoint,
 )
 from temporal_losses import (
-    TemporalViPECameraHead,
     TemporalWindowScorer,
     compute_temporal_loss_bundle,
     flatten_temporal_batch,
@@ -34,7 +33,6 @@ def compute_window_loss(
     temporal_cfg: dict[str, Any],
     loss_cfg: dict[str, dict[str, Any]],
     temporal_scorer: TemporalWindowScorer | None,
-    temporal_vipe_camera_head: TemporalViPECameraHead | None,
     train: bool,
 ) -> tuple[torch.Tensor, dict[str, float]]:
     window_batch = recursive_to(window_batch, device)
@@ -54,7 +52,6 @@ def compute_window_loss(
             loss_cfg,
             temporal_cfg,
             temporal_scorer,
-            temporal_vipe_camera_head,
         )
         total_loss = distill_loss + temporal_loss
 
@@ -77,20 +74,12 @@ def evaluate_window_dataloader(
     temporal_cfg: dict[str, Any],
     loss_cfg: dict[str, dict[str, Any]],
     temporal_scorer: TemporalWindowScorer | None,
-    temporal_vipe_camera_head: TemporalViPECameraHead | None,
 ) -> dict[str, float]:
     was_student_training = student.training
     student.eval()
     scorer_was_training = temporal_scorer.training if temporal_scorer is not None else False
     if temporal_scorer is not None:
         temporal_scorer.eval()
-    vipe_head_was_training = (
-        temporal_vipe_camera_head.training
-        if temporal_vipe_camera_head is not None
-        else False
-    )
-    if temporal_vipe_camera_head is not None:
-        temporal_vipe_camera_head.eval()
 
     metric_sums: dict[str, float] = {}
     total_windows = 0
@@ -106,7 +95,6 @@ def evaluate_window_dataloader(
                 temporal_cfg=temporal_cfg,
                 loss_cfg=loss_cfg,
                 temporal_scorer=temporal_scorer,
-                temporal_vipe_camera_head=temporal_vipe_camera_head,
                 train=False,
             )
             batch_window_count = int(window_batch["img"].shape[0])
@@ -117,8 +105,6 @@ def evaluate_window_dataloader(
     student.train(was_student_training)
     if temporal_scorer is not None:
         temporal_scorer.train(scorer_was_training)
-    if temporal_vipe_camera_head is not None:
-        temporal_vipe_camera_head.train(vipe_head_was_training)
 
     if total_windows == 0:
         return {"loss_total": 0.0, "window_count": 0.0}
@@ -134,7 +120,6 @@ def _active_temporal_families(loss_cfg: dict[str, dict[str, Any]]) -> list[str]:
         for family_name in (
             "temporal_camera",
             "temporal_bbox_projected",
-            "temporal_vipe_camera",
         )
         if loss_cfg[family_name]["enabled"]
     ]
@@ -142,13 +127,10 @@ def _active_temporal_families(loss_cfg: dict[str, dict[str, Any]]) -> list[str]:
 
 def _collect_extra_modules(
     temporal_scorer: TemporalWindowScorer | None,
-    temporal_vipe_camera_head: TemporalViPECameraHead | None,
 ) -> dict[str, torch.nn.Module] | None:
     extra_modules: dict[str, torch.nn.Module] = {}
     if temporal_scorer is not None:
         extra_modules["temporal_scorer"] = temporal_scorer
-    if temporal_vipe_camera_head is not None:
-        extra_modules["temporal_vipe_camera_head"] = temporal_vipe_camera_head
     return extra_modules or None
 
 
@@ -261,25 +243,12 @@ def run_training_loop(
         ).to(device)
         log_fn("Initialized learnable temporal scorer.")
 
-    temporal_vipe_camera_head = None
-    if loss_cfg["temporal_vipe_camera"]["enabled"]:
-        temporal_vipe_camera_head = TemporalViPECameraHead(
-            hidden_dim=int(temporal_cfg["scorer_hidden_dim"]),
-            layers=int(temporal_cfg["scorer_layers"]),
-            dropout=float(temporal_cfg["scorer_dropout"]),
-        ).to(device)
-        log_fn("Initialized temporal ViPE camera refinement head.")
-
-    if (
-        args.train_scope == "temporal_only"
-        and temporal_scorer is None
-        and temporal_vipe_camera_head is None
-    ):
+    if args.train_scope == "temporal_only" and temporal_scorer is None:
         raise RuntimeError(
             "train_scope='temporal_only' requires at least one learnable temporal module "
             "so there are parameters to optimize while WiLoR stays frozen."
         )
-    if not trainable_params and temporal_scorer is None and temporal_vipe_camera_head is None:
+    if not trainable_params and temporal_scorer is None:
         raise RuntimeError(f"No trainable parameters were selected for scope '{args.train_scope}'.")
 
     optimizer_params: list[dict[str, Any]] = []
@@ -287,8 +256,6 @@ def run_training_loop(
         optimizer_params.append({"params": trainable_params})
     if temporal_scorer is not None:
         optimizer_params.append({"params": list(temporal_scorer.parameters())})
-    if temporal_vipe_camera_head is not None:
-        optimizer_params.append({"params": list(temporal_vipe_camera_head.parameters())})
 
     log_fn("Creating optimizer and AMP scaler.")
     optimizer = torch.optim.AdamW(optimizer_params, lr=args.lr, weight_decay=args.weight_decay)
@@ -306,12 +273,6 @@ def run_training_loop(
     if temporal_scorer is not None:
         total_trainable_params += sum(
             param.numel() for param in temporal_scorer.parameters() if param.requires_grad
-        )
-    if temporal_vipe_camera_head is not None:
-        total_trainable_params += sum(
-            param.numel()
-            for param in temporal_vipe_camera_head.parameters()
-            if param.requires_grad
         )
 
     print_run_summary(
@@ -341,8 +302,6 @@ def run_training_loop(
         )
         if temporal_scorer is not None:
             temporal_scorer.train()
-        if temporal_vipe_camera_head is not None:
-            temporal_vipe_camera_head.train()
 
         window_batch = next(batch_iter)
         optimizer.zero_grad(set_to_none=True)
@@ -355,7 +314,6 @@ def run_training_loop(
             temporal_cfg=temporal_cfg,
             loss_cfg=loss_cfg,
             temporal_scorer=temporal_scorer,
-            temporal_vipe_camera_head=temporal_vipe_camera_head,
             train=True,
         )
 
@@ -387,7 +345,6 @@ def run_training_loop(
                 },
                 extra_modules=_collect_extra_modules(
                     temporal_scorer,
-                    temporal_vipe_camera_head,
                 ),
             )
 
@@ -411,8 +368,7 @@ def run_training_loop(
                 f"[step {step:05d}] loss={train_metrics['loss_total']:.4f} "
                 f"cam={train_metrics.get('loss_camera_t_full', 0.0):.4f} "
                 f"temp_cam={train_metrics.get('loss_temporal_camera_base', 0.0):.4f} "
-                f"bbox_p={train_metrics.get('loss_temporal_bbox_projected_base', 0.0):.4f} "
-                f"vipe_t={train_metrics.get('loss_temporal_vipe_camera_align', 0.0):.4f}",
+                f"bbox_p={train_metrics.get('loss_temporal_bbox_projected_base', 0.0):.4f}",
                 flush=True,
             )
             if data_bundle.val_dataloader is not None:
@@ -426,7 +382,6 @@ def run_training_loop(
                     temporal_cfg=temporal_cfg,
                     loss_cfg=loss_cfg,
                     temporal_scorer=temporal_scorer,
-                    temporal_vipe_camera_head=temporal_vipe_camera_head,
                 )
                 val_metrics.update(
                     {
@@ -447,8 +402,7 @@ def run_training_loop(
                     f"             val_loss={val_metrics.get('loss_total', 0.0):.4f} "
                     f"val_cam={val_metrics.get('loss_camera_t_full', 0.0):.4f} "
                     f"val_temp_cam={val_metrics.get('loss_temporal_camera_base', 0.0):.4f} "
-                    f"val_bbox_p={val_metrics.get('loss_temporal_bbox_projected_base', 0.0):.4f} "
-                    f"val_vipe_t={val_metrics.get('loss_temporal_vipe_camera_align', 0.0):.4f}",
+                    f"val_bbox_p={val_metrics.get('loss_temporal_bbox_projected_base', 0.0):.4f}",
                     flush=True,
                 )
                 if val_metrics["loss_total"] < best_metric:
@@ -468,7 +422,6 @@ def run_training_loop(
                         },
                         extra_modules=_collect_extra_modules(
                             temporal_scorer,
-                            temporal_vipe_camera_head,
                         ),
                     )
 
@@ -488,7 +441,6 @@ def run_training_loop(
                 },
                 extra_modules=_collect_extra_modules(
                     temporal_scorer,
-                    temporal_vipe_camera_head,
                 ),
             )
             log_fn(f"Saved latest checkpoint at step {step}.")

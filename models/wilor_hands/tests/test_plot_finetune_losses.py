@@ -90,15 +90,15 @@ class PlotFinetuneLossesTests(unittest.TestCase):
                 ["lora_hp_h_qkv_last8_r8"],
             )
             self._write_stage_yaml(
-                experiments_root / "frozen wilor" / "hparam_stage_j_temporal_vipe_camera.yaml",
-                ["hp_j_tvc_w_1e2"],
+                experiments_root / "frozen wilor" / "hparam_stage_h_scorer_architecture.yaml",
+                ["hp_h_sc64_l2_d0"],
             )
 
             definitions = discover_stage_definitions(experiments_root)
 
         self.assertEqual(
             [(definition.suite, definition.stage) for definition in definitions],
-            [("frozen wilor", "j"), ("lora", "h"), ("main", "a")],
+            [("frozen wilor", "h"), ("lora", "h"), ("main", "a")],
         )
 
     def test_select_best_run_uses_lowest_best_validation_loss(self) -> None:

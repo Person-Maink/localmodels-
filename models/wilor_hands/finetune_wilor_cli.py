@@ -55,7 +55,7 @@ def make_argparser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--train_scope",
         type=str,
-        choices=["temporal_only", "camera_head", "refine_net", "full"],
+        choices=["temporal_only", "refine_net"],
         default="refine_net",
     )
     parser.add_argument(
@@ -115,20 +115,6 @@ def make_argparser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--temporal_bbox_projected_weight", type=float, default=None)
     parser.add_argument("--temporal_bbox_projected_scorer_weight", type=float, default=None)
-    parser.add_argument(
-        "--temporal_vipe_camera_enabled",
-        action=argparse.BooleanOptionalAction,
-        default=None,
-    )
-    parser.add_argument(
-        "--temporal_vipe_camera_formulation",
-        type=str,
-        default=None,
-        choices=["learnable"],
-    )
-    parser.add_argument("--temporal_vipe_camera_weight", type=float, default=None)
-    parser.add_argument("--temporal_vipe_camera_smoothness_weight", type=float, default=None)
-    parser.add_argument("--temporal_vipe_camera_anchor_weight", type=float, default=None)
     parser.add_argument("--lora_enabled", action=argparse.BooleanOptionalAction, default=None)
     parser.add_argument("--lora_rank", type=int, default=None)
     parser.add_argument("--lora_alpha", type=float, default=None)

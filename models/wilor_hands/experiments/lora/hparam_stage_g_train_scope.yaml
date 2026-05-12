@@ -1,7 +1,6 @@
 defaults:
   # Stage G: compare additive trainable scopes on the current best-known
   # baseline. Every run here trains the selected WiLoR scope plus LoRA.
-  # The full-model run stays last and uses a smaller batch for memory safety.
   train_mode: distill
   train_scope: refine_net
   videos:
@@ -56,15 +55,10 @@ defaults:
       scorer_weight: 0.001
 
 experiments:
+  - name: lora_hp_g_scope_temporal_only
+    run_name_suffix: lora_hp_g_scope_temporal_only
+    train_scope: temporal_only
+
   - name: lora_hp_g_scope_refine_net
     run_name_suffix: lora_hp_g_scope_refine_net
     train_scope: refine_net
-
-  - name: lora_hp_g_scope_camera_head
-    run_name_suffix: lora_hp_g_scope_camera_head
-    train_scope: camera_head
-
-  - name: lora_hp_g_scope_full
-    run_name_suffix: lora_hp_g_scope_full
-    train_scope: full
-    batch_size: 4

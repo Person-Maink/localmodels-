@@ -13,7 +13,6 @@ from hmp_stride_adapter import fitting_prior
 from hmp_stride_adapter_args import Arguments
 from stride_refine import LIGHT_PURPLE, _frame_records, _parse_target_hand, _pick_track, _stack_records
 from utils_new import render_rgba_multiple
-from vipe_artifacts import resolve_vipe_camera_sequence
 from visualize import images_to_video
 from wilor.models import MANO
 from wilor.utils.geometry import perspective_projection
@@ -127,26 +126,6 @@ def _wilor_camera_inputs(sequence):
         "box_size": np.asarray(sequence["box_size"], dtype=np.float32),
         "focal_length": focal.astype(np.float32),
     }
-
-
-def _vipe_camera_inputs(sequence, video_name: str, vipe_output_root):
-    vipe_camera = resolve_vipe_camera_sequence(video_name, sequence["frame_ids"], vipe_output_root)
-    intrinsics = vipe_camera["intrinsics"].astype(np.float32)
-    return {
-        "cam_R": vipe_camera["cam_R"].astype(np.float32),
-        "cam_t": vipe_camera["cam_t"].astype(np.float32),
-        "trans": vipe_camera["cam_t"].astype(np.float32),
-        "intrinsics": intrinsics,
-        "img_res": np.asarray(sequence["img_res"], dtype=np.int32),
-        "box_center": np.asarray(sequence["box_center"], dtype=np.float32),
-        "box_size": np.asarray(sequence["box_size"], dtype=np.float32),
-        "focal_length": intrinsics[:, :2].mean(axis=-1).astype(np.float32),
-        "pose_frame_ids": vipe_camera["pose_frame_ids"],
-        "intrinsics_frame_ids": vipe_camera["intrinsics_frame_ids"],
-        "pose_fallback_mask": vipe_camera["pose_fallback_mask"],
-        "intrinsics_fallback_mask": vipe_camera["intrinsics_fallback_mask"],
-    }
-
 
 def _sequence_to_hmp_inputs(sequence, device: torch.device, camera_inputs: dict):
     obs_data, hand_inputs = _sequence_to_hmp_observations(sequence, device)
@@ -501,72 +480,6 @@ def run_stride_hmp(
         "backend": "hmp",
         "mode": "stride",
         "camera_source": "wilor",
-        "source_cache_root": str(cache_root),
-        "source_mesh_root": str(mesh_root),
-        "hmp_assets_root": str(assets_root),
-        "hmp_config_name": config.config_name,
-        "target_hand": target_hand,
-        "right": int(refined["right"]),
-        "result_path": str(out_dir / "refined_world_results.npz"),
-        "raw_result_path": str(raw_result_path),
-    }
-    with open(out_dir / "stride_metadata.json", "w", encoding="utf-8") as handle:
-        json.dump(metadata, handle, indent=2)
-    return metadata
-
-
-def run_stride_vipe_hmp(
-    cache_root,
-    output_root,
-    video_name,
-    vipe_output_root,
-    image_folder=None,
-    frame_store: FrameStore | None = None,
-    target_hand="auto",
-    mano_model_path="./mano_data",
-    use_gpu=True,
-    visualize=False,
-    hmp_config: HMPConfig | None = None,
-):
-    config = hmp_config or HMPConfig(assets_root=str(Path(__file__).resolve().parent / "_DATA" / "hmp_model"))
-
-    cache_root = Path(cache_root)
-    output_root = Path(output_root)
-    mesh_root = cache_root / video_name / "meshes"
-    if not mesh_root.is_dir():
-        raise FileNotFoundError(f"WiLoR mesh cache not found: {mesh_root}")
-
-    records_by_frame = _frame_records(mesh_root)
-    selected_records = _pick_track(records_by_frame, target_hand=_parse_target_hand(target_hand))
-    sequence = _stack_records(selected_records, video_name=video_name)
-    camera_inputs = _vipe_camera_inputs(sequence, video_name, vipe_output_root)
-
-    refined, raw_result_path, assets_root = _run_hmp_pipeline(
-        sequence=sequence,
-        camera_inputs=camera_inputs,
-        cache_root=cache_root,
-        output_root=output_root,
-        video_name=video_name,
-        image_folder=image_folder,
-        frame_store=frame_store,
-        mano_model_path=mano_model_path,
-        use_gpu=use_gpu,
-        visualize=visualize,
-        config=config,
-    )
-
-    out_dir = output_root / video_name
-    metadata = {
-        "video": video_name,
-        "frames_refined": int(len(refined["frame_ids"])),
-        "backend": "hmp",
-        "mode": "stride-vipe",
-        "camera_source": "vipe",
-        "vipe_output_root": str(Path(vipe_output_root)),
-        "vipe_pose_fallback_count": int(camera_inputs["pose_fallback_mask"].sum()),
-        "vipe_intrinsics_fallback_count": int(camera_inputs["intrinsics_fallback_mask"].sum()),
-        "vipe_pose_fallback_rate": float(camera_inputs["pose_fallback_mask"].mean()),
-        "vipe_intrinsics_fallback_rate": float(camera_inputs["intrinsics_fallback_mask"].mean()),
         "source_cache_root": str(cache_root),
         "source_mesh_root": str(mesh_root),
         "hmp_assets_root": str(assets_root),

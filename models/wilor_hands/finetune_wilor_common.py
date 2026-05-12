@@ -614,12 +614,8 @@ def configure_trainable_scope(
 
     if scope == "temporal_only":
         modules = []
-    elif scope == "camera_head":
-        modules = [model.backbone.cam_emb, model.backbone.deccam, model.refine_net.dec_cam]
     elif scope == "refine_net":
         modules = [model.refine_net]
-    elif scope == "full":
-        modules = [model]
     else:
         raise ValueError(f"Unsupported train scope '{scope}'.")
 
@@ -645,7 +641,7 @@ def apply_train_mode_for_scope(
         model.eval()
     else:
         model.train()
-    if scope in {"camera_head", "refine_net", "temporal_only"} and not lora_enabled:
+    if scope in {"refine_net", "temporal_only"} and not lora_enabled:
         model.backbone.eval()
     if hasattr(model, "discriminator"):
         model.discriminator.eval()

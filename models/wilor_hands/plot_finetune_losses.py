@@ -322,14 +322,6 @@ def build_config_summary(
     vipe_cfg = losses_cfg.get("vipe_camera") or {}
     if vipe_cfg.get("enabled") and vipe_cfg.get("weight") is not None:
         parts.append(f"vipe={_format_number(vipe_cfg['weight'])}")
-    temporal_vipe_cfg = losses_cfg.get("temporal_vipe_camera") or {}
-    if temporal_vipe_cfg.get("enabled"):
-        parts.append(
-            "tvc="
-            f"{_format_number(temporal_vipe_cfg.get('weight', 0.0))}/"
-            f"{_format_number(temporal_vipe_cfg.get('smoothness_weight', 0.0))}/"
-            f"{_format_number(temporal_vipe_cfg.get('anchor_weight', 0.0))}"
-        )
     return " | ".join(parts)
 
 

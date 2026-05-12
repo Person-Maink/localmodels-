@@ -63,26 +63,6 @@ OPTIONAL_BINDINGS = (
         "temporal_bbox_projected_scorer_weight",
         ("losses", "temporal_bbox_projected", "scorer_weight"),
     ),
-    ConfigBinding(
-        "temporal_vipe_camera_enabled",
-        ("losses", "temporal_vipe_camera", "enabled"),
-    ),
-    ConfigBinding(
-        "temporal_vipe_camera_formulation",
-        ("losses", "temporal_vipe_camera", "formulation"),
-    ),
-    ConfigBinding(
-        "temporal_vipe_camera_weight",
-        ("losses", "temporal_vipe_camera", "weight"),
-    ),
-    ConfigBinding(
-        "temporal_vipe_camera_smoothness_weight",
-        ("losses", "temporal_vipe_camera", "smoothness_weight"),
-    ),
-    ConfigBinding(
-        "temporal_vipe_camera_anchor_weight",
-        ("losses", "temporal_vipe_camera", "anchor_weight"),
-    ),
     ConfigBinding("lora_enabled", ("lora", "enabled")),
     ConfigBinding("lora_rank", ("lora", "rank")),
     ConfigBinding("lora_alpha", ("lora", "alpha")),

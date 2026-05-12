@@ -1,6 +1,5 @@
 defaults:
   # Stage G: compare trainable scopes on the current best-known baseline.
-  # The full-model run uses a smaller batch for memory safety.
   train_mode: distill
   train_scope: refine_net
   videos:
@@ -44,23 +43,12 @@ defaults:
       formulation: learnable
       weight: 0.01
       scorer_weight: 0.001
-    temporal_vipe_camera:
-      enabled: false
-      formulation: learnable
-      weight: 0.01
-      smoothness_weight: 0.005
-      anchor_weight: 0.001
 
 experiments:
-  - name: hp_g_scope_camera_head
-    run_name_suffix: hp_g_scope_camera_head
-    train_scope: camera_head
+  - name: hp_g_scope_temporal_only
+    run_name_suffix: hp_g_scope_temporal_only
+    train_scope: temporal_only
 
   - name: hp_g_scope_refine_net
     run_name_suffix: hp_g_scope_refine_net
     train_scope: refine_net
-
-  - name: hp_g_scope_full
-    run_name_suffix: hp_g_scope_full
-    train_scope: full
-    batch_size: 4

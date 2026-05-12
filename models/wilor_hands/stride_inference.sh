@@ -63,7 +63,6 @@ VIDEO_NAME="me 1"
 VIDEO_FILE="me 1.mp4"
 WILOR_CACHE_ROOT="${PROJECT_ROOT}/outputs/wilor"
 OUTPUT_ROOT="${PROJECT_ROOT}/outputs/stride"
-VIPE_OUTPUT_ROOT="${PROJECT_ROOT}/outputs/vipe"
 APPTAINER_IMAGE="${APPTAINER_IMAGE:-${MODEL_ROOT}/apptainer/template.sif}"
 HMP_ASSETS_ROOT="${HMP_ASSETS_ROOT:-${MODEL_ROOT}/_DATA/hmp_model}"
 OVERWRITE="${OVERWRITE:-false}"
@@ -114,7 +113,7 @@ container_cmd=$(cat <<EOF
 set -euo pipefail
 cd $(printf '%q' "${MODEL_ROOT}")
 python main.py \
-  --mode stride-vipe \
+  --mode stride \
   --video $(printf '%q' "${VIDEO_STEM}") \
   --image_folder $(printf '%q' "${VIDEO_DIR}") \
   --frame_cache_root $(printf '%q' "${FRAME_CACHE_ROOT}") \
@@ -122,7 +121,6 @@ python main.py \
   --stride_output_folder $(printf '%q' "${OUTPUT_ROOT}") \
   --stride_backend hmp \
   --stride_from_cache \
-  --vipe_output_root $(printf '%q' "${VIPE_OUTPUT_ROOT}") \
   --hmp_assets_root $(printf '%q' "${HMP_ASSETS_ROOT}") \
   ${visualize_flag} \
   ${gpu_flag}
@@ -132,7 +130,6 @@ EOF
 echo "STRIDE video: ${VIDEO_PATH}"
 echo "WiLoR cache root: ${WILOR_CACHE_ROOT}"
 echo "STRIDE output root: ${OUTPUT_ROOT}"
-echo "ViPE output root: ${VIPE_OUTPUT_ROOT}"
 echo "STRIDE completion marker: ${MARKER_PATH}"
 echo "STRIDE frame cache root: ${FRAME_CACHE_ROOT}"
 
@@ -144,7 +141,7 @@ srun apptainer exec \
 
 rm -rf "${VIDEO_OUTPUT_DIR}/visualizations"
 rm -f "${VIDEO_OUTPUT_FILE}"
-write_simple_completion_marker "${MARKER_PATH}" "stride-vipe" "${VIDEO_STEM}" "${VIDEO_OUTPUT_DIR}"
+write_simple_completion_marker "${MARKER_PATH}" "stride" "${VIDEO_STEM}" "${VIDEO_OUTPUT_DIR}"
 
 echo "==============================================="
 end_time=$(date +%s)
