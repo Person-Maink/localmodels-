@@ -64,11 +64,9 @@ VIDEO_FILE="me 1.mp4"
 WILOR_CACHE_ROOT="${PROJECT_ROOT}/outputs/wilor"
 OUTPUT_ROOT="${PROJECT_ROOT}/outputs/stride"
 APPTAINER_IMAGE="${APPTAINER_IMAGE:-${MODEL_ROOT}/apptainer/template.sif}"
-HMP_ASSETS_ROOT="${HMP_ASSETS_ROOT:-${MODEL_ROOT}/_DATA/hmp_model}"
 OVERWRITE="${OVERWRITE:-false}"
-VISUALIZE="${VISUALIZE:-false}"
-USE_GPU="${USE_GPU:-true}"
 FRAME_CACHE_ROOT="${FRAME_CACHE_ROOT:-${VIDEO_DIR}}"
+STRIDE_CONFIG_PATH="${STRIDE_CONFIG_PATH:-${MODEL_ROOT}/stride_configs/hmp.yaml}"
 
 if ! VIDEO_PATH=$(resolve_video_path "${VIDEO_DIR}" "${VIDEO_NAME}" "${VIDEO_FILE}"); then
     echo "Could not resolve a supported video under ${VIDEO_DIR} for VIDEO_NAME='${VIDEO_NAME}' VIDEO_FILE='${VIDEO_FILE}'" >&2
@@ -99,16 +97,6 @@ fi
 
 mkdir -p "${OUTPUT_ROOT}"
 
-visualize_flag="--no-visualize"
-if is_truthy "${VISUALIZE}"; then
-    visualize_flag="--visualize"
-fi
-
-gpu_flag="--use_gpu"
-if ! is_truthy "${USE_GPU}"; then
-    gpu_flag="--no-use_gpu"
-fi
-
 container_cmd=$(cat <<EOF
 set -euo pipefail
 cd $(printf '%q' "${MODEL_ROOT}")
@@ -121,9 +109,7 @@ python main.py \
   --stride_output_folder $(printf '%q' "${OUTPUT_ROOT}") \
   --stride_backend hmp \
   --stride_from_cache \
-  --hmp_assets_root $(printf '%q' "${HMP_ASSETS_ROOT}") \
-  ${visualize_flag} \
-  ${gpu_flag}
+  --stride_config $(printf '%q' "${STRIDE_CONFIG_PATH}")
 EOF
 )
 
@@ -132,6 +118,7 @@ echo "WiLoR cache root: ${WILOR_CACHE_ROOT}"
 echo "STRIDE output root: ${OUTPUT_ROOT}"
 echo "STRIDE completion marker: ${MARKER_PATH}"
 echo "STRIDE frame cache root: ${FRAME_CACHE_ROOT}"
+echo "STRIDE config: ${STRIDE_CONFIG_PATH}"
 
 srun apptainer exec \
   --nv \

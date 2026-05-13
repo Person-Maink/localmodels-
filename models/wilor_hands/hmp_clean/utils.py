@@ -4,9 +4,16 @@ import numpy as np
 import plyfile
 import torch
 import torch.nn.functional as F
-from human_body_prior.tools.omni_tools import copy2cpu as c2c
 from scipy.spatial.transform import Rotation as R
 from scipy.spatial.transform import Slerp
+
+try:
+    from human_body_prior.tools.omni_tools import copy2cpu as c2c
+except ImportError:
+    def c2c(value):
+        if isinstance(value, torch.Tensor):
+            return value.detach().cpu().numpy()
+        return value
 
 import holden.BVH as BVH
 from holden.Animation import Animation

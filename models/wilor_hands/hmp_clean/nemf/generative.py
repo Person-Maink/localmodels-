@@ -7,9 +7,16 @@ import torch.nn as nn
 from arguments import Arguments
 from holden.Animation import Animation
 from holden.Quaternions import Quaternions
-from human_body_prior.tools.omni_tools import copy2cpu as c2c
 from rotations import matrix_to_quaternion, matrix_to_rotation_6d, quaternion_to_axis_angle, rotation_6d_to_matrix
 from utils import align_joints, compute_trajectory, estimate_angular_velocity, estimate_linear_velocity, normalize
+
+try:
+    from human_body_prior.tools.omni_tools import copy2cpu as c2c
+except ImportError:
+    def c2c(value):
+        if isinstance(value, torch.Tensor):
+            return value.detach().cpu().numpy()
+        return value
 
 from .base_model import BaseModel
 from .fk import ForwardKinematicsLayer
