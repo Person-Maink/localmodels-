@@ -6,7 +6,8 @@ COMMON_SH="${SCRIPT_DIR}/../common/inference_common.sh"
 source "${COMMON_SH}"
 
 VIDEO_DIR="${VIDEO_DIR:-${SCRIPT_DIR}/../../data/test}"
-MODE="${MODE:-wilor}"
+MODE="${MODE:-stride}"
+
 if [[ -z "${TEMPLATE:-}" ]]; then
     if [[ "${MODE}" == "stride" ]]; then
         TEMPLATE="${SCRIPT_DIR}/template_stride.sh"
