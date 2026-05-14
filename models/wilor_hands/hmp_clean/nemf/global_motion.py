@@ -3,9 +3,16 @@ import os
 import numpy as np
 import torch
 import torch.nn as nn
-from human_body_prior.tools.omni_tools import copy2cpu as c2c
 from rotations import matrix_to_axis_angle, rotation_6d_to_matrix
 from utils import compute_trajectory, export_ply_trajectory, normalize
+
+try:
+    from human_body_prior.tools.omni_tools import copy2cpu as c2c
+except ImportError:
+    def c2c(value):
+        if isinstance(value, torch.Tensor):
+            return value.detach().cpu().numpy()
+        return value
 
 from .base_model import BaseModel
 from .fk import ForwardKinematicsLayer

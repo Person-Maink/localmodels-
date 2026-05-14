@@ -1,105 +1,56 @@
 import json
-import shutil
-from dataclasses import dataclass
+import sys
 from pathlib import Path
-from types import SimpleNamespace
+
+ADAPTER_PATH = Path(__file__).resolve().parent
+HMP_CLEAN_PATH = ADAPTER_PATH / "hmp_clean"
+for import_path in (ADAPTER_PATH, HMP_CLEAN_PATH):
+    if str(import_path) not in sys.path:
+        sys.path.insert(0, str(import_path))
 
 import numpy as np
 import torch
+import torch.nn.functional as F
 
-from frame_store import FrameStore, SUPPORTED_VIDEO_EXTS
-from hmp_clean.rotations import axis_angle_to_matrix, matrix_to_axis_angle
-from hmp_stride_adapter import fitting_prior
-from hmp_stride_adapter_args import Arguments
+from frame_store import FrameStore
+from hmp_model_args import Arguments
+from nemf.fk import ForwardKinematicsLayer
+from nemf.generative import Architecture
+from nemf.losses import GeodesicLoss
+from rotations import matrix_to_axis_angle, matrix_to_rotation_6d, rotation_6d_to_matrix
+from stride_config import StrideHMPConfig
 from stride_refine import LIGHT_PURPLE, _frame_records, _parse_target_hand, _pick_track, _stack_records
+from utils import estimate_angular_velocity, estimate_linear_velocity
 from utils_new import render_rgba_multiple
 from visualize import images_to_video
 from wilor.models import MANO
 from wilor.utils.geometry import perspective_projection
 
 
-@dataclass
-class HMPConfig:
-    assets_root: str
-    config_name: str = "hmp_config.yaml"
+def _require_hmp_assets(config: StrideHMPConfig):
+    model_config_path = config.hmp_model_config_path
+    if not model_config_path.exists():
+        raise FileNotFoundError(f"HMP model config not found: {model_config_path}")
 
-
-def _require_hmp_assets(assets_root: Path, config_name: str):
-    config = Arguments(
-        str(Path(__file__).resolve().parent),
-        str(Path(__file__).resolve().parent / "hmp_clean"),
-        filename=config_name,
-        mano_dir=Path(__file__).resolve().parent / "mano_data",
+    args = Arguments(
+        str(ADAPTER_PATH),
+        str(model_config_path.parent),
+        filename=model_config_path.name,
+        mano_dir=config.runtime.mano_model_path,
     )
     required = [
-        assets_root / f"mean-{config.data.gender}-{config.data.clip_length}-{config.data.fps}fps.pt",
-        assets_root / f"std-{config.data.gender}-{config.data.clip_length}-{config.data.fps}fps.pt",
-        assets_root / "results" / "model" / "local_encoder.pth",
-        assets_root / "results" / "model" / "nemf.pth",
-        assets_root / "results" / "model" / "global_encoder.pth",
+        config.hmp_assets_root / f"mean-{args.data.gender}-{args.data.clip_length}-{args.data.fps}fps.pt",
+        config.hmp_assets_root / f"std-{args.data.gender}-{args.data.clip_length}-{args.data.fps}fps.pt",
+        config.hmp_assets_root / "results" / "model" / "local_encoder.pth",
+        config.hmp_assets_root / "results" / "model" / "nemf.pth",
+        config.hmp_assets_root / "results" / "model" / "global_encoder.pth",
     ]
     missing = [str(path) for path in required if not path.exists()]
     if missing:
         raise FileNotFoundError(
             "Missing required HMP assets for STRIDE refinement:\n" + "\n".join(missing)
         )
-
-
-def _resolve_vid_path(image_folder, cache_root: Path, video_name: str, frame_store: FrameStore | None = None):
-    if frame_store is not None:
-        source_path = frame_store.get_source_path(video_name)
-        if source_path is not None:
-            return source_path
-    zip_path = cache_root / f"{video_name}.frames.zip"
-    if zip_path.is_file():
-        return zip_path
-    if image_folder:
-        image_root = Path(image_folder)
-        for ext in SUPPORTED_VIDEO_EXTS:
-            raw_video = image_root / f"{video_name}{ext}"
-            if raw_video.is_file():
-                return raw_video
-        image_dir = image_root
-        if image_dir.name != f"{video_name}_frames":
-            image_dir = image_dir / f"{video_name}_frames"
-        if image_dir.is_dir():
-            return image_dir
-    return cache_root / video_name / "meshes"
-
-
-def _sequence_to_hmp_observations(sequence, device: torch.device):
-    seq_len = len(sequence["frame_ids"])
-    right = int(sequence["right"])
-
-    global_orient_rot = torch.as_tensor(sequence["global_orient"], dtype=torch.float32, device=device)
-    hand_pose_rot = torch.as_tensor(sequence["hand_pose"], dtype=torch.float32, device=device)
-
-    root_orient = matrix_to_axis_angle(global_orient_rot[:, 0]).detach().cpu().numpy().astype(np.float32)
-    pose_body = matrix_to_axis_angle(hand_pose_rot.reshape(-1, 3, 3)).reshape(seq_len, 15, 3).detach().cpu().numpy().astype(np.float32)
-    betas = np.asarray(sequence["betas"], dtype=np.float32)
-    if betas.ndim == 2:
-        # WiLoR stores per-frame betas, but HMP's reconstruction path assumes
-        # one subject-shape vector per sequence at initialization time.
-        betas = betas.mean(axis=0)
-    elif betas.ndim > 2:
-        betas = betas.reshape(-1, betas.shape[-1]).mean(axis=0)
-
-    conf = np.asarray(sequence["detection_confidence"], dtype=np.float32)
-    joints2d_xy = np.asarray(sequence["pred_keypoints_2d"], dtype=np.float32)
-    joints2d = np.concatenate([joints2d_xy, np.repeat(conf[:, None, None], joints2d_xy.shape[1], axis=1)], axis=-1)
-    vis_mask = np.asarray(sequence["observed_mask"], dtype=np.bool_)
-
-    obs_data = {
-        "joints2d": torch.from_numpy(joints2d[None]).to(device),
-        "vis_mask": torch.from_numpy(vis_mask[None]).to(device),
-        "is_right": torch.from_numpy(np.full((1, seq_len), right, dtype=np.float32)).to(device),
-    }
-    return obs_data, {
-        "pose_body": pose_body,
-        "betas": betas,
-        "root_orient": root_orient,
-        "is_right": np.full((seq_len,), right, dtype=np.float32),
-    }
+    return args
 
 
 def _wilor_camera_inputs(sequence):
@@ -119,7 +70,6 @@ def _wilor_camera_inputs(sequence):
     return {
         "cam_R": cam_r,
         "cam_t": cam_t,
-        "trans": cam_t,
         "intrinsics": camera_intrinsics,
         "img_res": img_res.astype(np.int32),
         "box_center": np.asarray(sequence["box_center"], dtype=np.float32),
@@ -127,128 +77,369 @@ def _wilor_camera_inputs(sequence):
         "focal_length": focal.astype(np.float32),
     }
 
-def _sequence_to_hmp_inputs(sequence, device: torch.device, camera_inputs: dict):
-    obs_data, hand_inputs = _sequence_to_hmp_observations(sequence, device)
-    res_dict = [{
-        "pose_body": torch.from_numpy(hand_inputs["pose_body"][None]).to(device),
-        "betas": torch.from_numpy(hand_inputs["betas"][None]).to(device),
-        "trans": torch.from_numpy(camera_inputs["trans"][None]).to(device),
-        "root_orient": torch.from_numpy(hand_inputs["root_orient"][None]).to(device),
-        "is_right": torch.from_numpy(hand_inputs["is_right"][None]).to(device),
-        "cam_R": torch.from_numpy(camera_inputs["cam_R"][None]).to(device),
-        "cam_t": torch.from_numpy(camera_inputs["cam_t"][None]).to(device),
-        "intrins": torch.from_numpy(camera_inputs["intrinsics"][None]).to(device),
-    }]
-    return obs_data, res_dict
+
+def _move_hmp_model_to_device(model: Architecture, device: torch.device):
+    for module in model.models:
+        module.to(device)
+    model.device = device
+    model.fk.device = device
+    model.fk.parents = model.fk.parents.to(device)
+    model.fk.positions = model.fk.positions.to(device)
+    model.mean = {key: value.to(device) for key, value in model.mean.items()}
+    model.std = {key: value.to(device) for key, value in model.std.items()}
+    model.eval()
 
 
-def _result_stem(vid_path: Path):
-    return vid_path.name.split(".")[0]
+def _load_hmp_model(config: StrideHMPConfig):
+    args = Arguments(
+        str(ADAPTER_PATH),
+        str(config.hmp_model_config_path.parent),
+        filename=config.hmp_model_config_path.name,
+        mano_dir=config.runtime.mano_model_path,
+    )
+    args.root = str(ADAPTER_PATH)
+    args.dataset_dir = str(config.hmp_assets_root)
+    args.save_dir = str(config.hmp_assets_root)
+    args.smpl.smpl_body_model = str(config.runtime.mano_model_path)
+
+    model = Architecture(args, ngpu=1)
+    model.load(optimal=True)
+
+    device = torch.device("cuda" if config.runtime.use_gpu and torch.cuda.is_available() else "cpu")
+    _move_hmp_model_to_device(model, device)
+    fk = ForwardKinematicsLayer(args, device=device)
+    return args, model, fk, device
 
 
-def _load_world_result(path: Path):
-    payload = np.load(path, allow_pickle=True)
-    return {key: payload[key] for key in payload.files}
+def _sequence_to_hmp_targets(sequence, fk: ForwardKinematicsLayer, fps: float, device: torch.device):
+    local_root = torch.as_tensor(sequence["global_orient"], dtype=torch.float32, device=device)
+    local_hand = torch.as_tensor(sequence["hand_pose"], dtype=torch.float32, device=device)
+    local_rotmat = torch.cat([local_root, local_hand], dim=1)
+    root_orient = local_root[:, 0].clone()
+
+    rootless_rotmat = local_rotmat.clone()
+    identity = torch.eye(3, dtype=torch.float32, device=device)
+    rootless_rotmat[:, 0] = identity
+
+    pos, global_xform = fk(rootless_rotmat)
+    global_rotmat = global_xform[:, :, :3, :3].contiguous()
+    dt = 1.0 / float(fps)
+
+    return {
+        "pos": pos.contiguous(),
+        "velocity": estimate_linear_velocity(pos.unsqueeze(0), dt=dt).squeeze(0).contiguous(),
+        "global_xform": matrix_to_rotation_6d(global_rotmat).contiguous(),
+        "angular": estimate_angular_velocity(rootless_rotmat.unsqueeze(0).clone(), dt=dt).squeeze(0).contiguous(),
+        "root_orient": matrix_to_rotation_6d(root_orient).contiguous(),
+        "rotmat": global_rotmat.contiguous(),
+        "observed_mask": torch.as_tensor(sequence["observed_mask"], dtype=torch.bool, device=device),
+        "confidence": torch.as_tensor(sequence["detection_confidence"], dtype=torch.float32, device=device).clamp_min(0.05),
+    }
 
 
-def _resolve_intrinsics(result_dict, seq_len: int, fallback_intrinsics):
-    raw_intrinsics = result_dict.get("intrins", fallback_intrinsics)
-    intrinsics = np.asarray(raw_intrinsics, dtype=np.float32)
-    if intrinsics.ndim == 1:
-        intrinsics = np.repeat(intrinsics[None], seq_len, axis=0)
-    elif intrinsics.ndim == 3:
-        intrinsics = intrinsics[0]
-    if intrinsics.shape[0] < seq_len:
-        intrinsics = np.concatenate([intrinsics, np.repeat(intrinsics[-1:], seq_len - intrinsics.shape[0], axis=0)], axis=0)
-    return intrinsics[:seq_len].astype(np.float32)
+def _chunk_starts(length: int, clip_length: int, overlap: int):
+    if length <= clip_length:
+        return [0]
+    stride = max(1, clip_length - overlap)
+    starts = list(range(0, max(1, length - clip_length + 1), stride))
+    last_start = length - clip_length
+    if starts[-1] != last_start:
+        starts.append(last_start)
+    return starts
 
 
-def _reconstruct_sequence(sequence, result_dict, mano_model_path: str, device: torch.device):
-    frame_ids = np.asarray(sequence["frame_ids"], dtype=np.int32)
-    observed_mask = np.asarray(sequence["observed_mask"], dtype=bool)
-    right = int(sequence["right"])
-    img_res = np.asarray(sequence["img_res"], dtype=np.int32)
-    box_center = np.asarray(sequence["box_center"], dtype=np.float32)
-    box_size = np.asarray(sequence["box_size"], dtype=np.float32)
-    focal = np.asarray(sequence["focal_length"], dtype=np.float32)
-
-    root_orient_aa = np.asarray(result_dict["root_orient"], dtype=np.float32)[0]
-    pose_body_aa = np.asarray(result_dict["pose_body"], dtype=np.float32)[0]
-    cam_t = np.asarray(result_dict["cam_t"], dtype=np.float32)[0]
-    cam_r = np.asarray(result_dict["cam_R"], dtype=np.float32)[0]
-    betas = np.asarray(result_dict["betas"], dtype=np.float32)
-    if betas.ndim == 2:
-        betas = np.repeat(betas, len(frame_ids), axis=0)
+def _slice_time_chunk(tensor: torch.Tensor, start: int, chunk_len: int, pad_value=None):
+    end = min(tensor.shape[0], start + chunk_len)
+    chunk = tensor[start:end]
+    pad = chunk_len - chunk.shape[0]
+    if pad <= 0:
+        return chunk
+    if pad_value is not None:
+        extra = torch.full(
+            (pad, *tensor.shape[1:]),
+            pad_value,
+            dtype=tensor.dtype,
+            device=tensor.device,
+        )
+    elif chunk.shape[0] > 0:
+        extra = chunk[-1:].expand(pad, *chunk.shape[1:]).clone()
     else:
-        betas = np.repeat(betas[0][None], len(frame_ids), axis=0)
+        extra = tensor.new_zeros((pad, *tensor.shape[1:]))
+    return torch.cat([chunk, extra], dim=0)
 
-    seq_len = min(len(frame_ids), len(root_orient_aa), len(pose_body_aa), len(cam_t))
-    frame_ids = frame_ids[:seq_len]
-    observed_mask = observed_mask[:seq_len]
-    img_res = img_res[:seq_len]
-    box_center = box_center[:seq_len]
-    box_size = box_size[:seq_len]
-    focal = focal[:seq_len]
-    root_orient_aa = root_orient_aa[:seq_len]
-    pose_body_aa = pose_body_aa[:seq_len]
-    cam_t = cam_t[:seq_len]
-    cam_r = cam_r[:seq_len]
-    betas = betas[:seq_len]
-    camera_intrinsics = _resolve_intrinsics(result_dict, seq_len, sequence["camera_intrinsics"])
-    focal_xy = camera_intrinsics[:, :2]
-    camera_center = camera_intrinsics[:, 2:]
-    focal = focal_xy.mean(axis=-1).astype(np.float32)
 
+def _weighted_mean(values: torch.Tensor, weights: torch.Tensor):
+    while weights.ndim < values.ndim:
+        weights = weights.unsqueeze(0)
+    return (values * weights).sum() / weights.sum().clamp_min(1.0)
+
+
+def _masked_rotation_loss(pred: torch.Tensor, target: torch.Tensor, weights: torch.Tensor, criterion_geo: GeodesicLoss):
+    per_joint = criterion_geo(
+        pred.reshape(-1, 3, 3),
+        target.reshape(-1, 3, 3),
+        reduction="none",
+    ).reshape(pred.shape[0], pred.shape[1], pred.shape[2])
+    per_frame = per_joint.mean(dim=2)
+    return _weighted_mean(per_frame, weights)
+
+
+def _masked_position_loss(pred: torch.Tensor, target: torch.Tensor, weights: torch.Tensor):
+    per_frame = (pred - target).square().mean(dim=(2, 3))
+    return _weighted_mean(per_frame, weights)
+
+
+def _masked_root_loss(pred: torch.Tensor, target: torch.Tensor, weights: torch.Tensor, criterion_geo: GeodesicLoss):
+    per_frame = criterion_geo(
+        pred.reshape(-1, 3, 3),
+        target.reshape(-1, 3, 3),
+        reduction="none",
+    ).reshape(pred.shape[0], pred.shape[1])
+    return _weighted_mean(per_frame, weights)
+
+
+def _build_chunk_targets(base_targets: dict, start: int, clip_length: int):
+    return {
+        "pos": _slice_time_chunk(base_targets["pos"], start, clip_length).unsqueeze(0),
+        "velocity": _slice_time_chunk(base_targets["velocity"], start, clip_length).unsqueeze(0),
+        "global_xform": _slice_time_chunk(base_targets["global_xform"], start, clip_length).unsqueeze(0),
+        "angular": _slice_time_chunk(base_targets["angular"], start, clip_length).unsqueeze(0),
+        "root_orient": _slice_time_chunk(base_targets["root_orient"], start, clip_length).unsqueeze(0),
+        "rotmat": _slice_time_chunk(base_targets["rotmat"], start, clip_length).unsqueeze(0),
+        "observed_mask": _slice_time_chunk(base_targets["observed_mask"], start, clip_length, pad_value=False),
+        "confidence": _slice_time_chunk(base_targets["confidence"], start, clip_length, pad_value=0.0),
+    }
+
+
+def _optimize_pose_chunk(model: Architecture, config: StrideHMPConfig, chunk_targets: dict):
+    model_input = {
+        "pos": chunk_targets["pos"],
+        "velocity": chunk_targets["velocity"],
+        "global_xform": chunk_targets["global_xform"],
+        "angular": chunk_targets["angular"],
+        "root_orient": chunk_targets["root_orient"],
+    }
+    model.set_input(model_input)
+    with torch.no_grad():
+        _, init_z_l, _ = model.encode_local()
+        _, init_z_g, _ = model.encode_global()
+
+    z_l = torch.nn.Parameter(init_z_l.detach().clone())
+    z_g = torch.nn.Parameter(init_z_g.detach().clone())
+    optimizer = torch.optim.Adam([z_l, z_g], lr=config.pose_lr)
+    criterion_geo = GeodesicLoss()
+
+    weights = chunk_targets["observed_mask"].float() * chunk_targets["confidence"]
+    best_total = None
+    best_local_rotmat = None
+    best_stats = {}
+
+    for _ in range(config.pose_iters):
+        optimizer.zero_grad(set_to_none=True)
+        output = model.decode(z_l, z_g, length=chunk_targets["rotmat"].shape[1], step=1)
+
+        loss_rot = _masked_rotation_loss(output["rotmat"], chunk_targets["rotmat"], weights, criterion_geo)
+        loss_pos = _masked_position_loss(output["pos"], chunk_targets["pos"], weights)
+        loss_root = _masked_root_loss(
+            rotation_6d_to_matrix(output["root_orient"]),
+            rotation_6d_to_matrix(chunk_targets["root_orient"]),
+            weights,
+            criterion_geo,
+        )
+        loss_latent = F.mse_loss(z_l, init_z_l) + F.mse_loss(z_g, init_z_g)
+
+        total = (
+            config.pose_weights.rot * loss_rot
+            + config.pose_weights.pos * loss_pos
+            + config.pose_weights.root * loss_root
+            + config.pose_weights.latent * loss_latent
+        )
+        total.backward()
+        optimizer.step()
+
+        value = float(total.detach().cpu().item())
+        if best_total is None or value < best_total:
+            with torch.no_grad():
+                best_total = value
+                root_orient = rotation_6d_to_matrix(output["root_orient"])
+                joint_count = output["rotmat"].shape[2]
+                local_rotmat = model.fk.global_to_local(output["rotmat"].reshape(-1, joint_count, 3, 3)).reshape(
+                    output["rotmat"].shape[0],
+                    output["rotmat"].shape[1],
+                    joint_count,
+                    3,
+                    3,
+                )
+                local_rotmat[:, :, 0] = root_orient
+                best_local_rotmat = local_rotmat[0].detach().cpu()
+                best_stats = {
+                    "total": value,
+                    "rot": float(loss_rot.detach().cpu().item()),
+                    "pos": float(loss_pos.detach().cpu().item()),
+                    "root": float(loss_root.detach().cpu().item()),
+                    "latent": float(loss_latent.detach().cpu().item()),
+                }
+
+    if best_local_rotmat is None:
+        raise RuntimeError("HMP pose optimization did not produce a result.")
+    return best_local_rotmat, best_stats
+
+
+def _blend_pose_chunks(chunk_rotmats: list[torch.Tensor], starts: list[int], seq_len: int, overlap: int, device: torch.device):
+    joint_count = chunk_rotmats[0].shape[1]
+    accum = torch.zeros((seq_len, joint_count, 6), dtype=torch.float32, device=device)
+    weight_sum = torch.zeros((seq_len, 1, 1), dtype=torch.float32, device=device)
+
+    for chunk_rotmat, start in zip(chunk_rotmats, starts):
+        valid_len = min(seq_len - start, chunk_rotmat.shape[0])
+        weights = torch.ones((valid_len,), dtype=torch.float32, device=device)
+        if overlap > 0 and valid_len > 1:
+            ramp_len = min(overlap, valid_len)
+            ramp = torch.linspace(0.25, 1.0, steps=ramp_len, device=device)
+            weights[:ramp_len] = ramp
+            weights[-ramp_len:] = torch.minimum(weights[-ramp_len:], ramp.flip(0))
+
+        rot6d = matrix_to_rotation_6d(chunk_rotmat[:valid_len].to(device))
+        span = slice(start, start + valid_len)
+        accum[span] += rot6d * weights[:, None, None]
+        weight_sum[span] += weights[:, None, None]
+
+    blended6d = accum / weight_sum.clamp_min(1e-6)
+    return rotation_6d_to_matrix(blended6d.reshape(-1, 6)).reshape(seq_len, joint_count, 3, 3)
+
+
+def _optimize_sequence_betas(sequence, local_rotmat: torch.Tensor, config: StrideHMPConfig, mano_model_path: Path, device: torch.device):
+    seq_len = local_rotmat.shape[0]
+    init_betas = torch.as_tensor(sequence["betas"], dtype=torch.float32, device=device)
+    mean_betas = init_betas.mean(dim=0)
+    if not config.beta_optimize or config.beta_iters <= 0:
+        return mean_betas.unsqueeze(0).expand(seq_len, -1).detach().cpu(), {
+            "enabled": False,
+            "joint": 0.0,
+            "prior": 0.0,
+            "total": 0.0,
+        }
+
+    obs_joints = torch.as_tensor(sequence["joints"], dtype=torch.float32, device=device)
+    weights = (
+        torch.as_tensor(sequence["observed_mask"], dtype=torch.float32, device=device)
+        * torch.as_tensor(sequence["detection_confidence"], dtype=torch.float32, device=device).clamp_min(0.05)
+    )
+    beta_param = torch.nn.Parameter(mean_betas.clone())
+    optimizer = torch.optim.Adam([beta_param], lr=config.beta_lr)
     mano = MANO(
-        model_path=mano_model_path,
+        model_path=str(mano_model_path),
         batch_size=seq_len,
         create_body_pose=False,
         use_pca=False,
     ).to(device)
-    with torch.no_grad():
-        root_orient_t = axis_angle_to_matrix(torch.from_numpy(root_orient_aa).to(device)).unsqueeze(1)
-        pose_body_t = axis_angle_to_matrix(
-            torch.from_numpy(pose_body_aa.reshape(-1, 3)).to(device)
-        ).reshape(seq_len, 15, 3, 3)
-        betas_t = torch.from_numpy(betas).to(device)
-        mano_out = mano(global_orient=root_orient_t, hand_pose=pose_body_t, betas=betas_t)
-        verts = mano_out.vertices.detach().cpu().numpy().astype(np.float32)
-        joints = mano_out.joints.detach().cpu().numpy().astype(np.float32)
+    mirror = 2 * int(sequence["right"]) - 1
 
-        mirror = 2 * right - 1
-        verts[..., 0] *= mirror
+    best_total = None
+    best_betas = None
+    best_stats = {}
+    global_orient = local_rotmat[:, :1].to(device)
+    hand_pose = local_rotmat[:, 1:].to(device)
+
+    for _ in range(config.beta_iters):
+        optimizer.zero_grad(set_to_none=True)
+        betas = beta_param.unsqueeze(0).expand(seq_len, -1)
+        mano_out = mano(global_orient=global_orient, hand_pose=hand_pose, betas=betas, pose2rot=False)
+        joints = mano_out.joints.clone()
         joints[..., 0] *= mirror
 
-        kp2d = perspective_projection(
-            torch.from_numpy(joints).to(device),
-            translation=torch.from_numpy(cam_t).to(device),
-            focal_length=torch.from_numpy(focal_xy).to(device),
-            camera_center=torch.from_numpy(camera_center).to(device),
-        ).detach().cpu().numpy().astype(np.float32)
+        per_frame = (joints - obs_joints).square().mean(dim=(1, 2))
+        loss_joint = _weighted_mean(per_frame.unsqueeze(0), weights)
+        loss_prior = F.mse_loss(beta_param, mean_betas)
+        total = config.beta_weights.joint * loss_joint + config.beta_weights.prior * loss_prior
+        total.backward()
+        optimizer.step()
 
-    global_rot = axis_angle_to_matrix(torch.from_numpy(root_orient_aa)).numpy().astype(np.float32)[:, None]
-    hand_rot = axis_angle_to_matrix(torch.from_numpy(pose_body_aa.reshape(-1, 3))).numpy().astype(np.float32).reshape(seq_len, 15, 3, 3)
+        value = float(total.detach().cpu().item())
+        if best_total is None or value < best_total:
+            best_total = value
+            best_betas = betas.detach().cpu()
+            best_stats = {
+                "enabled": True,
+                "joint": float(loss_joint.detach().cpu().item()),
+                "prior": float(loss_prior.detach().cpu().item()),
+                "total": value,
+            }
+
+    if best_betas is None:
+        raise RuntimeError("Beta optimization did not produce a result.")
+    return best_betas, best_stats
+
+
+def _reconstruct_sequence(sequence, local_rotmat: torch.Tensor, betas: torch.Tensor, camera_inputs: dict, mano_model_path: Path, device: torch.device):
+    seq_len = local_rotmat.shape[0]
+    global_orient = local_rotmat[:, :1].to(device)
+    hand_pose = local_rotmat[:, 1:].to(device)
+    betas_t = betas.to(device)
+
+    mano = MANO(
+        model_path=str(mano_model_path),
+        batch_size=seq_len,
+        create_body_pose=False,
+        use_pca=False,
+    ).to(device)
+
+    cam_t = torch.as_tensor(camera_inputs["cam_t"], dtype=torch.float32, device=device)
+    camera_intrinsics = torch.as_tensor(camera_inputs["intrinsics"], dtype=torch.float32, device=device)
+    focal_xy = camera_intrinsics[:, :2]
+    camera_center = camera_intrinsics[:, 2:]
+    mirror = 2 * int(sequence["right"]) - 1
+
+    with torch.no_grad():
+        mano_out = mano(global_orient=global_orient, hand_pose=hand_pose, betas=betas_t, pose2rot=False)
+        verts = mano_out.vertices.clone()
+        joints = mano_out.joints.clone()
+        verts[..., 0] *= mirror
+        joints[..., 0] *= mirror
+        kp2d = perspective_projection(
+            joints,
+            translation=cam_t,
+            focal_length=focal_xy,
+            camera_center=camera_center,
+        )
+
+    root_orient_aa = matrix_to_axis_angle(global_orient[:, 0]).detach().cpu().numpy().astype(np.float32)
+    pose_body_aa = matrix_to_axis_angle(hand_pose.reshape(-1, 3, 3)).reshape(seq_len, 15, 3).detach().cpu().numpy().astype(np.float32)
 
     return {
-        "frame_ids": frame_ids,
-        "observed_mask": observed_mask,
-        "right": right,
-        "img_res": img_res,
-        "box_center": box_center,
-        "box_size": box_size,
-        "focal_length": focal,
-        "camera_intrinsics": camera_intrinsics,
-        "cam_t": cam_t.astype(np.float32),
-        "cam_R": cam_r.astype(np.float32),
-        "global_orient": global_rot,
-        "hand_pose": hand_rot,
-        "betas": betas.astype(np.float32),
-        "joints": joints,
-        "verts": verts,
-        "pred_keypoints_2d": kp2d,
-        "root_orient_aa": root_orient_aa.astype(np.float32),
-        "pose_body_aa": pose_body_aa.astype(np.float32),
+        "frame_ids": np.asarray(sequence["frame_ids"], dtype=np.int32),
+        "observed_mask": np.asarray(sequence["observed_mask"], dtype=bool),
+        "right": int(sequence["right"]),
+        "img_res": np.asarray(camera_inputs["img_res"], dtype=np.int32),
+        "box_center": np.asarray(camera_inputs["box_center"], dtype=np.float32),
+        "box_size": np.asarray(camera_inputs["box_size"], dtype=np.float32),
+        "focal_length": np.asarray(camera_inputs["focal_length"], dtype=np.float32),
+        "camera_intrinsics": np.asarray(camera_inputs["intrinsics"], dtype=np.float32),
+        "cam_t": np.asarray(camera_inputs["cam_t"], dtype=np.float32),
+        "cam_R": np.asarray(camera_inputs["cam_R"], dtype=np.float32),
+        "global_orient": global_orient.detach().cpu().numpy().astype(np.float32),
+        "hand_pose": hand_pose.detach().cpu().numpy().astype(np.float32),
+        "betas": betas_t.detach().cpu().numpy().astype(np.float32),
+        "joints": joints.detach().cpu().numpy().astype(np.float32),
+        "verts": verts.detach().cpu().numpy().astype(np.float32),
+        "pred_keypoints_2d": kp2d.detach().cpu().numpy().astype(np.float32),
+        "root_orient_aa": root_orient_aa,
+        "pose_body_aa": pose_body_aa,
     }
+
+
+def _save_raw_pose_result(path: Path, refined: dict):
+    seq_len = len(refined["frame_ids"])
+    np.savez(
+        path,
+        root_orient=refined["root_orient_aa"][None],
+        pose_body=refined["pose_body_aa"][None],
+        betas=refined["betas"][None],
+        cam_t=refined["cam_t"][None],
+        cam_R=refined["cam_R"][None],
+        intrins=refined["camera_intrinsics"][None],
+        is_right=np.full((1, seq_len), refined["right"], dtype=np.float32),
+    )
 
 
 def _save_outputs(video_name, sequence, refined, output_root: Path, raw_result_path: Path, visualize: bool, mano_faces, frame_store: FrameStore | None = None):
@@ -258,8 +449,6 @@ def _save_outputs(video_name, sequence, refined, output_root: Path, raw_result_p
     mesh_root.mkdir(parents=True, exist_ok=True)
     if visualize:
         vis_root.mkdir(parents=True, exist_ok=True)
-
-    shutil.copy2(raw_result_path, base_dir / "refined_world_results.npz")
 
     for index, frame_id in enumerate(refined["frame_ids"]):
         frame_name = f"frame_{int(frame_id):06d}"
@@ -307,6 +496,8 @@ def _save_outputs(video_name, sequence, refined, output_root: Path, raw_result_p
                 input_img = np.concatenate([input_img, np.ones_like(input_img[:, :, :1])], axis=2)
                 overlay = input_img[:, :, :3] * (1 - cam_view[:, :, 3:]) + cam_view[:, :, :3] * cam_view[:, :, 3:]
                 cv2.imwrite(str(vis_root / f"{frame_name}.jpg"), (255 * overlay[:, :, ::-1]).astype(np.uint8))
+
+    _save_raw_pose_result(raw_result_path, refined)
 
     np.savez(
         base_dir / "refined_sequence.npz",
@@ -365,115 +556,85 @@ def _save_outputs(video_name, sequence, refined, output_root: Path, raw_result_p
         images_to_video(vis_root, video_root / f"{video_name}.mp4", fps=30)
 
 
-def _run_hmp_pipeline(
-    sequence,
-    camera_inputs,
-    cache_root,
-    output_root,
-    video_name,
-    image_folder,
-    frame_store,
-    mano_model_path,
-    use_gpu,
-    visualize,
-    config: HMPConfig,
-):
-    assets_root = Path(config.assets_root)
-    _require_hmp_assets(assets_root, config.config_name)
-
-    cache_root = Path(cache_root)
-    output_root = Path(output_root)
-    out_dir = output_root / video_name
-    out_dir.mkdir(parents=True, exist_ok=True)
-
-    sequence = dict(sequence)
-    sequence["camera_intrinsics"] = np.asarray(camera_inputs["intrinsics"], dtype=np.float32)
-    sequence["cam_t"] = np.asarray(camera_inputs["cam_t"], dtype=np.float32)
-    sequence["img_res"] = np.asarray(camera_inputs["img_res"], dtype=np.int32)
-    sequence["box_center"] = np.asarray(camera_inputs["box_center"], dtype=np.float32)
-    sequence["box_size"] = np.asarray(camera_inputs["box_size"], dtype=np.float32)
-    sequence["focal_length"] = np.asarray(camera_inputs["focal_length"], dtype=np.float32)
-
-    device = torch.device("cuda" if use_gpu and torch.cuda.is_available() else "cpu")
-    obs_data, res_dict = _sequence_to_hmp_inputs(sequence, device, camera_inputs)
-    vid_path = _resolve_vid_path(image_folder, cache_root, video_name, frame_store=frame_store)
-
-    opt = SimpleNamespace(
-        paths=SimpleNamespace(base_dir=str(Path(__file__).resolve().parent)),
-        HMP=SimpleNamespace(
-            config=config.config_name,
-            vid_path=str(vid_path),
-            exp_name=video_name,
-            use_hposer=False,
-            assets_root=str(assets_root),
-            mano_dir=str(Path(mano_model_path)),
-        ),
-    )
-    data_args = SimpleNamespace(seq=video_name)
-    hand_model = MANO(
-        model_path=mano_model_path,
-        batch_size=128,
-        create_body_pose=False,
-        use_pca=False,
-    ).to(device)
-
-    fitting_prior(obs_data, res_dict, hand_model, opt, data_args, str(out_dir), device)
-
-    raw_result_path = out_dir / f"{_result_stem(vid_path)}_000000_world_results.npz"
-    if not raw_result_path.exists():
-        raise FileNotFoundError(f"HMP refinement did not produce expected output: {raw_result_path}")
-
-    result_dict = _load_world_result(raw_result_path)
-    refined = _reconstruct_sequence(sequence, result_dict, mano_model_path=mano_model_path, device=device)
-    mano_faces = MANO(
-        model_path=mano_model_path,
-        batch_size=1,
-        create_body_pose=False,
-        use_pca=False,
-    ).faces
-    _save_outputs(video_name, sequence, refined, output_root, raw_result_path, visualize, mano_faces, frame_store=frame_store)
-    return refined, raw_result_path, assets_root
-
-
 def run_stride_hmp(
     cache_root,
     output_root,
     video_name,
-    image_folder=None,
     frame_store: FrameStore | None = None,
     target_hand="auto",
-    mano_model_path="./mano_data",
-    use_gpu=True,
-    visualize=False,
-    hmp_config: HMPConfig | None = None,
+    hmp_config: StrideHMPConfig | None = None,
 ):
-    config = hmp_config or HMPConfig(assets_root=str(Path(__file__).resolve().parent / "_DATA" / "hmp_model"))
+    if hmp_config is None:
+        raise ValueError("run_stride_hmp requires a loaded StrideHMPConfig.")
 
     cache_root = Path(cache_root)
     output_root = Path(output_root)
-    out_dir = output_root / video_name
     mesh_root = cache_root / video_name / "meshes"
     if not mesh_root.is_dir():
         raise FileNotFoundError(f"WiLoR mesh cache not found: {mesh_root}")
 
+    config = hmp_config
+    _require_hmp_assets(config)
     records_by_frame = _frame_records(mesh_root)
     selected_records = _pick_track(records_by_frame, target_hand=_parse_target_hand(target_hand))
     sequence = _stack_records(selected_records, video_name=video_name)
     camera_inputs = _wilor_camera_inputs(sequence)
-    refined, raw_result_path, assets_root = _run_hmp_pipeline(
+
+    hmp_args, model, fk, device = _load_hmp_model(config)
+    targets = _sequence_to_hmp_targets(sequence, fk=fk, fps=hmp_args.data.fps, device=device)
+    seq_len = len(sequence["frame_ids"])
+    overlap = int(config.overlap if config.overlap is not None else hmp_args.overlap_len)
+    clip_length = int(hmp_args.data.clip_length)
+    starts = _chunk_starts(seq_len, clip_length, overlap)
+
+    chunk_rotmats = []
+    pose_stats = []
+    for start in starts:
+        chunk_targets = _build_chunk_targets(targets, start=start, clip_length=clip_length)
+        chunk_rotmat, stats = _optimize_pose_chunk(model, config, chunk_targets)
+        chunk_rotmats.append(chunk_rotmat)
+        pose_stats.append(stats)
+
+    blended_local_rotmat = _blend_pose_chunks(chunk_rotmats, starts, seq_len, overlap, device=device)
+    betas, beta_stats = _optimize_sequence_betas(
         sequence=sequence,
-        camera_inputs=camera_inputs,
-        cache_root=cache_root,
-        output_root=output_root,
-        video_name=video_name,
-        image_folder=image_folder,
-        frame_store=frame_store,
-        mano_model_path=mano_model_path,
-        use_gpu=use_gpu,
-        visualize=visualize,
+        local_rotmat=blended_local_rotmat,
         config=config,
+        mano_model_path=config.runtime.mano_model_path,
+        device=device,
+    )
+    refined = _reconstruct_sequence(
+        sequence=sequence,
+        local_rotmat=blended_local_rotmat,
+        betas=betas,
+        camera_inputs=camera_inputs,
+        mano_model_path=config.runtime.mano_model_path,
+        device=device,
     )
 
+    out_dir = output_root / video_name
+    out_dir.mkdir(parents=True, exist_ok=True)
+    mano_faces = MANO(
+        model_path=str(config.runtime.mano_model_path),
+        batch_size=1,
+        create_body_pose=False,
+        use_pca=False,
+    ).faces
+    raw_result_path = out_dir / "refined_world_results.npz"
+    _save_outputs(
+        video_name,
+        sequence,
+        refined,
+        output_root,
+        raw_result_path,
+        visualize=config.runtime.visualize,
+        mano_faces=mano_faces,
+        frame_store=frame_store,
+    )
+
+    pose_summary = {
+        key: float(np.mean([stats[key] for stats in pose_stats])) for key in pose_stats[0]
+    } if pose_stats else {}
     metadata = {
         "video": video_name,
         "frames_refined": int(len(refined["frame_ids"])),
@@ -482,12 +643,16 @@ def run_stride_hmp(
         "camera_source": "wilor",
         "source_cache_root": str(cache_root),
         "source_mesh_root": str(mesh_root),
-        "hmp_assets_root": str(assets_root),
-        "hmp_config_name": config.config_name,
+        "stride_config_path": str(config.config_path),
+        "hmp_assets_root": str(config.hmp_assets_root),
+        "hmp_model_config": str(config.hmp_model_config_path),
         "target_hand": target_hand,
         "right": int(refined["right"]),
-        "result_path": str(out_dir / "refined_world_results.npz"),
-        "raw_result_path": str(raw_result_path),
+        "result_path": str(raw_result_path),
+        "clip_length": clip_length,
+        "chunk_count": len(starts),
+        "pose_optimization": pose_summary,
+        "beta_optimization": beta_stats,
     }
     with open(out_dir / "stride_metadata.json", "w", encoding="utf-8") as handle:
         json.dump(metadata, handle, indent=2)

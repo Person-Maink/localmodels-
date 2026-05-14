@@ -36,7 +36,7 @@ def _run_wilor_pass(args):
     from utils_new import render_rgba_multiple
     from visualize import images_to_video
 
-    device = "cuda" if args.use_gpu and torch.cuda.is_available() else "cpu"
+    device = "cuda" if getattr(args, "use_gpu", True) and torch.cuda.is_available() else "cpu"
     model, model_cfg, detector = setup_models(
         device=device,
         checkpoint_path=args.checkpoint_path,
@@ -93,7 +93,7 @@ def _run_wilor_pass(args):
             if results:
                 processed_videos.add(video_name)
 
-            if args.visualize and results:
+            if getattr(args, "visualize", False) and results:
                 all_verts = [r["verts"] for r in results]
                 all_cam_t = [r["cam_t"] for r in results]
                 all_right = [r["right"] for r in results]
@@ -119,7 +119,7 @@ def _run_wilor_pass(args):
                 print(f"Saved visualization: {out_vis}")
 
 
-    if args.visualize:
+    if getattr(args, "visualize", False):
         video_out_root = Path(args.output_folder) / "videos"
         single_out_root = Path(args.output_folder) / "single_images"
         video_out_root.mkdir(exist_ok=True)
@@ -146,16 +146,21 @@ def _run_wilor_pass(args):
 
 
 def _run_stride_pass(args):
-    from stride_hmp import HMPConfig, run_stride_hmp
+    from stride_config import StrideHMPConfig, StrideSimpleConfig, load_stride_config
+    from stride_hmp import run_stride_hmp
     from stride_refine import StrideConfig, run_stride_refinement
 
+    stride_backend_config = load_stride_config(args.stride_config, args.stride_backend)
     source_root = args.wilor_cache_root or args.output_folder
     processed_videos = [args.video] if args.video else []
     frame_store = None
     if args.image_folder and Path(args.image_folder).is_dir():
         frame_store = _make_frame_store(args)
     if not args.stride_from_cache:
-        processed_videos = _run_wilor_pass(args)
+        runtime_args = argparse.Namespace(**vars(args))
+        runtime_args.use_gpu = stride_backend_config.runtime.use_gpu
+        runtime_args.visualize = stride_backend_config.runtime.visualize
+        processed_videos = _run_wilor_pass(runtime_args)
     elif not processed_videos:
         processed_videos = [
             path.name for path in Path(source_root).iterdir()
@@ -175,24 +180,21 @@ def _run_stride_pass(args):
                 shutil.rmtree(target_dir)
 
         if args.stride_backend == "hmp":
+            if not isinstance(stride_backend_config, StrideHMPConfig):
+                raise TypeError(f"Expected StrideHMPConfig for backend 'hmp', got {type(stride_backend_config).__name__}")
             summaries.append(
                 run_stride_hmp(
                     cache_root=source_root,
                     output_root=args.stride_output_folder,
                     video_name=video_name,
-                    image_folder=args.image_folder,
                     frame_store=frame_store,
                     target_hand=args.target_hand,
-                    mano_model_path=args.mano_model_path,
-                    use_gpu=args.use_gpu,
-                    visualize=args.visualize,
-                    hmp_config=HMPConfig(
-                        assets_root=args.hmp_assets_root,
-                        config_name=args.hmp_config_name,
-                    ),
+                    hmp_config=stride_backend_config,
                 )
             )
         else:
+            if not isinstance(stride_backend_config, StrideSimpleConfig):
+                raise TypeError(f"Expected StrideSimpleConfig for backend 'simple', got {type(stride_backend_config).__name__}")
             summaries.append(
                 run_stride_refinement(
                     source_root=source_root,
@@ -200,26 +202,26 @@ def _run_stride_pass(args):
                     video_name=video_name,
                     image_folder=args.image_folder,
                     frame_store=frame_store,
-                    visualize=args.visualize,
+                    visualize=stride_backend_config.runtime.visualize,
                     target_hand=args.target_hand,
-                    mano_model_path=args.mano_model_path,
-                    use_gpu=args.use_gpu,
+                    mano_model_path=str(stride_backend_config.runtime.mano_model_path),
+                    use_gpu=stride_backend_config.runtime.use_gpu,
                     stride_config=StrideConfig(
-                        iters=args.stride_iters,
-                        lr=args.stride_lr,
-                        obs_weight=args.stride_obs_weight,
-                        reproj_weight=args.stride_reproj_weight,
-                        shape_weight=args.stride_shape_weight,
-                        cam_smooth_weight=args.stride_cam_smooth_weight,
-                        pose_smooth_weight=args.stride_pose_smooth_weight,
-                        joint_smooth_weight=args.stride_joint_smooth_weight,
-                        anchor_weight=args.stride_anchor_weight,
-                        fft_weight=args.stride_fft_weight,
-                        fft_band_low_hz=args.stride_fft_band_low_hz,
-                        fft_band_high_hz=args.stride_fft_band_high_hz,
-                        fps=args.stride_fps,
-                        pose_rank=args.stride_pose_rank,
-                        cam_rank=args.stride_cam_rank,
+                        iters=stride_backend_config.iters,
+                        lr=stride_backend_config.lr,
+                        obs_weight=stride_backend_config.weights.obs,
+                        reproj_weight=stride_backend_config.weights.reproj,
+                        shape_weight=stride_backend_config.weights.shape,
+                        cam_smooth_weight=stride_backend_config.weights.cam_smooth,
+                        pose_smooth_weight=stride_backend_config.weights.pose_smooth,
+                        joint_smooth_weight=stride_backend_config.weights.joint_smooth,
+                        anchor_weight=stride_backend_config.weights.anchor,
+                        fft_weight=stride_backend_config.weights.fft,
+                        fft_band_low_hz=stride_backend_config.fft_band_low_hz,
+                        fft_band_high_hz=stride_backend_config.fft_band_high_hz,
+                        fps=stride_backend_config.fps,
+                        pose_rank=stride_backend_config.pose_rank,
+                        cam_rank=stride_backend_config.cam_rank,
                     ),
                 )
             )
@@ -241,6 +243,7 @@ def make_argparser() -> argparse.ArgumentParser:
     parser.add_argument("--wilor_cache_root", type=str, default=None, help="WiLoR cache root used as STRIDE input. Defaults to output_folder.")
     parser.add_argument("--stride_output_folder", type=str, default="../../outputs/stride/", help="Folder for STRIDE-refined results.")
     parser.add_argument("--stride_backend", choices=["hmp", "simple"], default="hmp", help="STRIDE backend to run.")
+    parser.add_argument("--stride_config", type=str, default=None, help="Path to the STRIDE backend config YAML. Defaults to stride_configs/<backend>.yaml.")
     parser.add_argument("--rescale_factor", type=float, default=2.0, help="BBox padding scale.")
     parser.add_argument("--video", type=str, default=None, help="Video stem to process.")
     parser.add_argument("--target_hand", default="auto", help="Target hand for STRIDE refinement: auto, 0, or 1.")
@@ -252,49 +255,16 @@ def make_argparser() -> argparse.ArgumentParser:
         help="Skip WiLoR inference and refine an existing WiLoR cache from output_folder.",
     )
     parser.add_argument(
-        "--mano_model_path",
-        type=str,
-        default="./mano_data",
-        help="Path to MANO assets used for STRIDE reconstruction.",
-    )
-    parser.add_argument(
-        "--hmp_assets_root",
-        type=str,
-        default="./_DATA/hmp_model",
-        help="Path to HMP checkpoints and motion statistics.",
-    )
-    parser.add_argument(
-        "--hmp_config_name",
-        type=str,
-        default="hmp_config.yaml",
-        help="HMP config file inside wilor_hands/hmp_clean.",
-    )
-    parser.add_argument("--stride_iters", type=int, default=300, help="Number of STRIDE optimization steps.")
-    parser.add_argument("--stride_lr", type=float, default=0.05, help="Learning rate for STRIDE optimization.")
-    parser.add_argument("--stride_obs_weight", type=float, default=10.0, help="3D observation loss weight.")
-    parser.add_argument("--stride_reproj_weight", type=float, default=2.0, help="2D reprojection loss weight.")
-    parser.add_argument("--stride_shape_weight", type=float, default=5.0, help="Shared shape consistency loss weight.")
-    parser.add_argument("--stride_cam_smooth_weight", type=float, default=25.0, help="Camera and bbox smoothness weight.")
-    parser.add_argument("--stride_pose_smooth_weight", type=float, default=1.5, help="Pose smoothness weight.")
-    parser.add_argument("--stride_joint_smooth_weight", type=float, default=0.5, help="Joint trajectory smoothness weight.")
-    parser.add_argument("--stride_anchor_weight", type=float, default=0.5, help="Anchor-to-WiLoR pose weight.")
-    parser.add_argument("--stride_fft_weight", type=float, default=0.0, help="FFT preservation loss weight.")
-    parser.add_argument("--stride_fft_band_low_hz", type=float, default=None, help="Lower FFT preservation band edge.")
-    parser.add_argument("--stride_fft_band_high_hz", type=float, default=None, help="Upper FFT preservation band edge.")
-    parser.add_argument("--stride_fps", type=float, default=30.0, help="Sequence FPS used for FFT preservation.")
-    parser.add_argument("--stride_pose_rank", type=int, default=32, help="Temporal latent rank for pose refinement.")
-    parser.add_argument("--stride_cam_rank", type=int, default=16, help="Temporal latent rank for camera refinement.")
-    parser.add_argument(
-        "--visualize",
-        action=argparse.BooleanOptionalAction,
-        default=False,
-        help="Generate visualization overlays.",
-    )
-    parser.add_argument(
         "--save_mesh",
         action=argparse.BooleanOptionalAction,
         default=True,
         help="Save mesh reconstructions (.npy).",
+    )
+    parser.add_argument(
+        "--visualize",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Generate visualizations during WiLoR inference. STRIDE uses the YAML runtime setting.",
     )
     parser.add_argument(
         "--use_gpu",

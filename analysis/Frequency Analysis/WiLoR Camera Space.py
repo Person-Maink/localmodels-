@@ -471,7 +471,7 @@ def main():
     )
     parser.add_argument("--source", type=str, default=None, help="Direct path to a model mesh source (usually .../meshes).")
     parser.add_argument("--wilor_root", type=str, default=None, help="Root containing WiLoR per-video output folders.")
-    parser.add_argument("--video", type=str, default="120-2_clip_5", help="Video folder name under --wilor_root when --source is not provided.")
+    parser.add_argument("--video", type=str, default="120-2_clip_1", help="Video folder name under --wilor_root when --source is not provided.")
     # parser.add_argument("--hand_idx", type=int, default=int(CONFIG.HAND_IDX), help="1=right, 0=left.")
     parser.add_argument("--hand_idx", type=int, default=1, help="1=right, 0=left.")
     parser.add_argument("--wrist_joint_idx", type=int, default=int(CONFIG.WRIST_JOINT_IDX), help="Wrist joint index used for centering.")

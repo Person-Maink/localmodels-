@@ -1,0 +1,26 @@
+backend: hmp
+
+runtime:
+  use_gpu: true
+  visualize: false
+  mano_model_path: ./mano_data
+  hmp_assets_root: ./_DATA/hmp_model
+  hmp_model_config: ./hmp_clean/hmp_model_config.yaml
+
+refinement:
+  overlap: 16
+  pose:
+    iters: 200
+    lr: 0.05
+    weights:
+      rot: 1.0
+      pos: 0.25
+      root: 0.5
+      latent: 0.001
+  beta:
+    optimize: true
+    iters: 200
+    lr: 0.05
+    weights:
+      joint: 1.0
+      prior: 0.1
