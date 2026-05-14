@@ -11,6 +11,7 @@ if str(ANALYSIS_ROOT) not in sys.path:
     sys.path.insert(0, str(ANALYSIS_ROOT))
 
 from mano_pickle import load_mano_pickle
+from npy_io import discover_frame_files, resolve_model_record_root
 
 try:
     from FILENAME import WRIST_JOINT_IDX as DEFAULT_WRIST_JOINT_IDX
@@ -70,6 +71,17 @@ def _resolve_video_dir(wilor_root: Path, video_name: str) -> Path:
     if not mesh_dir.is_dir():
         raise FileNotFoundError(f"Could not find WiLoR mesh cache: {mesh_dir}")
     return video_dir
+
+
+def _resolve_model_source_path(source_path) -> tuple[Path, Path]:
+    resolved_source = Path(source_path).expanduser().resolve()
+    record_root = resolve_model_record_root(resolved_source)
+    if record_root is None:
+        raise FileNotFoundError(
+            "Could not find a compatible saved model record root under "
+            f"{resolved_source}. Expected raw frame records in the source path or its 'meshes' child."
+        )
+    return resolved_source, record_root
 
 
 def _build_parents(kintree_table: np.ndarray) -> np.ndarray:
@@ -355,15 +367,31 @@ def load_average_beta_frames(
 ):
     wilor_root_path = Path(wilor_root).resolve()
     video_dir = _resolve_video_dir(wilor_root_path, video_name)
-    mesh_dir = video_dir / "meshes"
+    bundle = load_average_beta_frames_for_source(
+        source_path=video_dir,
+        mano_model_path=mano_model_path,
+        wrist_ground=wrist_ground,
+        wrist_joint_idx=wrist_joint_idx,
+    )
+    bundle["video_dir"] = video_dir
+    return bundle
+
+
+def load_average_beta_frames_for_source(
+    source_path,
+    mano_model_path: str,
+    wrist_ground: bool = False,
+    wrist_joint_idx: int = DEFAULT_WRIST_JOINT_IDX,
+):
+    resolved_source, record_root = _resolve_model_source_path(source_path)
     mano = _load_mano_model(mano_model_path)
 
     records = []
-    for path in sorted(mesh_dir.glob("frame_*/*.npy")):
+    for _, path in discover_frame_files(record_root, frame_dirs_glob="frame_*", file_glob="*.npy"):
         records.append(_extract_required_record(path, num_betas=mano["num_betas"]))
 
     if not records:
-        raise RuntimeError(f"No WiLoR records found under {mesh_dir}")
+        raise RuntimeError(f"No compatible model records found under {record_root}")
 
     average_betas = np.stack([record["betas"] for record in records], axis=0).mean(axis=0)
     betas_batch = np.broadcast_to(average_betas[None], (len(records), average_betas.shape[0])).copy()
@@ -395,7 +423,8 @@ def load_average_beta_frames(
 
     ordered_frames = [(frame_id, frames[frame_id]) for frame_id in sorted(frames)]
     return {
-        "video_dir": video_dir,
+        "source_path": resolved_source,
+        "record_root": record_root,
         "mano": mano,
         "frames": ordered_frames,
         "average_betas": average_betas,
@@ -528,7 +557,7 @@ def main():
     parser.add_argument(
         "--video",
         type=str,
-        default="120-2_clip_5",
+        default="me 4",
         help="Video filename or stem. '.mp4' is stripped to match the WiLoR output folder name.",
     )
     parser.add_argument(

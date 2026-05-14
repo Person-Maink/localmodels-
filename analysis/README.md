@@ -74,12 +74,25 @@ These scripts generate time-series and frequency-domain plots for hand motion si
   - Useful when you want one figure with several pairwise trajectories for the same clip.
   - Supports MANO pairs and MediaPipe pairs.
 
+- `Frequency Analysis/WiLoR Camera Space.py`
+  - Measures camera-space wrist/hand motion from a compatible saved model source.
+  - Works with WiLoR, WiLoR finetune, and Stride clip outputs.
+
+- `Frequency Analysis/beta comparison.py`
+  - Compares the raw model output against a sequence-average-beta reconstruction.
+  - Works with WiLoR, WiLoR finetune, and Stride clip outputs.
+
 - `Frequency Analysis/Run All.py`
-  - Batch runner that discovers all configured sources, runs the frequency analyses, and saves figures plus CSV/JSON summaries.
-  - Produces SVG output for plots.
+  - Batch runner that discovers all configured sources, schedules explicit analysis jobs, and saves figures plus CSV/JSON summaries.
+  - Runs the following batch set:
+    - `Compare.py`
+    - `Point to Point.py`
+    - `Multi Point to Point.py`
+    - `WiLoR Camera Space.py`
+    - `beta comparison.py`
+  - Saves SVG plots into per-analysis subfolders under `analysis_images/`.
   - Supports:
     - `--scenario` for filtering the scenario matrix
-    - `--all-models` for multi-model jobs
     - `--only-missing` to skip jobs whose outputs already exist
     - `--max-pairs` to cap the workload
     - `--dry-run` to inspect discovery without running analyses
@@ -127,6 +140,7 @@ These launchers are the easiest way to open the same visualization repeatedly fo
 Use `Frequency Analysis/Run All.py` when you want:
 
 - a full set of comparison plots,
+- camera-space and beta-comparison plots for compatible single sources,
 - saved artifacts for later review,
 - CSV metrics,
 - JSON summaries.
@@ -149,7 +163,11 @@ Common output locations are controlled by `FILENAME.py`.
 
 The frequency-analysis runner writes:
 
-- plot files as SVG
+- `analysis_images/compare/*.svg`
+- `analysis_images/point_to_point/*.svg`
+- `analysis_images/multi_point_to_point/*.svg`
+- `analysis_images/wilor_camera_space/*.svg`
+- `analysis_images/beta_comparison/*.svg`
 - `metrics.csv`
 - `summary.json`
 

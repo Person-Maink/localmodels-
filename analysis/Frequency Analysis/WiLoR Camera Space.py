@@ -11,7 +11,7 @@ from scipy.signal import butter, filtfilt, welch
 from _path_setup import PROJECT_ROOT  # ensures root imports work
 import FILENAME as CONFIG
 from mano_pickle import load_mano_pickle
-from npy_io import iter_model_frame_records
+from npy_io import discover_frame_files, resolve_model_record_root
 
 
 # NumPy legacy aliases for old pickle compatibility.
@@ -232,54 +232,64 @@ def _resolve_source(source, wilor_root, video):
     raise FileNotFoundError(f"Could not find WiLoR meshes for video '{video}' under {wilor_root}")
 
 
-def _collect_frames(mesh_root, j_reg, hand_idx, wrist_joint_idx, n_verts):
-    frames = []
-    frame_dirs = sorted(Path(mesh_root).glob("frame_*"))
-    for frame_dir in frame_dirs:
-        frame_id = int(frame_dir.name.split("_")[-1])
-        frame_hands = []
-        for path in sorted(frame_dir.glob("*.npy")):
-            rec = _load_raw_record(path)
-            verts = np.asarray(rec["verts"], dtype=np.float32)
-            cam_t = np.asarray(rec.get("cam_t", [0.0, 0.0, 0.0]), dtype=np.float32).reshape(3)
-            global_orient = _normalize_global_orient(rec, path)
+def _resolve_record_root(source_path):
+    record_root = resolve_model_record_root(source_path)
+    if record_root is None:
+        raise FileNotFoundError(
+            "Could not find a compatible raw record root under "
+            f"'{source_path}'. Expected frame records in the source path or its 'meshes' child."
+        )
+    return record_root
 
-            if verts.shape[0] != n_verts:
-                raise ValueError(
-                    f"Vertex count mismatch in {path}: got {verts.shape[0]}, expected {n_verts}"
-                )
 
-            verts_world = verts + cam_t[None, :]
-            if "joints" in rec:
-                joints = np.asarray(rec["joints"], dtype=np.float32)
-                joints_world = joints + cam_t[None, :]
-            else:
-                joints_world = np.asarray(j_reg @ verts_world, dtype=np.float32)
-            wrist = joints_world[int(wrist_joint_idx)]
-            inv_global_orient = global_orient.T
-            verts_no_global = (verts_world - wrist[None, :]) @ inv_global_orient
+def _collect_frames(source_path, j_reg, hand_idx, wrist_joint_idx, n_verts):
+    frame_map = {}
+    record_root = _resolve_record_root(source_path)
+    for discovered_frame_id, path in discover_frame_files(record_root, frame_dirs_glob="frame_*", file_glob="*.npy"):
+        rec = _load_raw_record(path)
+        frame_id = int(discovered_frame_id)
+        if frame_id < 0:
+            frame_id = int(np.asarray(rec.get("frame_id", 0)).reshape(()))
 
-            frame_hands.append(
-                {
-                    "frame_id": int(frame_id),
-                    "right": int(rec["right"]),
-                    "verts_world": verts_no_global + wrist[None, :],
-                    "verts_centered": verts_no_global,
-                }
+        verts = np.asarray(rec["verts"], dtype=np.float32)
+        cam_t = np.asarray(rec.get("cam_t", [0.0, 0.0, 0.0]), dtype=np.float32).reshape(3)
+        global_orient = _normalize_global_orient(rec, path)
+
+        if verts.shape[0] != n_verts:
+            raise ValueError(
+                f"Vertex count mismatch in {path}: got {verts.shape[0]}, expected {n_verts}"
             )
 
-        if frame_hands:
-            frames.append((int(frame_id), frame_hands))
+        verts_world = verts + cam_t[None, :]
+        if "joints" in rec:
+            joints = np.asarray(rec["joints"], dtype=np.float32)
+            joints_world = joints + cam_t[None, :]
+        else:
+            joints_world = np.asarray(j_reg @ verts_world, dtype=np.float32)
+        wrist = joints_world[int(wrist_joint_idx)]
+        inv_global_orient = global_orient.T
+        verts_no_global = (verts_world - wrist[None, :]) @ inv_global_orient
+
+        frame_map.setdefault(int(frame_id), []).append(
+            {
+                "frame_id": int(frame_id),
+                "right": int(rec["right"]),
+                "verts_world": verts_no_global + wrist[None, :],
+                "verts_centered": verts_no_global,
+            }
+        )
+
+    frames = [(frame_id, frame_map[frame_id]) for frame_id in sorted(frame_map)]
 
     if not frames:
-        raise RuntimeError(f"No frames found under source '{mesh_root}'.")
+        raise RuntimeError(f"No frames found under source '{source_path}'.")
 
     selected_count = sum(
         1 for _, frame_hands in frames for hand in frame_hands if int(hand["right"]) == int(hand_idx)
     )
     if selected_count == 0:
         raise RuntimeError(
-            f"No hands with HAND_IDX={hand_idx} found under '{mesh_root}'."
+            f"No hands with HAND_IDX={hand_idx} found under '{source_path}'."
         )
 
     return frames
@@ -465,11 +475,17 @@ def run_camera_space_frequency_analysis(source_path, hand_idx, wrist_joint_idx, 
 def main():
     parser = argparse.ArgumentParser(
         description=(
-            "Analyze WiLoR camera-space meshes and make the standard frequency-analysis graphs. "
-            "The source is interpreted in camera space via verts_world = verts + cam_t."
+            "Analyze a compatible saved model source in camera space and make the standard "
+            "frequency-analysis graphs. The source is interpreted in camera space via "
+            "verts_world = verts + cam_t."
         )
     )
-    parser.add_argument("--source", type=str, default=None, help="Direct path to a model mesh source (usually .../meshes).")
+    parser.add_argument(
+        "--source",
+        type=str,
+        default=None,
+        help="Direct path to a compatible model source. This can be a mesh cache directory or a stride clip root.",
+    )
     parser.add_argument("--wilor_root", type=str, default=None, help="Root containing WiLoR per-video output folders.")
     parser.add_argument("--video", type=str, default="120-2_clip_1", help="Video folder name under --wilor_root when --source is not provided.")
     # parser.add_argument("--hand_idx", type=int, default=int(CONFIG.HAND_IDX), help="1=right, 0=left.")

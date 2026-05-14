@@ -14,6 +14,21 @@ STRIDE_SEQUENCE_FILENAMES = (
 )
 
 
+def resolve_model_record_root(source_path):
+    path = Path(source_path)
+    if path.is_file():
+        path = path.parent
+
+    candidates = [path, path / "meshes"]
+    for candidate in candidates:
+        if not candidate.is_dir():
+            continue
+        if any(frame_dir.is_dir() for frame_dir in candidate.glob("frame_*")):
+            return candidate
+
+    return None
+
+
 def list_frame_folders(root_dir):
     return sorted(glob.glob(os.path.join(root_dir, "frame_*")))
 

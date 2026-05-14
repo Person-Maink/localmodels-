@@ -101,6 +101,22 @@ def _resolve_wilor_mesh_dir(wilor_root: str, video_name: str) -> Path:
     return mesh_dir
 
 
+def _resolve_model_source_path(source_path, wilor_root: str, video_name: str) -> Path:
+    if source_path is not None:
+        return Path(source_path).expanduser().resolve()
+    return _resolve_wilor_mesh_dir(wilor_root, video_name)
+
+
+def _source_label(source_path: Path) -> str:
+    path = Path(source_path).expanduser().resolve()
+    if path.name == "meshes":
+        parent = path.parent
+        if parent.parent.parent.name == "wilor_finetune":
+            return f"{parent.parent.name}/{parent.name}"
+        return parent.name
+    return path.name
+
+
 def _build_vertex_adjacency(total_verts, tri_faces):
     adjacency = [set() for _ in range(total_verts)]
     for tri in tri_faces:
@@ -270,6 +286,7 @@ def run_beta_comparison_analysis(config_overrides=None):
     vertex_b = int(overrides.get("vertex_b", CONFIG.MODEL_SPECIFIC_VERTEX_B))
     video_name = str(overrides.get("video", "me 1.mp4"))
     wilor_root = str(overrides.get("wilor_root", Path(CONFIG.OUTPUTS_ROOT) / "wilor"))
+    source_path_override = overrides.get("source_path", None)
     mano_model_path = str(overrides.get("mano_model_path", CONFIG.MANO_RIGHT_PATH))
     mano_right_path = _resolve_mano_right_path(mano_model_path)
 
@@ -281,16 +298,16 @@ def run_beta_comparison_analysis(config_overrides=None):
     region_a = _build_region_indices(vertex_a, adjacency, n_neighbors)
     region_b = _build_region_indices(vertex_b, adjacency, n_neighbors)
 
-    mesh_dir = _resolve_wilor_mesh_dir(wilor_root, video_name)
+    source_path = _resolve_model_source_path(source_path_override, wilor_root, video_name)
     beta_average_module = _load_beta_average_module()
 
-    actual_frames = _load_actual_model_frames(mesh_dir)
-    beta_average_frames = beta_average_module.load_average_beta_frames(
-        wilor_root=wilor_root,
-        video_name=video_name,
+    actual_frames = _load_actual_model_frames(source_path)
+    beta_average_bundle = beta_average_module.load_average_beta_frames_for_source(
+        source_path=source_path,
         mano_model_path=str(mano_right_path),
         wrist_ground=False,
-    )["frames"]
+    )
+    beta_average_frames = beta_average_bundle["frames"]
 
     entries = [
         {
@@ -312,13 +329,16 @@ def run_beta_comparison_analysis(config_overrides=None):
     return {
         "analysis": "beta_comparison",
         "video": video_name,
-        "mesh_dir": str(mesh_dir),
+        "source_path": str(source_path),
+        "source_label": _source_label(source_path),
+        "mesh_dir": str(source_path),
         "hand_idx": hand_idx,
         "vertex_a": vertex_a,
         "vertex_b": vertex_b,
         "n_neighbors": n_neighbors,
         "region_a": region_a,
         "region_b": region_b,
+        "record_root": str(beta_average_bundle["record_root"]),
         "entries": entries,
     }
 
@@ -326,21 +346,27 @@ def run_beta_comparison_analysis(config_overrides=None):
 def main():
     parser = argparse.ArgumentParser(
         description=(
-            "Run point-to-point frequency analysis on WiLoR for the raw model output, "
-            "and the sequence-beta-averaged reconstruction."
+            "Run point-to-point frequency analysis on a compatible saved model source for the raw "
+            "model output and the sequence-beta-averaged reconstruction."
         )
+    )
+    parser.add_argument(
+        "--source",
+        type=str,
+        default=None,
+        help="Direct path to a compatible model source. This can be a mesh cache directory or a stride clip root.",
     )
     parser.add_argument(
         "--video",
         type=str,
-        default="me 1.mp4",
-        help="Video filename or stem. '.mp4' is stripped to match the WiLoR output folder name.",
+        default="clip_2.mp4",
+        help="Video filename or stem used with --wilor_root when --source is not provided.",
     )
     parser.add_argument(
         "--wilor_root",
         type=str,
         default=str(Path(CONFIG.OUTPUTS_ROOT) / "wilor"),
-        help="Root directory containing per-video WiLoR outputs.",
+        help="Root directory containing per-video WiLoR outputs when --source is not provided.",
     )
     parser.add_argument(
         "--mano_model_path",
@@ -382,6 +408,7 @@ def main():
 
     analysis_data = run_beta_comparison_analysis(
         {
+            "source_path": args.source,
             "video": args.video,
             "wilor_root": args.wilor_root,
             "mano_model_path": args.mano_model_path,
@@ -392,7 +419,7 @@ def main():
         }
     )
 
-    print(f"Using WiLoR source: {analysis_data['mesh_dir']}")
+    print(f"Using source: {analysis_data['source_path']}")
     print(f"Using hand_idx={analysis_data['hand_idx']}")
     print(
         f"Region A indices: {analysis_data['region_a'].tolist()} | "

@@ -457,8 +457,8 @@ def build_multi_point_figure(analysis_data, figsize_inches=(14, 9), dpi=100):
         axes[0].plot(
             t,
             result["magnitude"],
-            style,
             color=color,
+            linestyle=style,
             lw=1.5,
             label=f"{source_label} {entry['pair_label']}",
         )
@@ -466,8 +466,8 @@ def build_multi_point_figure(analysis_data, figsize_inches=(14, 9), dpi=100):
         axes[1].semilogy(
             result["freqs"],
             result["psd"],
-            style,
             color=color,
+            linestyle=style,
             lw=1.5,
             label=f"{source_label} {entry['pair_label']} ({result['dominant']:.2f} Hz)",
         )
