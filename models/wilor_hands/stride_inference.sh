@@ -58,15 +58,27 @@ echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
 
-VIDEO_DIR="/scratch/mthakur/manifold/data/test/me"
-VIDEO_NAME="me 1"
-VIDEO_FILE="me 1.mp4"
-WILOR_CACHE_ROOT="${PROJECT_ROOT}/outputs/wilor"
-OUTPUT_ROOT="${PROJECT_ROOT}/outputs/stride"
-APPTAINER_IMAGE="${APPTAINER_IMAGE:-${MODEL_ROOT}/apptainer/template.sif}"
+VIDEO_DIR="${VIDEO_DIR:-${PROJECT_ROOT}/data/test}"
+VIDEO_NAME="${VIDEO_NAME:-}"
+VIDEO_FILE="${VIDEO_FILE:-}"
+WILOR_CACHE_ROOT="${WILOR_CACHE_ROOT:-${PROJECT_ROOT}/outputs/wilor}"
+OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/stride}"
+STRIDE_BACKEND="${STRIDE_BACKEND:-hmp}"
+if [[ -z "${APPTAINER_IMAGE:-}" ]]; then
+    if [[ "${STRIDE_BACKEND}" == "hmp" ]]; then
+        APPTAINER_IMAGE="${MODEL_ROOT}/apptainer/template-hmp.sif"
+    else
+        APPTAINER_IMAGE="${MODEL_ROOT}/apptainer/template.sif"
+    fi
+fi
 OVERWRITE="${OVERWRITE:-false}"
 FRAME_CACHE_ROOT="${FRAME_CACHE_ROOT:-${VIDEO_DIR}}"
-STRIDE_CONFIG_PATH="${STRIDE_CONFIG_PATH:-${MODEL_ROOT}/stride_configs/hmp.yaml}"
+STRIDE_CONFIG_PATH="${STRIDE_CONFIG_PATH:-${MODEL_ROOT}/stride_configs/${STRIDE_BACKEND}.yaml}"
+
+if [[ -z "${VIDEO_NAME}" && -z "${VIDEO_FILE}" ]]; then
+    echo "Set VIDEO_NAME or VIDEO_FILE before running STRIDE inference." >&2
+    exit 1
+fi
 
 if ! VIDEO_PATH=$(resolve_video_path "${VIDEO_DIR}" "${VIDEO_NAME}" "${VIDEO_FILE}"); then
     echo "Could not resolve a supported video under ${VIDEO_DIR} for VIDEO_NAME='${VIDEO_NAME}' VIDEO_FILE='${VIDEO_FILE}'" >&2
@@ -107,7 +119,7 @@ python main.py \
   --frame_cache_root $(printf '%q' "${FRAME_CACHE_ROOT}") \
   --wilor_cache_root $(printf '%q' "${WILOR_CACHE_ROOT}") \
   --stride_output_folder $(printf '%q' "${OUTPUT_ROOT}") \
-  --stride_backend hmp \
+  --stride_backend $(printf '%q' "${STRIDE_BACKEND}") \
   --stride_from_cache \
   --stride_config $(printf '%q' "${STRIDE_CONFIG_PATH}")
 EOF
@@ -118,7 +130,9 @@ echo "WiLoR cache root: ${WILOR_CACHE_ROOT}"
 echo "STRIDE output root: ${OUTPUT_ROOT}"
 echo "STRIDE completion marker: ${MARKER_PATH}"
 echo "STRIDE frame cache root: ${FRAME_CACHE_ROOT}"
+echo "STRIDE backend: ${STRIDE_BACKEND}"
 echo "STRIDE config: ${STRIDE_CONFIG_PATH}"
+echo "Apptainer image: ${APPTAINER_IMAGE}"
 
 srun apptainer exec \
   --nv \

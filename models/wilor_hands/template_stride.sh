@@ -20,7 +20,15 @@
 #SBATCH --output=%x.out
 
 SCRIPT_DIR="/scratch/mthakur/manifold/models/wilor_hands"
-VIDEO_NAME="${VIDEO_NAME:-__NAME__}"
-export VIDEO_NAME
+export MODE="stride"
+export VIDEO_DIR="__VIDEO_DIR__"
+export VIDEO_NAME="__NAME__"
+export VIDEO_FILE="__FILE__"
+export OUTPUT_ROOT="__OUTPUT_ROOT__"
+export WILOR_CACHE_ROOT="__WILOR_CACHE_ROOT__"
+export FRAME_CACHE_ROOT="__FRAME_CACHE_ROOT__"
+export STRIDE_CONFIG_PATH="__STRIDE_CONFIG_PATH__"
+export STRIDE_BACKEND="__STRIDE_BACKEND__"
+export APPTAINER_IMAGE="__APPTAINER_IMAGE__"
 
-bash "${SCRIPT_DIR}/stride_inference.sh"
+bash "${SCRIPT_DIR}/inference.sh"

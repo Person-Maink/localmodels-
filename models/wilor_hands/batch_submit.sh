@@ -58,6 +58,16 @@ time_to_seconds() {
     printf '%d\n' $((10#${hours} * 3600 + 10#${minutes} * 60 + 10#${seconds}))
 }
 
+resolve_job_path() {
+    local raw_path="$1"
+    "${PYTHON_BIN}" - "${raw_path}" <<'PY'
+from pathlib import Path
+import sys
+
+print(Path(sys.argv[1]).expanduser().resolve())
+PY
+}
+
 recent_log_time_floor() {
     local logs=("${LOG_DIR}"/${JOB_NAME_PREFIX}_*.out)
     [[ ${#logs[@]} -gt 0 ]] || return 0
@@ -119,6 +129,20 @@ video_count=0
 submitted_count=0
 skipped_count=0
 observed_floor_seconds=0
+video_dir_root="$(resolve_job_path "${VIDEO_DIR}")"
+output_root_abs="$(resolve_job_path "${OUTPUT_ROOT}")"
+frame_cache_root_abs="$(resolve_job_path "${FRAME_CACHE_ROOT:-${VIDEO_DIR}}")"
+if [[ "${MODE}" == "stride" ]]; then
+    stride_backend="${STRIDE_BACKEND:-hmp}"
+    wilor_cache_root_abs="$(resolve_job_path "${WILOR_CACHE_ROOT:-${SCRIPT_DIR}/../../outputs/wilor}")"
+    stride_config_abs="$(resolve_job_path "${STRIDE_CONFIG_PATH:-${SCRIPT_DIR}/stride_configs/${stride_backend}.yaml}")"
+    apptainer_image_abs="$(resolve_job_path "${APPTAINER_IMAGE:-${SCRIPT_DIR}/apptainer/template-hmp.sif}")"
+else
+    stride_backend=""
+    wilor_cache_root_abs=""
+    stride_config_abs=""
+    apptainer_image_abs="$(resolve_job_path "${APPTAINER_IMAGE:-${SCRIPT_DIR}/apptainer/template.sif}")"
+fi
 
 if OBSERVED_FLOOR_SECONDS=$(recent_log_time_floor); then
     if [[ -n "${OBSERVED_FLOOR_SECONDS}" ]]; then
@@ -140,7 +164,7 @@ for video in "${videos[@]}"; do
 
     filename=$(basename "${video}")
     name="${filename%.*}"
-    marker_path="$(completion_marker_path "${OUTPUT_ROOT}" "${name}")"
+    marker_path="$(completion_marker_path "${output_root_abs}" "${name}")"
 
     if [[ -f "${marker_path}" ]] && ! is_truthy "${OVERWRITE:-false}"; then
         echo "Skipping ${video}: completion marker already exists at ${marker_path}"
@@ -165,13 +189,29 @@ for video in "${videos[@]}"; do
         fi
     fi
 
-    job_script="${OUT_DIR}/demo_${name}.sh"
+    job_script="${OUT_DIR}/${JOB_LABEL}_${name}.sh"
     escaped_name=$(escape_sed_replacement "${name}")
+    escaped_file=$(escape_sed_replacement "${filename}")
     escaped_time=$(escape_sed_replacement "${final_time}")
+    escaped_video_dir=$(escape_sed_replacement "${video_dir_root}")
+    escaped_output_root=$(escape_sed_replacement "${output_root_abs}")
+    escaped_frame_cache_root=$(escape_sed_replacement "${frame_cache_root_abs}")
+    escaped_wilor_cache_root=$(escape_sed_replacement "${wilor_cache_root_abs}")
+    escaped_stride_config=$(escape_sed_replacement "${stride_config_abs}")
+    escaped_stride_backend=$(escape_sed_replacement "${stride_backend}")
+    escaped_apptainer_image=$(escape_sed_replacement "${apptainer_image_abs}")
 
     sed \
         -e "s|__NAME__|${escaped_name}|g" \
         -e "s|__TIME__|${escaped_time}|g" \
+        -e "s|__FILE__|${escaped_file}|g" \
+        -e "s|__VIDEO_DIR__|${escaped_video_dir}|g" \
+        -e "s|__OUTPUT_ROOT__|${escaped_output_root}|g" \
+        -e "s|__FRAME_CACHE_ROOT__|${escaped_frame_cache_root}|g" \
+        -e "s|__WILOR_CACHE_ROOT__|${escaped_wilor_cache_root}|g" \
+        -e "s|__STRIDE_CONFIG_PATH__|${escaped_stride_config}|g" \
+        -e "s|__STRIDE_BACKEND__|${escaped_stride_backend}|g" \
+        -e "s|__APPTAINER_IMAGE__|${escaped_apptainer_image}|g" \
         "${TEMPLATE}" > "${job_script}"
 
     video_count=$((video_count + 1))
