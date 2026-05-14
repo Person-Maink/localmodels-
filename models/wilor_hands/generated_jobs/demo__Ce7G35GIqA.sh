@@ -11,7 +11,7 @@
 
 #SBATCH --job-name=wilor-inference
 #SBATCH --partition=gpu-a100-small
-#SBATCH --time=00:51:01
+#SBATCH --time=01:43:12
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
@@ -57,16 +57,16 @@ echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
 
-VIDEO_DIR="${VIDEO_DIR:-${PROJECT_ROOT}/data/images}"
+VIDEO_DIR="${VIDEO_DIR:-${PROJECT_ROOT}/data/test}"
 VIDEO_NAME="${VIDEO_NAME:-_Ce7G35GIqA}"
 VIDEO_FILE="${VIDEO_FILE:-}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/wilor}"
 APPTAINER_IMAGE="${APPTAINER_IMAGE:-${MODEL_ROOT}/apptainer/template.sif}"
 OVERWRITE="${OVERWRITE:-false}"
-FRAME_CACHE_ROOT="${FRAME_CACHE_ROOT:-${VIDEO_DIR}}"
 VISUALIZE="${VISUALIZE:-false}"
 SAVE_MESH="${SAVE_MESH:-true}"
 USE_GPU="${USE_GPU:-true}"
+FRAME_CACHE_ROOT="${FRAME_CACHE_ROOT:-${VIDEO_DIR}}"
 
 if ! VIDEO_PATH=$(resolve_video_path "${VIDEO_DIR}" "${VIDEO_NAME}" "${VIDEO_FILE}"); then
     echo "Could not resolve a supported video under ${VIDEO_DIR} for VIDEO_NAME='${VIDEO_NAME}' VIDEO_FILE='${VIDEO_FILE}'" >&2

@@ -1,0 +1,63 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Wed May 13 23:55:55 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.126.20             Driver Version: 580.126.20     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:2C:00.0 Off |                    0 |
+| N/A   40C    P0             46W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9910288
+Job Name:       stride-inference
+Partition:      gpu-a100
+Node List:      gpu011
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 24576
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Wed May 13 23:55:55 CEST 2026
+===============================================
+STRIDE video: /scratch/mthakur/manifold/data/test/me/me 1.mp4
+WiLoR cache root: /scratch/mthakur/manifold/outputs/wilor
+STRIDE output root: /scratch/mthakur/manifold/outputs/stride
+STRIDE completion marker: /scratch/mthakur/manifold/outputs/stride/_completed/me 1.json
+STRIDE frame cache root: /scratch/mthakur/manifold/data/test/me
+Traceback (most recent call last):
+  File "/scratch/mthakur/manifold/models/wilor_hands/main.py", line 327, in <module>
+    main(make_argparser().parse_args())
+  File "/scratch/mthakur/manifold/models/wilor_hands/main.py", line 231, in main
+    _run_stride_pass(args)
+  File "/scratch/mthakur/manifold/models/wilor_hands/main.py", line 149, in _run_stride_pass
+    from stride_hmp import HMPConfig, run_stride_hmp
+  File "/scratch/mthakur/manifold/models/wilor_hands/stride_hmp.py", line 12, in <module>
+    from hmp_stride_adapter import fitting_prior
+  File "/scratch/mthakur/manifold/models/wilor_hands/hmp_stride_adapter.py", line 37, in <module>
+    from nemf.generative import Architecture
+  File "/scratch/mthakur/manifold/models/wilor_hands/hmp_clean/nemf/generative.py", line 12, in <module>
+    from utils import align_joints, compute_trajectory, estimate_angular_velocity, estimate_linear_velocity, normalize
+  File "/scratch/mthakur/manifold/models/wilor_hands/hmp_clean/utils.py", line 4, in <module>
+    import plyfile
+ModuleNotFoundError: No module named 'plyfile'
+srun: error: gpu011: task 0: Exited with exit code 1
+srun: launch/slurm: _step_signal: Terminating StepId=9910288.0
