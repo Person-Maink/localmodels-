@@ -32,7 +32,7 @@ defaults:
   losses:
     vipe_camera:
       enabled: true
-      weight: 0.005
+      weight: 0.01
     temporal_camera:
       enabled: true
       formulation: static
@@ -45,8 +45,8 @@ defaults:
       scorer_weight: 0.0
 
 experiments:
-  - name: main_finetuning
-    run_name_suffix: main_finetuning
+  - name: main_static_finetuning
+    run_name_suffix: main_static_finetuning
 
   - name: frozen_wilor_finetuning
     run_name_suffix: frozen_wilor_finetuning
@@ -70,6 +70,15 @@ experiments:
         formulation: learnable
         weight: 0.0
         scorer_weight: 0.0001
+
+  - name: main_learnable_finetnuing
+    run_name_suffix: main_learnable_finetnuing
+    losses:
+      temporal_camera:
+        formulation: learnable
+      temporal_bbox_projected:
+        formulation: learnable
+
 
   - name: lora_finetuning
     run_name_suffix: lora_finetuning
