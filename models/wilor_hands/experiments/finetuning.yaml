@@ -1,17 +1,16 @@
 defaults:
-  # Combined winner-locked full-dataset finetuning launcher for the three
-  # comparison regimes: main, frozen WiLoR, and LoRA.
-  # Keep the long-run schedule shared across all experiments in this file and
-  # only override regime-specific winner settings inside each experiment.
-  # Future edits should preserve this 3-regime comparison structure unless the
-  # evaluation protocol itself changes.
+  # High-signal full-dataset finetuning launcher for the main WiLoR and LoRA
+  # comparison regimes.
+  # These settings intentionally bias toward visibly changing the outputs in a
+  # single rerun, rather than preserving the lowest-loss winner from the staged
+  # sweeps.
   train_mode: distill
   train_scope: refine_net
   all_videos: true
   validation_split: 0.15
   sample_limit: 0
   detection_conf: 0.3
-  rescale_factor: 2.5
+  rescale_factor: 2.0
   batch_size: 8
   num_workers: 2
   max_steps: 10000
@@ -20,64 +19,45 @@ defaults:
   seed: 42
   optimizer:
     lr: 3.0e-5
-    weight_decay: 1.0e-3
+    weight_decay: 1.0e-4
   temporal:
     window_size: 3
     window_stride: 2
     max_frame_gap: 1
-    reduction: l1
+    reduction: smooth_l1
     scorer_hidden_dim: 64
     scorer_layers: 2
     scorer_dropout: 0.0
   losses:
     vipe_camera:
       enabled: true
-      weight: 0.01
+      weight: 0.05
     temporal_camera:
       enabled: true
       formulation: static
-      weight: 0.01
+      weight: 0.03
       scorer_weight: 0.0
     temporal_bbox_projected:
       enabled: true
       formulation: static
-      weight: 0.01
+      weight: 0.03
       scorer_weight: 0.0
 
 experiments:
   - name: main_static_finetuning
     run_name_suffix: main_static_finetuning
 
-  - name: frozen_wilor_finetuning
-    run_name_suffix: frozen_wilor_finetuning
-    train_scope: temporal_only
-    rescale_factor: 2.0
-    optimizer:
-      weight_decay: 0.0
-    temporal:
-      reduction: smooth_l1
-    losses:
-      vipe_camera:
-        enabled: false
-        weight: 0.0
-      temporal_camera:
-        enabled: true
-        formulation: learnable
-        weight: 0.0
-        scorer_weight: 0.0001
-      temporal_bbox_projected:
-        enabled: true
-        formulation: learnable
-        weight: 0.0
-        scorer_weight: 0.0001
-
   - name: main_learnable_finetnuing
     run_name_suffix: main_learnable_finetnuing
     losses:
       temporal_camera:
         formulation: learnable
+        weight: 0.1
+        scorer_weight: 0.01
       temporal_bbox_projected:
         formulation: learnable
+        weight: 0.1
+        scorer_weight: 0.01
 
 
   - name: lora_finetuning
@@ -99,14 +79,14 @@ experiments:
     losses:
       vipe_camera:
         enabled: true
-        weight: 0.005
+        weight: 0.05
       temporal_camera:
         enabled: true
         formulation: learnable
         weight: 0.1
-        scorer_weight: 0.001
+        scorer_weight: 0.01
       temporal_bbox_projected:
         enabled: true
         formulation: learnable
         weight: 0.1
-        scorer_weight: 0.001
+        scorer_weight: 0.01
