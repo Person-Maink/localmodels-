@@ -1,0 +1,736 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Mon May 25 03:26:45 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   60C    P0            117W /  300W |    2792MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    7   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9965219
+Job Name:       wilor-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Mon May 25 03:26:45 CEST 2026
+===============================================
+WiLoR finetune experiment: main_static_finetuning
+WiLoR checkpoint: /scratch/mthakur/manifold/outputs/wilor_finetune/main_static_finetuning/best.ckpt
+WiLoR config: /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/model_config.yaml
+WiLoR video: /scratch/mthakur/manifold/data/test/me 1_contrast_1000.mp4
+WiLoR output root: /scratch/mthakur/manifold/outputs/wilor_finetune/main_static_finetuning
+WiLoR completion marker: /scratch/mthakur/manifold/outputs/wilor_finetune/main_static_finetuning/_completed/me 1_contrast_1000.json
+WiLoR frame cache root: /scratch/mthakur/manifold/data/test
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[progress] Loading WiLoR checkpoint: /scratch/mthakur/manifold/outputs/wilor_finetune/main_static_finetuning/best.ckpt
+Loading  /scratch/mthakur/manifold/outputs/wilor_finetune/main_static_finetuning/best.ckpt
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+[progress] Loading detector: ./pretrained_models/detector.pt
+
+Processing: me 1_contrast_1000:frame_000000
+
+Processing: me 1_contrast_1000:frame_000001
+
+Processing: me 1_contrast_1000:frame_000002
+
+Processing: me 1_contrast_1000:frame_000003
+
+Processing: me 1_contrast_1000:frame_000004
+
+Processing: me 1_contrast_1000:frame_000005
+
+Processing: me 1_contrast_1000:frame_000006
+
+Processing: me 1_contrast_1000:frame_000007
+
+Processing: me 1_contrast_1000:frame_000008
+
+Processing: me 1_contrast_1000:frame_000009
+
+Processing: me 1_contrast_1000:frame_000010
+
+Processing: me 1_contrast_1000:frame_000011
+
+Processing: me 1_contrast_1000:frame_000012
+
+Processing: me 1_contrast_1000:frame_000013
+
+Processing: me 1_contrast_1000:frame_000014
+
+Processing: me 1_contrast_1000:frame_000015
+
+Processing: me 1_contrast_1000:frame_000016
+
+Processing: me 1_contrast_1000:frame_000017
+
+Processing: me 1_contrast_1000:frame_000018
+
+Processing: me 1_contrast_1000:frame_000019
+
+Processing: me 1_contrast_1000:frame_000020
+
+Processing: me 1_contrast_1000:frame_000021
+
+Processing: me 1_contrast_1000:frame_000022
+
+Processing: me 1_contrast_1000:frame_000023
+
+Processing: me 1_contrast_1000:frame_000024
+
+Processing: me 1_contrast_1000:frame_000025
+
+Processing: me 1_contrast_1000:frame_000026
+
+Processing: me 1_contrast_1000:frame_000027
+
+Processing: me 1_contrast_1000:frame_000028
+
+Processing: me 1_contrast_1000:frame_000029
+
+Processing: me 1_contrast_1000:frame_000030
+
+Processing: me 1_contrast_1000:frame_000031
+
+Processing: me 1_contrast_1000:frame_000032
+
+Processing: me 1_contrast_1000:frame_000033
+
+Processing: me 1_contrast_1000:frame_000034
+
+Processing: me 1_contrast_1000:frame_000035
+
+Processing: me 1_contrast_1000:frame_000036
+
+Processing: me 1_contrast_1000:frame_000037
+
+Processing: me 1_contrast_1000:frame_000038
+
+Processing: me 1_contrast_1000:frame_000039
+
+Processing: me 1_contrast_1000:frame_000040
+
+Processing: me 1_contrast_1000:frame_000041
+
+Processing: me 1_contrast_1000:frame_000042
+
+Processing: me 1_contrast_1000:frame_000043
+
+Processing: me 1_contrast_1000:frame_000044
+
+Processing: me 1_contrast_1000:frame_000045
+
+Processing: me 1_contrast_1000:frame_000046
+
+Processing: me 1_contrast_1000:frame_000047
+
+Processing: me 1_contrast_1000:frame_000048
+
+Processing: me 1_contrast_1000:frame_000049
+
+Processing: me 1_contrast_1000:frame_000050
+
+Processing: me 1_contrast_1000:frame_000051
+
+Processing: me 1_contrast_1000:frame_000052
+
+Processing: me 1_contrast_1000:frame_000053
+
+Processing: me 1_contrast_1000:frame_000054
+
+Processing: me 1_contrast_1000:frame_000055
+
+Processing: me 1_contrast_1000:frame_000056
+
+Processing: me 1_contrast_1000:frame_000057
+
+Processing: me 1_contrast_1000:frame_000058
+
+Processing: me 1_contrast_1000:frame_000059
+
+Processing: me 1_contrast_1000:frame_000060
+
+Processing: me 1_contrast_1000:frame_000061
+
+Processing: me 1_contrast_1000:frame_000062
+
+Processing: me 1_contrast_1000:frame_000063
+
+Processing: me 1_contrast_1000:frame_000064
+
+Processing: me 1_contrast_1000:frame_000065
+
+Processing: me 1_contrast_1000:frame_000066
+
+Processing: me 1_contrast_1000:frame_000067
+
+Processing: me 1_contrast_1000:frame_000068
+
+Processing: me 1_contrast_1000:frame_000069
+
+Processing: me 1_contrast_1000:frame_000070
+
+Processing: me 1_contrast_1000:frame_000071
+
+Processing: me 1_contrast_1000:frame_000072
+
+Processing: me 1_contrast_1000:frame_000073
+
+Processing: me 1_contrast_1000:frame_000074
+
+Processing: me 1_contrast_1000:frame_000075
+
+Processing: me 1_contrast_1000:frame_000076
+
+Processing: me 1_contrast_1000:frame_000077
+
+Processing: me 1_contrast_1000:frame_000078
+
+Processing: me 1_contrast_1000:frame_000079
+
+Processing: me 1_contrast_1000:frame_000080
+
+Processing: me 1_contrast_1000:frame_000081
+
+Processing: me 1_contrast_1000:frame_000082
+
+Processing: me 1_contrast_1000:frame_000083
+
+Processing: me 1_contrast_1000:frame_000084
+
+Processing: me 1_contrast_1000:frame_000085
+
+Processing: me 1_contrast_1000:frame_000086
+
+Processing: me 1_contrast_1000:frame_000087
+
+Processing: me 1_contrast_1000:frame_000088
+
+Processing: me 1_contrast_1000:frame_000089
+
+Processing: me 1_contrast_1000:frame_000090
+
+Processing: me 1_contrast_1000:frame_000091
+
+Processing: me 1_contrast_1000:frame_000092
+
+Processing: me 1_contrast_1000:frame_000093
+
+Processing: me 1_contrast_1000:frame_000094
+
+Processing: me 1_contrast_1000:frame_000095
+
+Processing: me 1_contrast_1000:frame_000096
+
+Processing: me 1_contrast_1000:frame_000097
+
+Processing: me 1_contrast_1000:frame_000098
+
+Processing: me 1_contrast_1000:frame_000099
+
+Processing: me 1_contrast_1000:frame_000100
+
+Processing: me 1_contrast_1000:frame_000101
+
+Processing: me 1_contrast_1000:frame_000102
+
+Processing: me 1_contrast_1000:frame_000103
+
+Processing: me 1_contrast_1000:frame_000104
+
+Processing: me 1_contrast_1000:frame_000105
+
+Processing: me 1_contrast_1000:frame_000106
+
+Processing: me 1_contrast_1000:frame_000107
+
+Processing: me 1_contrast_1000:frame_000108
+
+Processing: me 1_contrast_1000:frame_000109
+
+Processing: me 1_contrast_1000:frame_000110
+
+Processing: me 1_contrast_1000:frame_000111
+
+Processing: me 1_contrast_1000:frame_000112
+
+Processing: me 1_contrast_1000:frame_000113
+
+Processing: me 1_contrast_1000:frame_000114
+
+Processing: me 1_contrast_1000:frame_000115
+
+Processing: me 1_contrast_1000:frame_000116
+
+Processing: me 1_contrast_1000:frame_000117
+
+Processing: me 1_contrast_1000:frame_000118
+
+Processing: me 1_contrast_1000:frame_000119
+
+Processing: me 1_contrast_1000:frame_000120
+
+Processing: me 1_contrast_1000:frame_000121
+
+Processing: me 1_contrast_1000:frame_000122
+
+Processing: me 1_contrast_1000:frame_000123
+
+Processing: me 1_contrast_1000:frame_000124
+
+Processing: me 1_contrast_1000:frame_000125
+
+Processing: me 1_contrast_1000:frame_000126
+
+Processing: me 1_contrast_1000:frame_000127
+
+Processing: me 1_contrast_1000:frame_000128
+
+Processing: me 1_contrast_1000:frame_000129
+
+Processing: me 1_contrast_1000:frame_000130
+
+Processing: me 1_contrast_1000:frame_000131
+
+Processing: me 1_contrast_1000:frame_000132
+
+Processing: me 1_contrast_1000:frame_000133
+
+Processing: me 1_contrast_1000:frame_000134
+
+Processing: me 1_contrast_1000:frame_000135
+
+Processing: me 1_contrast_1000:frame_000136
+
+Processing: me 1_contrast_1000:frame_000137
+
+Processing: me 1_contrast_1000:frame_000138
+
+Processing: me 1_contrast_1000:frame_000139
+
+Processing: me 1_contrast_1000:frame_000140
+
+Processing: me 1_contrast_1000:frame_000141
+
+Processing: me 1_contrast_1000:frame_000142
+
+Processing: me 1_contrast_1000:frame_000143
+
+Processing: me 1_contrast_1000:frame_000144
+
+Processing: me 1_contrast_1000:frame_000145
+
+Processing: me 1_contrast_1000:frame_000146
+
+Processing: me 1_contrast_1000:frame_000147
+
+Processing: me 1_contrast_1000:frame_000148
+
+Processing: me 1_contrast_1000:frame_000149
+
+Processing: me 1_contrast_1000:frame_000150
+
+Processing: me 1_contrast_1000:frame_000151
+
+Processing: me 1_contrast_1000:frame_000152
+
+Processing: me 1_contrast_1000:frame_000153
+
+Processing: me 1_contrast_1000:frame_000154
+
+Processing: me 1_contrast_1000:frame_000155
+
+Processing: me 1_contrast_1000:frame_000156
+
+Processing: me 1_contrast_1000:frame_000157
+
+Processing: me 1_contrast_1000:frame_000158
+
+Processing: me 1_contrast_1000:frame_000159
+
+Processing: me 1_contrast_1000:frame_000160
+
+Processing: me 1_contrast_1000:frame_000161
+
+Processing: me 1_contrast_1000:frame_000162
+
+Processing: me 1_contrast_1000:frame_000163
+
+Processing: me 1_contrast_1000:frame_000164
+
+Processing: me 1_contrast_1000:frame_000165
+
+Processing: me 1_contrast_1000:frame_000166
+
+Processing: me 1_contrast_1000:frame_000167
+
+Processing: me 1_contrast_1000:frame_000168
+
+Processing: me 1_contrast_1000:frame_000169
+
+Processing: me 1_contrast_1000:frame_000170
+
+Processing: me 1_contrast_1000:frame_000171
+
+Processing: me 1_contrast_1000:frame_000172
+
+Processing: me 1_contrast_1000:frame_000173
+
+Processing: me 1_contrast_1000:frame_000174
+
+Processing: me 1_contrast_1000:frame_000175
+
+Processing: me 1_contrast_1000:frame_000176
+
+Processing: me 1_contrast_1000:frame_000177
+
+Processing: me 1_contrast_1000:frame_000178
+
+Processing: me 1_contrast_1000:frame_000179
+
+Processing: me 1_contrast_1000:frame_000180
+
+Processing: me 1_contrast_1000:frame_000181
+
+Processing: me 1_contrast_1000:frame_000182
+
+Processing: me 1_contrast_1000:frame_000183
+
+Processing: me 1_contrast_1000:frame_000184
+
+Processing: me 1_contrast_1000:frame_000185
+
+Processing: me 1_contrast_1000:frame_000186
+
+Processing: me 1_contrast_1000:frame_000187
+
+Processing: me 1_contrast_1000:frame_000188
+
+Processing: me 1_contrast_1000:frame_000189
+
+Processing: me 1_contrast_1000:frame_000190
+
+Processing: me 1_contrast_1000:frame_000191
+
+Processing: me 1_contrast_1000:frame_000192
+
+Processing: me 1_contrast_1000:frame_000193
+
+Processing: me 1_contrast_1000:frame_000194
+
+Processing: me 1_contrast_1000:frame_000195
+
+Processing: me 1_contrast_1000:frame_000196
+
+Processing: me 1_contrast_1000:frame_000197
+
+Processing: me 1_contrast_1000:frame_000198
+
+Processing: me 1_contrast_1000:frame_000199
+
+Processing: me 1_contrast_1000:frame_000200
+
+Processing: me 1_contrast_1000:frame_000201
+
+Processing: me 1_contrast_1000:frame_000202
+
+Processing: me 1_contrast_1000:frame_000203
+
+Processing: me 1_contrast_1000:frame_000204
+
+Processing: me 1_contrast_1000:frame_000205
+
+Processing: me 1_contrast_1000:frame_000206
+
+Processing: me 1_contrast_1000:frame_000207
+
+Processing: me 1_contrast_1000:frame_000208
+
+Processing: me 1_contrast_1000:frame_000209
+
+Processing: me 1_contrast_1000:frame_000210
+
+Processing: me 1_contrast_1000:frame_000211
+
+Processing: me 1_contrast_1000:frame_000212
+
+Processing: me 1_contrast_1000:frame_000213
+
+Processing: me 1_contrast_1000:frame_000214
+
+Processing: me 1_contrast_1000:frame_000215
+
+Processing: me 1_contrast_1000:frame_000216
+
+Processing: me 1_contrast_1000:frame_000217
+
+Processing: me 1_contrast_1000:frame_000218
+
+Processing: me 1_contrast_1000:frame_000219
+
+Processing: me 1_contrast_1000:frame_000220
+
+Processing: me 1_contrast_1000:frame_000221
+
+Processing: me 1_contrast_1000:frame_000222
+
+Processing: me 1_contrast_1000:frame_000223
+
+Processing: me 1_contrast_1000:frame_000224
+
+Processing: me 1_contrast_1000:frame_000225
+
+Processing: me 1_contrast_1000:frame_000226
+
+Processing: me 1_contrast_1000:frame_000227
+
+Processing: me 1_contrast_1000:frame_000228
+
+Processing: me 1_contrast_1000:frame_000229
+
+Processing: me 1_contrast_1000:frame_000230
+
+Processing: me 1_contrast_1000:frame_000231
+
+Processing: me 1_contrast_1000:frame_000232
+
+Processing: me 1_contrast_1000:frame_000233
+
+Processing: me 1_contrast_1000:frame_000234
+
+Processing: me 1_contrast_1000:frame_000235
+
+Processing: me 1_contrast_1000:frame_000236
+
+Processing: me 1_contrast_1000:frame_000237
+
+Processing: me 1_contrast_1000:frame_000238
+
+Processing: me 1_contrast_1000:frame_000239
+
+Processing: me 1_contrast_1000:frame_000240
+
+Processing: me 1_contrast_1000:frame_000241
+
+Processing: me 1_contrast_1000:frame_000242
+
+Processing: me 1_contrast_1000:frame_000243
+
+Processing: me 1_contrast_1000:frame_000244
+
+Processing: me 1_contrast_1000:frame_000245
+
+Processing: me 1_contrast_1000:frame_000246
+
+Processing: me 1_contrast_1000:frame_000247
+
+Processing: me 1_contrast_1000:frame_000248
+
+Processing: me 1_contrast_1000:frame_000249
+
+Processing: me 1_contrast_1000:frame_000250
+
+Processing: me 1_contrast_1000:frame_000251
+
+Processing: me 1_contrast_1000:frame_000252
+
+Processing: me 1_contrast_1000:frame_000253
+
+Processing: me 1_contrast_1000:frame_000254
+
+Processing: me 1_contrast_1000:frame_000255
+
+Processing: me 1_contrast_1000:frame_000256
+
+Processing: me 1_contrast_1000:frame_000257
+
+Processing: me 1_contrast_1000:frame_000258
+
+Processing: me 1_contrast_1000:frame_000259
+
+Processing: me 1_contrast_1000:frame_000260
+
+Processing: me 1_contrast_1000:frame_000261
+
+Processing: me 1_contrast_1000:frame_000262
+
+Processing: me 1_contrast_1000:frame_000263
+
+Processing: me 1_contrast_1000:frame_000264
+
+Processing: me 1_contrast_1000:frame_000265
+
+Processing: me 1_contrast_1000:frame_000266
+
+Processing: me 1_contrast_1000:frame_000267
+
+Processing: me 1_contrast_1000:frame_000268
+
+Processing: me 1_contrast_1000:frame_000269
+
+Processing: me 1_contrast_1000:frame_000270
+
+Processing: me 1_contrast_1000:frame_000271
+
+Processing: me 1_contrast_1000:frame_000272
+
+Processing: me 1_contrast_1000:frame_000273
+
+Processing: me 1_contrast_1000:frame_000274
+
+Processing: me 1_contrast_1000:frame_000275
+
+Processing: me 1_contrast_1000:frame_000276
+
+Processing: me 1_contrast_1000:frame_000277
+
+Processing: me 1_contrast_1000:frame_000278
+
+Processing: me 1_contrast_1000:frame_000279
+
+Processing: me 1_contrast_1000:frame_000280
+
+Processing: me 1_contrast_1000:frame_000281
+
+Processing: me 1_contrast_1000:frame_000282
+
+Processing: me 1_contrast_1000:frame_000283
+
+Processing: me 1_contrast_1000:frame_000284
+
+Processing: me 1_contrast_1000:frame_000285
+
+Processing: me 1_contrast_1000:frame_000286
+
+Processing: me 1_contrast_1000:frame_000287
+
+Processing: me 1_contrast_1000:frame_000288
+
+Processing: me 1_contrast_1000:frame_000289
+
+Processing: me 1_contrast_1000:frame_000290
+
+Processing: me 1_contrast_1000:frame_000291
+
+Processing: me 1_contrast_1000:frame_000292
+
+Processing: me 1_contrast_1000:frame_000293
+
+Processing: me 1_contrast_1000:frame_000294
+
+Processing: me 1_contrast_1000:frame_000295
+
+Processing: me 1_contrast_1000:frame_000296
+
+Processing: me 1_contrast_1000:frame_000297
+
+Processing: me 1_contrast_1000:frame_000298
+
+Processing: me 1_contrast_1000:frame_000299
+
+Processing: me 1_contrast_1000:frame_000300
+
+Processing: me 1_contrast_1000:frame_000301
+
+Processing: me 1_contrast_1000:frame_000302
+
+Processing: me 1_contrast_1000:frame_000303
+
+Processing: me 1_contrast_1000:frame_000304
+
+Processing: me 1_contrast_1000:frame_000305
+
+Processing: me 1_contrast_1000:frame_000306
+
+Processing: me 1_contrast_1000:frame_000307
+
+Processing: me 1_contrast_1000:frame_000308
+
+Processing: me 1_contrast_1000:frame_000309
+
+Processing: me 1_contrast_1000:frame_000310
+
+Processing: me 1_contrast_1000:frame_000311
+
+Processing: me 1_contrast_1000:frame_000312
+
+Processing: me 1_contrast_1000:frame_000313
+
+Processing: me 1_contrast_1000:frame_000314
+
+Processing: me 1_contrast_1000:frame_000315
+
+Processing: me 1_contrast_1000:frame_000316
+
+Processing: me 1_contrast_1000:frame_000317
+
+Processing: me 1_contrast_1000:frame_000318
+
+Processing: me 1_contrast_1000:frame_000319
+
+Processing: me 1_contrast_1000:frame_000320
+
+Processing: me 1_contrast_1000:frame_000321
+
+Processing: me 1_contrast_1000:frame_000322
+
+Processing: me 1_contrast_1000:frame_000323
+
+Processing: me 1_contrast_1000:frame_000324
+
+Processing: me 1_contrast_1000:frame_000325
+
+Processing: me 1_contrast_1000:frame_000326
+
+Processing: me 1_contrast_1000:frame_000327
+
+Processing: me 1_contrast_1000:frame_000328
+
+Processing: me 1_contrast_1000:frame_000329
+
+Processing: me 1_contrast_1000:frame_000330
+
+Processing: me 1_contrast_1000:frame_000331
+
+All images processed.
+===============================================
+Job finished at: Mon May 25 03:31:43 CEST 2026
+Execution took 0.08 hours
+Writing output to SLURM_logs/wilor-inference_452.out
+Retained WiLoR outputs: /scratch/mthakur/manifold/outputs/wilor_finetune/main_static_finetuning/me 1_contrast_1000/meshes
+===============================================

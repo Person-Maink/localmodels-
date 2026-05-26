@@ -1,0 +1,728 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Sun May 24 23:13:42 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   57C    P0            118W /  300W |    8777MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    8   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9965174
+Job Name:       wilor-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Sun May 24 23:13:42 CEST 2026
+===============================================
+WiLoR finetune experiment: main_learnable_finetnuing
+WiLoR checkpoint: /scratch/mthakur/manifold/outputs/wilor_finetune/main_learnable_finetnuing/best.ckpt
+WiLoR config: /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/model_config.yaml
+WiLoR video: /scratch/mthakur/manifold/data/test/clip_3.mp4
+WiLoR output root: /scratch/mthakur/manifold/outputs/wilor_finetune/main_learnable_finetnuing
+WiLoR completion marker: /scratch/mthakur/manifold/outputs/wilor_finetune/main_learnable_finetnuing/_completed/clip_3.json
+WiLoR frame cache root: /scratch/mthakur/manifold/data/test
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[progress] Loading WiLoR checkpoint: /scratch/mthakur/manifold/outputs/wilor_finetune/main_learnable_finetnuing/best.ckpt
+Loading  /scratch/mthakur/manifold/outputs/wilor_finetune/main_learnable_finetnuing/best.ckpt
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+[progress] Loading detector: ./pretrained_models/detector.pt
+
+Processing: clip_3:frame_000000
+
+Processing: clip_3:frame_000001
+
+Processing: clip_3:frame_000002
+
+Processing: clip_3:frame_000003
+
+Processing: clip_3:frame_000004
+
+Processing: clip_3:frame_000005
+
+Processing: clip_3:frame_000006
+
+Processing: clip_3:frame_000007
+
+Processing: clip_3:frame_000008
+
+Processing: clip_3:frame_000009
+
+Processing: clip_3:frame_000010
+
+Processing: clip_3:frame_000011
+
+Processing: clip_3:frame_000012
+
+Processing: clip_3:frame_000013
+
+Processing: clip_3:frame_000014
+
+Processing: clip_3:frame_000015
+
+Processing: clip_3:frame_000016
+
+Processing: clip_3:frame_000017
+
+Processing: clip_3:frame_000018
+
+Processing: clip_3:frame_000019
+
+Processing: clip_3:frame_000020
+
+Processing: clip_3:frame_000021
+
+Processing: clip_3:frame_000022
+
+Processing: clip_3:frame_000023
+
+Processing: clip_3:frame_000024
+
+Processing: clip_3:frame_000025
+
+Processing: clip_3:frame_000026
+
+Processing: clip_3:frame_000027
+
+Processing: clip_3:frame_000028
+
+Processing: clip_3:frame_000029
+
+Processing: clip_3:frame_000030
+
+Processing: clip_3:frame_000031
+
+Processing: clip_3:frame_000032
+
+Processing: clip_3:frame_000033
+
+Processing: clip_3:frame_000034
+
+Processing: clip_3:frame_000035
+
+Processing: clip_3:frame_000036
+
+Processing: clip_3:frame_000037
+
+Processing: clip_3:frame_000038
+
+Processing: clip_3:frame_000039
+
+Processing: clip_3:frame_000040
+
+Processing: clip_3:frame_000041
+
+Processing: clip_3:frame_000042
+
+Processing: clip_3:frame_000043
+
+Processing: clip_3:frame_000044
+
+Processing: clip_3:frame_000045
+
+Processing: clip_3:frame_000046
+
+Processing: clip_3:frame_000047
+
+Processing: clip_3:frame_000048
+
+Processing: clip_3:frame_000049
+
+Processing: clip_3:frame_000050
+
+Processing: clip_3:frame_000051
+
+Processing: clip_3:frame_000052
+
+Processing: clip_3:frame_000053
+
+Processing: clip_3:frame_000054
+
+Processing: clip_3:frame_000055
+
+Processing: clip_3:frame_000056
+
+Processing: clip_3:frame_000057
+
+Processing: clip_3:frame_000058
+
+Processing: clip_3:frame_000059
+
+Processing: clip_3:frame_000060
+
+Processing: clip_3:frame_000061
+
+Processing: clip_3:frame_000062
+
+Processing: clip_3:frame_000063
+
+Processing: clip_3:frame_000064
+
+Processing: clip_3:frame_000065
+
+Processing: clip_3:frame_000066
+
+Processing: clip_3:frame_000067
+
+Processing: clip_3:frame_000068
+
+Processing: clip_3:frame_000069
+
+Processing: clip_3:frame_000070
+
+Processing: clip_3:frame_000071
+
+Processing: clip_3:frame_000072
+
+Processing: clip_3:frame_000073
+
+Processing: clip_3:frame_000074
+
+Processing: clip_3:frame_000075
+
+Processing: clip_3:frame_000076
+
+Processing: clip_3:frame_000077
+
+Processing: clip_3:frame_000078
+
+Processing: clip_3:frame_000079
+
+Processing: clip_3:frame_000080
+
+Processing: clip_3:frame_000081
+
+Processing: clip_3:frame_000082
+
+Processing: clip_3:frame_000083
+
+Processing: clip_3:frame_000084
+
+Processing: clip_3:frame_000085
+
+Processing: clip_3:frame_000086
+
+Processing: clip_3:frame_000087
+
+Processing: clip_3:frame_000088
+
+Processing: clip_3:frame_000089
+
+Processing: clip_3:frame_000090
+
+Processing: clip_3:frame_000091
+
+Processing: clip_3:frame_000092
+
+Processing: clip_3:frame_000093
+
+Processing: clip_3:frame_000094
+
+Processing: clip_3:frame_000095
+
+Processing: clip_3:frame_000096
+
+Processing: clip_3:frame_000097
+
+Processing: clip_3:frame_000098
+
+Processing: clip_3:frame_000099
+
+Processing: clip_3:frame_000100
+
+Processing: clip_3:frame_000101
+
+Processing: clip_3:frame_000102
+
+Processing: clip_3:frame_000103
+
+Processing: clip_3:frame_000104
+
+Processing: clip_3:frame_000105
+
+Processing: clip_3:frame_000106
+
+Processing: clip_3:frame_000107
+
+Processing: clip_3:frame_000108
+
+Processing: clip_3:frame_000109
+
+Processing: clip_3:frame_000110
+
+Processing: clip_3:frame_000111
+
+Processing: clip_3:frame_000112
+
+Processing: clip_3:frame_000113
+
+Processing: clip_3:frame_000114
+
+Processing: clip_3:frame_000115
+
+Processing: clip_3:frame_000116
+
+Processing: clip_3:frame_000117
+
+Processing: clip_3:frame_000118
+
+Processing: clip_3:frame_000119
+
+Processing: clip_3:frame_000120
+
+Processing: clip_3:frame_000121
+
+Processing: clip_3:frame_000122
+
+Processing: clip_3:frame_000123
+
+Processing: clip_3:frame_000124
+
+Processing: clip_3:frame_000125
+
+Processing: clip_3:frame_000126
+
+Processing: clip_3:frame_000127
+
+Processing: clip_3:frame_000128
+
+Processing: clip_3:frame_000129
+
+Processing: clip_3:frame_000130
+
+Processing: clip_3:frame_000131
+
+Processing: clip_3:frame_000132
+
+Processing: clip_3:frame_000133
+
+Processing: clip_3:frame_000134
+
+Processing: clip_3:frame_000135
+
+Processing: clip_3:frame_000136
+
+Processing: clip_3:frame_000137
+
+Processing: clip_3:frame_000138
+
+Processing: clip_3:frame_000139
+
+Processing: clip_3:frame_000140
+
+Processing: clip_3:frame_000141
+
+Processing: clip_3:frame_000142
+
+Processing: clip_3:frame_000143
+
+Processing: clip_3:frame_000144
+
+Processing: clip_3:frame_000145
+
+Processing: clip_3:frame_000146
+
+Processing: clip_3:frame_000147
+
+Processing: clip_3:frame_000148
+
+Processing: clip_3:frame_000149
+
+Processing: clip_3:frame_000150
+
+Processing: clip_3:frame_000151
+
+Processing: clip_3:frame_000152
+
+Processing: clip_3:frame_000153
+
+Processing: clip_3:frame_000154
+
+Processing: clip_3:frame_000155
+
+Processing: clip_3:frame_000156
+
+Processing: clip_3:frame_000157
+
+Processing: clip_3:frame_000158
+
+Processing: clip_3:frame_000159
+
+Processing: clip_3:frame_000160
+
+Processing: clip_3:frame_000161
+
+Processing: clip_3:frame_000162
+
+Processing: clip_3:frame_000163
+
+Processing: clip_3:frame_000164
+
+Processing: clip_3:frame_000165
+
+Processing: clip_3:frame_000166
+
+Processing: clip_3:frame_000167
+
+Processing: clip_3:frame_000168
+
+Processing: clip_3:frame_000169
+
+Processing: clip_3:frame_000170
+
+Processing: clip_3:frame_000171
+
+Processing: clip_3:frame_000172
+
+Processing: clip_3:frame_000173
+
+Processing: clip_3:frame_000174
+
+Processing: clip_3:frame_000175
+
+Processing: clip_3:frame_000176
+
+Processing: clip_3:frame_000177
+
+Processing: clip_3:frame_000178
+
+Processing: clip_3:frame_000179
+
+Processing: clip_3:frame_000180
+
+Processing: clip_3:frame_000181
+
+Processing: clip_3:frame_000182
+
+Processing: clip_3:frame_000183
+
+Processing: clip_3:frame_000184
+
+Processing: clip_3:frame_000185
+
+Processing: clip_3:frame_000186
+
+Processing: clip_3:frame_000187
+
+Processing: clip_3:frame_000188
+
+Processing: clip_3:frame_000189
+
+Processing: clip_3:frame_000190
+
+Processing: clip_3:frame_000191
+
+Processing: clip_3:frame_000192
+
+Processing: clip_3:frame_000193
+
+Processing: clip_3:frame_000194
+
+Processing: clip_3:frame_000195
+
+Processing: clip_3:frame_000196
+
+Processing: clip_3:frame_000197
+
+Processing: clip_3:frame_000198
+
+Processing: clip_3:frame_000199
+
+Processing: clip_3:frame_000200
+
+Processing: clip_3:frame_000201
+
+Processing: clip_3:frame_000202
+
+Processing: clip_3:frame_000203
+
+Processing: clip_3:frame_000204
+
+Processing: clip_3:frame_000205
+
+Processing: clip_3:frame_000206
+
+Processing: clip_3:frame_000207
+
+Processing: clip_3:frame_000208
+
+Processing: clip_3:frame_000209
+
+Processing: clip_3:frame_000210
+
+Processing: clip_3:frame_000211
+
+Processing: clip_3:frame_000212
+
+Processing: clip_3:frame_000213
+
+Processing: clip_3:frame_000214
+
+Processing: clip_3:frame_000215
+
+Processing: clip_3:frame_000216
+
+Processing: clip_3:frame_000217
+
+Processing: clip_3:frame_000218
+
+Processing: clip_3:frame_000219
+
+Processing: clip_3:frame_000220
+
+Processing: clip_3:frame_000221
+
+Processing: clip_3:frame_000222
+
+Processing: clip_3:frame_000223
+
+Processing: clip_3:frame_000224
+
+Processing: clip_3:frame_000225
+
+Processing: clip_3:frame_000226
+
+Processing: clip_3:frame_000227
+
+Processing: clip_3:frame_000228
+
+Processing: clip_3:frame_000229
+
+Processing: clip_3:frame_000230
+
+Processing: clip_3:frame_000231
+
+Processing: clip_3:frame_000232
+
+Processing: clip_3:frame_000233
+
+Processing: clip_3:frame_000234
+
+Processing: clip_3:frame_000235
+
+Processing: clip_3:frame_000236
+
+Processing: clip_3:frame_000237
+
+Processing: clip_3:frame_000238
+
+Processing: clip_3:frame_000239
+
+Processing: clip_3:frame_000240
+
+Processing: clip_3:frame_000241
+
+Processing: clip_3:frame_000242
+
+Processing: clip_3:frame_000243
+
+Processing: clip_3:frame_000244
+
+Processing: clip_3:frame_000245
+
+Processing: clip_3:frame_000246
+
+Processing: clip_3:frame_000247
+
+Processing: clip_3:frame_000248
+
+Processing: clip_3:frame_000249
+
+Processing: clip_3:frame_000250
+
+Processing: clip_3:frame_000251
+
+Processing: clip_3:frame_000252
+
+Processing: clip_3:frame_000253
+
+Processing: clip_3:frame_000254
+
+Processing: clip_3:frame_000255
+
+Processing: clip_3:frame_000256
+
+Processing: clip_3:frame_000257
+
+Processing: clip_3:frame_000258
+
+Processing: clip_3:frame_000259
+
+Processing: clip_3:frame_000260
+
+Processing: clip_3:frame_000261
+
+Processing: clip_3:frame_000262
+
+Processing: clip_3:frame_000263
+
+Processing: clip_3:frame_000264
+
+Processing: clip_3:frame_000265
+
+Processing: clip_3:frame_000266
+
+Processing: clip_3:frame_000267
+
+Processing: clip_3:frame_000268
+
+Processing: clip_3:frame_000269
+
+Processing: clip_3:frame_000270
+
+Processing: clip_3:frame_000271
+
+Processing: clip_3:frame_000272
+
+Processing: clip_3:frame_000273
+
+Processing: clip_3:frame_000274
+
+Processing: clip_3:frame_000275
+
+Processing: clip_3:frame_000276
+
+Processing: clip_3:frame_000277
+
+Processing: clip_3:frame_000278
+
+Processing: clip_3:frame_000279
+
+Processing: clip_3:frame_000280
+
+Processing: clip_3:frame_000281
+
+Processing: clip_3:frame_000282
+
+Processing: clip_3:frame_000283
+
+Processing: clip_3:frame_000284
+
+Processing: clip_3:frame_000285
+
+Processing: clip_3:frame_000286
+
+Processing: clip_3:frame_000287
+
+Processing: clip_3:frame_000288
+
+Processing: clip_3:frame_000289
+
+Processing: clip_3:frame_000290
+
+Processing: clip_3:frame_000291
+
+Processing: clip_3:frame_000292
+
+Processing: clip_3:frame_000293
+
+Processing: clip_3:frame_000294
+
+Processing: clip_3:frame_000295
+
+Processing: clip_3:frame_000296
+
+Processing: clip_3:frame_000297
+
+Processing: clip_3:frame_000298
+
+Processing: clip_3:frame_000299
+
+Processing: clip_3:frame_000300
+
+Processing: clip_3:frame_000301
+
+Processing: clip_3:frame_000302
+
+Processing: clip_3:frame_000303
+
+Processing: clip_3:frame_000304
+
+Processing: clip_3:frame_000305
+
+Processing: clip_3:frame_000306
+
+Processing: clip_3:frame_000307
+
+Processing: clip_3:frame_000308
+
+Processing: clip_3:frame_000309
+
+Processing: clip_3:frame_000310
+
+Processing: clip_3:frame_000311
+
+Processing: clip_3:frame_000312
+
+Processing: clip_3:frame_000313
+
+Processing: clip_3:frame_000314
+
+Processing: clip_3:frame_000315
+
+Processing: clip_3:frame_000316
+
+Processing: clip_3:frame_000317
+
+Processing: clip_3:frame_000318
+
+Processing: clip_3:frame_000319
+
+Processing: clip_3:frame_000320
+
+Processing: clip_3:frame_000321
+
+Processing: clip_3:frame_000322
+
+Processing: clip_3:frame_000323
+
+Processing: clip_3:frame_000324
+
+Processing: clip_3:frame_000325
+
+Processing: clip_3:frame_000326
+
+Processing: clip_3:frame_000327
+
+All images processed.
+===============================================
+Job finished at: Sun May 24 23:20:46 CEST 2026
+Execution took 0.12 hours
+Writing output to SLURM_logs/wilor-inference_409.out
+Retained WiLoR outputs: /scratch/mthakur/manifold/outputs/wilor_finetune/main_learnable_finetnuing/clip_3/meshes
+===============================================

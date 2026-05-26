@@ -1,0 +1,601 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Sun May 24 23:32:41 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   57C    P0            119W /  300W |    8775MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    8   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9965177
+Job Name:       wilor-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Sun May 24 23:32:41 CEST 2026
+===============================================
+WiLoR finetune experiment: main_learnable_finetnuing
+WiLoR checkpoint: /scratch/mthakur/manifold/outputs/wilor_finetune/main_learnable_finetnuing/best.ckpt
+WiLoR config: /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/model_config.yaml
+WiLoR video: /scratch/mthakur/manifold/data/test/demo2.mp4
+WiLoR output root: /scratch/mthakur/manifold/outputs/wilor_finetune/main_learnable_finetnuing
+WiLoR completion marker: /scratch/mthakur/manifold/outputs/wilor_finetune/main_learnable_finetnuing/_completed/demo2.json
+WiLoR frame cache root: /scratch/mthakur/manifold/data/test
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[progress] Loading WiLoR checkpoint: /scratch/mthakur/manifold/outputs/wilor_finetune/main_learnable_finetnuing/best.ckpt
+Loading  /scratch/mthakur/manifold/outputs/wilor_finetune/main_learnable_finetnuing/best.ckpt
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+[progress] Loading detector: ./pretrained_models/detector.pt
+
+Processing: demo2:frame_000000
+
+Processing: demo2:frame_000001
+
+Processing: demo2:frame_000002
+
+Processing: demo2:frame_000003
+
+Processing: demo2:frame_000004
+
+Processing: demo2:frame_000005
+
+Processing: demo2:frame_000006
+
+Processing: demo2:frame_000007
+
+Processing: demo2:frame_000008
+
+Processing: demo2:frame_000009
+
+Processing: demo2:frame_000010
+
+Processing: demo2:frame_000011
+
+Processing: demo2:frame_000012
+
+Processing: demo2:frame_000013
+
+Processing: demo2:frame_000014
+
+Processing: demo2:frame_000015
+
+Processing: demo2:frame_000016
+
+Processing: demo2:frame_000017
+
+Processing: demo2:frame_000018
+
+Processing: demo2:frame_000019
+
+Processing: demo2:frame_000020
+
+Processing: demo2:frame_000021
+
+Processing: demo2:frame_000022
+
+Processing: demo2:frame_000023
+
+Processing: demo2:frame_000024
+
+Processing: demo2:frame_000025
+
+Processing: demo2:frame_000026
+
+Processing: demo2:frame_000027
+
+Processing: demo2:frame_000028
+
+Processing: demo2:frame_000029
+
+Processing: demo2:frame_000030
+
+Processing: demo2:frame_000031
+
+Processing: demo2:frame_000032
+
+Processing: demo2:frame_000033
+
+Processing: demo2:frame_000034
+
+Processing: demo2:frame_000035
+
+Processing: demo2:frame_000036
+
+Processing: demo2:frame_000037
+
+Processing: demo2:frame_000038
+
+Processing: demo2:frame_000039
+
+Processing: demo2:frame_000040
+
+Processing: demo2:frame_000041
+
+Processing: demo2:frame_000042
+
+Processing: demo2:frame_000043
+
+Processing: demo2:frame_000044
+
+Processing: demo2:frame_000045
+
+Processing: demo2:frame_000046
+
+Processing: demo2:frame_000047
+
+Processing: demo2:frame_000048
+
+Processing: demo2:frame_000049
+
+Processing: demo2:frame_000050
+
+Processing: demo2:frame_000051
+
+Processing: demo2:frame_000052
+
+Processing: demo2:frame_000053
+
+Processing: demo2:frame_000054
+
+Processing: demo2:frame_000055
+
+Processing: demo2:frame_000056
+
+Processing: demo2:frame_000057
+
+Processing: demo2:frame_000058
+
+Processing: demo2:frame_000059
+
+Processing: demo2:frame_000060
+
+Processing: demo2:frame_000061
+
+Processing: demo2:frame_000062
+
+Processing: demo2:frame_000063
+
+Processing: demo2:frame_000064
+
+Processing: demo2:frame_000065
+
+Processing: demo2:frame_000066
+
+Processing: demo2:frame_000067
+
+Processing: demo2:frame_000068
+
+Processing: demo2:frame_000069
+
+Processing: demo2:frame_000070
+
+Processing: demo2:frame_000071
+
+Processing: demo2:frame_000072
+
+Processing: demo2:frame_000073
+
+Processing: demo2:frame_000074
+No detections, skipping.
+
+Processing: demo2:frame_000075
+No detections, skipping.
+
+Processing: demo2:frame_000076
+No detections, skipping.
+
+Processing: demo2:frame_000077
+No detections, skipping.
+
+Processing: demo2:frame_000078
+No detections, skipping.
+
+Processing: demo2:frame_000079
+No detections, skipping.
+
+Processing: demo2:frame_000080
+No detections, skipping.
+
+Processing: demo2:frame_000081
+No detections, skipping.
+
+Processing: demo2:frame_000082
+No detections, skipping.
+
+Processing: demo2:frame_000083
+No detections, skipping.
+
+Processing: demo2:frame_000084
+No detections, skipping.
+
+Processing: demo2:frame_000085
+No detections, skipping.
+
+Processing: demo2:frame_000086
+No detections, skipping.
+
+Processing: demo2:frame_000087
+No detections, skipping.
+
+Processing: demo2:frame_000088
+No detections, skipping.
+
+Processing: demo2:frame_000089
+No detections, skipping.
+
+Processing: demo2:frame_000090
+No detections, skipping.
+
+Processing: demo2:frame_000091
+No detections, skipping.
+
+Processing: demo2:frame_000092
+No detections, skipping.
+
+Processing: demo2:frame_000093
+No detections, skipping.
+
+Processing: demo2:frame_000094
+No detections, skipping.
+
+Processing: demo2:frame_000095
+No detections, skipping.
+
+Processing: demo2:frame_000096
+No detections, skipping.
+
+Processing: demo2:frame_000097
+No detections, skipping.
+
+Processing: demo2:frame_000098
+No detections, skipping.
+
+Processing: demo2:frame_000099
+No detections, skipping.
+
+Processing: demo2:frame_000100
+No detections, skipping.
+
+Processing: demo2:frame_000101
+No detections, skipping.
+
+Processing: demo2:frame_000102
+No detections, skipping.
+
+Processing: demo2:frame_000103
+No detections, skipping.
+
+Processing: demo2:frame_000104
+
+Processing: demo2:frame_000105
+
+Processing: demo2:frame_000106
+
+Processing: demo2:frame_000107
+
+Processing: demo2:frame_000108
+
+Processing: demo2:frame_000109
+
+Processing: demo2:frame_000110
+
+Processing: demo2:frame_000111
+
+Processing: demo2:frame_000112
+
+Processing: demo2:frame_000113
+
+Processing: demo2:frame_000114
+
+Processing: demo2:frame_000115
+
+Processing: demo2:frame_000116
+
+Processing: demo2:frame_000117
+
+Processing: demo2:frame_000118
+
+Processing: demo2:frame_000119
+
+Processing: demo2:frame_000120
+
+Processing: demo2:frame_000121
+
+Processing: demo2:frame_000122
+
+Processing: demo2:frame_000123
+
+Processing: demo2:frame_000124
+
+Processing: demo2:frame_000125
+
+Processing: demo2:frame_000126
+
+Processing: demo2:frame_000127
+
+Processing: demo2:frame_000128
+
+Processing: demo2:frame_000129
+
+Processing: demo2:frame_000130
+
+Processing: demo2:frame_000131
+
+Processing: demo2:frame_000132
+
+Processing: demo2:frame_000133
+
+Processing: demo2:frame_000134
+
+Processing: demo2:frame_000135
+
+Processing: demo2:frame_000136
+
+Processing: demo2:frame_000137
+
+Processing: demo2:frame_000138
+
+Processing: demo2:frame_000139
+
+Processing: demo2:frame_000140
+
+Processing: demo2:frame_000141
+
+Processing: demo2:frame_000142
+
+Processing: demo2:frame_000143
+
+Processing: demo2:frame_000144
+
+Processing: demo2:frame_000145
+
+Processing: demo2:frame_000146
+
+Processing: demo2:frame_000147
+
+Processing: demo2:frame_000148
+
+Processing: demo2:frame_000149
+
+Processing: demo2:frame_000150
+
+Processing: demo2:frame_000151
+
+Processing: demo2:frame_000152
+
+Processing: demo2:frame_000153
+
+Processing: demo2:frame_000154
+
+Processing: demo2:frame_000155
+
+Processing: demo2:frame_000156
+
+Processing: demo2:frame_000157
+
+Processing: demo2:frame_000158
+
+Processing: demo2:frame_000159
+
+Processing: demo2:frame_000160
+
+Processing: demo2:frame_000161
+
+Processing: demo2:frame_000162
+
+Processing: demo2:frame_000163
+
+Processing: demo2:frame_000164
+
+Processing: demo2:frame_000165
+
+Processing: demo2:frame_000166
+
+Processing: demo2:frame_000167
+
+Processing: demo2:frame_000168
+
+Processing: demo2:frame_000169
+
+Processing: demo2:frame_000170
+
+Processing: demo2:frame_000171
+
+Processing: demo2:frame_000172
+
+Processing: demo2:frame_000173
+
+Processing: demo2:frame_000174
+
+Processing: demo2:frame_000175
+
+Processing: demo2:frame_000176
+
+Processing: demo2:frame_000177
+
+Processing: demo2:frame_000178
+
+Processing: demo2:frame_000179
+
+Processing: demo2:frame_000180
+
+Processing: demo2:frame_000181
+
+Processing: demo2:frame_000182
+
+Processing: demo2:frame_000183
+
+Processing: demo2:frame_000184
+
+Processing: demo2:frame_000185
+
+Processing: demo2:frame_000186
+
+Processing: demo2:frame_000187
+
+Processing: demo2:frame_000188
+No detections, skipping.
+
+Processing: demo2:frame_000189
+No detections, skipping.
+
+Processing: demo2:frame_000190
+No detections, skipping.
+
+Processing: demo2:frame_000191
+No detections, skipping.
+
+Processing: demo2:frame_000192
+No detections, skipping.
+
+Processing: demo2:frame_000193
+No detections, skipping.
+
+Processing: demo2:frame_000194
+No detections, skipping.
+
+Processing: demo2:frame_000195
+No detections, skipping.
+
+Processing: demo2:frame_000196
+No detections, skipping.
+
+Processing: demo2:frame_000197
+No detections, skipping.
+
+Processing: demo2:frame_000198
+No detections, skipping.
+
+Processing: demo2:frame_000199
+No detections, skipping.
+
+Processing: demo2:frame_000200
+No detections, skipping.
+
+Processing: demo2:frame_000201
+No detections, skipping.
+
+Processing: demo2:frame_000202
+No detections, skipping.
+
+Processing: demo2:frame_000203
+No detections, skipping.
+
+Processing: demo2:frame_000204
+No detections, skipping.
+
+Processing: demo2:frame_000205
+No detections, skipping.
+
+Processing: demo2:frame_000206
+No detections, skipping.
+
+Processing: demo2:frame_000207
+No detections, skipping.
+
+Processing: demo2:frame_000208
+No detections, skipping.
+
+Processing: demo2:frame_000209
+No detections, skipping.
+
+Processing: demo2:frame_000210
+No detections, skipping.
+
+Processing: demo2:frame_000211
+No detections, skipping.
+
+Processing: demo2:frame_000212
+No detections, skipping.
+
+Processing: demo2:frame_000213
+No detections, skipping.
+
+Processing: demo2:frame_000214
+No detections, skipping.
+
+Processing: demo2:frame_000215
+No detections, skipping.
+
+Processing: demo2:frame_000216
+No detections, skipping.
+
+Processing: demo2:frame_000217
+No detections, skipping.
+
+Processing: demo2:frame_000218
+No detections, skipping.
+
+Processing: demo2:frame_000219
+No detections, skipping.
+
+Processing: demo2:frame_000220
+No detections, skipping.
+
+Processing: demo2:frame_000221
+No detections, skipping.
+
+Processing: demo2:frame_000222
+No detections, skipping.
+
+Processing: demo2:frame_000223
+No detections, skipping.
+
+Processing: demo2:frame_000224
+No detections, skipping.
+
+Processing: demo2:frame_000225
+No detections, skipping.
+
+Processing: demo2:frame_000226
+No detections, skipping.
+
+Processing: demo2:frame_000227
+No detections, skipping.
+
+Processing: demo2:frame_000228
+No detections, skipping.
+
+All images processed.
+===============================================
+Job finished at: Sun May 24 23:36:02 CEST 2026
+Execution took 0.06 hours
+Writing output to SLURM_logs/wilor-inference_412.out
+Retained WiLoR outputs: /scratch/mthakur/manifold/outputs/wilor_finetune/main_learnable_finetnuing/demo2/meshes
+===============================================

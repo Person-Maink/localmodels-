@@ -1,0 +1,1157 @@
+
+The following have been reloaded with a version change:
+  1) python/3.10.12 => python/3.10.13
+
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1       6) python/3.10.13
+
+ 
+
+Thu May 21 18:35:59 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   59C    P0            113W /  300W |    1986MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    8   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9951013
+Job Name:       wilor-train
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 20480
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Thu May 21 18:35:59 CEST 2026
+===============================================
+[progress] Lazy fine-tuning keeps IMAGE_FOLDER on the source root; skipping upfront frame extraction.
+Project root:    /scratch/mthakur/manifold
+Model root:      /scratch/mthakur/manifold/models/wilor_hands
+Output dir:      /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning
+Train mode:      distill
+Loss config:     /scratch/mthakur/manifold/models/wilor_hands/experiments/finetuning.yaml
+Experiment:      frozen_wilor_finetuning
+Train scope:     temporal_only
+LoRA:            enabled=false rank=8 alpha=16.0 blocks=24-32 targets=qkv
+Max steps:       10000
+Log every:       25
+Save every:      250
+Sample limit:    0
+Validation split:0.15
+Lazy detection:  true
+Checkpoint:      /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/wilor_final.ckpt
+Source images:   /scratch/mthakur/manifold/data//images
+Frame cache root:<image_folder>
+Prepared images: /scratch/mthakur/manifold/data//images
+Videos:          all discovered videos
+Temporal win:    size=3 stride=2 gap=1
+Pose dir:        /scratch/mthakur/manifold/outputs/vipe/pose
+Intrinsics dir:  /scratch/mthakur/manifold/outputs/vipe/intrinsics
+Command: python -u /scratch/mthakur/manifold/models/wilor_hands/finetune_wilor_distill_vipe.py --checkpoint /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/wilor_final.ckpt --cfg_path /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/model_config.yaml --detector_path /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/detector.pt --image_folder /scratch/mthakur/manifold/data//images --pose_dir /scratch/mthakur/manifold/outputs/vipe/pose --intrinsics_dir /scratch/mthakur/manifold/outputs/vipe/intrinsics --output_dir /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning --train_scope temporal_only --camera_loss_weight 0.01 --validation_split 0.15 --lr 3e-05 --weight_decay 0.0 --batch_size 8 --num_workers 2 --max_steps 10000 --log_every 25 --save_every 250 --seed 42 --rescale_factor 2.0 --detection_conf 0.3 --loss_config /scratch/mthakur/manifold/models/wilor_hands/experiments/finetuning.yaml --experiment_name frozen_wilor_finetuning --no-lora_enabled --lora_rank 8 --lora_alpha 16.0 --lora_dropout 0.0 --lora_block_start 24 --lora_block_end 32 --lora_target_modules qkv --detection_cache /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json --all_videos --temporal_window_size 3 --temporal_window_stride 2 --temporal_max_frame_gap 1 --temporal_reduction smooth_l1 --temporal_scorer_hidden_dim 64 --temporal_scorer_layers 2 --temporal_scorer_dropout 0.0 --vipe_camera_weight 0.0 --no-vipe_camera_enabled --temporal_camera_enabled --temporal_camera_formulation learnable --temporal_camera_weight 0.0 --temporal_camera_scorer_weight 0.0001 --temporal_bbox_projected_enabled --temporal_bbox_projected_formulation learnable --temporal_bbox_projected_weight 0.0 --temporal_bbox_projected_scorer_weight 0.0001 --use_gpu --amp --lazy_detection
+[progress] About to launch Apptainer via srun.
+[progress] SLURM wrapper log: SLURM_logs/wilor-train_208.out
+[progress] Python run output dir: /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning
+[progress] Starting containerized training process now...
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[progress] Starting fine-tuning entrypoint.
+[progress] Resolving experiment config from /scratch/mthakur/manifold/models/wilor_hands/experiments/finetuning.yaml (experiment=frozen_wilor_finetuning)
+[progress] Resolved experiment 'frozen_wilor_finetuning'.
+[progress] Using device cuda; output directory is /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning
+[progress] Saved resolved experiment snapshot.
+[progress] Loading student checkpoint and cloning teacher model.
+Loading  /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/wilor_final.ckpt
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+[progress] Loading detector and ViPE camera index.
+[progress] Loading YOLO detector from /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/detector.pt onto cuda
+[progress] Detector ready.
+[progress] Lazy detection mode is enabled. Training will assemble frame windows first and run the detector only for frames needed by each batch.
+[progress] Discovering videos from FrameStore because lazy detection is enabled.
+[progress] Filtering 712 selected video(s) for matching ViPE artifacts.
+Skipping 430 discovered video(s) without matching ViPE pose/intrinsics artifacts:
+  - --6bmFM9wT4: missing /scratch/mthakur/manifold/outputs/vipe/pose/--6bmFM9wT4.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/--6bmFM9wT4.npz
+  - --pq96V-6DA: missing /scratch/mthakur/manifold/outputs/vipe/pose/--pq96V-6DA.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/--pq96V-6DA.npz
+  - -2UZsKfaGIk: missing /scratch/mthakur/manifold/outputs/vipe/pose/-2UZsKfaGIk.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-2UZsKfaGIk.npz
+  - -384XKXNw_w: missing /scratch/mthakur/manifold/outputs/vipe/pose/-384XKXNw_w.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-384XKXNw_w.npz
+  - -60AS2h1R2M: missing /scratch/mthakur/manifold/outputs/vipe/pose/-60AS2h1R2M.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-60AS2h1R2M.npz
+  - -7L2DL9IOEU: missing /scratch/mthakur/manifold/outputs/vipe/pose/-7L2DL9IOEU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-7L2DL9IOEU.npz
+  - -ChOGBEL5uE: missing /scratch/mthakur/manifold/outputs/vipe/pose/-ChOGBEL5uE.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-ChOGBEL5uE.npz
+  - -Dycay2gHZU: missing /scratch/mthakur/manifold/outputs/vipe/pose/-Dycay2gHZU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-Dycay2gHZU.npz
+  - -GgW0Hrt6ow: missing /scratch/mthakur/manifold/outputs/vipe/pose/-GgW0Hrt6ow.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-GgW0Hrt6ow.npz
+  - -HV6JF-7Suc: missing /scratch/mthakur/manifold/outputs/vipe/pose/-HV6JF-7Suc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-HV6JF-7Suc.npz
+  - -HlGNm4D0NA: missing /scratch/mthakur/manifold/outputs/vipe/pose/-HlGNm4D0NA.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-HlGNm4D0NA.npz
+  - -JL59Zq5vPY: missing /scratch/mthakur/manifold/outputs/vipe/pose/-JL59Zq5vPY.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-JL59Zq5vPY.npz
+  - -K-HfBcGPXU: missing /scratch/mthakur/manifold/outputs/vipe/pose/-K-HfBcGPXU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-K-HfBcGPXU.npz
+  - -L3_lgFu2aw: missing /scratch/mthakur/manifold/outputs/vipe/pose/-L3_lgFu2aw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-L3_lgFu2aw.npz
+  - -LoU4OvDdgs: missing /scratch/mthakur/manifold/outputs/vipe/pose/-LoU4OvDdgs.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-LoU4OvDdgs.npz
+  - -M7CostYoIM: missing /scratch/mthakur/manifold/outputs/vipe/pose/-M7CostYoIM.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-M7CostYoIM.npz
+  - -NWZsLFjA7A: missing /scratch/mthakur/manifold/outputs/vipe/pose/-NWZsLFjA7A.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-NWZsLFjA7A.npz
+  - -NaUu-UH5wQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/-NaUu-UH5wQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-NaUu-UH5wQ.npz
+  - -QHnZBBE8Ho: missing /scratch/mthakur/manifold/outputs/vipe/pose/-QHnZBBE8Ho.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-QHnZBBE8Ho.npz
+  - -Tp_qLcc02c: missing /scratch/mthakur/manifold/outputs/vipe/pose/-Tp_qLcc02c.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-Tp_qLcc02c.npz
+  - -XFkh8wlNUQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/-XFkh8wlNUQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-XFkh8wlNUQ.npz
+  - -ZDR-PsGMUo: missing /scratch/mthakur/manifold/outputs/vipe/pose/-ZDR-PsGMUo.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-ZDR-PsGMUo.npz
+  - -ZOyG_dW_1M: missing /scratch/mthakur/manifold/outputs/vipe/pose/-ZOyG_dW_1M.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-ZOyG_dW_1M.npz
+  - -Zl-cALyuy8: missing /scratch/mthakur/manifold/outputs/vipe/pose/-Zl-cALyuy8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-Zl-cALyuy8.npz
+  - -Zrf6jWiFZs: missing /scratch/mthakur/manifold/outputs/vipe/pose/-Zrf6jWiFZs.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-Zrf6jWiFZs.npz
+  - -_ojvPJp0c0: missing /scratch/mthakur/manifold/outputs/vipe/pose/-_ojvPJp0c0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-_ojvPJp0c0.npz
+  - -acP9jXuPNA: missing /scratch/mthakur/manifold/outputs/vipe/pose/-acP9jXuPNA.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-acP9jXuPNA.npz
+  - -b8VzJIjbkw: missing /scratch/mthakur/manifold/outputs/vipe/pose/-b8VzJIjbkw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/-b8VzJIjbkw.npz
+  - 0EV7Cfdw58s: missing /scratch/mthakur/manifold/outputs/vipe/pose/0EV7Cfdw58s.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0EV7Cfdw58s.npz
+  - 0F1CZq3opMw: missing /scratch/mthakur/manifold/outputs/vipe/pose/0F1CZq3opMw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0F1CZq3opMw.npz
+  - 0FBP71iD9u4: missing /scratch/mthakur/manifold/outputs/vipe/pose/0FBP71iD9u4.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0FBP71iD9u4.npz
+  - 0FFdnI-tQyw: missing /scratch/mthakur/manifold/outputs/vipe/pose/0FFdnI-tQyw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0FFdnI-tQyw.npz
+  - 0FYqFEA9pTQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/0FYqFEA9pTQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0FYqFEA9pTQ.npz
+  - 0HzztPiFelY: missing /scratch/mthakur/manifold/outputs/vipe/pose/0HzztPiFelY.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0HzztPiFelY.npz
+  - 0INWLJXjBsk: missing /scratch/mthakur/manifold/outputs/vipe/pose/0INWLJXjBsk.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0INWLJXjBsk.npz
+  - 0JCeMZ4Q3XQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/0JCeMZ4Q3XQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0JCeMZ4Q3XQ.npz
+  - 0JWnUGQrtIs: missing /scratch/mthakur/manifold/outputs/vipe/pose/0JWnUGQrtIs.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0JWnUGQrtIs.npz
+  - 0JYql1QeUUI: missing /scratch/mthakur/manifold/outputs/vipe/pose/0JYql1QeUUI.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0JYql1QeUUI.npz
+  - 0KkGcaUZfLM: missing /scratch/mthakur/manifold/outputs/vipe/pose/0KkGcaUZfLM.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0KkGcaUZfLM.npz
+  - 0L0MNEN60iM: missing /scratch/mthakur/manifold/outputs/vipe/pose/0L0MNEN60iM.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0L0MNEN60iM.npz
+  - 0NE-fxfnfsw: missing /scratch/mthakur/manifold/outputs/vipe/pose/0NE-fxfnfsw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0NE-fxfnfsw.npz
+  - 0OTrKoliOTc: missing /scratch/mthakur/manifold/outputs/vipe/pose/0OTrKoliOTc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0OTrKoliOTc.npz
+  - 0Q3Ik0o3JuA: missing /scratch/mthakur/manifold/outputs/vipe/pose/0Q3Ik0o3JuA.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0Q3Ik0o3JuA.npz
+  - 0TGzKgxeNt4: missing /scratch/mthakur/manifold/outputs/vipe/pose/0TGzKgxeNt4.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0TGzKgxeNt4.npz
+  - 0UR9cREKeUI: missing /scratch/mthakur/manifold/outputs/vipe/pose/0UR9cREKeUI.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0UR9cREKeUI.npz
+  - 0VQ9H3AxdGc: missing /scratch/mthakur/manifold/outputs/vipe/pose/0VQ9H3AxdGc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0VQ9H3AxdGc.npz
+  - 0W3wXxl1Fwk: missing /scratch/mthakur/manifold/outputs/vipe/pose/0W3wXxl1Fwk.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0W3wXxl1Fwk.npz
+  - 0WcGVcWLLy0: missing /scratch/mthakur/manifold/outputs/vipe/pose/0WcGVcWLLy0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0WcGVcWLLy0.npz
+  - 0YR_i6PVM5o: missing /scratch/mthakur/manifold/outputs/vipe/pose/0YR_i6PVM5o.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0YR_i6PVM5o.npz
+  - 0axfOnsyUE8: missing /scratch/mthakur/manifold/outputs/vipe/pose/0axfOnsyUE8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0axfOnsyUE8.npz
+  - 0bIQ-0ExK9c: missing /scratch/mthakur/manifold/outputs/vipe/pose/0bIQ-0ExK9c.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0bIQ-0ExK9c.npz
+  - 0c_b0ZrIrxA: missing /scratch/mthakur/manifold/outputs/vipe/pose/0c_b0ZrIrxA.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0c_b0ZrIrxA.npz
+  - 0fZJVfJ2RBk: missing /scratch/mthakur/manifold/outputs/vipe/pose/0fZJVfJ2RBk.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0fZJVfJ2RBk.npz
+  - 0fkFHKeQnTE: missing /scratch/mthakur/manifold/outputs/vipe/pose/0fkFHKeQnTE.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0fkFHKeQnTE.npz
+  - 0fqGjsbAkdU: missing /scratch/mthakur/manifold/outputs/vipe/pose/0fqGjsbAkdU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0fqGjsbAkdU.npz
+  - 0ibHGUofRWQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/0ibHGUofRWQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0ibHGUofRWQ.npz
+  - 0ivltlK21Ns: missing /scratch/mthakur/manifold/outputs/vipe/pose/0ivltlK21Ns.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0ivltlK21Ns.npz
+  - 0k2iDuG8DnY: missing /scratch/mthakur/manifold/outputs/vipe/pose/0k2iDuG8DnY.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0k2iDuG8DnY.npz
+  - 0m3glzoQMfI: missing /scratch/mthakur/manifold/outputs/vipe/pose/0m3glzoQMfI.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0m3glzoQMfI.npz
+  - 0mR7n0W1h9c: missing /scratch/mthakur/manifold/outputs/vipe/pose/0mR7n0W1h9c.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0mR7n0W1h9c.npz
+  - 0mlwYkrlmGs: missing /scratch/mthakur/manifold/outputs/vipe/pose/0mlwYkrlmGs.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0mlwYkrlmGs.npz
+  - 0ozQhjCEq8g: missing /scratch/mthakur/manifold/outputs/vipe/pose/0ozQhjCEq8g.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0ozQhjCEq8g.npz
+  - 0qr8Y9u7lK8: missing /scratch/mthakur/manifold/outputs/vipe/pose/0qr8Y9u7lK8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0qr8Y9u7lK8.npz
+  - 0qtZASvLIak: missing /scratch/mthakur/manifold/outputs/vipe/pose/0qtZASvLIak.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0qtZASvLIak.npz
+  - 0s6E7uGXjRc: missing /scratch/mthakur/manifold/outputs/vipe/pose/0s6E7uGXjRc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0s6E7uGXjRc.npz
+  - 0sJIlX1BvBc: missing /scratch/mthakur/manifold/outputs/vipe/pose/0sJIlX1BvBc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0sJIlX1BvBc.npz
+  - 0u2AVVL5KRE: missing /scratch/mthakur/manifold/outputs/vipe/pose/0u2AVVL5KRE.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0u2AVVL5KRE.npz
+  - 0udTXFEOTp8: missing /scratch/mthakur/manifold/outputs/vipe/pose/0udTXFEOTp8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0udTXFEOTp8.npz
+  - 0ulVg4h6W9E: missing /scratch/mthakur/manifold/outputs/vipe/pose/0ulVg4h6W9E.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0ulVg4h6W9E.npz
+  - 0ummhjbzT3w: missing /scratch/mthakur/manifold/outputs/vipe/pose/0ummhjbzT3w.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0ummhjbzT3w.npz
+  - 0v60vuyjGqA: missing /scratch/mthakur/manifold/outputs/vipe/pose/0v60vuyjGqA.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0v60vuyjGqA.npz
+  - 0vqnjAecNI4: missing /scratch/mthakur/manifold/outputs/vipe/pose/0vqnjAecNI4.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0vqnjAecNI4.npz
+  - 0vzECnJwdOY: missing /scratch/mthakur/manifold/outputs/vipe/pose/0vzECnJwdOY.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0vzECnJwdOY.npz
+  - 0x09FfojaSM: missing /scratch/mthakur/manifold/outputs/vipe/pose/0x09FfojaSM.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/0x09FfojaSM.npz
+  - 1-saQGg__0E: missing /scratch/mthakur/manifold/outputs/vipe/pose/1-saQGg__0E.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1-saQGg__0E.npz
+  - 11bYjaf1gWc: missing /scratch/mthakur/manifold/outputs/vipe/pose/11bYjaf1gWc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/11bYjaf1gWc.npz
+  - 15uD4UdvOGU: missing /scratch/mthakur/manifold/outputs/vipe/pose/15uD4UdvOGU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/15uD4UdvOGU.npz
+  - 16FY4shEniw: missing /scratch/mthakur/manifold/outputs/vipe/pose/16FY4shEniw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/16FY4shEniw.npz
+  - 18uLbZs9g3k: missing /scratch/mthakur/manifold/outputs/vipe/pose/18uLbZs9g3k.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/18uLbZs9g3k.npz
+  - 1B4ZrxTcOBw: missing /scratch/mthakur/manifold/outputs/vipe/pose/1B4ZrxTcOBw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1B4ZrxTcOBw.npz
+  - 1CfBoWJ8kAY: missing /scratch/mthakur/manifold/outputs/vipe/pose/1CfBoWJ8kAY.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1CfBoWJ8kAY.npz
+  - 1CzOg-MVqs4: missing /scratch/mthakur/manifold/outputs/vipe/pose/1CzOg-MVqs4.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1CzOg-MVqs4.npz
+  - 1FbKP8vZvdM: missing /scratch/mthakur/manifold/outputs/vipe/pose/1FbKP8vZvdM.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1FbKP8vZvdM.npz
+  - 1GdzGKD-VnQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/1GdzGKD-VnQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1GdzGKD-VnQ.npz
+  - 1GhFf3notdw: missing /scratch/mthakur/manifold/outputs/vipe/pose/1GhFf3notdw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1GhFf3notdw.npz
+  - 1J11MLT62oI: missing /scratch/mthakur/manifold/outputs/vipe/pose/1J11MLT62oI.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1J11MLT62oI.npz
+  - 1JI0VePnXUg: missing /scratch/mthakur/manifold/outputs/vipe/pose/1JI0VePnXUg.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1JI0VePnXUg.npz
+  - 1MuENBUZYtc: missing /scratch/mthakur/manifold/outputs/vipe/pose/1MuENBUZYtc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1MuENBUZYtc.npz
+  - 1NNpTjkA-Vc: missing /scratch/mthakur/manifold/outputs/vipe/pose/1NNpTjkA-Vc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1NNpTjkA-Vc.npz
+  - 1OJS1t-6_9k: missing /scratch/mthakur/manifold/outputs/vipe/pose/1OJS1t-6_9k.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1OJS1t-6_9k.npz
+  - 1ORJ2LYyjtg: missing /scratch/mthakur/manifold/outputs/vipe/pose/1ORJ2LYyjtg.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1ORJ2LYyjtg.npz
+  - 1Ov5Kuhijeo: missing /scratch/mthakur/manifold/outputs/vipe/pose/1Ov5Kuhijeo.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1Ov5Kuhijeo.npz
+  - 1RHbfw12FPE: missing /scratch/mthakur/manifold/outputs/vipe/pose/1RHbfw12FPE.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1RHbfw12FPE.npz
+  - 1ROgPtwNQJA: missing /scratch/mthakur/manifold/outputs/vipe/pose/1ROgPtwNQJA.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1ROgPtwNQJA.npz
+  - 1Rl908nVWlY: missing /scratch/mthakur/manifold/outputs/vipe/pose/1Rl908nVWlY.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1Rl908nVWlY.npz
+  - 1SXpmomfrjU: missing /scratch/mthakur/manifold/outputs/vipe/pose/1SXpmomfrjU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1SXpmomfrjU.npz
+  - 1SfQim8avcU: missing /scratch/mthakur/manifold/outputs/vipe/pose/1SfQim8avcU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1SfQim8avcU.npz
+  - 1UE60O6dsiU: missing /scratch/mthakur/manifold/outputs/vipe/pose/1UE60O6dsiU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1UE60O6dsiU.npz
+  - 1W9pXUryFvY: missing /scratch/mthakur/manifold/outputs/vipe/pose/1W9pXUryFvY.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1W9pXUryFvY.npz
+  - 1YjsTc70vK4: missing /scratch/mthakur/manifold/outputs/vipe/pose/1YjsTc70vK4.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1YjsTc70vK4.npz
+  - 1ZByLiG8-3c: missing /scratch/mthakur/manifold/outputs/vipe/pose/1ZByLiG8-3c.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1ZByLiG8-3c.npz
+  - 1ZQlKQsY0_0: missing /scratch/mthakur/manifold/outputs/vipe/pose/1ZQlKQsY0_0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1ZQlKQsY0_0.npz
+  - 1_eMgOadAWQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/1_eMgOadAWQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1_eMgOadAWQ.npz
+  - 1akHL1w-dg4: missing /scratch/mthakur/manifold/outputs/vipe/pose/1akHL1w-dg4.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1akHL1w-dg4.npz
+  - 1c1aGRdDYB8: missing /scratch/mthakur/manifold/outputs/vipe/pose/1c1aGRdDYB8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1c1aGRdDYB8.npz
+  - 1cT9kp1pI8A: missing /scratch/mthakur/manifold/outputs/vipe/pose/1cT9kp1pI8A.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1cT9kp1pI8A.npz
+  - 1d7meFB92Z0: missing /scratch/mthakur/manifold/outputs/vipe/pose/1d7meFB92Z0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1d7meFB92Z0.npz
+  - 1eHR1Kopsus: missing /scratch/mthakur/manifold/outputs/vipe/pose/1eHR1Kopsus.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1eHR1Kopsus.npz
+  - 1fJ1H9FNN6U: missing /scratch/mthakur/manifold/outputs/vipe/pose/1fJ1H9FNN6U.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1fJ1H9FNN6U.npz
+  - 1hMbLtmDzgg: missing /scratch/mthakur/manifold/outputs/vipe/pose/1hMbLtmDzgg.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1hMbLtmDzgg.npz
+  - 1k2s89desLs: missing /scratch/mthakur/manifold/outputs/vipe/pose/1k2s89desLs.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1k2s89desLs.npz
+  - 1ky1L6jzdAQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/1ky1L6jzdAQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1ky1L6jzdAQ.npz
+  - 1lc8__0n4kQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/1lc8__0n4kQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1lc8__0n4kQ.npz
+  - 1p1gWBabLOc: missing /scratch/mthakur/manifold/outputs/vipe/pose/1p1gWBabLOc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1p1gWBabLOc.npz
+  - 1qrxdNZgyiU: missing /scratch/mthakur/manifold/outputs/vipe/pose/1qrxdNZgyiU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1qrxdNZgyiU.npz
+  - 1shDjV2kuYI: missing /scratch/mthakur/manifold/outputs/vipe/pose/1shDjV2kuYI.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1shDjV2kuYI.npz
+  - 1so4-zBOcbk: missing /scratch/mthakur/manifold/outputs/vipe/pose/1so4-zBOcbk.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1so4-zBOcbk.npz
+  - 1t3EJprOWEw: missing /scratch/mthakur/manifold/outputs/vipe/pose/1t3EJprOWEw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1t3EJprOWEw.npz
+  - 1tdocyR8uvk: missing /scratch/mthakur/manifold/outputs/vipe/pose/1tdocyR8uvk.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1tdocyR8uvk.npz
+  - 1uz3vYd3o6A: missing /scratch/mthakur/manifold/outputs/vipe/pose/1uz3vYd3o6A.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1uz3vYd3o6A.npz
+  - 1x-8S-NWWzo: missing /scratch/mthakur/manifold/outputs/vipe/pose/1x-8S-NWWzo.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1x-8S-NWWzo.npz
+  - 1y8vXjLQWL0: missing /scratch/mthakur/manifold/outputs/vipe/pose/1y8vXjLQWL0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1y8vXjLQWL0.npz
+  - 1yKuwUSJXjQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/1yKuwUSJXjQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1yKuwUSJXjQ.npz
+  - 1yycWziALCE: missing /scratch/mthakur/manifold/outputs/vipe/pose/1yycWziALCE.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1yycWziALCE.npz
+  - 1zB3R6tR5Ow: missing /scratch/mthakur/manifold/outputs/vipe/pose/1zB3R6tR5Ow.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1zB3R6tR5Ow.npz
+  - 1zRfH_9kqtk: missing /scratch/mthakur/manifold/outputs/vipe/pose/1zRfH_9kqtk.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/1zRfH_9kqtk.npz
+  - 2-p5HVrDLik: missing /scratch/mthakur/manifold/outputs/vipe/pose/2-p5HVrDLik.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2-p5HVrDLik.npz
+  - 20L1KcP9Zeo: missing /scratch/mthakur/manifold/outputs/vipe/pose/20L1KcP9Zeo.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/20L1KcP9Zeo.npz
+  - 226CKUNss6k: missing /scratch/mthakur/manifold/outputs/vipe/pose/226CKUNss6k.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/226CKUNss6k.npz
+  - 237k5BL8gu0: missing /scratch/mthakur/manifold/outputs/vipe/pose/237k5BL8gu0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/237k5BL8gu0.npz
+  - 23tQHcy3VnI: missing /scratch/mthakur/manifold/outputs/vipe/pose/23tQHcy3VnI.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/23tQHcy3VnI.npz
+  - 299RErdnW94: missing /scratch/mthakur/manifold/outputs/vipe/pose/299RErdnW94.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/299RErdnW94.npz
+  - 299fkv24i_M: missing /scratch/mthakur/manifold/outputs/vipe/pose/299fkv24i_M.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/299fkv24i_M.npz
+  - 29wUp2U9WsM: missing /scratch/mthakur/manifold/outputs/vipe/pose/29wUp2U9WsM.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/29wUp2U9WsM.npz
+  - 2CBMZcrvOdA: missing /scratch/mthakur/manifold/outputs/vipe/pose/2CBMZcrvOdA.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2CBMZcrvOdA.npz
+  - 2DGjhMDkwTk: missing /scratch/mthakur/manifold/outputs/vipe/pose/2DGjhMDkwTk.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2DGjhMDkwTk.npz
+  - 2EKVWMwZEN0: missing /scratch/mthakur/manifold/outputs/vipe/pose/2EKVWMwZEN0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2EKVWMwZEN0.npz
+  - 2Jk-LnStEvQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/2Jk-LnStEvQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2Jk-LnStEvQ.npz
+  - 2K6sNH3QdM4: missing /scratch/mthakur/manifold/outputs/vipe/pose/2K6sNH3QdM4.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2K6sNH3QdM4.npz
+  - 2KIyVF36spo: missing /scratch/mthakur/manifold/outputs/vipe/pose/2KIyVF36spo.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2KIyVF36spo.npz
+  - 2LwV2AuvNaU: missing /scratch/mthakur/manifold/outputs/vipe/pose/2LwV2AuvNaU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2LwV2AuvNaU.npz
+  - 2M83YRjnHWs: missing /scratch/mthakur/manifold/outputs/vipe/pose/2M83YRjnHWs.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2M83YRjnHWs.npz
+  - 2NJXip1avxY: missing /scratch/mthakur/manifold/outputs/vipe/pose/2NJXip1avxY.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2NJXip1avxY.npz
+  - 2QCyl_nQHXo: missing /scratch/mthakur/manifold/outputs/vipe/pose/2QCyl_nQHXo.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2QCyl_nQHXo.npz
+  - 2QKVspjZM-w: missing /scratch/mthakur/manifold/outputs/vipe/pose/2QKVspjZM-w.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2QKVspjZM-w.npz
+  - 2QSlChnnFmU: missing /scratch/mthakur/manifold/outputs/vipe/pose/2QSlChnnFmU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2QSlChnnFmU.npz
+  - 2SEp74TgXeM: missing /scratch/mthakur/manifold/outputs/vipe/pose/2SEp74TgXeM.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2SEp74TgXeM.npz
+  - 2TjAKLUBJ7s: missing /scratch/mthakur/manifold/outputs/vipe/pose/2TjAKLUBJ7s.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2TjAKLUBJ7s.npz
+  - 2W8nPQFb3ZY: missing /scratch/mthakur/manifold/outputs/vipe/pose/2W8nPQFb3ZY.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2W8nPQFb3ZY.npz
+  - 2Wsw0KI-yQg: missing /scratch/mthakur/manifold/outputs/vipe/pose/2Wsw0KI-yQg.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2Wsw0KI-yQg.npz
+  - 2YdPY7GMPBU: missing /scratch/mthakur/manifold/outputs/vipe/pose/2YdPY7GMPBU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2YdPY7GMPBU.npz
+  - 2_PWeBb41qM: missing /scratch/mthakur/manifold/outputs/vipe/pose/2_PWeBb41qM.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2_PWeBb41qM.npz
+  - 2aQhjfDc_nw: missing /scratch/mthakur/manifold/outputs/vipe/pose/2aQhjfDc_nw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2aQhjfDc_nw.npz
+  - 2deG-DmpnAQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/2deG-DmpnAQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2deG-DmpnAQ.npz
+  - 2e-uo8_3lJ0: missing /scratch/mthakur/manifold/outputs/vipe/pose/2e-uo8_3lJ0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2e-uo8_3lJ0.npz
+  - 2epZdTtZYig: missing /scratch/mthakur/manifold/outputs/vipe/pose/2epZdTtZYig.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2epZdTtZYig.npz
+  - 2ieEZatqP14: missing /scratch/mthakur/manifold/outputs/vipe/pose/2ieEZatqP14.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2ieEZatqP14.npz
+  - 2ofPs_uTel4: missing /scratch/mthakur/manifold/outputs/vipe/pose/2ofPs_uTel4.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2ofPs_uTel4.npz
+  - 2qDnzhpeD18: missing /scratch/mthakur/manifold/outputs/vipe/pose/2qDnzhpeD18.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2qDnzhpeD18.npz
+  - 2qLS_mXdrh8: missing /scratch/mthakur/manifold/outputs/vipe/pose/2qLS_mXdrh8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2qLS_mXdrh8.npz
+  - 2r-hs8cizg4: missing /scratch/mthakur/manifold/outputs/vipe/pose/2r-hs8cizg4.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2r-hs8cizg4.npz
+  - 2rUWPvdAVMw: missing /scratch/mthakur/manifold/outputs/vipe/pose/2rUWPvdAVMw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2rUWPvdAVMw.npz
+  - 2sRkc0SllW8: missing /scratch/mthakur/manifold/outputs/vipe/pose/2sRkc0SllW8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2sRkc0SllW8.npz
+  - 2ucO7etmU-w: missing /scratch/mthakur/manifold/outputs/vipe/pose/2ucO7etmU-w.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2ucO7etmU-w.npz
+  - 2udPD0NYRVo: missing /scratch/mthakur/manifold/outputs/vipe/pose/2udPD0NYRVo.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2udPD0NYRVo.npz
+  - 2uqfhF-Of_U: missing /scratch/mthakur/manifold/outputs/vipe/pose/2uqfhF-Of_U.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2uqfhF-Of_U.npz
+  - 2vItFX_gYQE: missing /scratch/mthakur/manifold/outputs/vipe/pose/2vItFX_gYQE.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/2vItFX_gYQE.npz
+  - 3--WciJ3-I4: missing /scratch/mthakur/manifold/outputs/vipe/pose/3--WciJ3-I4.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3--WciJ3-I4.npz
+  - 3-cl4u7Cy3w: missing /scratch/mthakur/manifold/outputs/vipe/pose/3-cl4u7Cy3w.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3-cl4u7Cy3w.npz
+  - 318OuzwpCzc: missing /scratch/mthakur/manifold/outputs/vipe/pose/318OuzwpCzc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/318OuzwpCzc.npz
+  - 31sHy2-FC70: missing /scratch/mthakur/manifold/outputs/vipe/pose/31sHy2-FC70.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/31sHy2-FC70.npz
+  - 32oTN0XBKSA: missing /scratch/mthakur/manifold/outputs/vipe/pose/32oTN0XBKSA.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/32oTN0XBKSA.npz
+  - 32uDIDeinnY: missing /scratch/mthakur/manifold/outputs/vipe/pose/32uDIDeinnY.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/32uDIDeinnY.npz
+  - 336iG0cnp1I: missing /scratch/mthakur/manifold/outputs/vipe/pose/336iG0cnp1I.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/336iG0cnp1I.npz
+  - 33brDkaix3A: missing /scratch/mthakur/manifold/outputs/vipe/pose/33brDkaix3A.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/33brDkaix3A.npz
+  - 35N28rtz66I: missing /scratch/mthakur/manifold/outputs/vipe/pose/35N28rtz66I.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/35N28rtz66I.npz
+  - 35bR5TNTd2M: missing /scratch/mthakur/manifold/outputs/vipe/pose/35bR5TNTd2M.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/35bR5TNTd2M.npz
+  - 39FygidlZio: missing /scratch/mthakur/manifold/outputs/vipe/pose/39FygidlZio.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/39FygidlZio.npz
+  - 3BrgsrwOSHk: missing /scratch/mthakur/manifold/outputs/vipe/pose/3BrgsrwOSHk.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3BrgsrwOSHk.npz
+  - 3Byo1PPkZTY: missing /scratch/mthakur/manifold/outputs/vipe/pose/3Byo1PPkZTY.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3Byo1PPkZTY.npz
+  - 3DdyXFmj6kg: missing /scratch/mthakur/manifold/outputs/vipe/pose/3DdyXFmj6kg.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3DdyXFmj6kg.npz
+  - 3Hw3dbQHVTQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/3Hw3dbQHVTQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3Hw3dbQHVTQ.npz
+  - 3IlxESnsAxA: missing /scratch/mthakur/manifold/outputs/vipe/pose/3IlxESnsAxA.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3IlxESnsAxA.npz
+  - 3Iu3rAesooU: missing /scratch/mthakur/manifold/outputs/vipe/pose/3Iu3rAesooU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3Iu3rAesooU.npz
+  - 3JGY9iG_hwA: missing /scratch/mthakur/manifold/outputs/vipe/pose/3JGY9iG_hwA.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3JGY9iG_hwA.npz
+  - 3JxIU16AK4E: missing /scratch/mthakur/manifold/outputs/vipe/pose/3JxIU16AK4E.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3JxIU16AK4E.npz
+  - 3KX4beTnCYA: missing /scratch/mthakur/manifold/outputs/vipe/pose/3KX4beTnCYA.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3KX4beTnCYA.npz
+  - 3ML4x_33Mv4: missing /scratch/mthakur/manifold/outputs/vipe/pose/3ML4x_33Mv4.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3ML4x_33Mv4.npz
+  - 3OOGFTrAle0: missing /scratch/mthakur/manifold/outputs/vipe/pose/3OOGFTrAle0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3OOGFTrAle0.npz
+  - 3Q1ltxsVHyw: missing /scratch/mthakur/manifold/outputs/vipe/pose/3Q1ltxsVHyw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3Q1ltxsVHyw.npz
+  - 3TEQLFpSk2I: missing /scratch/mthakur/manifold/outputs/vipe/pose/3TEQLFpSk2I.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3TEQLFpSk2I.npz
+  - 3TU7xovzhMo: missing /scratch/mthakur/manifold/outputs/vipe/pose/3TU7xovzhMo.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3TU7xovzhMo.npz
+  - 3Tb6v6hbF0I: missing /scratch/mthakur/manifold/outputs/vipe/pose/3Tb6v6hbF0I.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3Tb6v6hbF0I.npz
+  - 3WB3Ca1ocq8: missing /scratch/mthakur/manifold/outputs/vipe/pose/3WB3Ca1ocq8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3WB3Ca1ocq8.npz
+  - 3WLY88Swc_I: missing /scratch/mthakur/manifold/outputs/vipe/pose/3WLY88Swc_I.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3WLY88Swc_I.npz
+  - 3WZeZ8czCBo: missing /scratch/mthakur/manifold/outputs/vipe/pose/3WZeZ8czCBo.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3WZeZ8czCBo.npz
+  - 3_TWJCoDIVA: missing /scratch/mthakur/manifold/outputs/vipe/pose/3_TWJCoDIVA.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3_TWJCoDIVA.npz
+  - 3_b9cFm9HpM: missing /scratch/mthakur/manifold/outputs/vipe/pose/3_b9cFm9HpM.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3_b9cFm9HpM.npz
+  - 3_y5dhzpILw: missing /scratch/mthakur/manifold/outputs/vipe/pose/3_y5dhzpILw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3_y5dhzpILw.npz
+  - 3b8R8nQVzE8: missing /scratch/mthakur/manifold/outputs/vipe/pose/3b8R8nQVzE8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3b8R8nQVzE8.npz
+  - 3bFbHvIHOZI: missing /scratch/mthakur/manifold/outputs/vipe/pose/3bFbHvIHOZI.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3bFbHvIHOZI.npz
+  - 3czV8z7v_6M: missing /scratch/mthakur/manifold/outputs/vipe/pose/3czV8z7v_6M.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3czV8z7v_6M.npz
+  - 3derzMnQLDY: missing /scratch/mthakur/manifold/outputs/vipe/pose/3derzMnQLDY.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3derzMnQLDY.npz
+  - 3dz9WRT4ovs: missing /scratch/mthakur/manifold/outputs/vipe/pose/3dz9WRT4ovs.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3dz9WRT4ovs.npz
+  - 3fo73EJ3XX8: missing /scratch/mthakur/manifold/outputs/vipe/pose/3fo73EJ3XX8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3fo73EJ3XX8.npz
+  - 3fw1zsnDmbU: missing /scratch/mthakur/manifold/outputs/vipe/pose/3fw1zsnDmbU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3fw1zsnDmbU.npz
+  - 3gWIt6KUn2Y: missing /scratch/mthakur/manifold/outputs/vipe/pose/3gWIt6KUn2Y.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3gWIt6KUn2Y.npz
+  - 3h4EC1PGnw8: missing /scratch/mthakur/manifold/outputs/vipe/pose/3h4EC1PGnw8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3h4EC1PGnw8.npz
+  - 3h6Izx48g3k: missing /scratch/mthakur/manifold/outputs/vipe/pose/3h6Izx48g3k.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3h6Izx48g3k.npz
+  - 3hEV4jANTO4: missing /scratch/mthakur/manifold/outputs/vipe/pose/3hEV4jANTO4.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3hEV4jANTO4.npz
+  - 3hZoT_dq2mQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/3hZoT_dq2mQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3hZoT_dq2mQ.npz
+  - 3i7FjHxe8DE: missing /scratch/mthakur/manifold/outputs/vipe/pose/3i7FjHxe8DE.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3i7FjHxe8DE.npz
+  - 3jMyATzSm_k: missing /scratch/mthakur/manifold/outputs/vipe/pose/3jMyATzSm_k.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3jMyATzSm_k.npz
+  - 3m2PIS0Asxg: missing /scratch/mthakur/manifold/outputs/vipe/pose/3m2PIS0Asxg.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3m2PIS0Asxg.npz
+  - 3mfHu_ianaQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/3mfHu_ianaQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3mfHu_ianaQ.npz
+  - 3njc7bhBUNw: missing /scratch/mthakur/manifold/outputs/vipe/pose/3njc7bhBUNw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3njc7bhBUNw.npz
+  - 3ny1DoUAOTs: missing /scratch/mthakur/manifold/outputs/vipe/pose/3ny1DoUAOTs.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3ny1DoUAOTs.npz
+  - 3oOzZryjCLM: missing /scratch/mthakur/manifold/outputs/vipe/pose/3oOzZryjCLM.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3oOzZryjCLM.npz
+  - 3oYUTZzpgqg: missing /scratch/mthakur/manifold/outputs/vipe/pose/3oYUTZzpgqg.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3oYUTZzpgqg.npz
+  - 3pKwGJ55kYM: missing /scratch/mthakur/manifold/outputs/vipe/pose/3pKwGJ55kYM.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3pKwGJ55kYM.npz
+  - 3poB5VELd34: missing /scratch/mthakur/manifold/outputs/vipe/pose/3poB5VELd34.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3poB5VELd34.npz
+  - 3u5q5MZv0mI: missing /scratch/mthakur/manifold/outputs/vipe/pose/3u5q5MZv0mI.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3u5q5MZv0mI.npz
+  - 3ucoQx_3l_k: missing /scratch/mthakur/manifold/outputs/vipe/pose/3ucoQx_3l_k.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3ucoQx_3l_k.npz
+  - 3xGoX0gMhnU: missing /scratch/mthakur/manifold/outputs/vipe/pose/3xGoX0gMhnU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3xGoX0gMhnU.npz
+  - 3zRUoFOUi4Q: missing /scratch/mthakur/manifold/outputs/vipe/pose/3zRUoFOUi4Q.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/3zRUoFOUi4Q.npz
+  - 4-4b4lJXvWE: missing /scratch/mthakur/manifold/outputs/vipe/pose/4-4b4lJXvWE.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4-4b4lJXvWE.npz
+  - 4-M3xo-BkAE: missing /scratch/mthakur/manifold/outputs/vipe/pose/4-M3xo-BkAE.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4-M3xo-BkAE.npz
+  - 40TaTmMaqC0: missing /scratch/mthakur/manifold/outputs/vipe/pose/40TaTmMaqC0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/40TaTmMaqC0.npz
+  - 41FOWmQsKPI: missing /scratch/mthakur/manifold/outputs/vipe/pose/41FOWmQsKPI.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/41FOWmQsKPI.npz
+  - 41ZdIWjZilo: missing /scratch/mthakur/manifold/outputs/vipe/pose/41ZdIWjZilo.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/41ZdIWjZilo.npz
+  - 42G9c1uWjDE: missing /scratch/mthakur/manifold/outputs/vipe/pose/42G9c1uWjDE.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/42G9c1uWjDE.npz
+  - 48TmQtTGQGQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/48TmQtTGQGQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/48TmQtTGQGQ.npz
+  - 4ABoKW0KDLQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/4ABoKW0KDLQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4ABoKW0KDLQ.npz
+  - 4AsiL4C8l_E: missing /scratch/mthakur/manifold/outputs/vipe/pose/4AsiL4C8l_E.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4AsiL4C8l_E.npz
+  - 4BjPdsTYgpQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/4BjPdsTYgpQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4BjPdsTYgpQ.npz
+  - 4C_SRuupQJI: missing /scratch/mthakur/manifold/outputs/vipe/pose/4C_SRuupQJI.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4C_SRuupQJI.npz
+  - 4HjpxzKwpyw: missing /scratch/mthakur/manifold/outputs/vipe/pose/4HjpxzKwpyw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4HjpxzKwpyw.npz
+  - 4IKRQSTErXw: missing /scratch/mthakur/manifold/outputs/vipe/pose/4IKRQSTErXw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4IKRQSTErXw.npz
+  - 4Ll6DW1-A2k: missing /scratch/mthakur/manifold/outputs/vipe/pose/4Ll6DW1-A2k.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4Ll6DW1-A2k.npz
+  - 4MUq3Prl8pU: missing /scratch/mthakur/manifold/outputs/vipe/pose/4MUq3Prl8pU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4MUq3Prl8pU.npz
+  - 4MvYLIoubQc: missing /scratch/mthakur/manifold/outputs/vipe/pose/4MvYLIoubQc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4MvYLIoubQc.npz
+  - 4PoLnjucRcw: missing /scratch/mthakur/manifold/outputs/vipe/pose/4PoLnjucRcw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4PoLnjucRcw.npz
+  - 4Qa2r-L4euE: missing /scratch/mthakur/manifold/outputs/vipe/pose/4Qa2r-L4euE.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4Qa2r-L4euE.npz
+  - 4SLHWjGmHR4: missing /scratch/mthakur/manifold/outputs/vipe/pose/4SLHWjGmHR4.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4SLHWjGmHR4.npz
+  - 4SO84YB9bnU: missing /scratch/mthakur/manifold/outputs/vipe/pose/4SO84YB9bnU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4SO84YB9bnU.npz
+  - 4T1oN1flsBI: missing /scratch/mthakur/manifold/outputs/vipe/pose/4T1oN1flsBI.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4T1oN1flsBI.npz
+  - 4THwQJrqWcs: missing /scratch/mthakur/manifold/outputs/vipe/pose/4THwQJrqWcs.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4THwQJrqWcs.npz
+  - 4W-g21npdkg: missing /scratch/mthakur/manifold/outputs/vipe/pose/4W-g21npdkg.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4W-g21npdkg.npz
+  - 4XggcA30x2k: missing /scratch/mthakur/manifold/outputs/vipe/pose/4XggcA30x2k.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4XggcA30x2k.npz
+  - 4YVVERSg6pc: missing /scratch/mthakur/manifold/outputs/vipe/pose/4YVVERSg6pc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4YVVERSg6pc.npz
+  - 4ZUgccpo8Ww: missing /scratch/mthakur/manifold/outputs/vipe/pose/4ZUgccpo8Ww.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4ZUgccpo8Ww.npz
+  - 4ZWZaCaywiE: missing /scratch/mthakur/manifold/outputs/vipe/pose/4ZWZaCaywiE.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4ZWZaCaywiE.npz
+  - 4bzK9QxsTZ0: missing /scratch/mthakur/manifold/outputs/vipe/pose/4bzK9QxsTZ0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4bzK9QxsTZ0.npz
+  - 4c4JlVlsyIs: missing /scratch/mthakur/manifold/outputs/vipe/pose/4c4JlVlsyIs.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4c4JlVlsyIs.npz
+  - 4cBkTN7-JTU: missing /scratch/mthakur/manifold/outputs/vipe/pose/4cBkTN7-JTU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4cBkTN7-JTU.npz
+  - 4c_Behrl0ug: missing /scratch/mthakur/manifold/outputs/vipe/pose/4c_Behrl0ug.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4c_Behrl0ug.npz
+  - 4ckqY82422o: missing /scratch/mthakur/manifold/outputs/vipe/pose/4ckqY82422o.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4ckqY82422o.npz
+  - 4d5o3B6wRP0: missing /scratch/mthakur/manifold/outputs/vipe/pose/4d5o3B6wRP0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4d5o3B6wRP0.npz
+  - 4darflX3K9s: missing /scratch/mthakur/manifold/outputs/vipe/pose/4darflX3K9s.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4darflX3K9s.npz
+  - 4dgbTPnuSh0: missing /scratch/mthakur/manifold/outputs/vipe/pose/4dgbTPnuSh0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4dgbTPnuSh0.npz
+  - 4fqpBXE0_Dc: missing /scratch/mthakur/manifold/outputs/vipe/pose/4fqpBXE0_Dc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4fqpBXE0_Dc.npz
+  - 4gkoOnKgEAY: missing /scratch/mthakur/manifold/outputs/vipe/pose/4gkoOnKgEAY.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4gkoOnKgEAY.npz
+  - 4jPSJl8BjT4: missing /scratch/mthakur/manifold/outputs/vipe/pose/4jPSJl8BjT4.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4jPSJl8BjT4.npz
+  - 4joAmB3hKVs: missing /scratch/mthakur/manifold/outputs/vipe/pose/4joAmB3hKVs.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4joAmB3hKVs.npz
+  - 4nzkodp42-8: missing /scratch/mthakur/manifold/outputs/vipe/pose/4nzkodp42-8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4nzkodp42-8.npz
+  - 4qREV2Ggyjs: missing /scratch/mthakur/manifold/outputs/vipe/pose/4qREV2Ggyjs.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4qREV2Ggyjs.npz
+  - 4r465_ijzhA: missing /scratch/mthakur/manifold/outputs/vipe/pose/4r465_ijzhA.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4r465_ijzhA.npz
+  - 4rWrNpTI7HE: missing /scratch/mthakur/manifold/outputs/vipe/pose/4rWrNpTI7HE.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4rWrNpTI7HE.npz
+  - 4st-CDVOtOU: missing /scratch/mthakur/manifold/outputs/vipe/pose/4st-CDVOtOU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4st-CDVOtOU.npz
+  - 4tzik1GByBM: missing /scratch/mthakur/manifold/outputs/vipe/pose/4tzik1GByBM.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4tzik1GByBM.npz
+  - 4uYuzZSGl1w: missing /scratch/mthakur/manifold/outputs/vipe/pose/4uYuzZSGl1w.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4uYuzZSGl1w.npz
+  - 4vfuSkczIcI: missing /scratch/mthakur/manifold/outputs/vipe/pose/4vfuSkczIcI.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4vfuSkczIcI.npz
+  - 4wy0XftG3nQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/4wy0XftG3nQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4wy0XftG3nQ.npz
+  - 4x-y1RBxqPw: missing /scratch/mthakur/manifold/outputs/vipe/pose/4x-y1RBxqPw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4x-y1RBxqPw.npz
+  - 4x8XQAPC4Vk3cugR5eQA5s: missing /scratch/mthakur/manifold/outputs/vipe/pose/4x8XQAPC4Vk3cugR5eQA5s.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4x8XQAPC4Vk3cugR5eQA5s.npz
+  - 4yQPADthGbs: missing /scratch/mthakur/manifold/outputs/vipe/pose/4yQPADthGbs.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4yQPADthGbs.npz
+  - 4zxsXJFD-Yc: missing /scratch/mthakur/manifold/outputs/vipe/pose/4zxsXJFD-Yc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/4zxsXJFD-Yc.npz
+  - 5-XiLc5yNM4: missing /scratch/mthakur/manifold/outputs/vipe/pose/5-XiLc5yNM4.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5-XiLc5yNM4.npz
+  - 50cuZcvlcDk: missing /scratch/mthakur/manifold/outputs/vipe/pose/50cuZcvlcDk.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/50cuZcvlcDk.npz
+  - 50iETKggGHg: missing /scratch/mthakur/manifold/outputs/vipe/pose/50iETKggGHg.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/50iETKggGHg.npz
+  - 51b6A1NYEjw: missing /scratch/mthakur/manifold/outputs/vipe/pose/51b6A1NYEjw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/51b6A1NYEjw.npz
+  - 52JFNfg00D0: missing /scratch/mthakur/manifold/outputs/vipe/pose/52JFNfg00D0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/52JFNfg00D0.npz
+  - 53-hCnr1Pk8: missing /scratch/mthakur/manifold/outputs/vipe/pose/53-hCnr1Pk8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/53-hCnr1Pk8.npz
+  - 54S9SzY3rC8: missing /scratch/mthakur/manifold/outputs/vipe/pose/54S9SzY3rC8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/54S9SzY3rC8.npz
+  - 54q7y2npxbM: missing /scratch/mthakur/manifold/outputs/vipe/pose/54q7y2npxbM.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/54q7y2npxbM.npz
+  - 5555bq_jvnU: missing /scratch/mthakur/manifold/outputs/vipe/pose/5555bq_jvnU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5555bq_jvnU.npz
+  - 56Di7V4BHgw: missing /scratch/mthakur/manifold/outputs/vipe/pose/56Di7V4BHgw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/56Di7V4BHgw.npz
+  - 5BM9FSYEeo0: missing /scratch/mthakur/manifold/outputs/vipe/pose/5BM9FSYEeo0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5BM9FSYEeo0.npz
+  - 5C-vRcATQGg: missing /scratch/mthakur/manifold/outputs/vipe/pose/5C-vRcATQGg.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5C-vRcATQGg.npz
+  - 5CaUExhJXnk: missing /scratch/mthakur/manifold/outputs/vipe/pose/5CaUExhJXnk.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5CaUExhJXnk.npz
+  - 5DCo_bZ0PEo: missing /scratch/mthakur/manifold/outputs/vipe/pose/5DCo_bZ0PEo.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5DCo_bZ0PEo.npz
+  - 5DolK2hufSM: missing /scratch/mthakur/manifold/outputs/vipe/pose/5DolK2hufSM.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5DolK2hufSM.npz
+  - 5NHgcT-kGqo: missing /scratch/mthakur/manifold/outputs/vipe/pose/5NHgcT-kGqo.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5NHgcT-kGqo.npz
+  - 5OHnJzydoKI: missing /scratch/mthakur/manifold/outputs/vipe/pose/5OHnJzydoKI.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5OHnJzydoKI.npz
+  - 5Tiq42RvEJo: missing /scratch/mthakur/manifold/outputs/vipe/pose/5Tiq42RvEJo.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5Tiq42RvEJo.npz
+  - 5XDn22CL-ig: missing /scratch/mthakur/manifold/outputs/vipe/pose/5XDn22CL-ig.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5XDn22CL-ig.npz
+  - 5Xbze7jMcM0: missing /scratch/mthakur/manifold/outputs/vipe/pose/5Xbze7jMcM0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5Xbze7jMcM0.npz
+  - 5Xoby_UY_bM: missing /scratch/mthakur/manifold/outputs/vipe/pose/5Xoby_UY_bM.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5Xoby_UY_bM.npz
+  - 5_k1TypH_s8: missing /scratch/mthakur/manifold/outputs/vipe/pose/5_k1TypH_s8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5_k1TypH_s8.npz
+  - 5at8X56tN58: missing /scratch/mthakur/manifold/outputs/vipe/pose/5at8X56tN58.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5at8X56tN58.npz
+  - 5azC2xW0Mc8: missing /scratch/mthakur/manifold/outputs/vipe/pose/5azC2xW0Mc8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5azC2xW0Mc8.npz
+  - 5cjkZmWlhKE: missing /scratch/mthakur/manifold/outputs/vipe/pose/5cjkZmWlhKE.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5cjkZmWlhKE.npz
+  - 5dVs413UwiQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/5dVs413UwiQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5dVs413UwiQ.npz
+  - 5evhc3T_Wdc: missing /scratch/mthakur/manifold/outputs/vipe/pose/5evhc3T_Wdc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5evhc3T_Wdc.npz
+  - 5ez-0HvSchw: missing /scratch/mthakur/manifold/outputs/vipe/pose/5ez-0HvSchw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5ez-0HvSchw.npz
+  - 5guTB1PtB7I: missing /scratch/mthakur/manifold/outputs/vipe/pose/5guTB1PtB7I.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5guTB1PtB7I.npz
+  - 5iRIeHAK9b0: missing /scratch/mthakur/manifold/outputs/vipe/pose/5iRIeHAK9b0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5iRIeHAK9b0.npz
+  - 5j0AVhkfYaI: missing /scratch/mthakur/manifold/outputs/vipe/pose/5j0AVhkfYaI.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5j0AVhkfYaI.npz
+  - 5j_RYzaXUvo: missing /scratch/mthakur/manifold/outputs/vipe/pose/5j_RYzaXUvo.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5j_RYzaXUvo.npz
+  - 5oBbQdI48js: missing /scratch/mthakur/manifold/outputs/vipe/pose/5oBbQdI48js.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5oBbQdI48js.npz
+  - 5oBpHPqwbSE: missing /scratch/mthakur/manifold/outputs/vipe/pose/5oBpHPqwbSE.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5oBpHPqwbSE.npz
+  - 5ryiAfDbjD8: missing /scratch/mthakur/manifold/outputs/vipe/pose/5ryiAfDbjD8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5ryiAfDbjD8.npz
+  - 5t1nmidxKHY: missing /scratch/mthakur/manifold/outputs/vipe/pose/5t1nmidxKHY.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5t1nmidxKHY.npz
+  - 5uyaCVlSQIY: missing /scratch/mthakur/manifold/outputs/vipe/pose/5uyaCVlSQIY.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5uyaCVlSQIY.npz
+  - 5vvBRQi_X5o: missing /scratch/mthakur/manifold/outputs/vipe/pose/5vvBRQi_X5o.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5vvBRQi_X5o.npz
+  - 5y_POcCcSoY: missing /scratch/mthakur/manifold/outputs/vipe/pose/5y_POcCcSoY.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5y_POcCcSoY.npz
+  - 5z2ucg2g0SE: missing /scratch/mthakur/manifold/outputs/vipe/pose/5z2ucg2g0SE.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/5z2ucg2g0SE.npz
+  - 63KIq9VyXo8: missing /scratch/mthakur/manifold/outputs/vipe/pose/63KIq9VyXo8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/63KIq9VyXo8.npz
+  - 64Ua7hXQKYw: missing /scratch/mthakur/manifold/outputs/vipe/pose/64Ua7hXQKYw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/64Ua7hXQKYw.npz
+  - 66_C4RzxVd0: missing /scratch/mthakur/manifold/outputs/vipe/pose/66_C4RzxVd0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/66_C4RzxVd0.npz
+  - 67C8WkVF2gM: missing /scratch/mthakur/manifold/outputs/vipe/pose/67C8WkVF2gM.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/67C8WkVF2gM.npz
+  - 69g62O-KdNg: missing /scratch/mthakur/manifold/outputs/vipe/pose/69g62O-KdNg.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/69g62O-KdNg.npz
+  - 6AlXgGoCUug: missing /scratch/mthakur/manifold/outputs/vipe/pose/6AlXgGoCUug.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6AlXgGoCUug.npz
+  - 6CBTaZ93X-I: missing /scratch/mthakur/manifold/outputs/vipe/pose/6CBTaZ93X-I.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6CBTaZ93X-I.npz
+  - 6Cfk45eDysw: missing /scratch/mthakur/manifold/outputs/vipe/pose/6Cfk45eDysw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6Cfk45eDysw.npz
+  - 6DAmc4GJ2Kw: missing /scratch/mthakur/manifold/outputs/vipe/pose/6DAmc4GJ2Kw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6DAmc4GJ2Kw.npz
+  - 6DLCoC1MWi0: missing /scratch/mthakur/manifold/outputs/vipe/pose/6DLCoC1MWi0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6DLCoC1MWi0.npz
+  - 6DqdD7bbDhI: missing /scratch/mthakur/manifold/outputs/vipe/pose/6DqdD7bbDhI.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6DqdD7bbDhI.npz
+  - 6DuQPRnG0Ww: missing /scratch/mthakur/manifold/outputs/vipe/pose/6DuQPRnG0Ww.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6DuQPRnG0Ww.npz
+  - 6EqXNRLauMs: missing /scratch/mthakur/manifold/outputs/vipe/pose/6EqXNRLauMs.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6EqXNRLauMs.npz
+  - 6FpbWUYAxbQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/6FpbWUYAxbQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6FpbWUYAxbQ.npz
+  - 6GzmwiLo5X8: missing /scratch/mthakur/manifold/outputs/vipe/pose/6GzmwiLo5X8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6GzmwiLo5X8.npz
+  - 6HPj3dbZR64: missing /scratch/mthakur/manifold/outputs/vipe/pose/6HPj3dbZR64.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6HPj3dbZR64.npz
+  - 6I1IhiMISZ0: missing /scratch/mthakur/manifold/outputs/vipe/pose/6I1IhiMISZ0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6I1IhiMISZ0.npz
+  - 6ID_GzmmHiI: missing /scratch/mthakur/manifold/outputs/vipe/pose/6ID_GzmmHiI.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6ID_GzmmHiI.npz
+  - 6IlzyR80mU4: missing /scratch/mthakur/manifold/outputs/vipe/pose/6IlzyR80mU4.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6IlzyR80mU4.npz
+  - 6QLiJylSG4M: missing /scratch/mthakur/manifold/outputs/vipe/pose/6QLiJylSG4M.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6QLiJylSG4M.npz
+  - 6RDO3AS9yzs: missing /scratch/mthakur/manifold/outputs/vipe/pose/6RDO3AS9yzs.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6RDO3AS9yzs.npz
+  - 6TDs5FKNTmM: missing /scratch/mthakur/manifold/outputs/vipe/pose/6TDs5FKNTmM.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6TDs5FKNTmM.npz
+  - 6UkyFG5dw1s: missing /scratch/mthakur/manifold/outputs/vipe/pose/6UkyFG5dw1s.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6UkyFG5dw1s.npz
+  - 6W36OJpocGY: missing /scratch/mthakur/manifold/outputs/vipe/pose/6W36OJpocGY.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6W36OJpocGY.npz
+  - 6XlnqBSlSf8: missing /scratch/mthakur/manifold/outputs/vipe/pose/6XlnqBSlSf8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6XlnqBSlSf8.npz
+  - 6aBG1FmV5DM: missing /scratch/mthakur/manifold/outputs/vipe/pose/6aBG1FmV5DM.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6aBG1FmV5DM.npz
+  - 6bVE_fopErQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/6bVE_fopErQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6bVE_fopErQ.npz
+  - 6eOtI9sKQj8: missing /scratch/mthakur/manifold/outputs/vipe/pose/6eOtI9sKQj8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6eOtI9sKQj8.npz
+  - 6fjvNHU3utk: missing /scratch/mthakur/manifold/outputs/vipe/pose/6fjvNHU3utk.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6fjvNHU3utk.npz
+  - 6hvzYJ8Hrh8: missing /scratch/mthakur/manifold/outputs/vipe/pose/6hvzYJ8Hrh8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6hvzYJ8Hrh8.npz
+  - 6ibLm_CpHbY: missing /scratch/mthakur/manifold/outputs/vipe/pose/6ibLm_CpHbY.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6ibLm_CpHbY.npz
+  - 6jMFTzwklmk: missing /scratch/mthakur/manifold/outputs/vipe/pose/6jMFTzwklmk.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6jMFTzwklmk.npz
+  - 6jjx_r_sgj0: missing /scratch/mthakur/manifold/outputs/vipe/pose/6jjx_r_sgj0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6jjx_r_sgj0.npz
+  - 6lBrXPTzTBM: missing /scratch/mthakur/manifold/outputs/vipe/pose/6lBrXPTzTBM.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6lBrXPTzTBM.npz
+  - 6mmsUCfyXuw: missing /scratch/mthakur/manifold/outputs/vipe/pose/6mmsUCfyXuw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6mmsUCfyXuw.npz
+  - 6n8PyIYzS-w: missing /scratch/mthakur/manifold/outputs/vipe/pose/6n8PyIYzS-w.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6n8PyIYzS-w.npz
+  - 6o8TQ9xQMKw: missing /scratch/mthakur/manifold/outputs/vipe/pose/6o8TQ9xQMKw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6o8TQ9xQMKw.npz
+  - 6oSVUOYiy-o: missing /scratch/mthakur/manifold/outputs/vipe/pose/6oSVUOYiy-o.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6oSVUOYiy-o.npz
+  - 6otNBTeQN7M: missing /scratch/mthakur/manifold/outputs/vipe/pose/6otNBTeQN7M.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6otNBTeQN7M.npz
+  - 6sHCD5Z-PY8: missing /scratch/mthakur/manifold/outputs/vipe/pose/6sHCD5Z-PY8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6sHCD5Z-PY8.npz
+  - 6wN8EyQmaHM: missing /scratch/mthakur/manifold/outputs/vipe/pose/6wN8EyQmaHM.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6wN8EyQmaHM.npz
+  - 6wqBCzGIUkc: missing /scratch/mthakur/manifold/outputs/vipe/pose/6wqBCzGIUkc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6wqBCzGIUkc.npz
+  - 6xBY4pbcInw: missing /scratch/mthakur/manifold/outputs/vipe/pose/6xBY4pbcInw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6xBY4pbcInw.npz
+  - 6y4R_EYLT4A: missing /scratch/mthakur/manifold/outputs/vipe/pose/6y4R_EYLT4A.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/6y4R_EYLT4A.npz
+  - 7-jgp1YRxE0: missing /scratch/mthakur/manifold/outputs/vipe/pose/7-jgp1YRxE0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7-jgp1YRxE0.npz
+  - 7-uJbyWnwfU: missing /scratch/mthakur/manifold/outputs/vipe/pose/7-uJbyWnwfU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7-uJbyWnwfU.npz
+  - 7010Pzl3REc: missing /scratch/mthakur/manifold/outputs/vipe/pose/7010Pzl3REc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7010Pzl3REc.npz
+  - 74CF5OotD2M: missing /scratch/mthakur/manifold/outputs/vipe/pose/74CF5OotD2M.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/74CF5OotD2M.npz
+  - 750f5tzGBUc: missing /scratch/mthakur/manifold/outputs/vipe/pose/750f5tzGBUc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/750f5tzGBUc.npz
+  - 756s3Ex0HBc: missing /scratch/mthakur/manifold/outputs/vipe/pose/756s3Ex0HBc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/756s3Ex0HBc.npz
+  - 778IkUV2mxw: missing /scratch/mthakur/manifold/outputs/vipe/pose/778IkUV2mxw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/778IkUV2mxw.npz
+  - 791GHmxK14k: missing /scratch/mthakur/manifold/outputs/vipe/pose/791GHmxK14k.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/791GHmxK14k.npz
+  - 79in9ZSvhR0: missing /scratch/mthakur/manifold/outputs/vipe/pose/79in9ZSvhR0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/79in9ZSvhR0.npz
+  - 7BQa7_fr24I: missing /scratch/mthakur/manifold/outputs/vipe/pose/7BQa7_fr24I.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7BQa7_fr24I.npz
+  - 7CZnCOn0ozo: missing /scratch/mthakur/manifold/outputs/vipe/pose/7CZnCOn0ozo.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7CZnCOn0ozo.npz
+  - 7DhwocwS5G4: missing /scratch/mthakur/manifold/outputs/vipe/pose/7DhwocwS5G4.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7DhwocwS5G4.npz
+  - 7Ed0xWifFhk: missing /scratch/mthakur/manifold/outputs/vipe/pose/7Ed0xWifFhk.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7Ed0xWifFhk.npz
+  - 7GLXUu1NgsE: missing /scratch/mthakur/manifold/outputs/vipe/pose/7GLXUu1NgsE.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7GLXUu1NgsE.npz
+  - 7JR-Z3DB7dY: missing /scratch/mthakur/manifold/outputs/vipe/pose/7JR-Z3DB7dY.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7JR-Z3DB7dY.npz
+  - 7Letpg0QCtY: missing /scratch/mthakur/manifold/outputs/vipe/pose/7Letpg0QCtY.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7Letpg0QCtY.npz
+  - 7Mmse6ucEno: missing /scratch/mthakur/manifold/outputs/vipe/pose/7Mmse6ucEno.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7Mmse6ucEno.npz
+  - 7OVCgCEuf1o: missing /scratch/mthakur/manifold/outputs/vipe/pose/7OVCgCEuf1o.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7OVCgCEuf1o.npz
+  - 7S9q1kAVmc0: missing /scratch/mthakur/manifold/outputs/vipe/pose/7S9q1kAVmc0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7S9q1kAVmc0.npz
+  - 7SkTWPLJVFg: missing /scratch/mthakur/manifold/outputs/vipe/pose/7SkTWPLJVFg.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7SkTWPLJVFg.npz
+  - 7T1umcntZTA: missing /scratch/mthakur/manifold/outputs/vipe/pose/7T1umcntZTA.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7T1umcntZTA.npz
+  - 7X-yER4jLkw: missing /scratch/mthakur/manifold/outputs/vipe/pose/7X-yER4jLkw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7X-yER4jLkw.npz
+  - 7X2_Vm9r4cs: missing /scratch/mthakur/manifold/outputs/vipe/pose/7X2_Vm9r4cs.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7X2_Vm9r4cs.npz
+  - 7Z4xEaJFcNc: missing /scratch/mthakur/manifold/outputs/vipe/pose/7Z4xEaJFcNc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7Z4xEaJFcNc.npz
+  - 7ZeIBdPZhC0: missing /scratch/mthakur/manifold/outputs/vipe/pose/7ZeIBdPZhC0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7ZeIBdPZhC0.npz
+  - 7_E5HtKvX94: missing /scratch/mthakur/manifold/outputs/vipe/pose/7_E5HtKvX94.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7_E5HtKvX94.npz
+  - 7aUa50q0GcE: missing /scratch/mthakur/manifold/outputs/vipe/pose/7aUa50q0GcE.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7aUa50q0GcE.npz
+  - 7bhZ6-iYHM0: missing /scratch/mthakur/manifold/outputs/vipe/pose/7bhZ6-iYHM0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7bhZ6-iYHM0.npz
+  - 7cFJnTx2xeA: missing /scratch/mthakur/manifold/outputs/vipe/pose/7cFJnTx2xeA.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7cFJnTx2xeA.npz
+  - 7dWf7aNpFto: missing /scratch/mthakur/manifold/outputs/vipe/pose/7dWf7aNpFto.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7dWf7aNpFto.npz
+  - 7f96j98SBos: missing /scratch/mthakur/manifold/outputs/vipe/pose/7f96j98SBos.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7f96j98SBos.npz
+  - 7hxIc0LfbJo: missing /scratch/mthakur/manifold/outputs/vipe/pose/7hxIc0LfbJo.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7hxIc0LfbJo.npz
+  - 7kZWu85AbSk: missing /scratch/mthakur/manifold/outputs/vipe/pose/7kZWu85AbSk.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7kZWu85AbSk.npz
+  - 7ngVUJlUUb0: missing /scratch/mthakur/manifold/outputs/vipe/pose/7ngVUJlUUb0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7ngVUJlUUb0.npz
+  - 7owiXmBxZpk: missing /scratch/mthakur/manifold/outputs/vipe/pose/7owiXmBxZpk.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7owiXmBxZpk.npz
+  - 7r4e0AnFfIA: missing /scratch/mthakur/manifold/outputs/vipe/pose/7r4e0AnFfIA.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7r4e0AnFfIA.npz
+  - 7uqGLK2WvUY: missing /scratch/mthakur/manifold/outputs/vipe/pose/7uqGLK2WvUY.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7uqGLK2WvUY.npz
+  - 7y_OtgaSdx4: missing /scratch/mthakur/manifold/outputs/vipe/pose/7y_OtgaSdx4.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7y_OtgaSdx4.npz
+  - 7zvqwTMTRfQ: missing /scratch/mthakur/manifold/outputs/vipe/pose/7zvqwTMTRfQ.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7zvqwTMTRfQ.npz
+  - 7zzqApG_sEI: missing /scratch/mthakur/manifold/outputs/vipe/pose/7zzqApG_sEI.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/7zzqApG_sEI.npz
+  - 8-sswQ3Cw3A: missing /scratch/mthakur/manifold/outputs/vipe/pose/8-sswQ3Cw3A.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/8-sswQ3Cw3A.npz
+  - 82XwIKFGh6U: missing /scratch/mthakur/manifold/outputs/vipe/pose/82XwIKFGh6U.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/82XwIKFGh6U.npz
+  - 83El0jvP6RU: missing /scratch/mthakur/manifold/outputs/vipe/pose/83El0jvP6RU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/83El0jvP6RU.npz
+  - 86OJd-nTUpE: missing /scratch/mthakur/manifold/outputs/vipe/pose/86OJd-nTUpE.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/86OJd-nTUpE.npz
+  - 87tCbB2Obhc: missing /scratch/mthakur/manifold/outputs/vipe/pose/87tCbB2Obhc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/87tCbB2Obhc.npz
+  - 88wlTGLWPgk: missing /scratch/mthakur/manifold/outputs/vipe/pose/88wlTGLWPgk.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/88wlTGLWPgk.npz
+  - ChIJjJyBjQ0: missing /scratch/mthakur/manifold/outputs/vipe/pose/ChIJjJyBjQ0.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/ChIJjJyBjQ0.npz
+  - Ipe9xJCfuTM: missing /scratch/mthakur/manifold/outputs/vipe/pose/Ipe9xJCfuTM.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/Ipe9xJCfuTM.npz
+  - Jv5DjxNK4xI: missing /scratch/mthakur/manifold/outputs/vipe/pose/Jv5DjxNK4xI.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/Jv5DjxNK4xI.npz
+  - MC6xjO1JoR8: missing /scratch/mthakur/manifold/outputs/vipe/pose/MC6xjO1JoR8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/MC6xjO1JoR8.npz
+  - MPeXy2U4yJM: missing /scratch/mthakur/manifold/outputs/vipe/pose/MPeXy2U4yJM.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/MPeXy2U4yJM.npz
+  - NXRHcCScubA: missing /scratch/mthakur/manifold/outputs/vipe/pose/NXRHcCScubA.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/NXRHcCScubA.npz
+  - OiAlJIaWOBg: missing /scratch/mthakur/manifold/outputs/vipe/pose/OiAlJIaWOBg.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/OiAlJIaWOBg.npz
+  - R07f8kg1h8o: missing /scratch/mthakur/manifold/outputs/vipe/pose/R07f8kg1h8o.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/R07f8kg1h8o.npz
+  - RtHZPZM5gtU: missing /scratch/mthakur/manifold/outputs/vipe/pose/RtHZPZM5gtU.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/RtHZPZM5gtU.npz
+  - Y1mNu5iFwMg: missing /scratch/mthakur/manifold/outputs/vipe/pose/Y1mNu5iFwMg.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/Y1mNu5iFwMg.npz
+  - ZMnb9TTsx98: missing /scratch/mthakur/manifold/outputs/vipe/pose/ZMnb9TTsx98.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/ZMnb9TTsx98.npz
+  - bxZtXdVvfpc: missing /scratch/mthakur/manifold/outputs/vipe/pose/bxZtXdVvfpc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/bxZtXdVvfpc.npz
+  - ff_xcsFJ8Pw: missing /scratch/mthakur/manifold/outputs/vipe/pose/ff_xcsFJ8Pw.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/ff_xcsFJ8Pw.npz
+  - hPmc7R_dAxc: missing /scratch/mthakur/manifold/outputs/vipe/pose/hPmc7R_dAxc.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/hPmc7R_dAxc.npz
+  - ivyqQreoVQA: missing /scratch/mthakur/manifold/outputs/vipe/pose/ivyqQreoVQA.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/ivyqQreoVQA.npz
+  - koOvrKENdH8: missing /scratch/mthakur/manifold/outputs/vipe/pose/koOvrKENdH8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/koOvrKENdH8.npz
+  - lhsEFO1I83s: missing /scratch/mthakur/manifold/outputs/vipe/pose/lhsEFO1I83s.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/lhsEFO1I83s.npz
+  - nN5Y--biYv4: missing /scratch/mthakur/manifold/outputs/vipe/pose/nN5Y--biYv4.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/nN5Y--biYv4.npz
+  - vQsycsq1ib8: missing /scratch/mthakur/manifold/outputs/vipe/pose/vQsycsq1ib8.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/vQsycsq1ib8.npz
+  - vRkcw9SRems: missing /scratch/mthakur/manifold/outputs/vipe/pose/vRkcw9SRems.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/vRkcw9SRems.npz
+  - vYQ3a-RLd4c: missing /scratch/mthakur/manifold/outputs/vipe/pose/vYQ3a-RLd4c.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/vYQ3a-RLd4c.npz
+  - w2ULyzWkZ3k: missing /scratch/mthakur/manifold/outputs/vipe/pose/w2ULyzWkZ3k.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/w2ULyzWkZ3k.npz
+  - wnKnoui3THA: missing /scratch/mthakur/manifold/outputs/vipe/pose/wnKnoui3THA.npz, /scratch/mthakur/manifold/outputs/vipe/intrinsics/wnKnoui3THA.npz
+[progress] Proceeding with video(s): -05MRmp1i4w, -0VIwubCjpM, -4FUS54WneA, -4Vny515GWw, -5pTTulJZ38, -B_KgSrmTEk, -Bxu9R-lmFc, -Fyp3iYp_Mo, -G2ksp95_Uw, -GtDaiSJkSQ, -HkeOGWJWLI, -IgqjDsP-R8, -IrAGNgJDzg, -KgBBru7lps, -P-luyYjEbg, -PReNU3L8Lc, -SQFIbscsAI, -TtP7XW613w, -URViDyH9U0, -UkcUmFj6ls, -Uqn0-D5WNk, -aLiyA30EQI, -arU7prTkZY, 06kKvQp4SfM, 0ElPjqY4Cq8, 0GgsslCMqxk, 0IOv-YuOTb0, 0J0lK5EHIAY, 0KuJ2t4S_TY, 0XtFVS_Kxno, 0XuYL6bKxa8, 0bX29nB6Pe0, 0gzQAgjx39o, 0k6USIJasZY, 0kQEvxqIi4k, 0pHAEC2ydR0, 0rq4nkWlO2E, 0t82hD3rkCU, 0uSvqu1JBrQ, 0xLinXeAep8, 0xdOLtyqA5o, 0zv14ho2z2U, 10XtDlKwdRo, 11gzqTBlm5Q, 11qYnjz3sfo, 14X6oChjjT4, 182RxC-rQZw, 1Do7AfsaVeI, 1GO8SLX7tLs, 1GbeP6UsNdo, 1HBEGIOndTE, 1HTJc_NY9_U, 1IMJXby62gg, 1M40DOru15Y, 1NsA3utS6To, 1S0otQxKUcs, 1VGMYEzJHjM, 1YYaRxqSxNc, 1ZrUru3Bov4, 1aJSOGb9gaA, 1cZAKuFpckI, 1f33MBtnSWk, 1lqXl-xn0e4, 1mrADzwE4Ho, 1nG-UNiXjiI, 1nJt4VHPNE0, 1pk1EHZSGwQ, 1sPp3Oqs_Oc, 1uAcqeRAURY, 20Qt7rkcAY0, 20nY5jgoY8w, 22V4MQ8dc2Q, 22oJoUgnTdM, 23kppT5hKWU, 25xI45bNg5E, 27mbVu4v49w, 28IOz4eyBpU, 28d21FpzwpM, 2EUZtPTfMs4, 2Iax_vC1aMk, 2KPB9UJDEUU, 2O6QUmPT0gM, 2QB-YdxXSMY, 2SEgXpck6-o, 2Tgl8gxz_HA, 2U8Ih4IiYSs, 2Wbk-bP2EwM, 2Wh3TbK77Ec, 2WvGsW3j3tI, 2aHOCuMesGc, 2ejWzp2faAA, 2fBh7sc0ti8, 2fcX77AHA2I, 2hcLIu4HCcY, 2hxTkuo6b9Q, 2hz6TDn6qSU, 2iwlB8-AZFg, 2m5WjXKArt4, 2u9kx7Jlw7g, 2uCE3KqKwG8, 2udA--Kb2vo, 2xqV9Ttjmmg, 2xqgpo-bhEs, 2zA0YgKb5ug, 2zn24j-XfmI, 3-MyqNsct4M, 34DMNsPor7I, 35-h2dH-sf0, 38P2wuD5bBg, 38_CaOQiLgk, 3DizOjlwHng, 3FImkVmElOQ, 3FRP6ofnay0, 3FxpOFlPYQU, 3GXIBwgAYzQ, 3HBCwm6mPog, 3HjHyYdKeJ8, 3I8RmyajZ0M, 3IN1R9rs45k, 3KpGlsjPvi0, 3N0atcNismQ, 3QURUfXj494, 3SZ1w2UTkqQ, 3USiBRH9f9w, 3Uhjd1gWESY, 3ZqyH6907T8, 3_LiLpewX64, 3_o_AkadIsw, 3ajo_dtCfGg, 3dFFzsCxZDg, 3fWmeoRWkro, 3h9xu5UF2CU, 3j50-GpcSYU, 3mXKwT5Cgsk, 3oFYnCrBfaU, 3pGRATrswG0, 3s7TnwfKSN8, 3y1SKZYMphI, 3yHjg_u2MjA, 43eBA67htJc, 44U1RQK_pJg, 45T8o3_RJAU, 45bVtWZdg4A, 45fga7XQh_w, 45vsVWWiJ4Q, 48tu-4L5rog, 4DBavnAzNpM, 4DDLH3SlvTM, 4DISKhYQK6U, 4I8qR7MPOFI, 4LVtQ_shm-M, 4Ln17L4iPaE, 4MsFYjC9HoI, 4NqvQVEyqX4, 4PtPO1g4LXA, 4RgkyXwZ8Y8, 4S2hd_PXStQ, 4Z2vZZOY7x4, 4bKBp0Ut14A, 4ckKnEOeT88, 4eNt91uV02o, 4eTllnsMOUU, 4g1KM2HIZUA, 4gZ86yRcJcM, 4gc6fwXwFV0, 4kUTSXWZFyc, 4krdBuFEMMA, 4ktroOVK0Z8, 4uYZQSjrdf8, 4v_6Fsh6k10, 4yIKyUws_FM, 5-TyAsFwo40, 50EV9mbGVWY, 52Agg5gy2N4, 54RqBmjdq9g, 59gGMhffroM, 59vxdDvvDAM, 5BpIwpzT1wA, 5CQ9N0ls0Hc, 5CShxp46axE, 5ELtUAtflns, 5F8t4Bd-aWM, 5Jmlftgw9-E, 5LuS-TTg7rA, 5M90r1nf5M8, 5OQaJcyenPQ, 5QO6BTt9-T0, 5TeY1R1UAmw, 5Teum5PgaaE, 5Tt8PNI1bpc, 5XFDbIBXzzw, 5Z8lNPgCmuo, 5_gLhl1LoXc, 5byN0HNkOFQ, 5dsbpDoszc8, 5ikPiwUfsJM, 5o_LSjNkOQE, 5udtD0-KjlA, 5w2uzL9-elE, 5w3294dX8Wk, 5yNCsWu2S-c, 5z_Sk7P10Gk, 60cYTePWEOQ, 62bCk_LZVAY, 65KUxTxQbU8, 66IddloOA8A, 66iGd5YlT0Q, 689vmfYsFyk, 69F9hv4AIIY, 6BTqHNQPpsU, 6Bcp3dNPqkk, 6C6NLUHDKHs, 6FFs2jMg3Qk, 6GLdekH_fqs, 6IpM9X9eVvc, 6KGxITv68XA, 6KwcF1SxswU, 6LM-dcvG38I, 6O7xQpT3As4, 6Ohv6_N88yA, 6QoJyYaYl0g, 6R1cM5x04fc, 6R7auE0YG3E, 6RwmiOsDKuM, 6W38H2Tmixs, 6WF9mjmxwv8, 6WRkAQJKsf0, 6_mArr1eOcY, 6aLr21Iza1U, 6c5924rcou4, 6ezuklg6QcI, 6iXbPZw4Xek, 6kUJ1Ifkh-E, 6w1-4eAUHmk, 6yQyyAsuTUc, 7272RXfPqYg, 74cZyFxTBUA, 74v26n8OHpE, 75RIqb2TUME, 75iciNFxEsM, 78CLW1ydkyU, 78PYzJd_6-I, 79N7Tn2fDjM, 7E02KEPyxt0, 7EnQV3iYp8E, 7G-741kjo0A, 7IuNV-gcRLs, 7J5MFYoqEZk, 7KRfSa2aVXw, 7MI6tU_D6eI, 7MdDUIvNbec, 7NITc1vKQz0, 7NkRULfZkiY, 7OBsKgNMT_8, 7P5LkLmvkXY, 7RPhNw37nZo, 7TAfOplFDGs, 7W5O55LihF4, 7WvxhNo523A, 7XN5Yj8mPHc, 7YL5SVVXHCo, 7Yq3PG6vhWM, 7ZlEYZYIEwk, 7_ihpter5zg, 7hx4kWJ2zDg, 7mPRfXp5Zg4, 7pnETbZmvjk, 7vT58eLvyfM, 7z3uF03sdtw, 7zo9ltH4lGk, 7ztoTdD13xM, 82bNCO3cHWM, 8NqJiAu9W3Y, DjFX4idkS3o, IrSIHJ0-AaU, SlksdQT5JRE, YynYZyoETto, _Ce7G35GIqA, _iirwC_DvJ0, gnArvcWaH6I, lhHkJ3InQOE, nJa_omJBzoU
+[progress] Using lazy detection cache path: /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Prepared 917971 frame record(s) across 282 selected video(s) for lazy detection.
+[progress] Configuring trainable scope: temporal_only
+[progress] Initialized learnable temporal scorer.
+[progress] Creating optimizer and AMP scaler.
+[progress] Metrics will be appended to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/metrics.jsonl
+Device: cuda
+Experiment: frozen_wilor_finetuning
+Videos: -05MRmp1i4w, -0VIwubCjpM, -4FUS54WneA, -4Vny515GWw, -5pTTulJZ38, -B_KgSrmTEk, -Bxu9R-lmFc, -Fyp3iYp_Mo, -G2ksp95_Uw, -GtDaiSJkSQ, -HkeOGWJWLI, -IgqjDsP-R8, -IrAGNgJDzg, -KgBBru7lps, -P-luyYjEbg, -PReNU3L8Lc, -SQFIbscsAI, -TtP7XW613w, -URViDyH9U0, -UkcUmFj6ls, -Uqn0-D5WNk, -aLiyA30EQI, -arU7prTkZY, 06kKvQp4SfM, 0ElPjqY4Cq8, 0GgsslCMqxk, 0IOv-YuOTb0, 0J0lK5EHIAY, 0KuJ2t4S_TY, 0XtFVS_Kxno, 0XuYL6bKxa8, 0bX29nB6Pe0, 0gzQAgjx39o, 0k6USIJasZY, 0kQEvxqIi4k, 0pHAEC2ydR0, 0rq4nkWlO2E, 0t82hD3rkCU, 0uSvqu1JBrQ, 0xLinXeAep8, 0xdOLtyqA5o, 0zv14ho2z2U, 10XtDlKwdRo, 11gzqTBlm5Q, 11qYnjz3sfo, 14X6oChjjT4, 182RxC-rQZw, 1Do7AfsaVeI, 1GO8SLX7tLs, 1GbeP6UsNdo, 1HBEGIOndTE, 1HTJc_NY9_U, 1IMJXby62gg, 1M40DOru15Y, 1NsA3utS6To, 1S0otQxKUcs, 1VGMYEzJHjM, 1YYaRxqSxNc, 1ZrUru3Bov4, 1aJSOGb9gaA, 1cZAKuFpckI, 1f33MBtnSWk, 1lqXl-xn0e4, 1mrADzwE4Ho, 1nG-UNiXjiI, 1nJt4VHPNE0, 1pk1EHZSGwQ, 1sPp3Oqs_Oc, 1uAcqeRAURY, 20Qt7rkcAY0, 20nY5jgoY8w, 22V4MQ8dc2Q, 22oJoUgnTdM, 23kppT5hKWU, 25xI45bNg5E, 27mbVu4v49w, 28IOz4eyBpU, 28d21FpzwpM, 2EUZtPTfMs4, 2Iax_vC1aMk, 2KPB9UJDEUU, 2O6QUmPT0gM, 2QB-YdxXSMY, 2SEgXpck6-o, 2Tgl8gxz_HA, 2U8Ih4IiYSs, 2Wbk-bP2EwM, 2Wh3TbK77Ec, 2WvGsW3j3tI, 2aHOCuMesGc, 2ejWzp2faAA, 2fBh7sc0ti8, 2fcX77AHA2I, 2hcLIu4HCcY, 2hxTkuo6b9Q, 2hz6TDn6qSU, 2iwlB8-AZFg, 2m5WjXKArt4, 2u9kx7Jlw7g, 2uCE3KqKwG8, 2udA--Kb2vo, 2xqV9Ttjmmg, 2xqgpo-bhEs, 2zA0YgKb5ug, 2zn24j-XfmI, 3-MyqNsct4M, 34DMNsPor7I, 35-h2dH-sf0, 38P2wuD5bBg, 38_CaOQiLgk, 3DizOjlwHng, 3FImkVmElOQ, 3FRP6ofnay0, 3FxpOFlPYQU, 3GXIBwgAYzQ, 3HBCwm6mPog, 3HjHyYdKeJ8, 3I8RmyajZ0M, 3IN1R9rs45k, 3KpGlsjPvi0, 3N0atcNismQ, 3QURUfXj494, 3SZ1w2UTkqQ, 3USiBRH9f9w, 3Uhjd1gWESY, 3ZqyH6907T8, 3_LiLpewX64, 3_o_AkadIsw, 3ajo_dtCfGg, 3dFFzsCxZDg, 3fWmeoRWkro, 3h9xu5UF2CU, 3j50-GpcSYU, 3mXKwT5Cgsk, 3oFYnCrBfaU, 3pGRATrswG0, 3s7TnwfKSN8, 3y1SKZYMphI, 3yHjg_u2MjA, 43eBA67htJc, 44U1RQK_pJg, 45T8o3_RJAU, 45bVtWZdg4A, 45fga7XQh_w, 45vsVWWiJ4Q, 48tu-4L5rog, 4DBavnAzNpM, 4DDLH3SlvTM, 4DISKhYQK6U, 4I8qR7MPOFI, 4LVtQ_shm-M, 4Ln17L4iPaE, 4MsFYjC9HoI, 4NqvQVEyqX4, 4PtPO1g4LXA, 4RgkyXwZ8Y8, 4S2hd_PXStQ, 4Z2vZZOY7x4, 4bKBp0Ut14A, 4ckKnEOeT88, 4eNt91uV02o, 4eTllnsMOUU, 4g1KM2HIZUA, 4gZ86yRcJcM, 4gc6fwXwFV0, 4kUTSXWZFyc, 4krdBuFEMMA, 4ktroOVK0Z8, 4uYZQSjrdf8, 4v_6Fsh6k10, 4yIKyUws_FM, 5-TyAsFwo40, 50EV9mbGVWY, 52Agg5gy2N4, 54RqBmjdq9g, 59gGMhffroM, 59vxdDvvDAM, 5BpIwpzT1wA, 5CQ9N0ls0Hc, 5CShxp46axE, 5ELtUAtflns, 5F8t4Bd-aWM, 5Jmlftgw9-E, 5LuS-TTg7rA, 5M90r1nf5M8, 5OQaJcyenPQ, 5QO6BTt9-T0, 5TeY1R1UAmw, 5Teum5PgaaE, 5Tt8PNI1bpc, 5XFDbIBXzzw, 5Z8lNPgCmuo, 5_gLhl1LoXc, 5byN0HNkOFQ, 5dsbpDoszc8, 5ikPiwUfsJM, 5o_LSjNkOQE, 5udtD0-KjlA, 5w2uzL9-elE, 5w3294dX8Wk, 5yNCsWu2S-c, 5z_Sk7P10Gk, 60cYTePWEOQ, 62bCk_LZVAY, 65KUxTxQbU8, 66IddloOA8A, 66iGd5YlT0Q, 689vmfYsFyk, 69F9hv4AIIY, 6BTqHNQPpsU, 6Bcp3dNPqkk, 6C6NLUHDKHs, 6FFs2jMg3Qk, 6GLdekH_fqs, 6IpM9X9eVvc, 6KGxITv68XA, 6KwcF1SxswU, 6LM-dcvG38I, 6O7xQpT3As4, 6Ohv6_N88yA, 6QoJyYaYl0g, 6R1cM5x04fc, 6R7auE0YG3E, 6RwmiOsDKuM, 6W38H2Tmixs, 6WF9mjmxwv8, 6WRkAQJKsf0, 6_mArr1eOcY, 6aLr21Iza1U, 6c5924rcou4, 6ezuklg6QcI, 6iXbPZw4Xek, 6kUJ1Ifkh-E, 6w1-4eAUHmk, 6yQyyAsuTUc, 7272RXfPqYg, 74cZyFxTBUA, 74v26n8OHpE, 75RIqb2TUME, 75iciNFxEsM, 78CLW1ydkyU, 78PYzJd_6-I, 79N7Tn2fDjM, 7E02KEPyxt0, 7EnQV3iYp8E, 7G-741kjo0A, 7IuNV-gcRLs, 7J5MFYoqEZk, 7KRfSa2aVXw, 7MI6tU_D6eI, 7MdDUIvNbec, 7NITc1vKQz0, 7NkRULfZkiY, 7OBsKgNMT_8, 7P5LkLmvkXY, 7RPhNw37nZo, 7TAfOplFDGs, 7W5O55LihF4, 7WvxhNo523A, 7XN5Yj8mPHc, 7YL5SVVXHCo, 7Yq3PG6vhWM, 7ZlEYZYIEwk, 7_ihpter5zg, 7hx4kWJ2zDg, 7mPRfXp5Zg4, 7pnETbZmvjk, 7vT58eLvyfM, 7z3uF03sdtw, 7zo9ltH4lGk, 7ztoTdD13xM, 82bNCO3cHWM, 8NqJiAu9W3Y, DjFX4idkS3o, IrSIHJ0-AaU, SlksdQT5JRE, YynYZyoETto, _Ce7G35GIqA, _iirwC_DvJ0, gnArvcWaH6I, lhHkJ3InQOE, nJa_omJBzoU
+Frames: total=917971 train=780275 val=137696
+Samples: computed lazily per batch from detector outputs; no global sample count is precomputed upfront.
+Temporal windows: candidate frame windows train=304521 val=2736 dropped_train=71542 dropped_val=114746
+Train scope: temporal_only
+LoRA: disabled
+Trainable params: 25,410
+Temporal families: temporal_camera, temporal_bbox_projected
+[progress] Entering optimization loop.
+[progress] Fetching first training batch.
+[progress] Lazy detector has materialized 1 new frame(s) (0 restored from cache).
+[step 00001] loss=0.0073 cam=359.7307 temp_cam=0.0000 bbox_p=0.0002
+[progress] Running validation at step 1.
+[progress] Lazy detector has materialized 25 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 50 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 50 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 75 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 100 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 100 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 125 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 150 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 150 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 175 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 200 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 200 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 225 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 250 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 250 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 275 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 300 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 300 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 325 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 350 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 350 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 375 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 400 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 400 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 425 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 450 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 450 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 475 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 500 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 500 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 525 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 550 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 550 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 575 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 600 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 600 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 625 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 650 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 650 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 675 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 700 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 700 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 725 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 750 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 750 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 775 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 800 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 800 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 825 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 850 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 850 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 875 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 900 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 900 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 925 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 950 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 950 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 975 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 1000 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 1000 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 1025 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 1050 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 1050 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 1075 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 1100 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 1100 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 1125 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 1150 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 1150 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 1175 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 1200 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 1200 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 1225 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 1250 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 1250 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 1275 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 1300 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 1300 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 1325 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 1350 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 1350 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 1375 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 1400 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 1400 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 1425 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 1450 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 1450 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 1475 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 1500 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 1500 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 1525 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 1550 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 1550 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 1575 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 1600 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 1600 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 1625 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 1650 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 1650 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 1675 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 1700 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 1700 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 1725 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 1750 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 1750 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 1775 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 1800 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 1800 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 1825 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 1850 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 1850 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 1875 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 1900 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 1900 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 1925 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 1950 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 1950 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 1975 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 2000 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 2000 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 2025 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 2050 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 2050 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 2075 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 2100 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 2100 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 2125 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 2150 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 2150 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 2175 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 2200 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 2200 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 2225 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 2250 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 2250 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 2275 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 2300 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 2300 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 2325 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 2350 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 2350 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 2375 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 2400 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 2400 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 2425 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 2450 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 2450 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 2475 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 2500 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 2500 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 2525 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 2550 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 2550 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 2575 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 2600 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 2600 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 2625 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 2650 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 2650 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 2675 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 2700 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 2700 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 2725 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 2750 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 2750 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 2775 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 2800 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 2800 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 2825 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 2850 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 2850 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 2875 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 2900 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 2900 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 2925 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 2950 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 2950 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 2975 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 3000 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 3000 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 3025 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 3050 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 3050 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 3075 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 3100 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 3100 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 3125 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 3150 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 3150 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 3175 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 3200 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 3200 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 3225 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 3250 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 3250 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 3275 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 3300 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 3300 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 3325 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 3350 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 3350 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 3375 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 3400 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 3400 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 3425 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 3450 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 3450 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 3475 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 3500 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 3500 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 3525 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 3550 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 3550 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 3575 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 3600 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 3600 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 3625 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 3650 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 3650 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 3675 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 3700 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 3700 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 3725 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 3750 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 3750 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 3775 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 3800 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 3800 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 3825 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 3850 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 3850 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 3875 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 3900 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 3900 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 3925 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 3950 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 3950 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 3975 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 4000 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 4000 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 4025 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 4050 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 4050 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 4075 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 4100 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 4100 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 4125 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 4150 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 4150 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 4175 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 4200 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 4200 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 4225 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 4250 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 4250 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 4275 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 4300 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 4300 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 4325 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 4350 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 4350 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 4375 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 4400 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 4400 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 4425 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 4450 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 4450 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 4475 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 4500 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 4500 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 4525 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 4550 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 4550 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 4575 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 4600 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 4600 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 4625 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 4650 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 4650 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 4675 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 4700 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 4700 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 4725 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 4750 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 4750 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 4775 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 4800 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 4800 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 4825 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 4850 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 4850 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 4875 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 4900 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 4900 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 4925 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 4950 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 4950 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 4975 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 5000 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 5000 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 5025 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 5050 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 5050 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 5075 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 5100 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 5100 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 5125 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 5150 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 5150 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 5175 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 5200 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 5200 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 5225 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 5250 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 5250 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 5275 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 5300 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 5300 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 5325 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 5350 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 5350 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 5375 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 5400 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 5400 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 5425 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 5450 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 5450 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 5475 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 5500 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 5500 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 5525 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 5550 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 5550 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 5575 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 5600 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 5600 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 5625 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 5650 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 5650 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 5675 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 5700 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 5700 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 5725 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 5750 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 5750 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 5775 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 5800 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 5800 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 5825 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 5850 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 5850 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 5875 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 5900 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 5900 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 5925 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 5950 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 5950 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 5975 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 6000 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 6000 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 6025 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 6050 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 6050 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 6075 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 6100 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 6100 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 6125 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 6150 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 6150 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 6175 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 6200 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 6200 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 6225 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 6250 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 6250 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 6275 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 6300 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 6300 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 6325 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 6350 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 6350 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 6375 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 6400 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 6400 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 6425 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 6450 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 6450 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 6475 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 6500 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 6500 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 6525 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 6550 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 6550 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 6575 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 6600 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 6600 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 6625 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 6650 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 6650 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 6675 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 6700 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 6700 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 6725 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 6750 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 6750 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 6775 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 6800 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 6800 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 6825 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 6850 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 6850 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 6875 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 6900 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 6900 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 6925 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 6950 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 6950 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 6975 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 7000 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 7000 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 7025 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 7050 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 7050 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 7075 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 7100 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 7100 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 7125 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 7150 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 7150 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 7175 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 7200 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 7200 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 7225 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 7250 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 7250 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 7275 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 7300 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 7300 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 7325 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 7350 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 7350 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 7375 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 7400 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 7400 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 7425 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 7450 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 7450 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 7475 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 7500 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 7500 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 7525 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 7550 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 7550 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 7575 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 7600 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 7600 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 7625 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 7649 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy val pass #1 produced 4373 detector-backed temporal window(s) across 547 batch(es).
+             val_loss=0.0077 val_cam=539.7500 val_temp_cam=0.0000 val_bbox_p=0.0006
+[progress] Lazy detector has materialized 7650 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 7650 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 7675 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 7700 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 7700 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 7725 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 7750 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 7750 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 7775 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 7800 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 7800 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 7825 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 7850 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 7850 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 7875 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 7900 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 7900 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 7925 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 7950 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 7950 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 7975 new frame(s) (0 restored from cache).
+[step 00025] loss=0.0076 cam=301.9410 temp_cam=0.0000 bbox_p=0.0002
+[progress] Running validation at step 25.
+[progress] Flushed lazy detection cache with 7997 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy val pass #2 produced 4373 detector-backed temporal window(s) across 547 batch(es).
+             val_loss=0.0077 val_cam=539.7500 val_temp_cam=0.0000 val_bbox_p=0.0006
+[progress] Lazy detector has materialized 8000 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 8000 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 8025 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 8050 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 8050 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 8075 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 8100 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 8100 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 8125 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 8150 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 8150 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 8175 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 8200 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 8200 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 8225 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 8250 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 8250 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 8275 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 8300 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 8300 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 8325 new frame(s) (0 restored from cache).
+[step 00050] loss=0.0085 cam=360.5833 temp_cam=0.0000 bbox_p=0.0005
+[progress] Running validation at step 50.
+[progress] Flushed lazy detection cache with 8335 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy val pass #3 produced 4373 detector-backed temporal window(s) across 547 batch(es).
+             val_loss=0.0077 val_cam=539.7500 val_temp_cam=0.0000 val_bbox_p=0.0006
+[progress] Lazy detector has materialized 8350 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 8350 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 8375 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 8400 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 8400 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 8425 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 8450 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 8450 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 8475 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 8500 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 8500 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 8525 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 8550 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 8550 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 8575 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 8600 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 8600 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 8625 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 8650 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 8650 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 8675 new frame(s) (0 restored from cache).
+[step 00075] loss=0.0082 cam=402.8138 temp_cam=0.0000 bbox_p=0.0003
+[progress] Running validation at step 75.
+[progress] Flushed lazy detection cache with 8697 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy val pass #4 produced 4373 detector-backed temporal window(s) across 547 batch(es).
+             val_loss=0.0077 val_cam=539.7500 val_temp_cam=0.0000 val_bbox_p=0.0006
+[progress] Lazy detector has materialized 8700 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 8700 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 8725 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 8750 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 8750 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 8775 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 8800 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 8800 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 8825 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 8850 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 8850 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 8875 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 8900 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 8900 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 8925 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 8950 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 8950 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 8975 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 9000 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 9000 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 9025 new frame(s) (0 restored from cache).
+[step 00100] loss=0.0066 cam=372.6175 temp_cam=0.0000 bbox_p=0.0003
+[progress] Running validation at step 100.
+[progress] Flushed lazy detection cache with 9046 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy val pass #5 produced 4373 detector-backed temporal window(s) across 547 batch(es).
+             val_loss=0.0077 val_cam=539.7500 val_temp_cam=0.0000 val_bbox_p=0.0006
+[progress] Lazy detector has materialized 9050 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 9050 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 9075 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 9100 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 9100 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 9125 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 9150 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 9150 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 9175 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 9200 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 9200 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 9225 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 9250 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 9250 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 9275 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 9300 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 9300 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 9325 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 9350 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 9350 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 9375 new frame(s) (0 restored from cache).
+[step 00125] loss=0.0072 cam=462.7660 temp_cam=0.0000 bbox_p=0.0004
+[progress] Running validation at step 125.
+[progress] Flushed lazy detection cache with 9396 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy val pass #6 produced 4373 detector-backed temporal window(s) across 547 batch(es).
+             val_loss=0.0077 val_cam=539.7500 val_temp_cam=0.0000 val_bbox_p=0.0006
+[progress] Lazy detector has materialized 9400 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 9400 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 9425 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 9450 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 9450 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 9475 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 9500 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 9500 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 9525 new frame(s) (0 restored from cache).
+[progress] Lazy detector has materialized 9550 new frame(s) (0 restored from cache).
+[progress] Flushed lazy detection cache with 9550 frame(s) to /scratch/mthakur/manifold/outputs/wilor_finetune/frozen_wilor_finetuning/detections_all_videos.json
+[progress] Lazy detector has materialized 9575 new frame(s) (0 restored from cache).
+slurmstepd: error: Detected 2 oom-kill event(s) in StepId=9951013.0. Some of your processes may have been killed by the cgroup out-of-memory handler.
+srun: error: gpu020: task 0: Out Of Memory
+srun: launch/slurm: _step_signal: Terminating StepId=9951013.0
