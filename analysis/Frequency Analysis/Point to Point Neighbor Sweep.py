@@ -7,6 +7,7 @@ import numpy as np
 
 from _path_setup import PROJECT_ROOT  # ensures root imports work
 import FILENAME as CONFIG
+from analysis_metrics import finish_motion_analysis, subset_neighbor_pairs
 from npy_io import iter_model_frame_records
 
 
@@ -99,8 +100,19 @@ def _collect_model_frames(root_dir, j_reg, hand_idx, wrist_joint_idx, n_verts):
     return frames
 
 
-def _analyze_model_frames(frames, hand_idx, region_a, region_b, point_module, source_path, point_count):
+def _analyze_model_frames(
+    frames,
+    hand_idx,
+    region_a,
+    region_b,
+    region_vertices,
+    coherence_pairs,
+    point_module,
+    source_path,
+    point_count,
+):
     trajectory = []
+    coherence_frames = []
     for frame_hands in frames:
         selected = [hand["verts"] for hand in frame_hands if int(hand["is_right"]) == int(hand_idx)]
         if not selected:
@@ -113,13 +125,23 @@ def _analyze_model_frames(frames, hand_idx, region_a, region_b, point_module, so
             frame_diffs.append(centroid_a - centroid_b)
 
         trajectory.append(np.mean(np.stack(frame_diffs, axis=0), axis=0))
+        coherence_frames.append(np.mean(np.stack([verts[region_vertices] for verts in selected], axis=0), axis=0))
 
     if not trajectory:
         raise RuntimeError(
             f"No usable trajectory remained for HAND_IDX={hand_idx} under {source_path} at point_count={point_count}."
         )
 
-    return point_module._finish_analysis(trajectory)
+    return finish_motion_analysis(
+        trajectory,
+        fps=point_module.FPS,
+        filter_kind="lowpass",
+        filter_order=point_module.FILTER_ORDER,
+        lowpass_cutoff_hz=point_module.LOWPASS_CUTOFF,
+        psd_nperseg=256,
+        coherence_positions=np.stack(coherence_frames, axis=0),
+        coherence_pairs=coherence_pairs,
+    )
 
 
 def _legend_with_frequency_range(label, dominant_values):
@@ -184,6 +206,8 @@ def run_point_to_point_neighbor_sweep_analysis(config_overrides=None):
         n_neighbors = point_count - 1
         region_a = point_module._build_region_indices(vertex_a, adjacency, n_neighbors)
         region_b = point_module._build_region_indices(vertex_b, adjacency, n_neighbors)
+        region_vertices = np.asarray(sorted(set(region_a.tolist()) | set(region_b.tolist())), dtype=np.int32)
+        coherence_pairs = subset_neighbor_pairs(region_vertices.tolist(), adjacency)
         print(
             f"Neighbor sweep point_count={point_count}: region A size={len(region_a)}, region B size={len(region_b)}"
         )
@@ -194,6 +218,8 @@ def run_point_to_point_neighbor_sweep_analysis(config_overrides=None):
                 hand_idx,
                 region_a,
                 region_b,
+                region_vertices,
+                coherence_pairs,
                 point_module,
                 entry["source"],
                 point_count,
@@ -204,6 +230,10 @@ def run_point_to_point_neighbor_sweep_analysis(config_overrides=None):
                     "n_neighbors": n_neighbors,
                     "dominant": float(result["dominant"]),
                     "rms": float(result["rms"]),
+                    "peak_ratio": float(result["peak_ratio"]),
+                    "peak_sharpness": float(result["peak_sharpness"]),
+                    "temporal_noise": float(result["temporal_noise"]),
+                    "spatial_coherence": result["spatial_coherence"],
                     "num_samples": int(len(result["magnitude"])),
                 }
             )

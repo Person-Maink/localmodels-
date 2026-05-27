@@ -6,10 +6,10 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from scipy.signal import butter, filtfilt, welch
 
 from _path_setup import PROJECT_ROOT  # ensures root imports work
 import FILENAME as CONFIG
+from analysis_metrics import finish_motion_analysis, subset_neighbor_pairs
 from mano_pickle import load_mano_pickle
 from npy_io import iter_model_frame_records
 
@@ -147,44 +147,6 @@ def _build_region_indices(seed, adjacency, n_neighbors):
     return np.asarray([seed] + selected, dtype=np.int32)
 
 
-def _lowpass_filter(signal, fs, cutoff, order):
-    nyq = 0.5 * fs
-    b, a = butter(order, cutoff / nyq, btype="low")
-    return filtfilt(b, a, signal, axis=0)
-
-
-def _finish_analysis(trajectory):
-    trajectory = np.stack(trajectory, axis=0)
-    filtered = _lowpass_filter(
-        trajectory,
-        fs=FPS,
-        cutoff=LOWPASS_CUTOFF,
-        order=FILTER_ORDER,
-    )
-
-    magnitude = np.linalg.norm(filtered, axis=1)
-    magnitude -= magnitude.mean()
-
-    freqs, psd = welch(
-        magnitude,
-        fs=FPS,
-        nperseg=min(256, len(magnitude)),
-    )
-
-    dominant_freq = float(freqs[np.argmax(psd)])
-    rms_amplitude = float(np.sqrt(np.mean(magnitude**2)))
-
-    return {
-        "trajectory": trajectory,
-        "filtered": filtered,
-        "magnitude": magnitude,
-        "freqs": freqs,
-        "psd": psd,
-        "dominant": dominant_freq,
-        "rms": rms_amplitude,
-    }
-
-
 def _validate_mano_pair(total_verts, pair):
     a, b = pair
     if not (0 <= a < total_verts):
@@ -283,8 +245,18 @@ def _collect_model_frames(root_dir, j_reg, hand_idx, wrist_joint_idx, n_verts):
     return frames
 
 
-def _analyze_model_pair(frames, hand_idx, region_a, region_b, source_path, pair_label):
+def _analyze_model_pair(
+    frames,
+    hand_idx,
+    region_a,
+    region_b,
+    region_vertices,
+    coherence_pairs,
+    source_path,
+    pair_label,
+):
     trajectory = []
+    coherence_frames = []
     for frame_hands in frames:
         selected = [h["verts"] for h in frame_hands if int(h["is_right"]) == int(hand_idx)]
         if not selected:
@@ -297,13 +269,23 @@ def _analyze_model_pair(frames, hand_idx, region_a, region_b, source_path, pair_
             frame_diffs.append(centroid_a - centroid_b)
 
         trajectory.append(np.mean(np.stack(frame_diffs, axis=0), axis=0))
+        coherence_frames.append(np.mean(np.stack([verts[region_vertices] for verts in selected], axis=0), axis=0))
 
     if not trajectory:
         raise RuntimeError(
             f"No valid model frames for HAND_IDX={hand_idx} under {source_path} for pair {pair_label}."
         )
 
-    return _finish_analysis(trajectory)
+    return finish_motion_analysis(
+        trajectory,
+        fps=FPS,
+        filter_kind="lowpass",
+        filter_order=FILTER_ORDER,
+        lowpass_cutoff_hz=LOWPASS_CUTOFF,
+        psd_nperseg=256,
+        coherence_positions=np.stack(coherence_frames, axis=0),
+        coherence_pairs=coherence_pairs,
+    )
 
 
 def _analyze_mediapipe_pair(df, hand_idx, pair, source_path):
@@ -342,7 +324,14 @@ def _analyze_mediapipe_pair(df, hand_idx, pair, source_path):
     if skipped_frames:
         print(f"[info] {source_path}: skipped {skipped_frames} incomplete MediaPipe frames for pair {pair}")
 
-    return _finish_analysis(trajectory)
+    return finish_motion_analysis(
+        trajectory,
+        fps=FPS,
+        filter_kind="lowpass",
+        filter_order=FILTER_ORDER,
+        lowpass_cutoff_hz=LOWPASS_CUTOFF,
+        psd_nperseg=256,
+    )
 
 
 def run_multi_point_analysis(config_overrides=None):
@@ -374,7 +363,9 @@ def run_multi_point_analysis(config_overrides=None):
         _validate_mano_pair(n_verts, pair)
         region_a = _build_region_indices(pair[0], adjacency, n_neighbors)
         region_b = _build_region_indices(pair[1], adjacency, n_neighbors)
-        mano_regions[pair] = (region_a, region_b)
+        region_vertices = np.asarray(sorted(set(region_a.tolist()) | set(region_b.tolist())), dtype=np.int32)
+        coherence_pairs = subset_neighbor_pairs(region_vertices.tolist(), adjacency)
+        mano_regions[pair] = (region_a, region_b, region_vertices, coherence_pairs)
 
     for pair in mediapipe_pairs:
         _validate_mediapipe_pair(pair)
@@ -394,7 +385,7 @@ def run_multi_point_analysis(config_overrides=None):
 
     for family, frames in model_frames_by_family.items():
         for pair in mano_pairs:
-            region_a, region_b = mano_regions[pair]
+            region_a, region_b, region_vertices, coherence_pairs = mano_regions[pair]
             label = _pair_label("model", pair)
             entries.append(
                 {
@@ -405,7 +396,16 @@ def run_multi_point_analysis(config_overrides=None):
                     "source": sources[family],
                     "pair": pair,
                     "pair_label": label,
-                    "result": _analyze_model_pair(frames, hand_idx, region_a, region_b, sources[family], label),
+                    "result": _analyze_model_pair(
+                        frames,
+                        hand_idx,
+                        region_a,
+                        region_b,
+                        region_vertices,
+                        coherence_pairs,
+                        sources[family],
+                        label,
+                    ),
                 }
             )
 

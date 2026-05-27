@@ -7,10 +7,11 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from scipy.signal import butter, filtfilt, welch
 
 from _path_setup import PROJECT_ROOT  # ensures root imports work
 import FILENAME as CONFIG
+from analysis_metrics import finish_motion_analysis, subset_neighbor_pairs
+from analysis_plotting import build_time_psd_metrics_figure
 from mano_pickle import load_mano_pickle
 from npy_io import iter_model_frame_records
 
@@ -93,10 +94,6 @@ def _infer_label(root_dir, fallback):
     return fallback
 
 
-def _legend_with_peak(label, dominant):
-    return f"{label} ({dominant:.2f} Hz)"
-
-
 def _source_kind(path_text):
     path = Path(path_text)
     if path.suffix.lower() == ".csv":
@@ -166,45 +163,17 @@ def _build_region_indices(seed, adjacency, n_neighbors):
     return np.asarray([seed] + selected, dtype=np.int32)
 
 
-def _lowpass_filter(signal, fs, cutoff, order):
-    nyq = 0.5 * fs
-    b, a = butter(order, cutoff / nyq, btype="low")
-    return filtfilt(b, a, signal, axis=0)
-
-
-def _finish_analysis(trajectory):
-    trajectory = np.stack(trajectory, axis=0)
-    filtered = _lowpass_filter(
-        trajectory,
-        fs=FPS,
-        cutoff=LOWPASS_CUTOFF,
-        order=FILTER_ORDER,
-    )
-
-    magnitude = np.linalg.norm(filtered, axis=1)
-    magnitude -= magnitude.mean()
-
-    freqs, psd = welch(
-        magnitude,
-        fs=FPS,
-        nperseg=min(256, len(magnitude)),
-    )
-
-    dominant_freq = float(freqs[np.argmax(psd)])
-    rms_amplitude = float(np.sqrt(np.mean(magnitude**2)))
-
-    return {
-        "trajectory": trajectory,
-        "filtered": filtered,
-        "magnitude": magnitude,
-        "freqs": freqs,
-        "psd": psd,
-        "dominant": dominant_freq,
-        "rms": rms_amplitude,
-    }
-
-
-def _analyze_model(root_dir, j_reg, region_a, region_b, n_verts, hand_idx, wrist_joint_idx):
+def _analyze_model(
+    root_dir,
+    j_reg,
+    region_a,
+    region_b,
+    region_vertices,
+    coherence_pairs,
+    n_verts,
+    hand_idx,
+    wrist_joint_idx,
+):
     frames = []
     for _, records in iter_model_frame_records(root_dir):
         if not records:
@@ -235,6 +204,7 @@ def _analyze_model(root_dir, j_reg, region_a, region_b, n_verts, hand_idx, wrist
     print(f"Loaded {len(frames)} frames from model/stride data for: {root_dir}")
 
     trajectory = []
+    coherence_frames = []
     for frame_hands in frames:
         selected = [h["verts"] for h in frame_hands if int(h["is_right"]) == hand_idx]
         if not selected:
@@ -248,6 +218,7 @@ def _analyze_model(root_dir, j_reg, region_a, region_b, n_verts, hand_idx, wrist
 
         frame_diff = np.mean(np.stack(frame_diffs, axis=0), axis=0)
         trajectory.append(frame_diff)
+        coherence_frames.append(np.mean(np.stack([verts[region_vertices] for verts in selected], axis=0), axis=0))
 
     if not trajectory:
         raise RuntimeError(
@@ -256,7 +227,16 @@ def _analyze_model(root_dir, j_reg, region_a, region_b, n_verts, hand_idx, wrist
         )
 
     print(f"Loaded {len(trajectory)} usable model frames for: {root_dir}")
-    return _finish_analysis(trajectory)
+    return finish_motion_analysis(
+        trajectory,
+        fps=FPS,
+        filter_kind="lowpass",
+        filter_order=FILTER_ORDER,
+        lowpass_cutoff_hz=LOWPASS_CUTOFF,
+        psd_nperseg=256,
+        coherence_positions=np.stack(coherence_frames, axis=0),
+        coherence_pairs=coherence_pairs,
+    )
 
 
 def _analyze_mediapipe(csv_path, point_a, point_b, hand_idx):
@@ -300,7 +280,14 @@ def _analyze_mediapipe(csv_path, point_a, point_b, hand_idx):
         f"Loaded {len(trajectory)} usable MediaPipe frames for: {csv_path}"
         + (f" (skipped {skipped_frames} incomplete frames)" if skipped_frames else "")
     )
-    return _finish_analysis(trajectory)
+    return finish_motion_analysis(
+        trajectory,
+        fps=FPS,
+        filter_kind="lowpass",
+        filter_order=FILTER_ORDER,
+        lowpass_cutoff_hz=LOWPASS_CUTOFF,
+        psd_nperseg=256,
+    )
 
 
 def _analyze_source(
@@ -310,6 +297,8 @@ def _analyze_source(
     j_reg=None,
     region_a=None,
     region_b=None,
+    region_vertices=None,
+    coherence_pairs=None,
     n_verts=None,
     mediapipe_point_a=None,
     mediapipe_point_b=None,
@@ -317,7 +306,17 @@ def _analyze_source(
     kind = _source_kind(source_path)
     if kind == "mediapipe":
         return _analyze_mediapipe(source_path, mediapipe_point_a, mediapipe_point_b, hand_idx)
-    return _analyze_model(source_path, j_reg, region_a, region_b, n_verts, hand_idx, wrist_joint_idx)
+    return _analyze_model(
+        source_path,
+        j_reg,
+        region_a,
+        region_b,
+        region_vertices,
+        coherence_pairs,
+        n_verts,
+        hand_idx,
+        wrist_joint_idx,
+    )
 
 
 def _resolve_entries(overrides):
@@ -397,6 +396,8 @@ def run_point_to_point_analysis(config_overrides=None):
     n_verts = None
     region_a = None
     region_b = None
+    region_vertices = None
+    coherence_pairs = None
 
     if "model" in kinds:
         try:
@@ -414,6 +415,8 @@ def run_point_to_point_analysis(config_overrides=None):
         adjacency = _build_vertex_adjacency(n_verts, faces)
         region_a = _build_region_indices(vertex_a, adjacency, n_neighbors)
         region_b = _build_region_indices(vertex_b, adjacency, n_neighbors)
+        region_vertices = np.asarray(sorted(set(region_a.tolist()) | set(region_b.tolist())), dtype=np.int32)
+        coherence_pairs = subset_neighbor_pairs(region_vertices.tolist(), adjacency)
 
         print(f"Using vertex A={vertex_a}, region size={len(region_a)}")
         print(f"Using vertex B={vertex_b}, region size={len(region_b)}")
@@ -432,6 +435,8 @@ def run_point_to_point_analysis(config_overrides=None):
                     j_reg=j_reg,
                     region_a=region_a,
                     region_b=region_b,
+                    region_vertices=region_vertices,
+                    coherence_pairs=coherence_pairs,
                     n_verts=n_verts,
                     mediapipe_point_a=mediapipe_point_a,
                     mediapipe_point_b=mediapipe_point_b,
@@ -453,59 +458,19 @@ def run_point_to_point_analysis(config_overrides=None):
 
 
 def build_point_to_point_figure(analysis_data, figsize_inches=(12, 10), dpi=100):
-    fig, axes = plt.subplots(3, 1, figsize=figsize_inches, dpi=dpi, sharex=False)
-
-    for i, entry in enumerate(analysis_data["entries"]):
-        label = entry["label"]
-        result = entry["result"]
-        label_with_peak = _legend_with_peak(label, result["dominant"])
-
-        style = LINE_STYLES[i % len(LINE_STYLES)]
-        color = f"C{i}"
-        t = np.arange(len(result["magnitude"])) / FPS
-
-        axes[0].plot(t, result["magnitude"], style, color=color, lw=1.5, label=label_with_peak)
-
-        axes[1].semilogy(
-            result["freqs"],
-            result["psd"],
-            style,
-            color=color,
-            lw=1.5,
-            label=label_with_peak,
-        )
-        axes[1].axvline(result["dominant"], color=color, ls=":")
-
-        for axis_i, axis_name in enumerate(["x", "y", "z"]):
-            axes[2].plot(
-                t,
-                result["filtered"][:, axis_i],
-                style,
-                color=color,
-                lw=1.2,
-                label=f"{label} {axis_name} ({result['dominant']:.2f} Hz)",
-            )
-
-    axes[0].set_title("Filtered region-difference displacement over time")
-    axes[0].set_xlabel("Time (s)")
-    axes[0].set_ylabel("Displacement magnitude")
-    axes[0].legend()
-    axes[0].grid(True)
-
-    axes[1].set_title("Frequency spectrum of region-difference motion")
-    axes[1].set_xlabel("Frequency (Hz)")
-    axes[1].set_ylabel("Power spectral density")
-    axes[1].legend()
-    axes[1].grid(True)
-
-    axes[2].set_title("Filtered region-difference displacement per axis")
-    axes[2].set_xlabel("Time (s)")
-    axes[2].set_ylabel("Displacement")
-    axes[2].legend(ncol=3)
-    axes[2].grid(True)
-
-    fig.tight_layout()
-    return fig
+    return build_time_psd_metrics_figure(
+        analysis_data["entries"],
+        fps=FPS,
+        title_time="Filtered region-difference displacement over time",
+        title_psd="Frequency spectrum of region-difference motion",
+        figsize_inches=figsize_inches,
+        dpi=dpi,
+        style_resolver=lambda index, _entry: {
+            "color": f"C{index % 10}",
+            "linestyle": LINE_STYLES[index % len(LINE_STYLES)],
+            "linewidth": 1.5,
+        },
+    )
 
 
 def main():

@@ -138,6 +138,10 @@ export type AnalysisResultEntry = {
   pair_label?: string;
   hand_used?: string;
   dominant_hz?: number;
+  peak_ratio?: number;
+  peak_sharpness?: number;
+  temporal_noise?: number;
+  spatial_coherence?: number | null;
   rms_amplitude?: number;
   sample_count?: number;
   plots?: {
@@ -150,6 +154,10 @@ export type AnalysisResultEntry = {
   series?: {
     point_count: number;
     dominant_hz: number;
+    peak_ratio?: number;
+    peak_sharpness?: number;
+    temporal_noise?: number;
+    spatial_coherence?: number | null;
     rms_amplitude: number;
     sample_count: number;
   }[];

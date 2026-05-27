@@ -66,21 +66,28 @@ def _selected_wilor_finetune_all_models_scenarios(selected_aliases):
 
 
 FINETUNE_ALL_MODEL_SCENARIOS = _selected_wilor_finetune_all_models_scenarios(SELECTED_WILOR_FINETUNE_ALIASES)
-PAIRWISE_ANALYSES = (
-    "compare",
-    "point_to_point",
-    "point_to_point_neighbor_sweep",
-    "multi_point_to_point",
-)
-SINGLE_SOURCE_ANALYSES = ("wilor_camera_space", "beta_comparison", "beta_multi_point_to_point")
-ANALYSIS_IDS = PAIRWISE_ANALYSES + SINGLE_SOURCE_ANALYSES
-ANALYSIS_FOLDERS = {analysis_id: analysis_id for analysis_id in ANALYSIS_IDS}
-MODEL_ONLY_PAIRWISE_ANALYSES = {"point_to_point_neighbor_sweep"}
-SINGLE_SOURCE_ANALYSIS_FAMILIES = {
-    "wilor_camera_space": {"wilor", "wilor_finetune", "dynhamr", "stride"},
-    "beta_comparison": {"wilor", "wilor_finetune", "dynhamr", "stride"},
-    "beta_multi_point_to_point": {"wilor", "wilor_finetune", "dynhamr", "stride"},
+BETA_ANALYSIS_FAMILIES = {"wilor", "wilor_finetune", "dynhamr", "stride"}
+ANALYSIS_SPECS = {
+    "compare": {"item_kinds": {"pair", "multi_model", "single_source"}},
+    "point_to_point": {"item_kinds": {"pair", "multi_model"}},
+    "point_to_point_neighbor_sweep": {"item_kinds": {"pair", "multi_model"}, "model_only": True},
+    "multi_point_to_point": {"item_kinds": {"pair", "multi_model"}},
+    "wilor_camera_space": {"item_kinds": {"single_source"}, "families": BETA_ANALYSIS_FAMILIES},
+    "beta_comparison": {"item_kinds": {"single_source"}, "families": BETA_ANALYSIS_FAMILIES},
+    "beta_multi_point_to_point": {"item_kinds": {"single_source"}, "families": BETA_ANALYSIS_FAMILIES},
+    "beta_model_compare": {
+        "item_kinds": {"pair", "multi_model", "single_source"},
+        "families": BETA_ANALYSIS_FAMILIES,
+        "model_only": True,
+    },
+    "beta_model_compare_raw_plus_beta": {
+        "item_kinds": {"pair", "multi_model", "single_source"},
+        "families": BETA_ANALYSIS_FAMILIES,
+        "model_only": True,
+    },
 }
+ANALYSIS_IDS = tuple(ANALYSIS_SPECS)
+ANALYSIS_FOLDERS = {analysis_id: analysis_id for analysis_id in ANALYSIS_IDS}
 
 SCENARIOS = (
     ("hamba_vs_hamba_comp", "hamba_all", "hamba_comp"),
@@ -823,6 +830,10 @@ def _save_metrics_csv(path, rows):
         "source",
         "kind",
         "dominant_hz",
+        "peak_ratio",
+        "peak_sharpness",
+        "temporal_noise",
+        "spatial_coherence",
         "rms_amplitude",
         "num_samples",
     ]
@@ -846,6 +857,14 @@ def _make_metric_row(job, slot, label, source, kind, result):
         "source": source,
         "kind": kind,
         "dominant_hz": f"{float(result['dominant']):.8f}",
+        "peak_ratio": f"{float(result['peak_ratio']):.12f}",
+        "peak_sharpness": f"{float(result['peak_sharpness']):.12f}",
+        "temporal_noise": f"{float(result['temporal_noise']):.12f}",
+        "spatial_coherence": (
+            ""
+            if result.get("spatial_coherence") is None
+            else f"{float(result['spatial_coherence']):.12f}"
+        ),
         "rms_amplitude": f"{float(result['rms']):.12f}",
         "num_samples": int(len(result["magnitude"])),
     }
@@ -858,6 +877,12 @@ def _summarize_result_entry(slot, label, source, kind, result):
         "source": source,
         "kind": kind,
         "dominant_hz": float(result["dominant"]),
+        "peak_ratio": float(result["peak_ratio"]),
+        "peak_sharpness": float(result["peak_sharpness"]),
+        "temporal_noise": float(result["temporal_noise"]),
+        "spatial_coherence": (
+            None if result.get("spatial_coherence") is None else float(result["spatial_coherence"])
+        ),
         "rms_amplitude": float(result["rms"]),
         "num_samples": int(len(result["magnitude"])),
     }
@@ -894,6 +919,14 @@ def _make_neighbor_sweep_metric_rows(job, entries):
                     "source": entry.get("source", ""),
                     "kind": entry.get("kind", "model"),
                     "dominant_hz": f"{float(series_row['dominant']):.8f}",
+                    "peak_ratio": f"{float(series_row['peak_ratio']):.12f}",
+                    "peak_sharpness": f"{float(series_row['peak_sharpness']):.12f}",
+                    "temporal_noise": f"{float(series_row['temporal_noise']):.12f}",
+                    "spatial_coherence": (
+                        ""
+                        if series_row.get("spatial_coherence") is None
+                        else f"{float(series_row['spatial_coherence']):.12f}"
+                    ),
                     "rms_amplitude": f"{float(series_row['rms']):.12f}",
                     "num_samples": int(series_row["num_samples"]),
                 }
@@ -914,6 +947,14 @@ def _summarize_neighbor_sweep_entries(entries):
                     "point_count": int(series_row["point_count"]),
                     "n_neighbors": int(series_row["n_neighbors"]),
                     "dominant_hz": float(series_row["dominant"]),
+                    "peak_ratio": float(series_row["peak_ratio"]),
+                    "peak_sharpness": float(series_row["peak_sharpness"]),
+                    "temporal_noise": float(series_row["temporal_noise"]),
+                    "spatial_coherence": (
+                        None
+                        if series_row.get("spatial_coherence") is None
+                        else float(series_row["spatial_coherence"])
+                    ),
                     "rms_amplitude": float(series_row["rms"]),
                     "num_samples": int(series_row["num_samples"]),
                 }
@@ -974,24 +1015,26 @@ def _runtime_item_from_payload(item_kind, item):
     )
 
 
-def _analysis_ids_for_item(item_kind, runtime_item):
-    if item_kind in {"pair", "multi_model"}:
-        if item_kind == "pair":
-            sources = [runtime_item.source_a, runtime_item.source_b]
-        else:
-            sources = list(runtime_item.sources)
+def _sources_for_item(item_kind, runtime_item):
+    if item_kind == "pair":
+        return [runtime_item.source_a, runtime_item.source_b]
+    if item_kind == "multi_model":
+        return list(runtime_item.sources)
+    return [runtime_item.source]
 
-        analysis_ids = []
-        for analysis_id in PAIRWISE_ANALYSES:
-            if analysis_id in MODEL_ONLY_PAIRWISE_ANALYSES and any(source.kind != "model" for source in sources):
-                continue
-            analysis_ids.append(analysis_id)
-        return analysis_ids
-    family = runtime_item.source.family
+
+def _analysis_ids_for_item(item_kind, runtime_item):
+    sources = _sources_for_item(item_kind, runtime_item)
     analysis_ids = []
-    for analysis_id in SINGLE_SOURCE_ANALYSES:
-        if family in SINGLE_SOURCE_ANALYSIS_FAMILIES[analysis_id]:
-            analysis_ids.append(analysis_id)
+    for analysis_id, spec in ANALYSIS_SPECS.items():
+        if item_kind not in spec["item_kinds"]:
+            continue
+        if spec.get("model_only") and any(source.kind != "model" for source in sources):
+            continue
+        allowed_families = spec.get("families")
+        if allowed_families is not None and any(source.family not in allowed_families for source in sources):
+            continue
+        analysis_ids.append(analysis_id)
     return analysis_ids
 
 
@@ -1076,21 +1119,15 @@ def _save_figure(fig, output_path, dpi):
     plt.close(fig)
 
 
+def _labelled_source_overrides(sources):
+    return {
+        "sources": [source.path for source in sources],
+        "labels": [_entry_label(source) for source in sources],
+    }
+
+
 def _run_compare_job(job, module, runtime_item, output_path, figsize_inches, dpi):
-    if job["item_kind"] == "pair":
-        overrides = {
-            "source_a": runtime_item.source_a.path,
-            "source_b": runtime_item.source_b.path,
-            "label_a": _entry_label(runtime_item.source_a),
-            "label_b": _entry_label(runtime_item.source_b),
-        }
-    else:
-        sources = list(runtime_item.sources)
-        overrides = {
-            "all_models": True,
-            "sources": [source.path for source in sources],
-            "labels": [_entry_label(source) for source in sources],
-        }
+    overrides = _labelled_source_overrides(_sources_for_item(job["item_kind"], runtime_item))
 
     analysis_data = module.run_compare_analysis(overrides)
     fig = module.build_compare_figure(analysis_data, figsize_inches=figsize_inches, dpi=dpi)
@@ -1115,20 +1152,7 @@ def _run_compare_job(job, module, runtime_item, output_path, figsize_inches, dpi
 
 
 def _run_point_to_point_job(job, module, runtime_item, output_path, figsize_inches, dpi):
-    if job["item_kind"] == "pair":
-        overrides = {
-            "source_a": runtime_item.source_a.path,
-            "source_b": runtime_item.source_b.path,
-            "label_a": _entry_label(runtime_item.source_a),
-            "label_b": _entry_label(runtime_item.source_b),
-        }
-    else:
-        sources = list(runtime_item.sources)
-        overrides = {
-            "all_models": True,
-            "sources": [source.path for source in sources],
-            "labels": [_entry_label(source) for source in sources],
-        }
+    overrides = _labelled_source_overrides(_sources_for_item(job["item_kind"], runtime_item))
 
     analysis_data = module.run_point_to_point_analysis(overrides)
     fig = module.build_point_to_point_figure(analysis_data, figsize_inches=figsize_inches, dpi=dpi)
@@ -1153,20 +1177,7 @@ def _run_point_to_point_job(job, module, runtime_item, output_path, figsize_inch
 
 
 def _run_point_to_point_neighbor_sweep_job(job, module, runtime_item, output_path, figsize_inches, dpi):
-    if job["item_kind"] == "pair":
-        overrides = {
-            "source_a": runtime_item.source_a.path,
-            "source_b": runtime_item.source_b.path,
-            "label_a": _entry_label(runtime_item.source_a),
-            "label_b": _entry_label(runtime_item.source_b),
-        }
-    else:
-        sources = list(runtime_item.sources)
-        overrides = {
-            "all_models": True,
-            "sources": [source.path for source in sources],
-            "labels": [_entry_label(source) for source in sources],
-        }
+    overrides = _labelled_source_overrides(_sources_for_item(job["item_kind"], runtime_item))
 
     analysis_data = module.run_point_to_point_neighbor_sweep_analysis(overrides)
     fig = module.build_point_to_point_neighbor_sweep_figure(analysis_data, figsize_inches=figsize_inches, dpi=dpi)
@@ -1178,10 +1189,7 @@ def _run_point_to_point_neighbor_sweep_job(job, module, runtime_item, output_pat
 
 
 def _run_multi_point_job(job, module, runtime_item, output_path, figsize_inches, dpi):
-    if job["item_kind"] == "pair":
-        sources = [runtime_item.source_a, runtime_item.source_b]
-    else:
-        sources = list(runtime_item.sources)
+    sources = _sources_for_item(job["item_kind"], runtime_item)
 
     overrides = {
         "sources": [{"family": source.family, "path": source.path} for source in sources],
@@ -1296,6 +1304,53 @@ def _run_beta_comparison_job(job, module, runtime_item, output_path, figsize_inc
     return summary, metric_rows
 
 
+def _run_beta_model_compare_job(job, module, runtime_item, output_path, figsize_inches, dpi, variant_mode):
+    sources = _sources_for_item(job["item_kind"], runtime_item)
+    analysis_data = module.run_beta_comparison_analysis(
+        {
+            "analysis_id": job["analysis_id"],
+            "sources": [source.path for source in sources],
+            "labels": [_entry_label(source) for source in sources],
+            "mano_model_path": str(CONFIG.MANO_RIGHT_PATH),
+            "hand_idx": int(CONFIG.HAND_IDX),
+            "n_neighbors": int(CONFIG.N_NEIGHBORS),
+            "vertex_a": int(CONFIG.MODEL_SPECIFIC_VERTEX_A),
+            "vertex_b": int(CONFIG.MODEL_SPECIFIC_VERTEX_B),
+            "variant_mode": variant_mode,
+        }
+    )
+    fig = module.build_beta_comparison_figure(analysis_data, figsize_inches=figsize_inches, dpi=dpi)
+    _save_figure(fig, output_path, dpi)
+
+    metric_rows = []
+    summary_entries = []
+    for entry in analysis_data["entries"]:
+        result = entry["result"]
+        metric_rows.append(
+            _make_metric_row(
+                job,
+                slot=entry.get("slot", ""),
+                label=entry["label"],
+                source=entry.get("source", ""),
+                kind=entry.get("kind", "model"),
+                result=result,
+            )
+        )
+        summary_entries.append(
+            _summarize_result_entry(
+                slot=entry.get("slot", ""),
+                label=entry["label"],
+                source=entry.get("source", ""),
+                kind=entry.get("kind", "model"),
+                result=result,
+            )
+        )
+
+    summary = _planned_job_summary(job, status="success")
+    summary["entries"] = summary_entries
+    return summary, metric_rows
+
+
 def _run_beta_multi_point_job(job, module, runtime_item, output_path, figsize_inches, dpi):
     analysis_data = module.run_beta_multi_point_analysis(
         {
@@ -1366,6 +1421,26 @@ def _run_worker_job(job):
             summary, metric_rows = _run_camera_space_job(job, modules["wilor_camera_space"], runtime_item, output_path, figsize_inches, dpi)
         elif job["analysis_id"] == "beta_comparison":
             summary, metric_rows = _run_beta_comparison_job(job, modules["beta_comparison"], runtime_item, output_path, figsize_inches, dpi)
+        elif job["analysis_id"] == "beta_model_compare":
+            summary, metric_rows = _run_beta_model_compare_job(
+                job,
+                modules["beta_comparison"],
+                runtime_item,
+                output_path,
+                figsize_inches,
+                dpi,
+                variant_mode="beta_only",
+            )
+        elif job["analysis_id"] == "beta_model_compare_raw_plus_beta":
+            summary, metric_rows = _run_beta_model_compare_job(
+                job,
+                modules["beta_comparison"],
+                runtime_item,
+                output_path,
+                figsize_inches,
+                dpi,
+                variant_mode="raw_plus_beta",
+            )
         elif job["analysis_id"] == "beta_multi_point_to_point":
             summary, metric_rows = _run_beta_multi_point_job(
                 job,

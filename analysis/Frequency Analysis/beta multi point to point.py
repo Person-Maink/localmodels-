@@ -7,6 +7,7 @@ import numpy as np
 
 from _path_setup import PROJECT_ROOT  # ensures root imports work
 import FILENAME as CONFIG
+from analysis_metrics import subset_neighbor_pairs
 
 
 THIS_DIR = Path(__file__).resolve().parent
@@ -29,10 +30,6 @@ def _load_beta_comparison_module():
     return _load_module("beta_comparison_module", THIS_DIR / "beta comparison.py")
 
 
-def _load_beta_average_module():
-    return _load_module("beta_average_module", THIS_DIR.parent / "3D Visualization " / "beta average.py")
-
-
 def _load_multi_point_module():
     return _load_module("multi_point_module", THIS_DIR / "Multi Point to Point.py")
 
@@ -44,7 +41,6 @@ def _hand_name_from_idx(hand_idx):
 def run_beta_multi_point_analysis(config_overrides=None):
     overrides = config_overrides or {}
     beta_comparison_module = _load_beta_comparison_module()
-    beta_average_module = _load_beta_average_module()
     multi_point_module = _load_multi_point_module()
 
     hand_idx = int(overrides.get("hand_idx", CONFIG.HAND_IDX))
@@ -70,20 +66,19 @@ def run_beta_multi_point_analysis(config_overrides=None):
     if not mano_pairs:
         raise ValueError("No MANO pairs resolved for beta multi-point analysis.")
 
-    actual_frames = beta_comparison_module._load_actual_model_frames(source_path)
-    beta_average_bundle = beta_average_module.load_average_beta_frames_for_source(
-        source_path=source_path,
-        mano_model_path=str(mano_right_path),
-        wrist_ground=False,
-        hand=_hand_name_from_idx(hand_idx),
+    actual_frames, beta_average_frames, beta_average_bundle = beta_comparison_module._load_variant_frame_sets(
+        str(source_path),
+        mano_right_path=str(mano_right_path),
+        hand_idx=hand_idx,
     )
-    beta_average_frames = beta_average_bundle["frames"]
 
     entries = []
     for pair in mano_pairs:
         multi_point_module._validate_mano_pair(n_verts, pair)
         region_a = beta_comparison_module._build_region_indices(pair[0], adjacency, n_neighbors)
         region_b = beta_comparison_module._build_region_indices(pair[1], adjacency, n_neighbors)
+        region_vertices = np.asarray(sorted(set(region_a.tolist()) | set(region_b.tolist())), dtype=np.int32)
+        coherence_pairs = subset_neighbor_pairs(region_vertices.tolist(), adjacency)
         pair_label = multi_point_module._pair_label("model", pair)
 
         for variant_label, frames in (
@@ -96,6 +91,8 @@ def run_beta_multi_point_analysis(config_overrides=None):
                 region_a,
                 region_b,
                 f"{variant_label} {pair_label}",
+                region_vertices=region_vertices,
+                coherence_pairs=coherence_pairs,
             )
             entries.append(
                 {

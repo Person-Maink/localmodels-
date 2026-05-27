@@ -237,6 +237,10 @@ export function AnalysisPage({ modes, selectedSources }: AnalysisPageProps) {
                       <th>Label</th>
                       <th>Hand Used</th>
                       <th>Dominant Hz</th>
+                      <th>Peak Ratio</th>
+                      <th>Peak Sharpness</th>
+                      <th>Temporal Noise</th>
+                      <th>Spatial Coherence</th>
                       <th>RMS</th>
                       <th>Samples</th>
                     </tr>
@@ -247,6 +251,10 @@ export function AnalysisPage({ modes, selectedSources }: AnalysisPageProps) {
                         <td>{entry.label}</td>
                         <td>{entry.hand_used ?? "-"}</td>
                         <td>{entry.dominant_hz?.toFixed(3) ?? "-"}</td>
+                        <td>{entry.peak_ratio?.toExponential(3) ?? "-"}</td>
+                        <td>{entry.peak_sharpness?.toExponential(3) ?? "-"}</td>
+                        <td>{entry.temporal_noise?.toExponential(3) ?? "-"}</td>
+                        <td>{entry.spatial_coherence == null ? "-" : entry.spatial_coherence.toExponential(3)}</td>
                         <td>{entry.rms_amplitude?.toExponential(3) ?? "-"}</td>
                         <td>{entry.sample_count ?? "-"}</td>
                       </tr>

@@ -6,10 +6,11 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from scipy.signal import butter, filtfilt, welch
 
 from _path_setup import PROJECT_ROOT  # ensures root imports work
 import FILENAME as CONFIG
+from analysis_metrics import finish_motion_analysis, subset_neighbor_pairs
+from analysis_plotting import build_time_psd_metrics_figure
 from mano_pickle import load_mano_pickle
 from npy_io import iter_model_frame_records
 
@@ -34,9 +35,9 @@ LINE_STYLES = ("-", "--", "-.", ":", (0, (6, 2)), (0, (3, 1, 1, 1)))
 
 
 @lru_cache(maxsize=1)
-def _load_j_regressor(mano_right_path):
+def _load_mano_assets(mano_right_path):
     mano = load_mano_pickle(mano_right_path)
-    return mano["J_regressor"]
+    return mano["J_regressor"], np.asarray(mano["f"], dtype=np.int32)
 
 
 def _normalize_optional_path(value):
@@ -96,45 +97,22 @@ def _infer_label(path_text, fallback):
     return fallback
 
 
-def _legend_with_peak(label, dominant):
-    return f"{label} ({dominant:.2f} Hz)"
+def _build_vertex_adjacency(total_verts, tri_faces):
+    adjacency = [set() for _ in range(total_verts)]
+    for tri in tri_faces:
+        a, b, c = int(tri[0]), int(tri[1]), int(tri[2])
+        adjacency[a].add(b)
+        adjacency[a].add(c)
+        adjacency[b].add(a)
+        adjacency[b].add(c)
+        adjacency[c].add(a)
+        adjacency[c].add(b)
+    return [sorted(list(neighbors)) for neighbors in adjacency]
 
 
-def _bandpass_filter(signal):
-    nyq = 0.5 * FPS
-
-    b_high, a_high = butter(FILTER_ORDER, HIGHPASS_CUTOFF / nyq, btype="high")
-    signal = filtfilt(b_high, a_high, signal, axis=0)
-
-    b_low, a_low = butter(FILTER_ORDER, LOWPASS_CUTOFF / nyq, btype="low")
-    signal = filtfilt(b_low, a_low, signal, axis=0)
-
-    return signal
-
-
-def _finish_analysis(centroids):
-    centroids = np.stack(centroids, axis=0)
-    filtered = _bandpass_filter(centroids)
-    magnitude = np.linalg.norm(filtered, axis=1)
-    magnitude -= magnitude.mean()
-
-    freqs, psd = welch(magnitude, fs=FPS, nperseg=min(512, len(magnitude)))
-    dominant = float(freqs[np.argmax(psd)])
-    rms = float(np.sqrt(np.mean(magnitude**2)))
-
-    return {
-        "centroids": centroids,
-        "filtered": filtered,
-        "magnitude": magnitude,
-        "freqs": freqs,
-        "psd": psd,
-        "dominant": dominant,
-        "rms": rms,
-    }
-
-
-def _analyze_model(root_dir, hand_idx, wrist_joint_idx, j_reg):
+def _analyze_model(root_dir, hand_idx, wrist_joint_idx, j_reg, coherence_pairs):
     centroids = []
+    coherence_frames = []
     total_records = 0
     matched_records = 0
 
@@ -162,6 +140,7 @@ def _analyze_model(root_dir, hand_idx, wrist_joint_idx, j_reg):
 
         merged = np.concatenate(centered_meshes, axis=0)
         centroids.append(merged.mean(axis=0))
+        coherence_frames.append(np.mean(np.stack(centered_meshes, axis=0), axis=0))
 
     if not centroids:
         raise ValueError(
@@ -169,7 +148,17 @@ def _analyze_model(root_dir, hand_idx, wrist_joint_idx, j_reg):
             f"Loaded {total_records} records, matched {matched_records}."
         )
 
-    return _finish_analysis(centroids)
+    return finish_motion_analysis(
+        centroids,
+        fps=FPS,
+        filter_kind="bandpass",
+        filter_order=FILTER_ORDER,
+        band_low_hz=HIGHPASS_CUTOFF,
+        band_high_hz=LOWPASS_CUTOFF,
+        psd_nperseg=512,
+        coherence_positions=np.stack(coherence_frames, axis=0),
+        coherence_pairs=coherence_pairs,
+    )
 
 
 def _analyze_mediapipe(csv_path, hand_idx):
@@ -189,13 +178,21 @@ def _analyze_mediapipe(csv_path, hand_idx):
     if not centroids:
         raise ValueError(f"No usable MediaPipe records in '{csv_path}' for hand='{hand_label}'.")
 
-    return _finish_analysis(centroids)
+    return finish_motion_analysis(
+        centroids,
+        fps=FPS,
+        filter_kind="bandpass",
+        filter_order=FILTER_ORDER,
+        band_low_hz=HIGHPASS_CUTOFF,
+        band_high_hz=LOWPASS_CUTOFF,
+        psd_nperseg=512,
+    )
 
 
-def _analyze_source(source_path, hand_idx, wrist_joint_idx, j_reg):
+def _analyze_source(source_path, hand_idx, wrist_joint_idx, j_reg, coherence_pairs):
     if _source_kind(source_path) == "mediapipe":
         return _analyze_mediapipe(source_path, hand_idx)
-    return _analyze_model(source_path, hand_idx, wrist_joint_idx, j_reg)
+    return _analyze_model(source_path, hand_idx, wrist_joint_idx, j_reg, coherence_pairs)
 
 
 def _resolve_entries(overrides):
@@ -264,21 +261,24 @@ def run_compare_analysis(config_overrides=None):
     wrist_joint_idx = int(overrides.get("wrist_joint_idx", CONFIG.WRIST_JOINT_IDX))
 
     j_reg = None
+    coherence_pairs = None
     if any(entry["kind"] == "model" for entry in entries):
         try:
-            j_reg = _load_j_regressor(str(CONFIG.MANO_RIGHT_PATH))
+            j_reg, faces = _load_mano_assets(str(CONFIG.MANO_RIGHT_PATH))
         except ModuleNotFoundError as exc:
             raise ModuleNotFoundError(
                 "Model analysis needs MANO pickle dependencies (missing module while loading MANO_RIGHT_PATH). "
                 "Install the missing module (commonly 'chumpy') or switch sources to MediaPipe CSV inputs."
             ) from exc
+        adjacency = _build_vertex_adjacency(int(j_reg.shape[1]), faces)
+        coherence_pairs = subset_neighbor_pairs(range(int(j_reg.shape[1])), adjacency)
 
     resolved_entries = []
     for entry in entries:
         resolved_entries.append(
             {
                 **entry,
-                "result": _analyze_source(entry["source"], hand_idx, wrist_joint_idx, j_reg),
+                "result": _analyze_source(entry["source"], hand_idx, wrist_joint_idx, j_reg, coherence_pairs),
             }
         )
 
@@ -291,65 +291,19 @@ def run_compare_analysis(config_overrides=None):
 
 
 def build_compare_figure(analysis_data, figsize_inches=(13, 11), dpi=100):
-    fig, axes = plt.subplots(3, 1, figsize=figsize_inches, dpi=dpi)
-    axis_labels = ["x", "y", "z"]
-
-    for i, entry in enumerate(analysis_data["entries"]):
-        label = entry["label"]
-        result = entry["result"]
-        label_with_peak = _legend_with_peak(label, result["dominant"])
-
-        style = LINE_STYLES[i % len(LINE_STYLES)]
-        color = f"C{i}"
-        t = np.arange(len(result["magnitude"])) / FPS
-
-        axes[0].plot(
-            t,
-            result["magnitude"],
-            style,
-            color=color,
-            lw=1.5,
-            label=label_with_peak,
-        )
-
-        axes[1].semilogy(
-            result["freqs"],
-            result["psd"],
-            style,
-            color=color,
-            lw=1.5,
-            label=label_with_peak,
-        )
-        axes[1].axvline(result["dominant"], color=color, ls=":")
-
-        for axis_i, axis_name in enumerate(axis_labels):
-            axes[2].plot(
-                t,
-                result["filtered"][:, axis_i],
-                style,
-                color=color,
-                lw=1.2,
-                label=f"{label} {axis_name} ({result['dominant']:.2f} Hz)",
-            )
-
-    axes[0].set_title("Hand displacement over time")
-    axes[0].set_ylabel("Displacement magnitude")
-    axes[0].legend()
-    axes[0].grid(True)
-
-    axes[1].set_title("Frequency spectrum (PSD)")
-    axes[1].set_ylabel("Power")
-    axes[1].legend()
-    axes[1].grid(True)
-
-    axes[2].set_title("Per-axis filtered displacement")
-    axes[2].set_xlabel("Time (s)")
-    axes[2].set_ylabel("Displacement")
-    axes[2].legend(ncol=3)
-    axes[2].grid(True)
-
-    fig.tight_layout()
-    return fig
+    return build_time_psd_metrics_figure(
+        analysis_data["entries"],
+        fps=FPS,
+        title_time="Hand displacement over time",
+        title_psd="Frequency spectrum (PSD)",
+        figsize_inches=figsize_inches,
+        dpi=dpi,
+        style_resolver=lambda index, _entry: {
+            "color": f"C{index % 10}",
+            "linestyle": LINE_STYLES[index % len(LINE_STYLES)],
+            "linewidth": 1.5,
+        },
+    )
 
 
 def main():

@@ -6,10 +6,10 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.signal import butter, filtfilt, welch
 
 from _path_setup import PROJECT_ROOT  # ensures root imports work
 import FILENAME as CONFIG
+from analysis_metrics import finish_motion_analysis, subset_neighbor_pairs
 from mano_pickle import load_mano_pickle
 from npy_io import discover_frame_files, resolve_model_record_root
 
@@ -168,44 +168,6 @@ def _build_region_indices(seed, adjacency, n_neighbors):
     return np.asarray([seed] + selected, dtype=np.int32)
 
 
-def _lowpass_filter(signal, fs, cutoff, order):
-    nyq = 0.5 * fs
-    b, a = butter(order, cutoff / nyq, btype="low")
-    return filtfilt(b, a, signal, axis=0)
-
-
-def _finish_analysis(trajectory):
-    trajectory = np.stack(trajectory, axis=0)
-    filtered = _lowpass_filter(
-        trajectory,
-        fs=FPS,
-        cutoff=LOWPASS_CUTOFF,
-        order=FILTER_ORDER,
-    )
-
-    magnitude = np.linalg.norm(filtered, axis=1)
-    magnitude -= magnitude.mean()
-
-    freqs, psd = welch(
-        magnitude,
-        fs=FPS,
-        nperseg=min(256, len(magnitude)),
-    )
-
-    dominant_freq = float(freqs[np.argmax(psd)])
-    rms_amplitude = float(np.sqrt(np.mean(magnitude**2)))
-
-    return {
-        "trajectory": trajectory,
-        "filtered": filtered,
-        "magnitude": magnitude,
-        "freqs": freqs,
-        "psd": psd,
-        "dominant": dominant_freq,
-        "rms": rms_amplitude,
-    }
-
-
 def _color_for_hand(is_right):
     return RIGHT_COLOR if int(is_right) == 1 else LEFT_COLOR
 
@@ -295,8 +257,9 @@ def _collect_frames(source_path, j_reg, hand_idx, wrist_joint_idx, n_verts):
     return frames
 
 
-def _analyze_frames(frames, hand_idx, region_a, region_b):
+def _analyze_frames(frames, hand_idx, region_a, region_b, region_vertices, coherence_pairs):
     trajectory = []
+    coherence_frames = []
     for _, frame_hands in frames:
         selected = [
             hand["verts_centered"] for hand in frame_hands if int(hand["right"]) == int(hand_idx)
@@ -311,11 +274,21 @@ def _analyze_frames(frames, hand_idx, region_a, region_b):
             frame_diffs.append(centroid_a - centroid_b)
 
         trajectory.append(np.mean(np.stack(frame_diffs, axis=0), axis=0))
+        coherence_frames.append(np.mean(np.stack([verts[region_vertices] for verts in selected], axis=0), axis=0))
 
     if not trajectory:
         raise RuntimeError("No usable frames remained after handedness filtering.")
 
-    return _finish_analysis(trajectory)
+    return finish_motion_analysis(
+        trajectory,
+        fps=FPS,
+        filter_kind="lowpass",
+        filter_order=FILTER_ORDER,
+        lowpass_cutoff_hz=LOWPASS_CUTOFF,
+        psd_nperseg=256,
+        coherence_positions=np.stack(coherence_frames, axis=0),
+        coherence_pairs=coherence_pairs,
+    )
 
 
 def build_camera_space_figure(entries, source_label, figsize_inches=(14, 9), dpi=100):
@@ -451,13 +424,15 @@ def run_camera_space_frequency_analysis(source_path, hand_idx, wrist_joint_idx, 
 
         region_a = _build_region_indices(vertex_a, adjacency, n_neighbors)
         region_b = _build_region_indices(vertex_b, adjacency, n_neighbors)
+        region_vertices = np.asarray(sorted(set(region_a.tolist()) | set(region_b.tolist())), dtype=np.int32)
+        coherence_pairs = subset_neighbor_pairs(region_vertices.tolist(), adjacency)
         entries.append(
             {
                 "pair": pair,
                 "pair_label": _pair_label(pair),
                 "region_a": region_a,
                 "region_b": region_b,
-                "result": _analyze_frames(frames, hand_idx, region_a, region_b),
+                "result": _analyze_frames(frames, hand_idx, region_a, region_b, region_vertices, coherence_pairs),
             }
         )
 

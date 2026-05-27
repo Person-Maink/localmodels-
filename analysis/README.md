@@ -59,13 +59,13 @@ These scripts generate time-series and frequency-domain plots for hand motion si
 
 - `Frequency Analysis/Compare.py`
   - Compares multiple sources in one figure.
-  - Plots displacement over time, power spectral density, and per-axis filtered displacement.
+  - Plots displacement over time, power spectral density, and a metrics table with frequency and stability summaries.
   - Default mode compares two sources.
   - `--all-models` compares WiLoR, WiLoR finetune, Hamba, DynHAMR, Stride, and MediaPipe together.
 
 - `Frequency Analysis/Point to Point.py`
   - Measures motion between two points or regions.
-  - Plots filtered region-difference displacement over time, frequency spectrum, and per-axis displacement.
+  - Plots filtered region-difference displacement over time, frequency spectrum, and a metrics table with frequency and stability summaries.
   - Default mode compares two sources.
   - `--all-models` compares all configured model families together.
 
