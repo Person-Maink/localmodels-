@@ -93,6 +93,10 @@ def _infer_label(root_dir, fallback):
     return fallback
 
 
+def _legend_with_peak(label, dominant):
+    return f"{label} ({dominant:.2f} Hz)"
+
+
 def _source_kind(path_text):
     path = Path(path_text)
     if path.suffix.lower() == ".csv":
@@ -454,12 +458,13 @@ def build_point_to_point_figure(analysis_data, figsize_inches=(12, 10), dpi=100)
     for i, entry in enumerate(analysis_data["entries"]):
         label = entry["label"]
         result = entry["result"]
+        label_with_peak = _legend_with_peak(label, result["dominant"])
 
         style = LINE_STYLES[i % len(LINE_STYLES)]
         color = f"C{i}"
         t = np.arange(len(result["magnitude"])) / FPS
 
-        axes[0].plot(t, result["magnitude"], style, color=color, lw=1.5, label=label)
+        axes[0].plot(t, result["magnitude"], style, color=color, lw=1.5, label=label_with_peak)
 
         axes[1].semilogy(
             result["freqs"],
@@ -467,7 +472,7 @@ def build_point_to_point_figure(analysis_data, figsize_inches=(12, 10), dpi=100)
             style,
             color=color,
             lw=1.5,
-            label=f"{label} ({result['dominant']:.2f} Hz)",
+            label=label_with_peak,
         )
         axes[1].axvline(result["dominant"], color=color, ls=":")
 
@@ -478,7 +483,7 @@ def build_point_to_point_figure(analysis_data, figsize_inches=(12, 10), dpi=100)
                 style,
                 color=color,
                 lw=1.2,
-                label=f"{label} {axis_name}",
+                label=f"{label} {axis_name} ({result['dominant']:.2f} Hz)",
             )
 
     axes[0].set_title("Filtered region-difference displacement over time")

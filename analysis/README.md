@@ -74,22 +74,29 @@ These scripts generate time-series and frequency-domain plots for hand motion si
   - Useful when you want one figure with several pairwise trajectories for the same clip.
   - Supports MANO pairs and MediaPipe pairs.
 
+- `Frequency Analysis/Point to Point Neighbor Sweep.py`
+  - Repeats point-to-point analysis while increasing the averaged MANO region size from 10 to 200 points.
+  - Plots how dominant frequency and RMS amplitude change as the averaging region grows.
+  - Supports model sources only.
+
 - `Frequency Analysis/WiLoR Camera Space.py`
   - Measures camera-space wrist/hand motion from a compatible saved model source.
-  - Works with WiLoR, WiLoR finetune, and Stride clip outputs.
+  - Works with WiLoR, WiLoR finetune, DynHAMR, and Stride clip outputs.
 
 - `Frequency Analysis/beta comparison.py`
   - Compares the raw model output against a sequence-average-beta reconstruction.
-  - Works with WiLoR, WiLoR finetune, and Stride clip outputs.
+  - Works with WiLoR, WiLoR finetune, DynHAMR, and Stride clip outputs.
 
 - `Frequency Analysis/Run All.py`
   - Batch runner that discovers all configured sources, schedules explicit analysis jobs, and saves figures plus CSV/JSON summaries.
   - Runs the following batch set:
     - `Compare.py`
     - `Point to Point.py`
+    - `Point to Point Neighbor Sweep.py`
     - `Multi Point to Point.py`
     - `WiLoR Camera Space.py`
     - `beta comparison.py`
+    - `beta multi point to point.py`
   - Saves SVG plots into per-analysis subfolders under `analysis_images/`.
   - Supports:
     - `--scenario` for filtering the scenario matrix
@@ -122,6 +129,11 @@ Each launcher corresponds to a specific clip and visualization type, for example
 - `launchers/wilor/<clip>/free`
 - `launchers/wilor/<clip>/wrist_grounding`
 - `launchers/wilor/<clip>/bounding_boxes`
+- `launchers/wilor/<clip>/beta_average`
+- `launchers/wilor/<clip>/wilor_camera_space`
+- `launchers/wilor/<clip>/beta_comparison`
+- `launchers/wilor/<clip>/beta_multi_point_to_point`
+- `launchers/wilor/<clip>/point_to_point_neighbor_sweep`
 - `launchers/stride/<clip>/camera`
 - `launchers/stride/<clip>/free`
 - `launchers/stride/<clip>/wrist_grounding`
@@ -129,9 +141,12 @@ Each launcher corresponds to a specific clip and visualization type, for example
 - `launchers/wilor_finetune/<experiment>/<clip>/camera`
 - `launchers/wilor_finetune/<experiment>/<clip>/free`
 - `launchers/wilor_finetune/<experiment>/<clip>/wrist_grounding`
+- `launchers/hamba/<clip>/point_to_point_neighbor_sweep`
 - `launchers/vipe/<clip>/camera`
 - `launchers/mediapipe/<clip>/free`
 - `launchers/whim_train/<clip>/camera`
+
+The model-family launcher sets are family-specific: the beta and camera-space launchers are created for WiLoR, WiLoR finetune, DynHAMR, and Stride clips, while the neighbor-sweep launcher is created for WiLoR, WiLoR finetune, Hamba, DynHAMR, and Stride clips.
 
 These launchers are the easiest way to open the same visualization repeatedly for different clips.
 
@@ -165,9 +180,11 @@ The frequency-analysis runner writes:
 
 - `analysis_images/compare/*.svg`
 - `analysis_images/point_to_point/*.svg`
+- `analysis_images/point_to_point_neighbor_sweep/*.svg`
 - `analysis_images/multi_point_to_point/*.svg`
 - `analysis_images/wilor_camera_space/*.svg`
 - `analysis_images/beta_comparison/*.svg`
+- `analysis_images/beta_multi_point_to_point/*.svg`
 - `metrics.csv`
 - `summary.json`
 

@@ -234,9 +234,13 @@ _DYNHAMR_COMP_CLIP = "me 2"
 
 # Stride root clip (comment in/out one line)
 _STRIDE_CLIP = "me 1"
+# _STRIDE_CLIP = "me 1_20"
+# _STRIDE_CLIP = "me 1_200"
 
 # Stride comparison clip (comment in/out one line)
-_STRIDE_COMP_CLIP = "me 1"
+_STRIDE_COMP_CLIP = "me 1_200"  # same underlying video, but visibly different under frequency analysis
+# _STRIDE_COMP_CLIP = "me 1_20"
+# _STRIDE_COMP_CLIP = "me 1"
 
 # ViPE pose file
 _VIPE_POSE_FILE = "120-2_clip_1.npz"

@@ -1,6 +1,7 @@
 import argparse
 import sys
 from pathlib import Path
+from typing import Optional
 
 import numpy as np
 
@@ -61,6 +62,22 @@ def _normalize_video_name(video_name: str) -> str:
     if name.lower().endswith(".mp4"):
         return Path(name).stem
     return name
+
+
+def _normalize_hand_filter(hand: Optional[str]) -> str:
+    if hand is None:
+        return "all"
+    normalized = str(hand).strip().lower()
+    if normalized not in {"all", "right", "left"}:
+        raise ValueError(f"Unsupported hand filter '{hand}'. Expected one of: all, right, left.")
+    return normalized
+
+
+def _hand_filter_to_right_value(hand: str) -> Optional[int]:
+    normalized = _normalize_hand_filter(hand)
+    if normalized == "all":
+        return None
+    return 1 if normalized == "right" else 0
 
 
 def _resolve_video_dir(wilor_root: Path, video_name: str) -> Path:
@@ -364,6 +381,7 @@ def load_average_beta_frames(
     mano_model_path: str,
     wrist_ground: bool = False,
     wrist_joint_idx: int = DEFAULT_WRIST_JOINT_IDX,
+    hand: str = "all",
 ):
     wilor_root_path = Path(wilor_root).resolve()
     video_dir = _resolve_video_dir(wilor_root_path, video_name)
@@ -372,6 +390,7 @@ def load_average_beta_frames(
         mano_model_path=mano_model_path,
         wrist_ground=wrist_ground,
         wrist_joint_idx=wrist_joint_idx,
+        hand=hand,
     )
     bundle["video_dir"] = video_dir
     return bundle
@@ -382,16 +401,25 @@ def load_average_beta_frames_for_source(
     mano_model_path: str,
     wrist_ground: bool = False,
     wrist_joint_idx: int = DEFAULT_WRIST_JOINT_IDX,
+    hand: str = "all",
 ):
     resolved_source, record_root = _resolve_model_source_path(source_path)
     mano = _load_mano_model(mano_model_path)
+    hand_filter = _normalize_hand_filter(hand)
+    required_right = _hand_filter_to_right_value(hand_filter)
 
     records = []
     for _, path in discover_frame_files(record_root, frame_dirs_glob="frame_*", file_glob="*.npy"):
-        records.append(_extract_required_record(path, num_betas=mano["num_betas"]))
+        record = _extract_required_record(path, num_betas=mano["num_betas"])
+        if required_right is not None and int(record["right"]) != required_right:
+            continue
+        records.append(record)
 
     if not records:
-        raise RuntimeError(f"No compatible model records found under {record_root}")
+        if required_right is None:
+            raise RuntimeError(f"No compatible model records found under {record_root}")
+        requested_label = "right" if required_right == 1 else "left"
+        raise RuntimeError(f"No compatible {requested_label}-hand model records found under {record_root}")
 
     average_betas = np.stack([record["betas"] for record in records], axis=0).mean(axis=0)
     betas_batch = np.broadcast_to(average_betas[None], (len(records), average_betas.shape[0])).copy()
@@ -431,6 +459,7 @@ def load_average_beta_frames_for_source(
         "record_count": len(records),
         "wrist_ground": bool(wrist_ground),
         "wrist_joint_idx": int(wrist_joint_idx),
+        "hand": hand_filter,
     }
 
 
@@ -455,13 +484,7 @@ def _make_frame_actor(frame_records, mano, vedo):
     return sum(actors[1:], actors[0])
 
 
-def run_vedo_viewer(
-    wilor_root: str,
-    video_name: str,
-    mano_model_path: str,
-    wrist_ground: bool = False,
-    wrist_joint_idx: int = DEFAULT_WRIST_JOINT_IDX,
-):
+def _run_vedo_viewer_from_bundle(bundle, source_label: str):
     try:
         import vedo
         from vedo.applications import AnimationPlayer
@@ -471,22 +494,19 @@ def run_vedo_viewer(
             "`pip install vedo vtk` or your project package manager."
         ) from exc
 
-    bundle = load_average_beta_frames(
-        wilor_root=wilor_root,
-        video_name=video_name,
-        mano_model_path=mano_model_path,
-        wrist_ground=wrist_ground,
-        wrist_joint_idx=wrist_joint_idx,
-    )
-    video_dir = bundle["video_dir"]
     mano = bundle["mano"]
     frames = bundle["frames"]
     average_betas = bundle["average_betas"]
     mode_label = "wrist-grounded" if bundle["wrist_ground"] else "camera-space"
+    hand_label = bundle["hand"]
 
-    print(f"Using WiLoR output: {video_dir}")
+    print(f"Using source: {source_label}")
     print(f"Using MANO file: {mano['path']}")
     print(f"Loaded {len(frames)} frame(s) and {bundle['record_count']} hand record(s)")
+    if hand_label == "all":
+        print("Displaying all handedness records found in the clip.")
+    else:
+        print(f"Displaying only {hand_label}-hand records.")
     if bundle["wrist_ground"]:
         print(
             "Displaying wrist-grounded meshes rebuilt with one sequence-average beta vector "
@@ -509,7 +529,10 @@ def run_vedo_viewer(
             plt.add(actor)
 
         if title_actor is not None:
-            title_actor.text(f"WiLoR {mode_label} meshes | sequence-average betas | frame {frame_id:06d}")
+            title_actor.text(
+                f"{source_label} | {hand_label} {mode_label} meshes | "
+                f"sequence-average betas | frame {frame_id:06d}"
+            )
 
         plt.render()
 
@@ -519,16 +542,16 @@ def run_vedo_viewer(
 
     frame_id0 = frames[0][0]
     title_actor = vedo.Text2D(
-        f"WiLoR {mode_label} meshes | sequence-average betas | frame {frame_id0:06d}",
+        f"{source_label} | {hand_label} {mode_label} meshes | sequence-average betas | frame {frame_id0:06d}",
         pos="top-middle",
         c="black",
         s=0.9,
     )
     note_actor = vedo.Text2D(
         (
-            "wrist-grounded; all records use the same averaged betas"
+            f"wrist-grounded; {hand_label} records use the same averaged betas"
             if bundle["wrist_ground"]
-            else "camera-space only; all records use the same averaged betas"
+            else f"camera-space only; {hand_label} records use the same averaged betas"
         ),
         pos="bottom-left",
         c="dimgray",
@@ -541,23 +564,65 @@ def run_vedo_viewer(
     plt.close()
 
 
+def run_vedo_viewer(
+    wilor_root: str,
+    video_name: str,
+    mano_model_path: str,
+    wrist_ground: bool = False,
+    wrist_joint_idx: int = DEFAULT_WRIST_JOINT_IDX,
+    hand: str = "all",
+):
+    bundle = load_average_beta_frames(
+        wilor_root=wilor_root,
+        video_name=video_name,
+        mano_model_path=mano_model_path,
+        wrist_ground=wrist_ground,
+        wrist_joint_idx=wrist_joint_idx,
+        hand=hand,
+    )
+    _run_vedo_viewer_from_bundle(bundle, source_label=str(bundle["video_dir"]))
+
+
+def run_vedo_viewer_for_source(
+    source_path,
+    mano_model_path: str,
+    wrist_ground: bool = False,
+    wrist_joint_idx: int = DEFAULT_WRIST_JOINT_IDX,
+    hand: str = "all",
+):
+    bundle = load_average_beta_frames_for_source(
+        source_path=source_path,
+        mano_model_path=mano_model_path,
+        wrist_ground=wrist_ground,
+        wrist_joint_idx=wrist_joint_idx,
+        hand=hand,
+    )
+    _run_vedo_viewer_from_bundle(bundle, source_label=str(bundle["source_path"]))
+
+
 def main():
     parser = argparse.ArgumentParser(
         description=(
-            "Interactive vedo viewer for saved WiLoR meshes that rebuilds every hand with a single "
+            "Interactive vedo viewer for a compatible saved model source that rebuilds every hand with a single "
             "sequence-average beta vector while keeping each frame's MANO pose and camera translation."
         )
     )
     parser.add_argument(
+        "--source",
+        type=str,
+        default=None,
+        help="Direct path to a compatible model source. This can be a mesh cache directory or a stride clip root.",
+    )
+    parser.add_argument(
         "--wilor_root",
         type=str,
-        default=str(REPO_ROOT / "outputs" / "wilor"),
-        help="Root directory containing per-video WiLoR outputs.",
+        default=str(REPO_ROOT / "outputs" / "stride"),
+        help="Root directory containing per-video WiLoR outputs when --source is not provided.",
     )
     parser.add_argument(
         "--video",
         type=str,
-        default="me 4",
+        default="clip_1",
         help="Video filename or stem. '.mp4' is stripped to match the WiLoR output folder name.",
     )
     parser.add_argument(
@@ -571,14 +636,29 @@ def main():
         default=True,
         help="Subtract the wrist joint from each reconstructed hand before visualization.",
     )
+    parser.add_argument(
+        "--hand",
+        choices=["all", "right", "left"],
+        default="all",
+        help="Which handedness to keep when averaging betas and rendering frames.",
+    )
     args = parser.parse_args()
 
-    run_vedo_viewer(
-        wilor_root=args.wilor_root,
-        video_name=args.video,
-        mano_model_path=args.mano_model_path,
-        wrist_ground=args.wrist_ground,
-    )
+    if args.source is not None:
+        run_vedo_viewer_for_source(
+            source_path=args.source,
+            mano_model_path=args.mano_model_path,
+            wrist_ground=args.wrist_ground,
+            hand=args.hand,
+        )
+    else:
+        run_vedo_viewer(
+            wilor_root=args.wilor_root,
+            video_name=args.video,
+            mano_model_path=args.mano_model_path,
+            wrist_ground=args.wrist_ground,
+            hand=args.hand,
+        )
 
 
 if __name__ == "__main__":

@@ -21,13 +21,65 @@ import FILENAME as CONFIG
 
 THIS_DIR = Path(__file__).resolve().parent
 COMP_SUFFIXES = ("_amplified_modified", "_amplified", "_modified")
-PAIRWISE_ANALYSES = ("compare", "point_to_point", "multi_point_to_point")
-SINGLE_SOURCE_ANALYSES = ("wilor_camera_space", "beta_comparison")
+WILOR_FINETUNE_EXPERIMENT_ALIASES = {
+    "main_static": "main_static_finetuning",
+    "main_learnable": "main_learnable_finetnuing",
+    "lora": "lora_finetuning",
+}
+SELECTED_WILOR_FINETUNE_ALIASES = (
+    "main_static",
+    "main_learnable",
+    "lora",
+)
+
+
+def _dedupe_preserve_order(values):
+    ordered = []
+    seen = set()
+    for value in values:
+        if value in seen:
+            continue
+        seen.add(value)
+        ordered.append(value)
+    return tuple(ordered)
+
+
+def _wilor_finetune_pool_names(alias):
+    return f"wilor_finetune_{alias}_all", f"wilor_finetune_{alias}_comp"
+
+
+def _wilor_finetune_all_models_scenario_id(alias):
+    return f"all_models_with_{alias}"
+
+
+def _selected_wilor_finetune_all_models_scenarios(selected_aliases):
+    scenarios = []
+    for alias in _dedupe_preserve_order(selected_aliases):
+        alias_pool_name, _ = _wilor_finetune_pool_names(alias)
+        scenarios.append(
+            (
+                _wilor_finetune_all_models_scenario_id(alias),
+                ("wilor_all", alias_pool_name, "hamba_all", "dynhamr_all", "stride_all", "mediapipe_all"),
+            )
+        )
+    return tuple(scenarios)
+
+
+FINETUNE_ALL_MODEL_SCENARIOS = _selected_wilor_finetune_all_models_scenarios(SELECTED_WILOR_FINETUNE_ALIASES)
+PAIRWISE_ANALYSES = (
+    "compare",
+    "point_to_point",
+    "point_to_point_neighbor_sweep",
+    "multi_point_to_point",
+)
+SINGLE_SOURCE_ANALYSES = ("wilor_camera_space", "beta_comparison", "beta_multi_point_to_point")
 ANALYSIS_IDS = PAIRWISE_ANALYSES + SINGLE_SOURCE_ANALYSES
 ANALYSIS_FOLDERS = {analysis_id: analysis_id for analysis_id in ANALYSIS_IDS}
+MODEL_ONLY_PAIRWISE_ANALYSES = {"point_to_point_neighbor_sweep"}
 SINGLE_SOURCE_ANALYSIS_FAMILIES = {
-    "wilor_camera_space": {"wilor", "wilor_finetune", "stride"},
-    "beta_comparison": {"wilor", "wilor_finetune", "stride"},
+    "wilor_camera_space": {"wilor", "wilor_finetune", "dynhamr", "stride"},
+    "beta_comparison": {"wilor", "wilor_finetune", "dynhamr", "stride"},
+    "beta_multi_point_to_point": {"wilor", "wilor_finetune", "dynhamr", "stride"},
 }
 
 SCENARIOS = (
@@ -69,6 +121,7 @@ ALL_MODELS_SCENARIO_ID = "wilor_vs_hamba_vs_dynhamr_vs_stride_vs_mediapipe"
 SCENARIO_OPTIONS = (
     tuple(scenario_id for scenario_id, _, _ in SCENARIOS)
     + tuple(scenario_id for scenario_id, _ in THREE_MODEL_SCENARIOS)
+    + tuple(scenario_id for scenario_id, _ in FINETUNE_ALL_MODEL_SCENARIOS)
     + (ALL_MODELS_SCENARIO_ID,)
 )
 SAME_CLIP_COMP_SCENARIOS = {
@@ -134,6 +187,12 @@ class SingleSourceItem:
     source_item_id: str
 
 
+@dataclass(frozen=True)
+class FinetuneSelection:
+    alias: str
+    experiment: str
+
+
 def _load_module(module_name, file_path):
     spec = importlib.util.spec_from_file_location(module_name, str(file_path))
     if spec is None or spec.loader is None:
@@ -150,9 +209,17 @@ def _get_analysis_modules():
         _ANALYSIS_MODULES = {
             "compare": _load_module("freq_compare", THIS_DIR / "Compare.py"),
             "point_to_point": _load_module("freq_point_to_point", THIS_DIR / "Point to Point.py"),
+            "point_to_point_neighbor_sweep": _load_module(
+                "freq_point_to_point_neighbor_sweep",
+                THIS_DIR / "Point to Point Neighbor Sweep.py",
+            ),
             "multi_point_to_point": _load_module("freq_multi_point_to_point", THIS_DIR / "Multi Point to Point.py"),
             "wilor_camera_space": _load_module("freq_wilor_camera_space", THIS_DIR / "WiLoR Camera Space.py"),
             "beta_comparison": _load_module("freq_beta_comparison", THIS_DIR / "beta comparison.py"),
+            "beta_multi_point_to_point": _load_module(
+                "freq_beta_multi_point_to_point",
+                THIS_DIR / "beta multi point to point.py",
+            ),
         }
     return _ANALYSIS_MODULES
 
@@ -284,31 +351,67 @@ def _discover_model_family(outputs_root, family):
     return items
 
 
-def _discover_experiment_model_family(outputs_root, family):
+def _discover_experiment_model_family(outputs_root, family, experiments=None):
     family_root = Path(outputs_root) / family
     items = []
     if not family_root.exists():
         return items
 
-    for mesh_dir in sorted(family_root.glob("*/*/meshes"), key=lambda path: (path.parent.parent.name, path.parent.name)):
-        if not mesh_dir.is_dir():
+    if experiments is None:
+        experiment_names = [
+            experiment_root.name
+            for experiment_root in sorted(family_root.iterdir(), key=lambda path: path.name)
+            if experiment_root.is_dir()
+        ]
+    else:
+        experiment_names = [str(experiment) for experiment in experiments]
+
+    for experiment in experiment_names:
+        experiment_root = family_root / experiment
+        if not experiment_root.is_dir():
             continue
 
-        experiment = mesh_dir.parent.parent.name
-        clip_id = mesh_dir.parent.name
-        items.append(
-            SourceItem(
-                family=family,
-                kind="model",
-                clip_id=clip_id,
-                display_id=f"{experiment}/{clip_id}",
-                match_id=_match_id(clip_id),
-                path=str(mesh_dir.resolve()),
-                is_comp=_is_comp_clip(clip_id),
+        for mesh_dir in sorted(experiment_root.glob("*/meshes"), key=lambda path: path.parent.name):
+            if not mesh_dir.is_dir():
+                continue
+
+            clip_id = mesh_dir.parent.name
+            items.append(
+                SourceItem(
+                    family=family,
+                    kind="model",
+                    clip_id=clip_id,
+                    display_id=f"{experiment}/{clip_id}",
+                    match_id=_match_id(clip_id),
+                    path=str(mesh_dir.resolve()),
+                    is_comp=_is_comp_clip(clip_id),
+                )
             )
-        )
 
     return items
+
+
+def _resolve_selected_wilor_finetune_experiments(outputs_root, selected_aliases=None):
+    aliases = SELECTED_WILOR_FINETUNE_ALIASES if selected_aliases is None else tuple(selected_aliases)
+    family_root = Path(outputs_root) / "wilor_finetune"
+    resolved = []
+
+    for raw_alias in _dedupe_preserve_order(aliases):
+        alias = str(raw_alias).strip()
+        experiment = WILOR_FINETUNE_EXPERIMENT_ALIASES.get(alias)
+        if experiment is None:
+            valid = ", ".join(sorted(WILOR_FINETUNE_EXPERIMENT_ALIASES))
+            raise ValueError(f"Unknown WiLoR finetune alias '{alias}'. Valid aliases: {valid}")
+
+        experiment_root = family_root / experiment
+        if not experiment_root.is_dir():
+            raise ValueError(
+                f"Selected WiLoR finetune alias '{alias}' maps to missing experiment folder: {experiment_root}"
+            )
+
+        resolved.append(FinetuneSelection(alias=alias, experiment=experiment))
+
+    return tuple(resolved)
 
 
 def _discover_mediapipe(outputs_root):
@@ -394,21 +497,23 @@ def _build_single_source_id(source):
     return f"single_source__{source.family}__{_slug(_source_display_id(source))}__{digest}"
 
 
-def _build_source_pools(outputs_root):
+def _build_source_pools(outputs_root, selected_wilor_finetune_aliases=None):
+    finetune_selections = _resolve_selected_wilor_finetune_experiments(outputs_root, selected_wilor_finetune_aliases)
     hamba_all = _discover_model_family(outputs_root, "hamba")
     wilor_all = _discover_model_family(outputs_root, "wilor")
-    wilor_finetune_all = _discover_experiment_model_family(outputs_root, "wilor_finetune")
     dynhamr_all = _discover_model_family(outputs_root, "dynhamr")
     stride_all = _discover_stride(outputs_root)
     mediapipe_all = _discover_mediapipe(outputs_root)
+
+    wilor_finetune_all = []
+    wilor_finetune_comp = []
+    wilor_finetune_discovery = {}
 
     pools = {
         "hamba_all": hamba_all,
         "hamba_comp": [item for item in hamba_all if item.is_comp],
         "wilor_all": wilor_all,
         "wilor_comp": [item for item in wilor_all if item.is_comp],
-        "wilor_finetune_all": wilor_finetune_all,
-        "wilor_finetune_comp": [item for item in wilor_finetune_all if item.is_comp],
         "dynhamr_all": dynhamr_all,
         "dynhamr_comp": [item for item in dynhamr_all if item.is_comp],
         "stride_all": stride_all,
@@ -417,19 +522,41 @@ def _build_source_pools(outputs_root):
         "mediapipe_comp": [item for item in mediapipe_all if item.is_comp],
     }
 
+    for selection in finetune_selections:
+        pool_all_name, pool_comp_name = _wilor_finetune_pool_names(selection.alias)
+        selection_items = _discover_experiment_model_family(
+            outputs_root,
+            "wilor_finetune",
+            experiments=(selection.experiment,),
+        )
+        selection_comp_items = [item for item in selection_items if item.is_comp]
+        pools[pool_all_name] = selection_items
+        pools[pool_comp_name] = selection_comp_items
+        wilor_finetune_all.extend(selection_items)
+        wilor_finetune_comp.extend(selection_comp_items)
+        wilor_finetune_discovery[selection.alias] = {
+            "experiment": selection.experiment,
+            "all": len(selection_items),
+            "comp": len(selection_comp_items),
+        }
+
+    pools["wilor_finetune_all"] = wilor_finetune_all
+    pools["wilor_finetune_comp"] = wilor_finetune_comp
+
     discovery = {
         "hamba": {"all": len(pools["hamba_all"]), "comp": len(pools["hamba_comp"])},
         "wilor": {"all": len(pools["wilor_all"]), "comp": len(pools["wilor_comp"])},
         "wilor_finetune": {
             "all": len(pools["wilor_finetune_all"]),
             "comp": len(pools["wilor_finetune_comp"]),
+            "aliases": wilor_finetune_discovery,
         },
         "dynhamr": {"all": len(pools["dynhamr_all"]), "comp": len(pools["dynhamr_comp"])},
         "stride": {"all": len(pools["stride_all"]), "comp": len(pools["stride_comp"])},
         "mediapipe": {"all": len(pools["mediapipe_all"]), "comp": len(pools["mediapipe_comp"])},
     }
 
-    return pools, discovery
+    return pools, discovery, finetune_selections
 
 
 def _build_multi_model_groups(scenario_id, pool_names, pools):
@@ -462,10 +589,33 @@ def _build_multi_model_groups(scenario_id, pool_names, pools):
     return groups
 
 
-def _build_scenarios_and_items(pools, requested_scenarios=None, include_all_models=False):
+def _build_multi_model_scenario_row(scenario_id, pool_names, pools, item_count_total, enabled):
+    pool_names = tuple(pool_names)
+    pool_counts = [len(pools[pool_name]) for pool_name in pool_names]
+    row = {
+        "scenario_id": scenario_id,
+        "item_kind": "multi_models",
+        "item_count_total": int(item_count_total),
+        "group_size": len(pool_names),
+        "enabled": bool(enabled),
+        "source_pools": list(pool_names),
+        "source_counts": pool_counts,
+    }
+    for index, (pool_name, pool_count) in enumerate(zip(pool_names, pool_counts)):
+        slot = chr(ord("a") + index)
+        row[f"source_{slot}_pool"] = pool_name
+        row[f"source_{slot}_count"] = pool_count
+    return row
+
+
+def _build_scenarios_and_items(pools, finetune_selections, requested_scenarios=None, include_all_models=False):
+    finetune_all_model_scenarios = _selected_wilor_finetune_all_models_scenarios(
+        [selection.alias for selection in finetune_selections]
+    )
     allowed = {scenario_id for scenario_id, _, _ in SCENARIOS}
     if include_all_models:
         allowed.update(scenario_id for scenario_id, _ in THREE_MODEL_SCENARIOS)
+        allowed.update(scenario_id for scenario_id, _ in finetune_all_model_scenarios)
         allowed.add(ALL_MODELS_SCENARIO_ID)
 
     if requested_scenarios:
@@ -603,21 +753,7 @@ def _build_scenarios_and_items(pools, requested_scenarios=None, include_all_mode
     if include_all_models:
         for scenario_id, pool_names in THREE_MODEL_SCENARIOS:
             groups = _build_multi_model_groups(scenario_id, pool_names, pools)
-            scenario_rows.append(
-                {
-                    "scenario_id": scenario_id,
-                    "source_a_pool": pool_names[0],
-                    "source_b_pool": pool_names[1],
-                    "source_c_pool": pool_names[2],
-                    "source_a_count": len(pools[pool_names[0]]),
-                    "source_b_count": len(pools[pool_names[1]]),
-                    "source_c_count": len(pools[pool_names[2]]),
-                    "item_kind": "multi_models",
-                    "item_count_total": len(groups),
-                    "group_size": 3,
-                    "enabled": scenario_id in enabled,
-                }
-            )
+            scenario_rows.append(_build_multi_model_scenario_row(scenario_id, pool_names, pools, len(groups), scenario_id in enabled))
             if scenario_id in enabled:
                 multi_model_items.extend(groups)
 
@@ -627,33 +763,29 @@ def _build_scenarios_and_items(pools, requested_scenarios=None, include_all_mode
             pools,
         )
         scenario_rows.append(
-            {
-                "scenario_id": ALL_MODELS_SCENARIO_ID,
-                "source_a_pool": "wilor_all",
-                "source_b_pool": "hamba_all",
-                "source_c_pool": "dynhamr_all",
-                "source_d_pool": "stride_all",
-                "source_e_pool": "mediapipe_all",
-                "source_a_count": len(pools["wilor_all"]),
-                "source_b_count": len(pools["hamba_all"]),
-                "source_c_count": len(pools["dynhamr_all"]),
-                "source_d_count": len(pools["stride_all"]),
-                "source_e_count": len(pools["mediapipe_all"]),
-                "item_kind": "multi_models",
-                "item_count_total": len(all_groups),
-                "group_size": 5,
-                "enabled": ALL_MODELS_SCENARIO_ID in enabled,
-            }
+            _build_multi_model_scenario_row(
+                ALL_MODELS_SCENARIO_ID,
+                ("wilor_all", "hamba_all", "dynhamr_all", "stride_all", "mediapipe_all"),
+                pools,
+                len(all_groups),
+                ALL_MODELS_SCENARIO_ID in enabled,
+            )
         )
         if ALL_MODELS_SCENARIO_ID in enabled:
             multi_model_items.extend(all_groups)
+
+        for scenario_id, pool_names in finetune_all_model_scenarios:
+            groups = _build_multi_model_groups(scenario_id, pool_names, pools)
+            scenario_rows.append(_build_multi_model_scenario_row(scenario_id, pool_names, pools, len(groups), scenario_id in enabled))
+            if scenario_id in enabled:
+                multi_model_items.extend(groups)
 
     return scenario_rows, pairs, multi_model_items
 
 
 def _build_single_source_items(pools):
     single_source_items = []
-    for pool_name in ("wilor_all", "wilor_finetune_all", "stride_all"):
+    for pool_name in ("wilor_all", "wilor_finetune_all", "dynhamr_all", "stride_all"):
         for source in pools[pool_name]:
             single_source_items.append(
                 SingleSourceItem(
@@ -746,6 +878,49 @@ def _summarize_standard_entries(entries):
     return summarized
 
 
+def _make_neighbor_sweep_metric_rows(job, entries):
+    rows = []
+    for entry in entries:
+        for series_row in entry["series"]:
+            rows.append(
+                {
+                    "scenario": job["scenario_id"],
+                    "item_kind": job["item_kind"],
+                    "item_id": job["item_id"],
+                    "analysis": job["analysis_id"],
+                    "status": "success",
+                    "slot": f"{entry.get('slot', '')}:p{int(series_row['point_count'])}",
+                    "label": f"{entry['label']} ({int(series_row['point_count'])} pts)",
+                    "source": entry.get("source", ""),
+                    "kind": entry.get("kind", "model"),
+                    "dominant_hz": f"{float(series_row['dominant']):.8f}",
+                    "rms_amplitude": f"{float(series_row['rms']):.12f}",
+                    "num_samples": int(series_row["num_samples"]),
+                }
+            )
+    return rows
+
+
+def _summarize_neighbor_sweep_entries(entries):
+    summarized = []
+    for entry in entries:
+        for series_row in entry["series"]:
+            summarized.append(
+                {
+                    "slot": f"{entry.get('slot', '')}:p{int(series_row['point_count'])}",
+                    "label": f"{entry['label']} ({int(series_row['point_count'])} pts)",
+                    "source": entry.get("source", ""),
+                    "kind": entry.get("kind", "model"),
+                    "point_count": int(series_row["point_count"]),
+                    "n_neighbors": int(series_row["n_neighbors"]),
+                    "dominant_hz": float(series_row["dominant"]),
+                    "rms_amplitude": float(series_row["rms"]),
+                    "num_samples": int(series_row["num_samples"]),
+                }
+            )
+    return summarized
+
+
 def _analysis_output_path(output_dir, analysis_id, item_id):
     return Path(output_dir) / ANALYSIS_FOLDERS[analysis_id] / f"{item_id}.svg"
 
@@ -801,7 +976,17 @@ def _runtime_item_from_payload(item_kind, item):
 
 def _analysis_ids_for_item(item_kind, runtime_item):
     if item_kind in {"pair", "multi_model"}:
-        return list(PAIRWISE_ANALYSES)
+        if item_kind == "pair":
+            sources = [runtime_item.source_a, runtime_item.source_b]
+        else:
+            sources = list(runtime_item.sources)
+
+        analysis_ids = []
+        for analysis_id in PAIRWISE_ANALYSES:
+            if analysis_id in MODEL_ONLY_PAIRWISE_ANALYSES and any(source.kind != "model" for source in sources):
+                continue
+            analysis_ids.append(analysis_id)
+        return analysis_ids
     family = runtime_item.source.family
     analysis_ids = []
     for analysis_id in SINGLE_SOURCE_ANALYSES:
@@ -967,6 +1152,31 @@ def _run_point_to_point_job(job, module, runtime_item, output_path, figsize_inch
     return summary, metric_rows
 
 
+def _run_point_to_point_neighbor_sweep_job(job, module, runtime_item, output_path, figsize_inches, dpi):
+    if job["item_kind"] == "pair":
+        overrides = {
+            "source_a": runtime_item.source_a.path,
+            "source_b": runtime_item.source_b.path,
+            "label_a": _entry_label(runtime_item.source_a),
+            "label_b": _entry_label(runtime_item.source_b),
+        }
+    else:
+        sources = list(runtime_item.sources)
+        overrides = {
+            "all_models": True,
+            "sources": [source.path for source in sources],
+            "labels": [_entry_label(source) for source in sources],
+        }
+
+    analysis_data = module.run_point_to_point_neighbor_sweep_analysis(overrides)
+    fig = module.build_point_to_point_neighbor_sweep_figure(analysis_data, figsize_inches=figsize_inches, dpi=dpi)
+    _save_figure(fig, output_path, dpi)
+
+    summary = _planned_job_summary(job, status="success")
+    summary["entries"] = _summarize_neighbor_sweep_entries(analysis_data["entries"])
+    return summary, _make_neighbor_sweep_metric_rows(job, analysis_data["entries"])
+
+
 def _run_multi_point_job(job, module, runtime_item, output_path, figsize_inches, dpi):
     if job["item_kind"] == "pair":
         sources = [runtime_item.source_a, runtime_item.source_b]
@@ -1086,6 +1296,49 @@ def _run_beta_comparison_job(job, module, runtime_item, output_path, figsize_inc
     return summary, metric_rows
 
 
+def _run_beta_multi_point_job(job, module, runtime_item, output_path, figsize_inches, dpi):
+    analysis_data = module.run_beta_multi_point_analysis(
+        {
+            "source_path": runtime_item.source.path,
+            "mano_model_path": str(CONFIG.MANO_RIGHT_PATH),
+            "hand_idx": int(CONFIG.HAND_IDX),
+            "wrist_joint_idx": int(CONFIG.WRIST_JOINT_IDX),
+            "n_neighbors": int(CONFIG.N_NEIGHBORS),
+        }
+    )
+    fig = module.build_beta_multi_point_figure(analysis_data, figsize_inches=figsize_inches, dpi=dpi)
+    _save_figure(fig, output_path, dpi)
+
+    metric_rows = []
+    summary_entries = []
+    source_path = analysis_data.get("source_path", analysis_data.get("mesh_dir", runtime_item.source.path))
+    for entry in analysis_data["entries"]:
+        result = entry["result"]
+        metric_rows.append(
+            _make_metric_row(
+                job,
+                slot=entry.get("slot", entry["pair_label"]),
+                label=entry["label"],
+                source=source_path,
+                kind="model",
+                result=result,
+            )
+        )
+        summary_entries.append(
+            _summarize_result_entry(
+                slot=entry.get("slot", entry["pair_label"]),
+                label=entry["label"],
+                source=source_path,
+                kind="model",
+                result=result,
+            )
+        )
+
+    summary = _planned_job_summary(job, status="success")
+    summary["entries"] = summary_entries
+    return summary, metric_rows
+
+
 def _run_worker_job(job):
     try:
         modules = _get_analysis_modules()
@@ -1098,12 +1351,30 @@ def _run_worker_job(job):
             summary, metric_rows = _run_compare_job(job, modules["compare"], runtime_item, output_path, figsize_inches, dpi)
         elif job["analysis_id"] == "point_to_point":
             summary, metric_rows = _run_point_to_point_job(job, modules["point_to_point"], runtime_item, output_path, figsize_inches, dpi)
+        elif job["analysis_id"] == "point_to_point_neighbor_sweep":
+            summary, metric_rows = _run_point_to_point_neighbor_sweep_job(
+                job,
+                modules["point_to_point_neighbor_sweep"],
+                runtime_item,
+                output_path,
+                figsize_inches,
+                dpi,
+            )
         elif job["analysis_id"] == "multi_point_to_point":
             summary, metric_rows = _run_multi_point_job(job, modules["multi_point_to_point"], runtime_item, output_path, figsize_inches, dpi)
         elif job["analysis_id"] == "wilor_camera_space":
             summary, metric_rows = _run_camera_space_job(job, modules["wilor_camera_space"], runtime_item, output_path, figsize_inches, dpi)
         elif job["analysis_id"] == "beta_comparison":
             summary, metric_rows = _run_beta_comparison_job(job, modules["beta_comparison"], runtime_item, output_path, figsize_inches, dpi)
+        elif job["analysis_id"] == "beta_multi_point_to_point":
+            summary, metric_rows = _run_beta_multi_point_job(
+                job,
+                modules["beta_multi_point_to_point"],
+                runtime_item,
+                output_path,
+                figsize_inches,
+                dpi,
+            )
         else:
             raise ValueError(f"Unsupported analysis_id: {job['analysis_id']}")
 
@@ -1178,6 +1449,16 @@ def _print_discovery(discovery, scenario_rows, selected_item_sets, selected_jobs
     for family in ("hamba", "wilor", "wilor_finetune", "dynhamr", "stride", "mediapipe"):
         counts = discovery[family]
         print(f"  {family}: all={counts['all']}, comp={counts['comp']}")
+        if family == "wilor_finetune":
+            alias_counts = counts.get("aliases", {})
+            if alias_counts:
+                for alias, alias_data in alias_counts.items():
+                    print(
+                        f"    {alias} -> {alias_data['experiment']}: "
+                        f"all={alias_data['all']}, comp={alias_data['comp']}"
+                    )
+            else:
+                print("    selected aliases: none")
 
     print("Scenario matrix:")
     for row in scenario_rows:
@@ -1185,9 +1466,8 @@ def _print_discovery(discovery, scenario_rows, selected_item_sets, selected_jobs
         if row["item_kind"] == "multi_models":
             group_size = int(row.get("group_size", 0))
             pools_text = " x ".join(
-                f"{row[f'source_{slot}_pool']}({row[f'source_{slot}_count']})"
-                for slot in ("a", "b", "c", "d", "e")
-                if row.get(f"source_{slot}_pool") is not None
+                f"{pool_name}({pool_count})"
+                for pool_name, pool_count in zip(row.get("source_pools", []), row.get("source_counts", []))
             )
             print(
                 f"  {row['scenario_id']}: "
@@ -1236,9 +1516,10 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
     figsize_inches = (args.width_px / args.dpi, args.height_px / args.dpi)
 
-    pools, discovery = _build_source_pools(CONFIG.OUTPUTS_ROOT)
+    pools, discovery, finetune_selections = _build_source_pools(CONFIG.OUTPUTS_ROOT)
     scenario_rows, all_pairs, all_multi_model_items = _build_scenarios_and_items(
         pools,
+        finetune_selections,
         args.scenario,
         include_all_models=args.all_models,
     )
@@ -1290,6 +1571,14 @@ def main():
             "max_pairs": args.max_pairs,
             "all_models": bool(args.all_models),
             "selected_scenarios": list(args.scenario or []),
+            "selected_wilor_finetune_aliases": [selection.alias for selection in finetune_selections],
+            "selected_wilor_finetune_experiments": [
+                {
+                    "alias": selection.alias,
+                    "experiment": selection.experiment,
+                }
+                for selection in finetune_selections
+            ],
         },
         "discovery": discovery,
         "scenarios": scenario_rows,

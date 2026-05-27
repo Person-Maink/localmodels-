@@ -96,6 +96,10 @@ def _infer_label(path_text, fallback):
     return fallback
 
 
+def _legend_with_peak(label, dominant):
+    return f"{label} ({dominant:.2f} Hz)"
+
+
 def _bandpass_filter(signal):
     nyq = 0.5 * FPS
 
@@ -293,6 +297,7 @@ def build_compare_figure(analysis_data, figsize_inches=(13, 11), dpi=100):
     for i, entry in enumerate(analysis_data["entries"]):
         label = entry["label"]
         result = entry["result"]
+        label_with_peak = _legend_with_peak(label, result["dominant"])
 
         style = LINE_STYLES[i % len(LINE_STYLES)]
         color = f"C{i}"
@@ -304,7 +309,7 @@ def build_compare_figure(analysis_data, figsize_inches=(13, 11), dpi=100):
             style,
             color=color,
             lw=1.5,
-            label=f"{label} ({result['dominant']:.2f} Hz)",
+            label=label_with_peak,
         )
 
         axes[1].semilogy(
@@ -313,7 +318,7 @@ def build_compare_figure(analysis_data, figsize_inches=(13, 11), dpi=100):
             style,
             color=color,
             lw=1.5,
-            label=label,
+            label=label_with_peak,
         )
         axes[1].axvline(result["dominant"], color=color, ls=":")
 
@@ -324,7 +329,7 @@ def build_compare_figure(analysis_data, figsize_inches=(13, 11), dpi=100):
                 style,
                 color=color,
                 lw=1.2,
-                label=f"{label} {axis_name}",
+                label=f"{label} {axis_name} ({result['dominant']:.2f} Hz)",
             )
 
     axes[0].set_title("Hand displacement over time")

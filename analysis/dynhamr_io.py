@@ -167,6 +167,37 @@ def _pose_wc(rotation, translation):
     return pose
 
 
+def _world_results_track_frame(world_results, field_name, track_idx, frame_idx, dtype=np.float32):
+    if field_name not in world_results:
+        raise KeyError(f"Missing '{field_name}' in {world_results.files}")
+
+    values = np.asarray(world_results[field_name], dtype=dtype)
+    if values.ndim < 2:
+        raise ValueError(
+            f"Expected track/frame-major data for '{field_name}', got shape {values.shape}"
+        )
+    if track_idx >= values.shape[0] or frame_idx >= values.shape[1]:
+        raise IndexError(
+            f"Track/frame ({track_idx}, {frame_idx}) out of range for '{field_name}' with shape {values.shape}"
+        )
+    return values[track_idx, frame_idx]
+
+
+def _world_results_track_value(world_results, field_name, track_idx, dtype=np.float32):
+    if field_name not in world_results:
+        raise KeyError(f"Missing '{field_name}' in {world_results.files}")
+
+    values = np.asarray(world_results[field_name], dtype=dtype)
+    if values.ndim == 1:
+        return values
+    if values.ndim >= 2 and track_idx < values.shape[0]:
+        return values[track_idx]
+
+    raise IndexError(
+        f"Track index {track_idx} out of range for '{field_name}' with shape {values.shape}"
+    )
+
+
 def export_dynhamr_run(run, output_root, overwrite=False):
     output_root = Path(output_root)
     clip_root = output_root / run.clip_id
@@ -179,51 +210,87 @@ def export_dynhamr_run(run, output_root, overwrite=False):
     meshes_root.mkdir(parents=True, exist_ok=True)
 
     world_results = np.load(run.world_results_path, allow_pickle=True)
-    is_right = np.asarray(world_results["is_right"], dtype=np.float32)
-    cam_t = np.asarray(world_results["cam_t"], dtype=np.float32)
+    try:
+        is_right = np.asarray(world_results["is_right"], dtype=np.float32)
 
-    cam_data = load_camera_json(run.cameras_json_path)
-    mesh_entries = _iter_mesh_entries(run.mesh_root)
+        cam_data = load_camera_json(run.cameras_json_path)
+        mesh_entries = _iter_mesh_entries(run.mesh_root)
 
-    pose_rows = []
-    frame_rows = []
-    right_rows = []
-    track_rows = []
-    intrinsics_rows = []
+        pose_rows = []
+        frame_rows = []
+        right_rows = []
+        track_rows = []
+        intrinsics_rows = []
 
-    for frame_idx, track_idx, obj_path in mesh_entries:
-        if frame_idx >= len(cam_data["rotation"]):
-            raise IndexError(f"Frame {frame_idx} out of range for camera data in {run.cameras_json_path}")
-        if track_idx >= is_right.shape[0] or frame_idx >= is_right.shape[1]:
-            raise IndexError(f"Track/frame ({track_idx}, {frame_idx}) out of range for {run.world_results_path}")
+        for frame_idx, track_idx, obj_path in mesh_entries:
+            if frame_idx >= len(cam_data["rotation"]):
+                raise IndexError(f"Frame {frame_idx} out of range for camera data in {run.cameras_json_path}")
+            if track_idx >= is_right.shape[0] or frame_idx >= is_right.shape[1]:
+                raise IndexError(f"Track/frame ({track_idx}, {frame_idx}) out of range for {run.world_results_path}")
 
-        verts_world = parse_obj_vertices(obj_path)
-        right_value = int(float(is_right[track_idx, frame_idx]))
-        cam_t_value = np.asarray(cam_t[track_idx, frame_idx], dtype=np.float32).reshape(3)
-        intrinsics_row = cam_data["intrinsics"][frame_idx]
-        img_res, focal_length_x, _ = _img_res_from_intrinsics(intrinsics_row)
+            verts_world = parse_obj_vertices(obj_path)
+            right_value = int(float(is_right[track_idx, frame_idx]))
+            dynhamr_cam_t = np.asarray(
+                _world_results_track_frame(world_results, "cam_t", track_idx, frame_idx),
+                dtype=np.float32,
+            ).reshape(3)
+            dynhamr_trans = np.asarray(
+                _world_results_track_frame(world_results, "trans", track_idx, frame_idx),
+                dtype=np.float32,
+            ).reshape(3)
+            dynhamr_cam_R = np.asarray(
+                _world_results_track_frame(world_results, "cam_R", track_idx, frame_idx),
+                dtype=np.float32,
+            ).reshape(3, 3)
+            betas = np.asarray(
+                _world_results_track_value(world_results, "betas", track_idx),
+                dtype=np.float32,
+            ).reshape(-1)
+            global_orient = np.asarray(
+                _world_results_track_frame(world_results, "root_orient", track_idx, frame_idx),
+                dtype=np.float32,
+            ).reshape(3)
+            hand_pose = np.asarray(
+                _world_results_track_frame(world_results, "pose_body", track_idx, frame_idx),
+                dtype=np.float32,
+            ).reshape(15, 3)
+            intrinsics_row = cam_data["intrinsics"][frame_idx]
+            img_res, focal_length_x, _ = _img_res_from_intrinsics(intrinsics_row)
 
-        frame_dir = meshes_root / f"frame_{frame_idx:06d}"
-        frame_dir.mkdir(parents=True, exist_ok=True)
-        out_file = frame_dir / f"frame_{frame_idx:06d}_{track_idx}_{float(right_value):.1f}_verts.npy"
-        record = {
-            "verts_world": verts_world,
-            "right": np.asarray(right_value, dtype=np.int32),
-            "frame_id": np.asarray(frame_idx, dtype=np.int32),
-            "track_id": np.asarray(track_idx, dtype=np.int32),
-            "cam_t": cam_t_value,
-            "focal_length": float(focal_length_x),
-            "img_res": img_res,
-            "source_run": str(run.run_root),
-            "source_phase": run.phase_name,
-        }
-        np.save(out_file, record, allow_pickle=True)
+            frame_dir = meshes_root / f"frame_{frame_idx:06d}"
+            frame_dir.mkdir(parents=True, exist_ok=True)
+            out_file = frame_dir / f"frame_{frame_idx:06d}_{track_idx}_{float(right_value):.1f}_verts.npy"
+            record = {
+                "verts": verts_world,
+                "verts_world": verts_world,
+                # The exported OBJ vertices are already in DynHAMR's saved mesh space, so
+                # keep cam_t at zero to avoid downstream scripts double-translating them.
+                "cam_t": np.zeros((3,), dtype=np.float32),
+                "right": np.asarray(right_value, dtype=np.int32),
+                "frame_id": np.asarray(frame_idx, dtype=np.int32),
+                "track_id": np.asarray(track_idx, dtype=np.int32),
+                "focal_length": float(focal_length_x),
+                "img_res": img_res,
+                "pred_mano_params": {
+                    "betas": betas,
+                    "global_orient": global_orient,
+                    "hand_pose": hand_pose,
+                },
+                "dynhamr_trans": dynhamr_trans,
+                "dynhamr_cam_t": dynhamr_cam_t,
+                "dynhamr_cam_R": dynhamr_cam_R,
+                "source_run": str(run.run_root),
+                "source_phase": run.phase_name,
+            }
+            np.save(out_file, record, allow_pickle=True)
 
-        pose_rows.append(_pose_wc(cam_data["rotation"][frame_idx], cam_data["translation"][frame_idx]))
-        frame_rows.append(frame_idx)
-        right_rows.append(right_value)
-        track_rows.append(track_idx)
-        intrinsics_rows.append(np.asarray(intrinsics_row, dtype=np.float32).reshape(4))
+            pose_rows.append(_pose_wc(cam_data["rotation"][frame_idx], cam_data["translation"][frame_idx]))
+            frame_rows.append(frame_idx)
+            right_rows.append(right_value)
+            track_rows.append(track_idx)
+            intrinsics_rows.append(np.asarray(intrinsics_row, dtype=np.float32).reshape(4))
+    finally:
+        world_results.close()
 
     np.savez(
         camera_poses_path,
@@ -242,6 +309,7 @@ def export_dynhamr_run(run, output_root, overwrite=False):
         "phase": run.phase_name,
         "mesh_root": str(run.mesh_root),
         "world_results": str(run.world_results_path),
+        "track_info": str(run.track_info_path),
         "camera_poses": str(camera_poses_path),
         "records_exported": len(mesh_entries),
     }

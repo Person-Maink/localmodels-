@@ -10,6 +10,7 @@ from whim_io import DEFAULT_WHIM_DATA_ROOT
 
 ANALYSIS_ROOT = Path(__file__).resolve().parent
 VIS_ROOT = ANALYSIS_ROOT / "3D Visualization "
+FREQ_ROOT = ANALYSIS_ROOT / "Frequency Analysis"
 DEFAULT_OUTPUT_ROOT = Path(CONFIG.ANALYSIS_OUTPUT_DIR)
 OUTPUTS_ROOT = CONFIG.OUTPUTS_ROOT
 PROJECT_PYTHON = ANALYSIS_ROOT / ".venv" / "bin" / "python"
@@ -19,15 +20,23 @@ CAMERA_SCRIPT = VIS_ROOT / "Camera.py"
 FREE_SCRIPT = VIS_ROOT / "Free.py"
 WRIST_GROUNDING_SCRIPT = VIS_ROOT / "Wrist Grounding.py"
 BOUNDING_BOXES_SCRIPT = VIS_ROOT / "Bounding Boxes.py"
+BETA_AVERAGE_SCRIPT = VIS_ROOT / "beta average.py"
 WHIM_SCRIPT = VIS_ROOT / "WHIM.py"
 WHIM_CAMERA_SCRIPT = VIS_ROOT / "WHIM Camera.py"
 WHIM_FREE_SCRIPT = VIS_ROOT / "WHIM Free.py"
 WHIM_BOUNDING_BOXES_SCRIPT = VIS_ROOT / "WHIM Bounding Boxes.py"
 HAS_WHIM_COMBINED_SCRIPT = WHIM_SCRIPT.is_file()
 
+POINT_TO_POINT_NEIGHBOR_SWEEP_SCRIPT = FREQ_ROOT / "Point to Point Neighbor Sweep.py"
+WILOR_CAMERA_SPACE_SCRIPT = FREQ_ROOT / "WiLoR Camera Space.py"
+BETA_COMPARISON_SCRIPT = FREQ_ROOT / "beta comparison.py"
+BETA_MULTI_POINT_TO_POINT_SCRIPT = FREQ_ROOT / "beta multi point to point.py"
+
 WHIM_DATA_ROOT = DEFAULT_WHIM_DATA_ROOT
 
 FAMILY_NAMES = ("wilor", "wilor_finetune", "hamba", "dynhamr", "stride", "vipe", "mediapipe", "whim_train", "whim_test")
+NEIGHBOR_SWEEP_FAMILIES = {"wilor", "wilor_finetune", "hamba", "dynhamr", "stride"}
+BETA_COMPATIBLE_FAMILIES = {"wilor", "wilor_finetune", "dynhamr", "stride"}
 
 
 def _quote(value):
@@ -196,6 +205,36 @@ def _video_dir_cli_wrapper(target_script, video_dir):
     )
 
 
+def _source_cli_wrapper(target_script, source_path, extra_args=None, hand_arg_mode=None):
+    extra_args = list(extra_args or [])
+    args_literal = ", ".join([_quote(str(item)) for item in [target_script, "--source", source_path] + extra_args])
+
+    lines = [
+        "#!/usr/bin/env python3",
+        "import subprocess",
+        "import sys",
+        "",
+        f"ANALYSIS_ROOT = {_quote(ANALYSIS_ROOT)}",
+        "if ANALYSIS_ROOT not in sys.path:",
+        "    sys.path.insert(0, ANALYSIS_ROOT)",
+        "",
+        "import FILENAME as CONFIG",
+        "",
+        f"ARGS = [sys.executable, {args_literal}]",
+    ]
+    if hand_arg_mode == "idx":
+        lines.append("ARGS.extend(['--hand_idx', str(int(CONFIG.HAND_IDX))])")
+    elif hand_arg_mode == "word":
+        lines.append("ARGS.extend(['--hand', 'right' if int(CONFIG.HAND_IDX) == 1 else 'left'])")
+    lines.extend(
+        [
+            "raise SystemExit(subprocess.call(ARGS))",
+            "",
+        ]
+    )
+    return "\n".join(lines)
+
+
 def _config_injection_wrapper(target_script, config_attr, source_path):
     module_name = target_script.stem.lower().replace(" ", "_") + "_launcher_target"
     return "\n".join(
@@ -223,19 +262,51 @@ def _config_injection_wrapper(target_script, config_attr, source_path):
     )
 
 
-def _model_clip_launchers(meshes_root, camera_poses_file=None, use_meshes_for_camera=True):
+def _frequency_clip_launchers(source_root, family):
+    clip_launchers = {}
+    if family in NEIGHBOR_SWEEP_FAMILIES:
+        clip_launchers["point_to_point_neighbor_sweep"] = _source_cli_wrapper(
+            POINT_TO_POINT_NEIGHBOR_SWEEP_SCRIPT,
+            source_root,
+        )
+    if family in BETA_COMPATIBLE_FAMILIES:
+        clip_launchers["beta_average"] = _source_cli_wrapper(
+            BETA_AVERAGE_SCRIPT,
+            source_root,
+            hand_arg_mode="word",
+        )
+        clip_launchers["wilor_camera_space"] = _source_cli_wrapper(
+            WILOR_CAMERA_SPACE_SCRIPT,
+            source_root,
+            hand_arg_mode="idx",
+        )
+        clip_launchers["beta_comparison"] = _source_cli_wrapper(
+            BETA_COMPARISON_SCRIPT,
+            source_root,
+            hand_arg_mode="idx",
+        )
+        clip_launchers["beta_multi_point_to_point"] = _source_cli_wrapper(
+            BETA_MULTI_POINT_TO_POINT_SCRIPT,
+            source_root,
+            hand_arg_mode="idx",
+        )
+    return clip_launchers
+
+
+def _model_clip_launchers(source_root, family, camera_poses_file=None, use_meshes_for_camera=True):
     clip_launchers = {
-        "free": _config_injection_wrapper(FREE_SCRIPT, "FREE_SOURCE", meshes_root),
-        "wrist_grounding": _config_injection_wrapper(WRIST_GROUNDING_SCRIPT, "WRIST_GROUNDING_SOURCE", meshes_root),
+        "free": _config_injection_wrapper(FREE_SCRIPT, "FREE_SOURCE", source_root),
+        "wrist_grounding": _config_injection_wrapper(WRIST_GROUNDING_SCRIPT, "WRIST_GROUNDING_SOURCE", source_root),
     }
+    clip_launchers.update(_frequency_clip_launchers(source_root, family))
     if use_meshes_for_camera or camera_poses_file is not None:
         clip_launchers["camera"] = _camera_cli_wrapper(
-            frames_root=meshes_root if use_meshes_for_camera else None,
+            frames_root=source_root if use_meshes_for_camera else None,
             vipe_pose_file=None,
             camera_poses_file=camera_poses_file,
         )
-    if _has_bbox_metadata(meshes_root):
-        clip_launchers["bounding_boxes"] = _bbox_cli_wrapper(meshes_root)
+    if _has_bbox_metadata(source_root):
+        clip_launchers["bounding_boxes"] = _bbox_cli_wrapper(source_root)
     return clip_launchers
 
 
@@ -243,20 +314,24 @@ def _build_family_launchers():
     launchers = {family: {} for family in FAMILY_NAMES}
 
     for clip_name, meshes_root in _discover_model_clips("wilor").items():
-        launchers["wilor"][clip_name] = _model_clip_launchers(meshes_root)
+        launchers["wilor"][clip_name] = _model_clip_launchers(meshes_root, family="wilor")
 
     for experiment, clips in _discover_experiment_model_clips("wilor_finetune").items():
         launchers["wilor_finetune"][experiment] = {}
         for clip_name, meshes_root in clips.items():
-            launchers["wilor_finetune"][experiment][clip_name] = _model_clip_launchers(meshes_root)
+            launchers["wilor_finetune"][experiment][clip_name] = _model_clip_launchers(
+                meshes_root,
+                family="wilor_finetune",
+            )
 
     for clip_name, meshes_root in _discover_model_clips("hamba").items():
-        launchers["hamba"][clip_name] = _model_clip_launchers(meshes_root)
+        launchers["hamba"][clip_name] = _model_clip_launchers(meshes_root, family="hamba")
 
     for clip_name, meshes_root in _discover_model_clips("dynhamr").items():
         camera_poses_file = meshes_root.parent / "camera_poses.npz"
         launchers["dynhamr"][clip_name] = _model_clip_launchers(
             meshes_root,
+            family="dynhamr",
             camera_poses_file=camera_poses_file if camera_poses_file.is_file() else None,
             use_meshes_for_camera=False,
         )
@@ -265,6 +340,7 @@ def _build_family_launchers():
         camera_poses_file = clip_root / "camera_poses.npz"
         launchers["stride"][clip_name] = _model_clip_launchers(
             clip_root,
+            family="stride",
             camera_poses_file=camera_poses_file if camera_poses_file.is_file() else None,
             use_meshes_for_camera=False,
         )

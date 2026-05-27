@@ -324,6 +324,7 @@ def build_camera_space_figure(entries, source_label, figsize_inches=(14, 9), dpi
     for idx, entry in enumerate(entries):
         result = entry["result"]
         color = f"C{idx % 10}"
+        label_with_peak = f"{source_label} {entry['pair_label']} ({result['dominant']:.2f} Hz)"
         t = np.arange(len(result["magnitude"])) / FPS
 
         axes[0].plot(
@@ -331,7 +332,7 @@ def build_camera_space_figure(entries, source_label, figsize_inches=(14, 9), dpi
             result["magnitude"],
             color=color,
             lw=1.5,
-            label=f"{source_label} {entry['pair_label']}",
+            label=label_with_peak,
         )
 
         axes[1].semilogy(
@@ -339,7 +340,7 @@ def build_camera_space_figure(entries, source_label, figsize_inches=(14, 9), dpi
             result["psd"],
             color=color,
             lw=1.5,
-            label=f"{source_label} {entry['pair_label']} ({result['dominant']:.2f} Hz)",
+            label=label_with_peak,
         )
         axes[1].axvline(result["dominant"], color=color, ls=":", alpha=0.35)
 
@@ -486,7 +487,7 @@ def main():
         default=None,
         help="Direct path to a compatible model source. This can be a mesh cache directory or a stride clip root.",
     )
-    parser.add_argument("--wilor_root", type=str, default=None, help="Root containing WiLoR per-video output folders.")
+    parser.add_argument("--wilor_root", type=str, default="/home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/outputs/stride/", help="Root containing WiLoR per-video output folders.")
     parser.add_argument("--video", type=str, default="120-2_clip_1", help="Video folder name under --wilor_root when --source is not provided.")
     # parser.add_argument("--hand_idx", type=int, default=int(CONFIG.HAND_IDX), help="1=right, 0=left.")
     parser.add_argument("--hand_idx", type=int, default=1, help="1=right, 0=left.")

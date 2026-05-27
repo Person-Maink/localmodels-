@@ -452,6 +452,7 @@ def build_multi_point_figure(analysis_data, figsize_inches=(14, 9), dpi=100):
         color = color_map[entry["pair_label"]]
         source_label = _family_display_name(source_family)
         result = entry["result"]
+        label_with_peak = f"{source_label} {entry['pair_label']} ({result['dominant']:.2f} Hz)"
         t = np.arange(len(result["magnitude"])) / FPS
 
         axes[0].plot(
@@ -460,7 +461,7 @@ def build_multi_point_figure(analysis_data, figsize_inches=(14, 9), dpi=100):
             color=color,
             linestyle=style,
             lw=1.5,
-            label=f"{source_label} {entry['pair_label']}",
+            label=label_with_peak,
         )
 
         axes[1].semilogy(
@@ -469,7 +470,7 @@ def build_multi_point_figure(analysis_data, figsize_inches=(14, 9), dpi=100):
             color=color,
             linestyle=style,
             lw=1.5,
-            label=f"{source_label} {entry['pair_label']} ({result['dominant']:.2f} Hz)",
+            label=label_with_peak,
         )
         axes[1].axvline(result["dominant"], color=color, ls=":", alpha=0.35)
 

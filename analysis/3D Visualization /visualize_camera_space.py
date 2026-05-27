@@ -288,7 +288,7 @@ def main():
     parser.add_argument(
         "--wilor_root",
         type=str,
-        default=str(REPO_ROOT / "outputs" / "wilor"),
+        default=str(REPO_ROOT / "outputs" / "stride"),
         help="Root directory containing per-video WiLoR outputs.",
     )
     parser.add_argument(

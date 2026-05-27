@@ -29,11 +29,12 @@ np.inf = float("inf")
 FPS = 30.0
 LOWPASS_CUTOFF = 6.0
 FILTER_ORDER = 3
+THIS_DIR = Path(__file__).resolve().parent
 
 
 @lru_cache(maxsize=1)
 def _load_beta_average_module():
-    module_path = PROJECT_ROOT / "3D Visualization " / "beta average.py"
+    module_path = THIS_DIR.parent / "3D Visualization " / "beta average.py"
     spec = importlib.util.spec_from_file_location("beta_average_module", module_path)
     if spec is None or spec.loader is None:
         raise ImportError(f"Could not load beta-average helper module from: {module_path}")
@@ -45,7 +46,7 @@ def _load_beta_average_module():
 
 @lru_cache(maxsize=1)
 def _load_point_to_point_module():
-    module_path = PROJECT_ROOT / "Frequency Analysis" / "Point to Point.py"
+    module_path = THIS_DIR / "Point to Point.py"
     spec = importlib.util.spec_from_file_location("point_to_point_module", module_path)
     if spec is None or spec.loader is None:
         raise ImportError(f"Could not load point-to-point helper module from: {module_path}")
