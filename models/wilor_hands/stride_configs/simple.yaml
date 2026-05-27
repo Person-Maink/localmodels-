@@ -6,19 +6,19 @@ runtime:
   mano_model_path: ./mano_data
 
 refinement:
-  iters: 300
-  lr: 0.05
+  iters: 450
+  lr: 0.04
   weights:
-    obs: 10.0
-    reproj: 2.0
+    obs: 4.0
+    reproj: 0.75
     shape: 5.0
-    cam_smooth: 25.0
-    pose_smooth: 1.5
-    joint_smooth: 0.5
-    anchor: 0.5
+    cam_smooth: 70.0
+    pose_smooth: 5.0
+    joint_smooth: 1.5
+    anchor: 0.1
     fft: 0.0
   fft_band_low_hz:
   fft_band_high_hz:
   fps: 30.0
-  pose_rank: 32
-  cam_rank: 16
+  pose_rank: 16
+  cam_rank: 8

@@ -8,19 +8,19 @@ runtime:
   hmp_model_config: ./hmp_clean/hmp_model_config.yaml
 
 refinement:
-  overlap: 16
+  overlap: 48
   pose:
-    iters: 200
-    lr: 0.05
+    iters: 120
+    lr: 0.03
     weights:
-      rot: 1.0
-      pos: 0.25
-      root: 0.5
-      latent: 0.001
+      rot: 0.35
+      pos: 0.05
+      root: 0.12
+      latent: 0.05
   beta:
     optimize: true
-    iters: 200
-    lr: 0.05
+    iters: 120
+    lr: 0.03
     weights:
-      joint: 1.0
-      prior: 0.1
+      joint: 0.6
+      prior: 0.4
