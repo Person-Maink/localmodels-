@@ -210,12 +210,22 @@ If you want to bypass the sweep helpers and run one experiment directly, export
 ```bash
 LOSS_CONFIG=wilor_hands/experiments/finetuning.yaml \
 EXPERIMENT_NAME=main_finetuning \
-bash wilor_hands/train.sh
+sbatch wilor_hands/train.sh
 ```
 
 `train.sh` resolves the config, builds the python command, and writes the run
 artifacts to `outputs/wilor_finetune/<run_name>` unless `OUTPUT_ROOT` or
 `RUN_OUTPUT_DIR` is overridden.
+
+For long all-video finetunes, the default wrapper now targets the full
+`gpu-a100` partition with a 10-hour walltime. You can still override
+resources per submission:
+
+```bash
+LOSS_CONFIG=wilor_hands/experiments/finetuning.yaml \
+EXPERIMENT_NAME=main_finetuning \
+sbatch --partition=gpu-a100 --mem-per-gpu=64G --time=10:00:00 wilor_hands/train.sh
+```
 
 ## Notes
 

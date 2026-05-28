@@ -133,15 +133,18 @@ def estimate_runtime(
     *,
     safety_factor: float = 1.35,
     rounding_minutes: int = 15,
-    max_partition_time: str = "04:00:00",
+    max_partition_time: str = "10:00:00",
     fallback_time: str = "01:00:00",
+    all_videos_fallback_time: str = "08:00:00",
 ) -> RuntimeEstimate:
+    target_all_videos, target_video_count = _target_video_mode(resolved_experiment)
     runs = load_training_runs(logs_dir)
     if not runs:
-        fallback_seconds = _time_to_seconds(fallback_time)
+        selected_fallback_time = all_videos_fallback_time if target_all_videos else fallback_time
+        fallback_seconds = _time_to_seconds(selected_fallback_time)
         return RuntimeEstimate(
             seconds=fallback_seconds,
-            time_str=fallback_time,
+            time_str=selected_fallback_time,
             source="no historical finetune logs found; using fallback",
             matched_runs=0,
         )
@@ -150,7 +153,6 @@ def estimate_runtime(
     target_batch_size = int(resolved_experiment.get("batch_size", 8))
     target_max_steps = int(resolved_experiment.get("max_steps", 1000))
     target_sample_limit = int(resolved_experiment.get("sample_limit", 0))
-    target_all_videos, target_video_count = _target_video_mode(resolved_experiment)
     target_log_every = int(resolved_experiment.get("log_every", 0))
 
     exact_matches = [

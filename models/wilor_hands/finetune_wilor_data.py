@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import random
-from collections import defaultdict
+from collections import OrderedDict, defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Iterable, Sequence
@@ -519,13 +519,17 @@ class LazyCropMaterializer:
         detection_cache: OnDemandDetectionCache,
         rescale_factor: float = 2.0,
         include_path_metadata: bool = False,
+        max_cached_frames: int = 64,
     ):
         self.model_cfg = model_cfg
         self.frame_store = frame_store
         self.detection_cache = detection_cache
         self.rescale_factor = rescale_factor
         self.include_path_metadata = include_path_metadata
-        self._frame_item_cache: dict[tuple[str, int], list[dict[str, Any]]] = {}
+        self.max_cached_frames = max(0, int(max_cached_frames))
+        self._frame_item_cache: OrderedDict[
+            tuple[str, int], list[dict[str, Any]]
+        ] = OrderedDict()
 
     def _get_frame_items(
         self,
@@ -535,6 +539,7 @@ class LazyCropMaterializer:
         frame_key = (str(video_name), int(frame_idx))
         cached_items = self._frame_item_cache.get(frame_key)
         if cached_items is not None:
+            self._frame_item_cache.move_to_end(frame_key)
             return cached_items
 
         img_cv2 = self.frame_store.get_frame(video_name, frame_idx)
@@ -550,7 +555,11 @@ class LazyCropMaterializer:
             rescale_factor=self.rescale_factor,
         )
         cached_items = [dict(crop_dataset[item_idx]) for item_idx in range(len(frame_samples))]
-        self._frame_item_cache[frame_key] = cached_items
+        if self.max_cached_frames != 0:
+            self._frame_item_cache[frame_key] = cached_items
+            self._frame_item_cache.move_to_end(frame_key)
+            while len(self._frame_item_cache) > self.max_cached_frames:
+                self._frame_item_cache.popitem(last=False)
         return cached_items
 
     def materialize_sample(self, sample: dict[str, Any]) -> dict[str, Any]:
@@ -746,6 +755,7 @@ def _build_lazy_window_data(
         detection_cache=detection_index,
         rescale_factor=args.rescale_factor,
         include_path_metadata=False,
+        max_cached_frames=args.frame_item_cache_size,
     )
 
     train_iterable = LazyTemporalBatchIterable(
@@ -848,6 +858,7 @@ def _build_eager_window_data(
         rescale_factor=args.rescale_factor,
         include_path_metadata=False,
         frame_store=frame_store,
+        max_cached_frames=args.frame_item_cache_size,
     )
     train_dataset = TemporalWindowDataset(train_base_dataset, train_windows)
     train_dataloader = DataLoader(
@@ -876,6 +887,7 @@ def _build_eager_window_data(
                 rescale_factor=args.rescale_factor,
                 include_path_metadata=False,
                 frame_store=frame_store,
+                max_cached_frames=args.frame_item_cache_size,
             )
             val_dataset = TemporalWindowDataset(val_base_dataset, val_windows)
             val_dataloader = DataLoader(

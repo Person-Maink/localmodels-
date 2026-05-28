@@ -51,6 +51,12 @@ def make_argparser() -> argparse.ArgumentParser:
         default=True,
         help="When enabled, run the detector only for frames needed by each batch instead of precomputing the whole dataset.",
     )
+    parser.add_argument(
+        "--frame_item_cache_size",
+        type=int,
+        default=64,
+        help="Maximum number of decoded frame crop groups kept in RAM at once. Use 0 to disable the cache.",
+    )
     parser.add_argument("--rescale_factor", type=float, default=2.0)
     parser.add_argument(
         "--train_scope",

@@ -2,6 +2,7 @@ import json
 import random
 import re
 import sys
+from collections import OrderedDict
 from pathlib import Path
 from typing import Any, Dict, Hashable, Iterable, List, Optional, Sequence
 
@@ -441,15 +442,17 @@ class DetectedVideoHandDataset(Dataset):
         rescale_factor: float = 2.0,
         include_path_metadata: bool = True,
         frame_store: Optional[FrameStore] = None,
+        max_cached_frames: int = 64,
     ):
         self.model_cfg = model_cfg
         self.samples = samples
         self.rescale_factor = rescale_factor
         self.include_path_metadata = include_path_metadata
         self.frame_store = frame_store
+        self.max_cached_frames = max(0, int(max_cached_frames))
         self._sample_local_index_by_global_idx: Dict[int, int] = {}
         self._samples_by_frame_key: Dict[Hashable, List[Dict[str, Any]]] = {}
-        self._frame_cache: Dict[Hashable, List[Dict[str, Any]]] = {}
+        self._frame_cache: OrderedDict[Hashable, List[Dict[str, Any]]] = OrderedDict()
 
         for idx, sample in enumerate(self.samples):
             frame_key = self._sample_frame_key(sample)
@@ -468,6 +471,7 @@ class DetectedVideoHandDataset(Dataset):
     def _get_frame_items(self, frame_key: Hashable) -> List[Dict[str, Any]]:
         cached_items = self._frame_cache.get(frame_key)
         if cached_items is not None:
+            self._frame_cache.move_to_end(frame_key)
             return cached_items
 
         frame_samples = self._samples_by_frame_key[frame_key]
@@ -487,7 +491,11 @@ class DetectedVideoHandDataset(Dataset):
             rescale_factor=self.rescale_factor,
         )
         cached_items = [dict(crop_dataset[item_idx]) for item_idx in range(len(frame_samples))]
-        self._frame_cache[frame_key] = cached_items
+        if self.max_cached_frames != 0:
+            self._frame_cache[frame_key] = cached_items
+            self._frame_cache.move_to_end(frame_key)
+            while len(self._frame_cache) > self.max_cached_frames:
+                self._frame_cache.popitem(last=False)
         return cached_items
 
     def __getitem__(self, idx: int) -> Dict:

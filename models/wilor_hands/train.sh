@@ -12,12 +12,12 @@
 #   visual                 : Visualization jobs
 
 #SBATCH --job-name=wilor-train
-#SBATCH --partition=gpu-a100-small
-#SBATCH --time=01:00:00
+#SBATCH --partition=gpu-a100
+#SBATCH --time=10:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
-#SBATCH --mem-per-gpu=20G
+#SBATCH --mem-per-gpu=64G
 #SBATCH --account=Education-EEMCS-MSc-DSAIT
 #SBATCH --output=%x.out
 
@@ -338,6 +338,7 @@ ALL_VIDEOS="${ALL_VIDEOS:-false}"
 DETECTION_CONF="${DETECTION_CONF:-0.3}"
 DETECTION_CACHE="${DETECTION_CACHE:-}"
 LAZY_DETECTION="${LAZY_DETECTION:-true}"
+FRAME_ITEM_CACHE_SIZE="${FRAME_ITEM_CACHE_SIZE:-64}"
 
 case "$TRAIN_MODE" in
   distill|test) ;;
@@ -494,9 +495,10 @@ elif [[ -n "${VIDEO_NAMES}" ]]; then
     PYTHON_CMD+=("--video=${selected_video}")
   done
 else
-  PYTHON_CMD+=("--video=${VIDEO_NAME}")
+PYTHON_CMD+=("--video=${VIDEO_NAME}")
 fi
 
+append_value_flag_if_set "--frame_item_cache_size" "${FRAME_ITEM_CACHE_SIZE}"
 append_value_flag_if_set "--temporal_window_size" "${TEMPORAL_WINDOW_SIZE}"
 append_value_flag_if_set "--temporal_window_stride" "${TEMPORAL_WINDOW_STRIDE}"
 append_value_flag_if_set "--temporal_max_frame_gap" "${TEMPORAL_MAX_FRAME_GAP}"
@@ -535,6 +537,7 @@ echo "Save every:      ${SAVE_EVERY}"
 echo "Sample limit:    ${SAMPLE_LIMIT}"
 echo "Validation split:${VALIDATION_SPLIT}"
 echo "Lazy detection:  ${LAZY_DETECTION}"
+echo "Frame cache cap: ${FRAME_ITEM_CACHE_SIZE}"
 echo "Checkpoint:      ${CHECKPOINT}"
 echo "Source images:   ${SOURCE_IMAGE_FOLDER}"
 echo "Frame cache root:${FRAME_CACHE_ROOT:-<image_folder>}"
