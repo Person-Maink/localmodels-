@@ -1,0 +1,3556 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Wed May 27 14:02:23 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   56C    P0            113W /  300W |     602MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    7   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9985514
+Job Name:       wilor-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Wed May 27 14:02:23 CEST 2026
+===============================================
+WiLoR finetune experiment: main_learnable_finetnuing
+WiLoR checkpoint: /scratch/mthakur/manifold/outputs/wilor_finetune/main_learnable_finetnuing/best.ckpt
+WiLoR config: /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/model_config.yaml
+WiLoR video: /scratch/mthakur/manifold/data/test/_Ce7G35GIqA.mp4
+WiLoR output root: /scratch/mthakur/manifold/outputs/wilor_finetune/main_learnable_finetnuing
+WiLoR completion marker: /scratch/mthakur/manifold/outputs/wilor_finetune/main_learnable_finetnuing/_completed/_Ce7G35GIqA.json
+WiLoR frame cache root: /scratch/mthakur/manifold/data/test
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[progress] Loading WiLoR checkpoint: /scratch/mthakur/manifold/outputs/wilor_finetune/main_learnable_finetnuing/best.ckpt
+Loading  /scratch/mthakur/manifold/outputs/wilor_finetune/main_learnable_finetnuing/best.ckpt
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+[progress] Loading detector: ./pretrained_models/detector.pt
+
+Processing: _Ce7G35GIqA:frame_000000
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000001
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000002
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000003
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000004
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000005
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000006
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000007
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000008
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000009
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000010
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000011
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000012
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000013
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000014
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000015
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000016
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000017
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000018
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000019
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000020
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000021
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000022
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000023
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000024
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000025
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000026
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000027
+
+Processing: _Ce7G35GIqA:frame_000028
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000029
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000030
+
+Processing: _Ce7G35GIqA:frame_000031
+
+Processing: _Ce7G35GIqA:frame_000032
+
+Processing: _Ce7G35GIqA:frame_000033
+
+Processing: _Ce7G35GIqA:frame_000034
+
+Processing: _Ce7G35GIqA:frame_000035
+
+Processing: _Ce7G35GIqA:frame_000036
+
+Processing: _Ce7G35GIqA:frame_000037
+
+Processing: _Ce7G35GIqA:frame_000038
+
+Processing: _Ce7G35GIqA:frame_000039
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000040
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000041
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000042
+
+Processing: _Ce7G35GIqA:frame_000043
+
+Processing: _Ce7G35GIqA:frame_000044
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000045
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000046
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000047
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000048
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000049
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000050
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000051
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000052
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000053
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000054
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000055
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000056
+
+Processing: _Ce7G35GIqA:frame_000057
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000058
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000059
+
+Processing: _Ce7G35GIqA:frame_000060
+
+Processing: _Ce7G35GIqA:frame_000061
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000062
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000063
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000064
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000065
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000066
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000067
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000068
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000069
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000070
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000071
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000072
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000073
+
+Processing: _Ce7G35GIqA:frame_000074
+
+Processing: _Ce7G35GIqA:frame_000075
+
+Processing: _Ce7G35GIqA:frame_000076
+
+Processing: _Ce7G35GIqA:frame_000077
+
+Processing: _Ce7G35GIqA:frame_000078
+
+Processing: _Ce7G35GIqA:frame_000079
+
+Processing: _Ce7G35GIqA:frame_000080
+
+Processing: _Ce7G35GIqA:frame_000081
+
+Processing: _Ce7G35GIqA:frame_000082
+
+Processing: _Ce7G35GIqA:frame_000083
+
+Processing: _Ce7G35GIqA:frame_000084
+
+Processing: _Ce7G35GIqA:frame_000085
+
+Processing: _Ce7G35GIqA:frame_000086
+
+Processing: _Ce7G35GIqA:frame_000087
+
+Processing: _Ce7G35GIqA:frame_000088
+
+Processing: _Ce7G35GIqA:frame_000089
+
+Processing: _Ce7G35GIqA:frame_000090
+
+Processing: _Ce7G35GIqA:frame_000091
+
+Processing: _Ce7G35GIqA:frame_000092
+
+Processing: _Ce7G35GIqA:frame_000093
+
+Processing: _Ce7G35GIqA:frame_000094
+
+Processing: _Ce7G35GIqA:frame_000095
+
+Processing: _Ce7G35GIqA:frame_000096
+
+Processing: _Ce7G35GIqA:frame_000097
+
+Processing: _Ce7G35GIqA:frame_000098
+
+Processing: _Ce7G35GIqA:frame_000099
+
+Processing: _Ce7G35GIqA:frame_000100
+
+Processing: _Ce7G35GIqA:frame_000101
+
+Processing: _Ce7G35GIqA:frame_000102
+
+Processing: _Ce7G35GIqA:frame_000103
+
+Processing: _Ce7G35GIqA:frame_000104
+
+Processing: _Ce7G35GIqA:frame_000105
+
+Processing: _Ce7G35GIqA:frame_000106
+
+Processing: _Ce7G35GIqA:frame_000107
+
+Processing: _Ce7G35GIqA:frame_000108
+
+Processing: _Ce7G35GIqA:frame_000109
+
+Processing: _Ce7G35GIqA:frame_000110
+
+Processing: _Ce7G35GIqA:frame_000111
+
+Processing: _Ce7G35GIqA:frame_000112
+
+Processing: _Ce7G35GIqA:frame_000113
+
+Processing: _Ce7G35GIqA:frame_000114
+
+Processing: _Ce7G35GIqA:frame_000115
+
+Processing: _Ce7G35GIqA:frame_000116
+
+Processing: _Ce7G35GIqA:frame_000117
+
+Processing: _Ce7G35GIqA:frame_000118
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000119
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000120
+
+Processing: _Ce7G35GIqA:frame_000121
+
+Processing: _Ce7G35GIqA:frame_000122
+
+Processing: _Ce7G35GIqA:frame_000123
+
+Processing: _Ce7G35GIqA:frame_000124
+
+Processing: _Ce7G35GIqA:frame_000125
+
+Processing: _Ce7G35GIqA:frame_000126
+
+Processing: _Ce7G35GIqA:frame_000127
+
+Processing: _Ce7G35GIqA:frame_000128
+
+Processing: _Ce7G35GIqA:frame_000129
+
+Processing: _Ce7G35GIqA:frame_000130
+
+Processing: _Ce7G35GIqA:frame_000131
+
+Processing: _Ce7G35GIqA:frame_000132
+
+Processing: _Ce7G35GIqA:frame_000133
+
+Processing: _Ce7G35GIqA:frame_000134
+
+Processing: _Ce7G35GIqA:frame_000135
+
+Processing: _Ce7G35GIqA:frame_000136
+
+Processing: _Ce7G35GIqA:frame_000137
+
+Processing: _Ce7G35GIqA:frame_000138
+
+Processing: _Ce7G35GIqA:frame_000139
+
+Processing: _Ce7G35GIqA:frame_000140
+
+Processing: _Ce7G35GIqA:frame_000141
+
+Processing: _Ce7G35GIqA:frame_000142
+
+Processing: _Ce7G35GIqA:frame_000143
+
+Processing: _Ce7G35GIqA:frame_000144
+
+Processing: _Ce7G35GIqA:frame_000145
+
+Processing: _Ce7G35GIqA:frame_000146
+
+Processing: _Ce7G35GIqA:frame_000147
+
+Processing: _Ce7G35GIqA:frame_000148
+
+Processing: _Ce7G35GIqA:frame_000149
+
+Processing: _Ce7G35GIqA:frame_000150
+
+Processing: _Ce7G35GIqA:frame_000151
+
+Processing: _Ce7G35GIqA:frame_000152
+
+Processing: _Ce7G35GIqA:frame_000153
+
+Processing: _Ce7G35GIqA:frame_000154
+
+Processing: _Ce7G35GIqA:frame_000155
+
+Processing: _Ce7G35GIqA:frame_000156
+
+Processing: _Ce7G35GIqA:frame_000157
+
+Processing: _Ce7G35GIqA:frame_000158
+
+Processing: _Ce7G35GIqA:frame_000159
+
+Processing: _Ce7G35GIqA:frame_000160
+
+Processing: _Ce7G35GIqA:frame_000161
+
+Processing: _Ce7G35GIqA:frame_000162
+
+Processing: _Ce7G35GIqA:frame_000163
+
+Processing: _Ce7G35GIqA:frame_000164
+
+Processing: _Ce7G35GIqA:frame_000165
+
+Processing: _Ce7G35GIqA:frame_000166
+
+Processing: _Ce7G35GIqA:frame_000167
+
+Processing: _Ce7G35GIqA:frame_000168
+
+Processing: _Ce7G35GIqA:frame_000169
+
+Processing: _Ce7G35GIqA:frame_000170
+
+Processing: _Ce7G35GIqA:frame_000171
+
+Processing: _Ce7G35GIqA:frame_000172
+
+Processing: _Ce7G35GIqA:frame_000173
+
+Processing: _Ce7G35GIqA:frame_000174
+
+Processing: _Ce7G35GIqA:frame_000175
+
+Processing: _Ce7G35GIqA:frame_000176
+
+Processing: _Ce7G35GIqA:frame_000177
+
+Processing: _Ce7G35GIqA:frame_000178
+
+Processing: _Ce7G35GIqA:frame_000179
+
+Processing: _Ce7G35GIqA:frame_000180
+
+Processing: _Ce7G35GIqA:frame_000181
+
+Processing: _Ce7G35GIqA:frame_000182
+
+Processing: _Ce7G35GIqA:frame_000183
+
+Processing: _Ce7G35GIqA:frame_000184
+
+Processing: _Ce7G35GIqA:frame_000185
+
+Processing: _Ce7G35GIqA:frame_000186
+
+Processing: _Ce7G35GIqA:frame_000187
+
+Processing: _Ce7G35GIqA:frame_000188
+
+Processing: _Ce7G35GIqA:frame_000189
+
+Processing: _Ce7G35GIqA:frame_000190
+
+Processing: _Ce7G35GIqA:frame_000191
+
+Processing: _Ce7G35GIqA:frame_000192
+
+Processing: _Ce7G35GIqA:frame_000193
+
+Processing: _Ce7G35GIqA:frame_000194
+
+Processing: _Ce7G35GIqA:frame_000195
+
+Processing: _Ce7G35GIqA:frame_000196
+
+Processing: _Ce7G35GIqA:frame_000197
+
+Processing: _Ce7G35GIqA:frame_000198
+
+Processing: _Ce7G35GIqA:frame_000199
+
+Processing: _Ce7G35GIqA:frame_000200
+
+Processing: _Ce7G35GIqA:frame_000201
+
+Processing: _Ce7G35GIqA:frame_000202
+
+Processing: _Ce7G35GIqA:frame_000203
+
+Processing: _Ce7G35GIqA:frame_000204
+
+Processing: _Ce7G35GIqA:frame_000205
+
+Processing: _Ce7G35GIqA:frame_000206
+
+Processing: _Ce7G35GIqA:frame_000207
+
+Processing: _Ce7G35GIqA:frame_000208
+
+Processing: _Ce7G35GIqA:frame_000209
+
+Processing: _Ce7G35GIqA:frame_000210
+
+Processing: _Ce7G35GIqA:frame_000211
+
+Processing: _Ce7G35GIqA:frame_000212
+
+Processing: _Ce7G35GIqA:frame_000213
+
+Processing: _Ce7G35GIqA:frame_000214
+
+Processing: _Ce7G35GIqA:frame_000215
+
+Processing: _Ce7G35GIqA:frame_000216
+
+Processing: _Ce7G35GIqA:frame_000217
+
+Processing: _Ce7G35GIqA:frame_000218
+
+Processing: _Ce7G35GIqA:frame_000219
+
+Processing: _Ce7G35GIqA:frame_000220
+
+Processing: _Ce7G35GIqA:frame_000221
+
+Processing: _Ce7G35GIqA:frame_000222
+
+Processing: _Ce7G35GIqA:frame_000223
+
+Processing: _Ce7G35GIqA:frame_000224
+
+Processing: _Ce7G35GIqA:frame_000225
+
+Processing: _Ce7G35GIqA:frame_000226
+
+Processing: _Ce7G35GIqA:frame_000227
+
+Processing: _Ce7G35GIqA:frame_000228
+
+Processing: _Ce7G35GIqA:frame_000229
+
+Processing: _Ce7G35GIqA:frame_000230
+
+Processing: _Ce7G35GIqA:frame_000231
+
+Processing: _Ce7G35GIqA:frame_000232
+
+Processing: _Ce7G35GIqA:frame_000233
+
+Processing: _Ce7G35GIqA:frame_000234
+
+Processing: _Ce7G35GIqA:frame_000235
+
+Processing: _Ce7G35GIqA:frame_000236
+
+Processing: _Ce7G35GIqA:frame_000237
+
+Processing: _Ce7G35GIqA:frame_000238
+
+Processing: _Ce7G35GIqA:frame_000239
+
+Processing: _Ce7G35GIqA:frame_000240
+
+Processing: _Ce7G35GIqA:frame_000241
+
+Processing: _Ce7G35GIqA:frame_000242
+
+Processing: _Ce7G35GIqA:frame_000243
+
+Processing: _Ce7G35GIqA:frame_000244
+
+Processing: _Ce7G35GIqA:frame_000245
+
+Processing: _Ce7G35GIqA:frame_000246
+
+Processing: _Ce7G35GIqA:frame_000247
+
+Processing: _Ce7G35GIqA:frame_000248
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000249
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000250
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000251
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000252
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000253
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000254
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000255
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000256
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000257
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000258
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000259
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000260
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000261
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000262
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000263
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000264
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000265
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000266
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000267
+
+Processing: _Ce7G35GIqA:frame_000268
+
+Processing: _Ce7G35GIqA:frame_000269
+
+Processing: _Ce7G35GIqA:frame_000270
+
+Processing: _Ce7G35GIqA:frame_000271
+
+Processing: _Ce7G35GIqA:frame_000272
+
+Processing: _Ce7G35GIqA:frame_000273
+
+Processing: _Ce7G35GIqA:frame_000274
+
+Processing: _Ce7G35GIqA:frame_000275
+
+Processing: _Ce7G35GIqA:frame_000276
+
+Processing: _Ce7G35GIqA:frame_000277
+
+Processing: _Ce7G35GIqA:frame_000278
+
+Processing: _Ce7G35GIqA:frame_000279
+
+Processing: _Ce7G35GIqA:frame_000280
+
+Processing: _Ce7G35GIqA:frame_000281
+
+Processing: _Ce7G35GIqA:frame_000282
+
+Processing: _Ce7G35GIqA:frame_000283
+
+Processing: _Ce7G35GIqA:frame_000284
+
+Processing: _Ce7G35GIqA:frame_000285
+
+Processing: _Ce7G35GIqA:frame_000286
+
+Processing: _Ce7G35GIqA:frame_000287
+
+Processing: _Ce7G35GIqA:frame_000288
+
+Processing: _Ce7G35GIqA:frame_000289
+
+Processing: _Ce7G35GIqA:frame_000290
+
+Processing: _Ce7G35GIqA:frame_000291
+
+Processing: _Ce7G35GIqA:frame_000292
+
+Processing: _Ce7G35GIqA:frame_000293
+
+Processing: _Ce7G35GIqA:frame_000294
+
+Processing: _Ce7G35GIqA:frame_000295
+
+Processing: _Ce7G35GIqA:frame_000296
+
+Processing: _Ce7G35GIqA:frame_000297
+
+Processing: _Ce7G35GIqA:frame_000298
+
+Processing: _Ce7G35GIqA:frame_000299
+
+Processing: _Ce7G35GIqA:frame_000300
+
+Processing: _Ce7G35GIqA:frame_000301
+
+Processing: _Ce7G35GIqA:frame_000302
+
+Processing: _Ce7G35GIqA:frame_000303
+
+Processing: _Ce7G35GIqA:frame_000304
+
+Processing: _Ce7G35GIqA:frame_000305
+
+Processing: _Ce7G35GIqA:frame_000306
+
+Processing: _Ce7G35GIqA:frame_000307
+
+Processing: _Ce7G35GIqA:frame_000308
+
+Processing: _Ce7G35GIqA:frame_000309
+
+Processing: _Ce7G35GIqA:frame_000310
+
+Processing: _Ce7G35GIqA:frame_000311
+
+Processing: _Ce7G35GIqA:frame_000312
+
+Processing: _Ce7G35GIqA:frame_000313
+
+Processing: _Ce7G35GIqA:frame_000314
+
+Processing: _Ce7G35GIqA:frame_000315
+
+Processing: _Ce7G35GIqA:frame_000316
+
+Processing: _Ce7G35GIqA:frame_000317
+
+Processing: _Ce7G35GIqA:frame_000318
+
+Processing: _Ce7G35GIqA:frame_000319
+
+Processing: _Ce7G35GIqA:frame_000320
+
+Processing: _Ce7G35GIqA:frame_000321
+
+Processing: _Ce7G35GIqA:frame_000322
+
+Processing: _Ce7G35GIqA:frame_000323
+
+Processing: _Ce7G35GIqA:frame_000324
+
+Processing: _Ce7G35GIqA:frame_000325
+
+Processing: _Ce7G35GIqA:frame_000326
+
+Processing: _Ce7G35GIqA:frame_000327
+
+Processing: _Ce7G35GIqA:frame_000328
+
+Processing: _Ce7G35GIqA:frame_000329
+
+Processing: _Ce7G35GIqA:frame_000330
+
+Processing: _Ce7G35GIqA:frame_000331
+
+Processing: _Ce7G35GIqA:frame_000332
+
+Processing: _Ce7G35GIqA:frame_000333
+
+Processing: _Ce7G35GIqA:frame_000334
+
+Processing: _Ce7G35GIqA:frame_000335
+
+Processing: _Ce7G35GIqA:frame_000336
+
+Processing: _Ce7G35GIqA:frame_000337
+
+Processing: _Ce7G35GIqA:frame_000338
+
+Processing: _Ce7G35GIqA:frame_000339
+
+Processing: _Ce7G35GIqA:frame_000340
+
+Processing: _Ce7G35GIqA:frame_000341
+
+Processing: _Ce7G35GIqA:frame_000342
+
+Processing: _Ce7G35GIqA:frame_000343
+
+Processing: _Ce7G35GIqA:frame_000344
+
+Processing: _Ce7G35GIqA:frame_000345
+
+Processing: _Ce7G35GIqA:frame_000346
+
+Processing: _Ce7G35GIqA:frame_000347
+
+Processing: _Ce7G35GIqA:frame_000348
+
+Processing: _Ce7G35GIqA:frame_000349
+
+Processing: _Ce7G35GIqA:frame_000350
+
+Processing: _Ce7G35GIqA:frame_000351
+
+Processing: _Ce7G35GIqA:frame_000352
+
+Processing: _Ce7G35GIqA:frame_000353
+
+Processing: _Ce7G35GIqA:frame_000354
+
+Processing: _Ce7G35GIqA:frame_000355
+
+Processing: _Ce7G35GIqA:frame_000356
+
+Processing: _Ce7G35GIqA:frame_000357
+
+Processing: _Ce7G35GIqA:frame_000358
+
+Processing: _Ce7G35GIqA:frame_000359
+
+Processing: _Ce7G35GIqA:frame_000360
+
+Processing: _Ce7G35GIqA:frame_000361
+
+Processing: _Ce7G35GIqA:frame_000362
+
+Processing: _Ce7G35GIqA:frame_000363
+
+Processing: _Ce7G35GIqA:frame_000364
+
+Processing: _Ce7G35GIqA:frame_000365
+
+Processing: _Ce7G35GIqA:frame_000366
+
+Processing: _Ce7G35GIqA:frame_000367
+
+Processing: _Ce7G35GIqA:frame_000368
+
+Processing: _Ce7G35GIqA:frame_000369
+
+Processing: _Ce7G35GIqA:frame_000370
+
+Processing: _Ce7G35GIqA:frame_000371
+
+Processing: _Ce7G35GIqA:frame_000372
+
+Processing: _Ce7G35GIqA:frame_000373
+
+Processing: _Ce7G35GIqA:frame_000374
+
+Processing: _Ce7G35GIqA:frame_000375
+
+Processing: _Ce7G35GIqA:frame_000376
+
+Processing: _Ce7G35GIqA:frame_000377
+
+Processing: _Ce7G35GIqA:frame_000378
+
+Processing: _Ce7G35GIqA:frame_000379
+
+Processing: _Ce7G35GIqA:frame_000380
+
+Processing: _Ce7G35GIqA:frame_000381
+
+Processing: _Ce7G35GIqA:frame_000382
+
+Processing: _Ce7G35GIqA:frame_000383
+
+Processing: _Ce7G35GIqA:frame_000384
+
+Processing: _Ce7G35GIqA:frame_000385
+
+Processing: _Ce7G35GIqA:frame_000386
+
+Processing: _Ce7G35GIqA:frame_000387
+
+Processing: _Ce7G35GIqA:frame_000388
+
+Processing: _Ce7G35GIqA:frame_000389
+
+Processing: _Ce7G35GIqA:frame_000390
+
+Processing: _Ce7G35GIqA:frame_000391
+
+Processing: _Ce7G35GIqA:frame_000392
+
+Processing: _Ce7G35GIqA:frame_000393
+
+Processing: _Ce7G35GIqA:frame_000394
+
+Processing: _Ce7G35GIqA:frame_000395
+
+Processing: _Ce7G35GIqA:frame_000396
+
+Processing: _Ce7G35GIqA:frame_000397
+
+Processing: _Ce7G35GIqA:frame_000398
+
+Processing: _Ce7G35GIqA:frame_000399
+
+Processing: _Ce7G35GIqA:frame_000400
+
+Processing: _Ce7G35GIqA:frame_000401
+
+Processing: _Ce7G35GIqA:frame_000402
+
+Processing: _Ce7G35GIqA:frame_000403
+
+Processing: _Ce7G35GIqA:frame_000404
+
+Processing: _Ce7G35GIqA:frame_000405
+
+Processing: _Ce7G35GIqA:frame_000406
+
+Processing: _Ce7G35GIqA:frame_000407
+
+Processing: _Ce7G35GIqA:frame_000408
+
+Processing: _Ce7G35GIqA:frame_000409
+
+Processing: _Ce7G35GIqA:frame_000410
+
+Processing: _Ce7G35GIqA:frame_000411
+
+Processing: _Ce7G35GIqA:frame_000412
+
+Processing: _Ce7G35GIqA:frame_000413
+
+Processing: _Ce7G35GIqA:frame_000414
+
+Processing: _Ce7G35GIqA:frame_000415
+
+Processing: _Ce7G35GIqA:frame_000416
+
+Processing: _Ce7G35GIqA:frame_000417
+
+Processing: _Ce7G35GIqA:frame_000418
+
+Processing: _Ce7G35GIqA:frame_000419
+
+Processing: _Ce7G35GIqA:frame_000420
+
+Processing: _Ce7G35GIqA:frame_000421
+
+Processing: _Ce7G35GIqA:frame_000422
+
+Processing: _Ce7G35GIqA:frame_000423
+
+Processing: _Ce7G35GIqA:frame_000424
+
+Processing: _Ce7G35GIqA:frame_000425
+
+Processing: _Ce7G35GIqA:frame_000426
+
+Processing: _Ce7G35GIqA:frame_000427
+
+Processing: _Ce7G35GIqA:frame_000428
+
+Processing: _Ce7G35GIqA:frame_000429
+
+Processing: _Ce7G35GIqA:frame_000430
+
+Processing: _Ce7G35GIqA:frame_000431
+
+Processing: _Ce7G35GIqA:frame_000432
+
+Processing: _Ce7G35GIqA:frame_000433
+
+Processing: _Ce7G35GIqA:frame_000434
+
+Processing: _Ce7G35GIqA:frame_000435
+
+Processing: _Ce7G35GIqA:frame_000436
+
+Processing: _Ce7G35GIqA:frame_000437
+
+Processing: _Ce7G35GIqA:frame_000438
+
+Processing: _Ce7G35GIqA:frame_000439
+
+Processing: _Ce7G35GIqA:frame_000440
+
+Processing: _Ce7G35GIqA:frame_000441
+
+Processing: _Ce7G35GIqA:frame_000442
+
+Processing: _Ce7G35GIqA:frame_000443
+
+Processing: _Ce7G35GIqA:frame_000444
+
+Processing: _Ce7G35GIqA:frame_000445
+
+Processing: _Ce7G35GIqA:frame_000446
+
+Processing: _Ce7G35GIqA:frame_000447
+
+Processing: _Ce7G35GIqA:frame_000448
+
+Processing: _Ce7G35GIqA:frame_000449
+
+Processing: _Ce7G35GIqA:frame_000450
+
+Processing: _Ce7G35GIqA:frame_000451
+
+Processing: _Ce7G35GIqA:frame_000452
+
+Processing: _Ce7G35GIqA:frame_000453
+
+Processing: _Ce7G35GIqA:frame_000454
+
+Processing: _Ce7G35GIqA:frame_000455
+
+Processing: _Ce7G35GIqA:frame_000456
+
+Processing: _Ce7G35GIqA:frame_000457
+
+Processing: _Ce7G35GIqA:frame_000458
+
+Processing: _Ce7G35GIqA:frame_000459
+
+Processing: _Ce7G35GIqA:frame_000460
+
+Processing: _Ce7G35GIqA:frame_000461
+
+Processing: _Ce7G35GIqA:frame_000462
+
+Processing: _Ce7G35GIqA:frame_000463
+
+Processing: _Ce7G35GIqA:frame_000464
+
+Processing: _Ce7G35GIqA:frame_000465
+
+Processing: _Ce7G35GIqA:frame_000466
+
+Processing: _Ce7G35GIqA:frame_000467
+
+Processing: _Ce7G35GIqA:frame_000468
+
+Processing: _Ce7G35GIqA:frame_000469
+
+Processing: _Ce7G35GIqA:frame_000470
+
+Processing: _Ce7G35GIqA:frame_000471
+
+Processing: _Ce7G35GIqA:frame_000472
+
+Processing: _Ce7G35GIqA:frame_000473
+
+Processing: _Ce7G35GIqA:frame_000474
+
+Processing: _Ce7G35GIqA:frame_000475
+
+Processing: _Ce7G35GIqA:frame_000476
+
+Processing: _Ce7G35GIqA:frame_000477
+
+Processing: _Ce7G35GIqA:frame_000478
+
+Processing: _Ce7G35GIqA:frame_000479
+
+Processing: _Ce7G35GIqA:frame_000480
+
+Processing: _Ce7G35GIqA:frame_000481
+
+Processing: _Ce7G35GIqA:frame_000482
+
+Processing: _Ce7G35GIqA:frame_000483
+
+Processing: _Ce7G35GIqA:frame_000484
+
+Processing: _Ce7G35GIqA:frame_000485
+
+Processing: _Ce7G35GIqA:frame_000486
+
+Processing: _Ce7G35GIqA:frame_000487
+
+Processing: _Ce7G35GIqA:frame_000488
+
+Processing: _Ce7G35GIqA:frame_000489
+
+Processing: _Ce7G35GIqA:frame_000490
+
+Processing: _Ce7G35GIqA:frame_000491
+
+Processing: _Ce7G35GIqA:frame_000492
+
+Processing: _Ce7G35GIqA:frame_000493
+
+Processing: _Ce7G35GIqA:frame_000494
+
+Processing: _Ce7G35GIqA:frame_000495
+
+Processing: _Ce7G35GIqA:frame_000496
+
+Processing: _Ce7G35GIqA:frame_000497
+
+Processing: _Ce7G35GIqA:frame_000498
+
+Processing: _Ce7G35GIqA:frame_000499
+
+Processing: _Ce7G35GIqA:frame_000500
+
+Processing: _Ce7G35GIqA:frame_000501
+
+Processing: _Ce7G35GIqA:frame_000502
+
+Processing: _Ce7G35GIqA:frame_000503
+
+Processing: _Ce7G35GIqA:frame_000504
+
+Processing: _Ce7G35GIqA:frame_000505
+
+Processing: _Ce7G35GIqA:frame_000506
+
+Processing: _Ce7G35GIqA:frame_000507
+
+Processing: _Ce7G35GIqA:frame_000508
+
+Processing: _Ce7G35GIqA:frame_000509
+
+Processing: _Ce7G35GIqA:frame_000510
+
+Processing: _Ce7G35GIqA:frame_000511
+
+Processing: _Ce7G35GIqA:frame_000512
+
+Processing: _Ce7G35GIqA:frame_000513
+
+Processing: _Ce7G35GIqA:frame_000514
+
+Processing: _Ce7G35GIqA:frame_000515
+
+Processing: _Ce7G35GIqA:frame_000516
+
+Processing: _Ce7G35GIqA:frame_000517
+
+Processing: _Ce7G35GIqA:frame_000518
+
+Processing: _Ce7G35GIqA:frame_000519
+
+Processing: _Ce7G35GIqA:frame_000520
+
+Processing: _Ce7G35GIqA:frame_000521
+
+Processing: _Ce7G35GIqA:frame_000522
+
+Processing: _Ce7G35GIqA:frame_000523
+
+Processing: _Ce7G35GIqA:frame_000524
+
+Processing: _Ce7G35GIqA:frame_000525
+
+Processing: _Ce7G35GIqA:frame_000526
+
+Processing: _Ce7G35GIqA:frame_000527
+
+Processing: _Ce7G35GIqA:frame_000528
+
+Processing: _Ce7G35GIqA:frame_000529
+
+Processing: _Ce7G35GIqA:frame_000530
+
+Processing: _Ce7G35GIqA:frame_000531
+
+Processing: _Ce7G35GIqA:frame_000532
+
+Processing: _Ce7G35GIqA:frame_000533
+
+Processing: _Ce7G35GIqA:frame_000534
+
+Processing: _Ce7G35GIqA:frame_000535
+
+Processing: _Ce7G35GIqA:frame_000536
+
+Processing: _Ce7G35GIqA:frame_000537
+
+Processing: _Ce7G35GIqA:frame_000538
+
+Processing: _Ce7G35GIqA:frame_000539
+
+Processing: _Ce7G35GIqA:frame_000540
+
+Processing: _Ce7G35GIqA:frame_000541
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000542
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000543
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000544
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000545
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000546
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000547
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000548
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000549
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000550
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000551
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000552
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000553
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000554
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000555
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000556
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000557
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000558
+
+Processing: _Ce7G35GIqA:frame_000559
+
+Processing: _Ce7G35GIqA:frame_000560
+
+Processing: _Ce7G35GIqA:frame_000561
+
+Processing: _Ce7G35GIqA:frame_000562
+
+Processing: _Ce7G35GIqA:frame_000563
+
+Processing: _Ce7G35GIqA:frame_000564
+
+Processing: _Ce7G35GIqA:frame_000565
+
+Processing: _Ce7G35GIqA:frame_000566
+
+Processing: _Ce7G35GIqA:frame_000567
+
+Processing: _Ce7G35GIqA:frame_000568
+
+Processing: _Ce7G35GIqA:frame_000569
+
+Processing: _Ce7G35GIqA:frame_000570
+
+Processing: _Ce7G35GIqA:frame_000571
+
+Processing: _Ce7G35GIqA:frame_000572
+
+Processing: _Ce7G35GIqA:frame_000573
+
+Processing: _Ce7G35GIqA:frame_000574
+
+Processing: _Ce7G35GIqA:frame_000575
+
+Processing: _Ce7G35GIqA:frame_000576
+
+Processing: _Ce7G35GIqA:frame_000577
+
+Processing: _Ce7G35GIqA:frame_000578
+
+Processing: _Ce7G35GIqA:frame_000579
+
+Processing: _Ce7G35GIqA:frame_000580
+
+Processing: _Ce7G35GIqA:frame_000581
+
+Processing: _Ce7G35GIqA:frame_000582
+
+Processing: _Ce7G35GIqA:frame_000583
+
+Processing: _Ce7G35GIqA:frame_000584
+
+Processing: _Ce7G35GIqA:frame_000585
+
+Processing: _Ce7G35GIqA:frame_000586
+
+Processing: _Ce7G35GIqA:frame_000587
+
+Processing: _Ce7G35GIqA:frame_000588
+
+Processing: _Ce7G35GIqA:frame_000589
+
+Processing: _Ce7G35GIqA:frame_000590
+
+Processing: _Ce7G35GIqA:frame_000591
+
+Processing: _Ce7G35GIqA:frame_000592
+
+Processing: _Ce7G35GIqA:frame_000593
+
+Processing: _Ce7G35GIqA:frame_000594
+
+Processing: _Ce7G35GIqA:frame_000595
+
+Processing: _Ce7G35GIqA:frame_000596
+
+Processing: _Ce7G35GIqA:frame_000597
+
+Processing: _Ce7G35GIqA:frame_000598
+
+Processing: _Ce7G35GIqA:frame_000599
+
+Processing: _Ce7G35GIqA:frame_000600
+
+Processing: _Ce7G35GIqA:frame_000601
+
+Processing: _Ce7G35GIqA:frame_000602
+
+Processing: _Ce7G35GIqA:frame_000603
+
+Processing: _Ce7G35GIqA:frame_000604
+
+Processing: _Ce7G35GIqA:frame_000605
+
+Processing: _Ce7G35GIqA:frame_000606
+
+Processing: _Ce7G35GIqA:frame_000607
+
+Processing: _Ce7G35GIqA:frame_000608
+
+Processing: _Ce7G35GIqA:frame_000609
+
+Processing: _Ce7G35GIqA:frame_000610
+
+Processing: _Ce7G35GIqA:frame_000611
+
+Processing: _Ce7G35GIqA:frame_000612
+
+Processing: _Ce7G35GIqA:frame_000613
+
+Processing: _Ce7G35GIqA:frame_000614
+
+Processing: _Ce7G35GIqA:frame_000615
+
+Processing: _Ce7G35GIqA:frame_000616
+
+Processing: _Ce7G35GIqA:frame_000617
+
+Processing: _Ce7G35GIqA:frame_000618
+
+Processing: _Ce7G35GIqA:frame_000619
+
+Processing: _Ce7G35GIqA:frame_000620
+
+Processing: _Ce7G35GIqA:frame_000621
+
+Processing: _Ce7G35GIqA:frame_000622
+
+Processing: _Ce7G35GIqA:frame_000623
+
+Processing: _Ce7G35GIqA:frame_000624
+
+Processing: _Ce7G35GIqA:frame_000625
+
+Processing: _Ce7G35GIqA:frame_000626
+
+Processing: _Ce7G35GIqA:frame_000627
+
+Processing: _Ce7G35GIqA:frame_000628
+
+Processing: _Ce7G35GIqA:frame_000629
+
+Processing: _Ce7G35GIqA:frame_000630
+
+Processing: _Ce7G35GIqA:frame_000631
+
+Processing: _Ce7G35GIqA:frame_000632
+
+Processing: _Ce7G35GIqA:frame_000633
+
+Processing: _Ce7G35GIqA:frame_000634
+
+Processing: _Ce7G35GIqA:frame_000635
+
+Processing: _Ce7G35GIqA:frame_000636
+
+Processing: _Ce7G35GIqA:frame_000637
+
+Processing: _Ce7G35GIqA:frame_000638
+
+Processing: _Ce7G35GIqA:frame_000639
+
+Processing: _Ce7G35GIqA:frame_000640
+
+Processing: _Ce7G35GIqA:frame_000641
+
+Processing: _Ce7G35GIqA:frame_000642
+
+Processing: _Ce7G35GIqA:frame_000643
+
+Processing: _Ce7G35GIqA:frame_000644
+
+Processing: _Ce7G35GIqA:frame_000645
+
+Processing: _Ce7G35GIqA:frame_000646
+
+Processing: _Ce7G35GIqA:frame_000647
+
+Processing: _Ce7G35GIqA:frame_000648
+
+Processing: _Ce7G35GIqA:frame_000649
+
+Processing: _Ce7G35GIqA:frame_000650
+
+Processing: _Ce7G35GIqA:frame_000651
+
+Processing: _Ce7G35GIqA:frame_000652
+
+Processing: _Ce7G35GIqA:frame_000653
+
+Processing: _Ce7G35GIqA:frame_000654
+
+Processing: _Ce7G35GIqA:frame_000655
+
+Processing: _Ce7G35GIqA:frame_000656
+
+Processing: _Ce7G35GIqA:frame_000657
+
+Processing: _Ce7G35GIqA:frame_000658
+
+Processing: _Ce7G35GIqA:frame_000659
+
+Processing: _Ce7G35GIqA:frame_000660
+
+Processing: _Ce7G35GIqA:frame_000661
+
+Processing: _Ce7G35GIqA:frame_000662
+
+Processing: _Ce7G35GIqA:frame_000663
+
+Processing: _Ce7G35GIqA:frame_000664
+
+Processing: _Ce7G35GIqA:frame_000665
+
+Processing: _Ce7G35GIqA:frame_000666
+
+Processing: _Ce7G35GIqA:frame_000667
+
+Processing: _Ce7G35GIqA:frame_000668
+
+Processing: _Ce7G35GIqA:frame_000669
+
+Processing: _Ce7G35GIqA:frame_000670
+
+Processing: _Ce7G35GIqA:frame_000671
+
+Processing: _Ce7G35GIqA:frame_000672
+
+Processing: _Ce7G35GIqA:frame_000673
+
+Processing: _Ce7G35GIqA:frame_000674
+
+Processing: _Ce7G35GIqA:frame_000675
+
+Processing: _Ce7G35GIqA:frame_000676
+
+Processing: _Ce7G35GIqA:frame_000677
+
+Processing: _Ce7G35GIqA:frame_000678
+
+Processing: _Ce7G35GIqA:frame_000679
+
+Processing: _Ce7G35GIqA:frame_000680
+
+Processing: _Ce7G35GIqA:frame_000681
+
+Processing: _Ce7G35GIqA:frame_000682
+
+Processing: _Ce7G35GIqA:frame_000683
+
+Processing: _Ce7G35GIqA:frame_000684
+
+Processing: _Ce7G35GIqA:frame_000685
+
+Processing: _Ce7G35GIqA:frame_000686
+
+Processing: _Ce7G35GIqA:frame_000687
+
+Processing: _Ce7G35GIqA:frame_000688
+
+Processing: _Ce7G35GIqA:frame_000689
+
+Processing: _Ce7G35GIqA:frame_000690
+
+Processing: _Ce7G35GIqA:frame_000691
+
+Processing: _Ce7G35GIqA:frame_000692
+
+Processing: _Ce7G35GIqA:frame_000693
+
+Processing: _Ce7G35GIqA:frame_000694
+
+Processing: _Ce7G35GIqA:frame_000695
+
+Processing: _Ce7G35GIqA:frame_000696
+
+Processing: _Ce7G35GIqA:frame_000697
+
+Processing: _Ce7G35GIqA:frame_000698
+
+Processing: _Ce7G35GIqA:frame_000699
+
+Processing: _Ce7G35GIqA:frame_000700
+
+Processing: _Ce7G35GIqA:frame_000701
+
+Processing: _Ce7G35GIqA:frame_000702
+
+Processing: _Ce7G35GIqA:frame_000703
+
+Processing: _Ce7G35GIqA:frame_000704
+
+Processing: _Ce7G35GIqA:frame_000705
+
+Processing: _Ce7G35GIqA:frame_000706
+
+Processing: _Ce7G35GIqA:frame_000707
+
+Processing: _Ce7G35GIqA:frame_000708
+
+Processing: _Ce7G35GIqA:frame_000709
+
+Processing: _Ce7G35GIqA:frame_000710
+
+Processing: _Ce7G35GIqA:frame_000711
+
+Processing: _Ce7G35GIqA:frame_000712
+
+Processing: _Ce7G35GIqA:frame_000713
+
+Processing: _Ce7G35GIqA:frame_000714
+
+Processing: _Ce7G35GIqA:frame_000715
+
+Processing: _Ce7G35GIqA:frame_000716
+
+Processing: _Ce7G35GIqA:frame_000717
+
+Processing: _Ce7G35GIqA:frame_000718
+
+Processing: _Ce7G35GIqA:frame_000719
+
+Processing: _Ce7G35GIqA:frame_000720
+
+Processing: _Ce7G35GIqA:frame_000721
+
+Processing: _Ce7G35GIqA:frame_000722
+
+Processing: _Ce7G35GIqA:frame_000723
+
+Processing: _Ce7G35GIqA:frame_000724
+
+Processing: _Ce7G35GIqA:frame_000725
+
+Processing: _Ce7G35GIqA:frame_000726
+
+Processing: _Ce7G35GIqA:frame_000727
+
+Processing: _Ce7G35GIqA:frame_000728
+
+Processing: _Ce7G35GIqA:frame_000729
+
+Processing: _Ce7G35GIqA:frame_000730
+
+Processing: _Ce7G35GIqA:frame_000731
+
+Processing: _Ce7G35GIqA:frame_000732
+
+Processing: _Ce7G35GIqA:frame_000733
+
+Processing: _Ce7G35GIqA:frame_000734
+
+Processing: _Ce7G35GIqA:frame_000735
+
+Processing: _Ce7G35GIqA:frame_000736
+
+Processing: _Ce7G35GIqA:frame_000737
+
+Processing: _Ce7G35GIqA:frame_000738
+
+Processing: _Ce7G35GIqA:frame_000739
+
+Processing: _Ce7G35GIqA:frame_000740
+
+Processing: _Ce7G35GIqA:frame_000741
+
+Processing: _Ce7G35GIqA:frame_000742
+
+Processing: _Ce7G35GIqA:frame_000743
+
+Processing: _Ce7G35GIqA:frame_000744
+
+Processing: _Ce7G35GIqA:frame_000745
+
+Processing: _Ce7G35GIqA:frame_000746
+
+Processing: _Ce7G35GIqA:frame_000747
+
+Processing: _Ce7G35GIqA:frame_000748
+
+Processing: _Ce7G35GIqA:frame_000749
+
+Processing: _Ce7G35GIqA:frame_000750
+
+Processing: _Ce7G35GIqA:frame_000751
+
+Processing: _Ce7G35GIqA:frame_000752
+
+Processing: _Ce7G35GIqA:frame_000753
+
+Processing: _Ce7G35GIqA:frame_000754
+
+Processing: _Ce7G35GIqA:frame_000755
+
+Processing: _Ce7G35GIqA:frame_000756
+
+Processing: _Ce7G35GIqA:frame_000757
+
+Processing: _Ce7G35GIqA:frame_000758
+
+Processing: _Ce7G35GIqA:frame_000759
+
+Processing: _Ce7G35GIqA:frame_000760
+
+Processing: _Ce7G35GIqA:frame_000761
+
+Processing: _Ce7G35GIqA:frame_000762
+
+Processing: _Ce7G35GIqA:frame_000763
+
+Processing: _Ce7G35GIqA:frame_000764
+
+Processing: _Ce7G35GIqA:frame_000765
+
+Processing: _Ce7G35GIqA:frame_000766
+
+Processing: _Ce7G35GIqA:frame_000767
+
+Processing: _Ce7G35GIqA:frame_000768
+
+Processing: _Ce7G35GIqA:frame_000769
+
+Processing: _Ce7G35GIqA:frame_000770
+
+Processing: _Ce7G35GIqA:frame_000771
+
+Processing: _Ce7G35GIqA:frame_000772
+
+Processing: _Ce7G35GIqA:frame_000773
+
+Processing: _Ce7G35GIqA:frame_000774
+
+Processing: _Ce7G35GIqA:frame_000775
+
+Processing: _Ce7G35GIqA:frame_000776
+
+Processing: _Ce7G35GIqA:frame_000777
+
+Processing: _Ce7G35GIqA:frame_000778
+
+Processing: _Ce7G35GIqA:frame_000779
+
+Processing: _Ce7G35GIqA:frame_000780
+
+Processing: _Ce7G35GIqA:frame_000781
+
+Processing: _Ce7G35GIqA:frame_000782
+
+Processing: _Ce7G35GIqA:frame_000783
+
+Processing: _Ce7G35GIqA:frame_000784
+
+Processing: _Ce7G35GIqA:frame_000785
+
+Processing: _Ce7G35GIqA:frame_000786
+
+Processing: _Ce7G35GIqA:frame_000787
+
+Processing: _Ce7G35GIqA:frame_000788
+
+Processing: _Ce7G35GIqA:frame_000789
+
+Processing: _Ce7G35GIqA:frame_000790
+
+Processing: _Ce7G35GIqA:frame_000791
+
+Processing: _Ce7G35GIqA:frame_000792
+
+Processing: _Ce7G35GIqA:frame_000793
+
+Processing: _Ce7G35GIqA:frame_000794
+
+Processing: _Ce7G35GIqA:frame_000795
+
+Processing: _Ce7G35GIqA:frame_000796
+
+Processing: _Ce7G35GIqA:frame_000797
+
+Processing: _Ce7G35GIqA:frame_000798
+
+Processing: _Ce7G35GIqA:frame_000799
+
+Processing: _Ce7G35GIqA:frame_000800
+
+Processing: _Ce7G35GIqA:frame_000801
+
+Processing: _Ce7G35GIqA:frame_000802
+
+Processing: _Ce7G35GIqA:frame_000803
+
+Processing: _Ce7G35GIqA:frame_000804
+
+Processing: _Ce7G35GIqA:frame_000805
+
+Processing: _Ce7G35GIqA:frame_000806
+
+Processing: _Ce7G35GIqA:frame_000807
+
+Processing: _Ce7G35GIqA:frame_000808
+
+Processing: _Ce7G35GIqA:frame_000809
+
+Processing: _Ce7G35GIqA:frame_000810
+
+Processing: _Ce7G35GIqA:frame_000811
+
+Processing: _Ce7G35GIqA:frame_000812
+
+Processing: _Ce7G35GIqA:frame_000813
+
+Processing: _Ce7G35GIqA:frame_000814
+
+Processing: _Ce7G35GIqA:frame_000815
+
+Processing: _Ce7G35GIqA:frame_000816
+
+Processing: _Ce7G35GIqA:frame_000817
+
+Processing: _Ce7G35GIqA:frame_000818
+
+Processing: _Ce7G35GIqA:frame_000819
+
+Processing: _Ce7G35GIqA:frame_000820
+
+Processing: _Ce7G35GIqA:frame_000821
+
+Processing: _Ce7G35GIqA:frame_000822
+
+Processing: _Ce7G35GIqA:frame_000823
+
+Processing: _Ce7G35GIqA:frame_000824
+
+Processing: _Ce7G35GIqA:frame_000825
+
+Processing: _Ce7G35GIqA:frame_000826
+
+Processing: _Ce7G35GIqA:frame_000827
+
+Processing: _Ce7G35GIqA:frame_000828
+
+Processing: _Ce7G35GIqA:frame_000829
+
+Processing: _Ce7G35GIqA:frame_000830
+
+Processing: _Ce7G35GIqA:frame_000831
+
+Processing: _Ce7G35GIqA:frame_000832
+
+Processing: _Ce7G35GIqA:frame_000833
+
+Processing: _Ce7G35GIqA:frame_000834
+
+Processing: _Ce7G35GIqA:frame_000835
+
+Processing: _Ce7G35GIqA:frame_000836
+
+Processing: _Ce7G35GIqA:frame_000837
+
+Processing: _Ce7G35GIqA:frame_000838
+
+Processing: _Ce7G35GIqA:frame_000839
+
+Processing: _Ce7G35GIqA:frame_000840
+
+Processing: _Ce7G35GIqA:frame_000841
+
+Processing: _Ce7G35GIqA:frame_000842
+
+Processing: _Ce7G35GIqA:frame_000843
+
+Processing: _Ce7G35GIqA:frame_000844
+
+Processing: _Ce7G35GIqA:frame_000845
+
+Processing: _Ce7G35GIqA:frame_000846
+
+Processing: _Ce7G35GIqA:frame_000847
+
+Processing: _Ce7G35GIqA:frame_000848
+
+Processing: _Ce7G35GIqA:frame_000849
+
+Processing: _Ce7G35GIqA:frame_000850
+
+Processing: _Ce7G35GIqA:frame_000851
+
+Processing: _Ce7G35GIqA:frame_000852
+
+Processing: _Ce7G35GIqA:frame_000853
+
+Processing: _Ce7G35GIqA:frame_000854
+
+Processing: _Ce7G35GIqA:frame_000855
+
+Processing: _Ce7G35GIqA:frame_000856
+
+Processing: _Ce7G35GIqA:frame_000857
+
+Processing: _Ce7G35GIqA:frame_000858
+
+Processing: _Ce7G35GIqA:frame_000859
+
+Processing: _Ce7G35GIqA:frame_000860
+
+Processing: _Ce7G35GIqA:frame_000861
+
+Processing: _Ce7G35GIqA:frame_000862
+
+Processing: _Ce7G35GIqA:frame_000863
+
+Processing: _Ce7G35GIqA:frame_000864
+
+Processing: _Ce7G35GIqA:frame_000865
+
+Processing: _Ce7G35GIqA:frame_000866
+
+Processing: _Ce7G35GIqA:frame_000867
+
+Processing: _Ce7G35GIqA:frame_000868
+
+Processing: _Ce7G35GIqA:frame_000869
+
+Processing: _Ce7G35GIqA:frame_000870
+
+Processing: _Ce7G35GIqA:frame_000871
+
+Processing: _Ce7G35GIqA:frame_000872
+
+Processing: _Ce7G35GIqA:frame_000873
+
+Processing: _Ce7G35GIqA:frame_000874
+
+Processing: _Ce7G35GIqA:frame_000875
+
+Processing: _Ce7G35GIqA:frame_000876
+
+Processing: _Ce7G35GIqA:frame_000877
+
+Processing: _Ce7G35GIqA:frame_000878
+
+Processing: _Ce7G35GIqA:frame_000879
+
+Processing: _Ce7G35GIqA:frame_000880
+
+Processing: _Ce7G35GIqA:frame_000881
+
+Processing: _Ce7G35GIqA:frame_000882
+
+Processing: _Ce7G35GIqA:frame_000883
+
+Processing: _Ce7G35GIqA:frame_000884
+
+Processing: _Ce7G35GIqA:frame_000885
+
+Processing: _Ce7G35GIqA:frame_000886
+
+Processing: _Ce7G35GIqA:frame_000887
+
+Processing: _Ce7G35GIqA:frame_000888
+
+Processing: _Ce7G35GIqA:frame_000889
+
+Processing: _Ce7G35GIqA:frame_000890
+
+Processing: _Ce7G35GIqA:frame_000891
+
+Processing: _Ce7G35GIqA:frame_000892
+
+Processing: _Ce7G35GIqA:frame_000893
+
+Processing: _Ce7G35GIqA:frame_000894
+
+Processing: _Ce7G35GIqA:frame_000895
+
+Processing: _Ce7G35GIqA:frame_000896
+
+Processing: _Ce7G35GIqA:frame_000897
+
+Processing: _Ce7G35GIqA:frame_000898
+
+Processing: _Ce7G35GIqA:frame_000899
+
+Processing: _Ce7G35GIqA:frame_000900
+
+Processing: _Ce7G35GIqA:frame_000901
+
+Processing: _Ce7G35GIqA:frame_000902
+
+Processing: _Ce7G35GIqA:frame_000903
+
+Processing: _Ce7G35GIqA:frame_000904
+
+Processing: _Ce7G35GIqA:frame_000905
+
+Processing: _Ce7G35GIqA:frame_000906
+
+Processing: _Ce7G35GIqA:frame_000907
+
+Processing: _Ce7G35GIqA:frame_000908
+
+Processing: _Ce7G35GIqA:frame_000909
+
+Processing: _Ce7G35GIqA:frame_000910
+
+Processing: _Ce7G35GIqA:frame_000911
+
+Processing: _Ce7G35GIqA:frame_000912
+
+Processing: _Ce7G35GIqA:frame_000913
+
+Processing: _Ce7G35GIqA:frame_000914
+
+Processing: _Ce7G35GIqA:frame_000915
+
+Processing: _Ce7G35GIqA:frame_000916
+
+Processing: _Ce7G35GIqA:frame_000917
+
+Processing: _Ce7G35GIqA:frame_000918
+
+Processing: _Ce7G35GIqA:frame_000919
+
+Processing: _Ce7G35GIqA:frame_000920
+
+Processing: _Ce7G35GIqA:frame_000921
+
+Processing: _Ce7G35GIqA:frame_000922
+
+Processing: _Ce7G35GIqA:frame_000923
+
+Processing: _Ce7G35GIqA:frame_000924
+
+Processing: _Ce7G35GIqA:frame_000925
+
+Processing: _Ce7G35GIqA:frame_000926
+
+Processing: _Ce7G35GIqA:frame_000927
+
+Processing: _Ce7G35GIqA:frame_000928
+
+Processing: _Ce7G35GIqA:frame_000929
+
+Processing: _Ce7G35GIqA:frame_000930
+
+Processing: _Ce7G35GIqA:frame_000931
+
+Processing: _Ce7G35GIqA:frame_000932
+
+Processing: _Ce7G35GIqA:frame_000933
+
+Processing: _Ce7G35GIqA:frame_000934
+
+Processing: _Ce7G35GIqA:frame_000935
+
+Processing: _Ce7G35GIqA:frame_000936
+
+Processing: _Ce7G35GIqA:frame_000937
+
+Processing: _Ce7G35GIqA:frame_000938
+
+Processing: _Ce7G35GIqA:frame_000939
+
+Processing: _Ce7G35GIqA:frame_000940
+
+Processing: _Ce7G35GIqA:frame_000941
+
+Processing: _Ce7G35GIqA:frame_000942
+
+Processing: _Ce7G35GIqA:frame_000943
+
+Processing: _Ce7G35GIqA:frame_000944
+
+Processing: _Ce7G35GIqA:frame_000945
+
+Processing: _Ce7G35GIqA:frame_000946
+
+Processing: _Ce7G35GIqA:frame_000947
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000948
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000949
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000950
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000951
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000952
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000953
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000954
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000955
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000956
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000957
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000958
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000959
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000960
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000961
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000962
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000963
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000964
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000965
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000966
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000967
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000968
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000969
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000970
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000971
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000972
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000973
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000974
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000975
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000976
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000977
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000978
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000979
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000980
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000981
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000982
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000983
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000984
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000985
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000986
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000987
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000988
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000989
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000990
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000991
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000992
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000993
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000994
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000995
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000996
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000997
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000998
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_000999
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001000
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001001
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001002
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001003
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001004
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001005
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001006
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001007
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001008
+
+Processing: _Ce7G35GIqA:frame_001009
+
+Processing: _Ce7G35GIqA:frame_001010
+
+Processing: _Ce7G35GIqA:frame_001011
+
+Processing: _Ce7G35GIqA:frame_001012
+
+Processing: _Ce7G35GIqA:frame_001013
+
+Processing: _Ce7G35GIqA:frame_001014
+
+Processing: _Ce7G35GIqA:frame_001015
+
+Processing: _Ce7G35GIqA:frame_001016
+
+Processing: _Ce7G35GIqA:frame_001017
+
+Processing: _Ce7G35GIqA:frame_001018
+
+Processing: _Ce7G35GIqA:frame_001019
+
+Processing: _Ce7G35GIqA:frame_001020
+
+Processing: _Ce7G35GIqA:frame_001021
+
+Processing: _Ce7G35GIqA:frame_001022
+
+Processing: _Ce7G35GIqA:frame_001023
+
+Processing: _Ce7G35GIqA:frame_001024
+
+Processing: _Ce7G35GIqA:frame_001025
+
+Processing: _Ce7G35GIqA:frame_001026
+
+Processing: _Ce7G35GIqA:frame_001027
+
+Processing: _Ce7G35GIqA:frame_001028
+
+Processing: _Ce7G35GIqA:frame_001029
+
+Processing: _Ce7G35GIqA:frame_001030
+
+Processing: _Ce7G35GIqA:frame_001031
+
+Processing: _Ce7G35GIqA:frame_001032
+
+Processing: _Ce7G35GIqA:frame_001033
+
+Processing: _Ce7G35GIqA:frame_001034
+
+Processing: _Ce7G35GIqA:frame_001035
+
+Processing: _Ce7G35GIqA:frame_001036
+
+Processing: _Ce7G35GIqA:frame_001037
+
+Processing: _Ce7G35GIqA:frame_001038
+
+Processing: _Ce7G35GIqA:frame_001039
+
+Processing: _Ce7G35GIqA:frame_001040
+
+Processing: _Ce7G35GIqA:frame_001041
+
+Processing: _Ce7G35GIqA:frame_001042
+
+Processing: _Ce7G35GIqA:frame_001043
+
+Processing: _Ce7G35GIqA:frame_001044
+
+Processing: _Ce7G35GIqA:frame_001045
+
+Processing: _Ce7G35GIqA:frame_001046
+
+Processing: _Ce7G35GIqA:frame_001047
+
+Processing: _Ce7G35GIqA:frame_001048
+
+Processing: _Ce7G35GIqA:frame_001049
+
+Processing: _Ce7G35GIqA:frame_001050
+
+Processing: _Ce7G35GIqA:frame_001051
+
+Processing: _Ce7G35GIqA:frame_001052
+
+Processing: _Ce7G35GIqA:frame_001053
+
+Processing: _Ce7G35GIqA:frame_001054
+
+Processing: _Ce7G35GIqA:frame_001055
+
+Processing: _Ce7G35GIqA:frame_001056
+
+Processing: _Ce7G35GIqA:frame_001057
+
+Processing: _Ce7G35GIqA:frame_001058
+
+Processing: _Ce7G35GIqA:frame_001059
+
+Processing: _Ce7G35GIqA:frame_001060
+
+Processing: _Ce7G35GIqA:frame_001061
+
+Processing: _Ce7G35GIqA:frame_001062
+
+Processing: _Ce7G35GIqA:frame_001063
+
+Processing: _Ce7G35GIqA:frame_001064
+
+Processing: _Ce7G35GIqA:frame_001065
+
+Processing: _Ce7G35GIqA:frame_001066
+
+Processing: _Ce7G35GIqA:frame_001067
+
+Processing: _Ce7G35GIqA:frame_001068
+
+Processing: _Ce7G35GIqA:frame_001069
+
+Processing: _Ce7G35GIqA:frame_001070
+
+Processing: _Ce7G35GIqA:frame_001071
+
+Processing: _Ce7G35GIqA:frame_001072
+
+Processing: _Ce7G35GIqA:frame_001073
+
+Processing: _Ce7G35GIqA:frame_001074
+
+Processing: _Ce7G35GIqA:frame_001075
+
+Processing: _Ce7G35GIqA:frame_001076
+
+Processing: _Ce7G35GIqA:frame_001077
+
+Processing: _Ce7G35GIqA:frame_001078
+
+Processing: _Ce7G35GIqA:frame_001079
+
+Processing: _Ce7G35GIqA:frame_001080
+
+Processing: _Ce7G35GIqA:frame_001081
+
+Processing: _Ce7G35GIqA:frame_001082
+
+Processing: _Ce7G35GIqA:frame_001083
+
+Processing: _Ce7G35GIqA:frame_001084
+
+Processing: _Ce7G35GIqA:frame_001085
+
+Processing: _Ce7G35GIqA:frame_001086
+
+Processing: _Ce7G35GIqA:frame_001087
+
+Processing: _Ce7G35GIqA:frame_001088
+
+Processing: _Ce7G35GIqA:frame_001089
+
+Processing: _Ce7G35GIqA:frame_001090
+
+Processing: _Ce7G35GIqA:frame_001091
+
+Processing: _Ce7G35GIqA:frame_001092
+
+Processing: _Ce7G35GIqA:frame_001093
+
+Processing: _Ce7G35GIqA:frame_001094
+
+Processing: _Ce7G35GIqA:frame_001095
+
+Processing: _Ce7G35GIqA:frame_001096
+
+Processing: _Ce7G35GIqA:frame_001097
+
+Processing: _Ce7G35GIqA:frame_001098
+
+Processing: _Ce7G35GIqA:frame_001099
+
+Processing: _Ce7G35GIqA:frame_001100
+
+Processing: _Ce7G35GIqA:frame_001101
+
+Processing: _Ce7G35GIqA:frame_001102
+
+Processing: _Ce7G35GIqA:frame_001103
+
+Processing: _Ce7G35GIqA:frame_001104
+
+Processing: _Ce7G35GIqA:frame_001105
+
+Processing: _Ce7G35GIqA:frame_001106
+
+Processing: _Ce7G35GIqA:frame_001107
+
+Processing: _Ce7G35GIqA:frame_001108
+
+Processing: _Ce7G35GIqA:frame_001109
+
+Processing: _Ce7G35GIqA:frame_001110
+
+Processing: _Ce7G35GIqA:frame_001111
+
+Processing: _Ce7G35GIqA:frame_001112
+
+Processing: _Ce7G35GIqA:frame_001113
+
+Processing: _Ce7G35GIqA:frame_001114
+
+Processing: _Ce7G35GIqA:frame_001115
+
+Processing: _Ce7G35GIqA:frame_001116
+
+Processing: _Ce7G35GIqA:frame_001117
+
+Processing: _Ce7G35GIqA:frame_001118
+
+Processing: _Ce7G35GIqA:frame_001119
+
+Processing: _Ce7G35GIqA:frame_001120
+
+Processing: _Ce7G35GIqA:frame_001121
+
+Processing: _Ce7G35GIqA:frame_001122
+
+Processing: _Ce7G35GIqA:frame_001123
+
+Processing: _Ce7G35GIqA:frame_001124
+
+Processing: _Ce7G35GIqA:frame_001125
+
+Processing: _Ce7G35GIqA:frame_001126
+
+Processing: _Ce7G35GIqA:frame_001127
+
+Processing: _Ce7G35GIqA:frame_001128
+
+Processing: _Ce7G35GIqA:frame_001129
+
+Processing: _Ce7G35GIqA:frame_001130
+
+Processing: _Ce7G35GIqA:frame_001131
+
+Processing: _Ce7G35GIqA:frame_001132
+
+Processing: _Ce7G35GIqA:frame_001133
+
+Processing: _Ce7G35GIqA:frame_001134
+
+Processing: _Ce7G35GIqA:frame_001135
+
+Processing: _Ce7G35GIqA:frame_001136
+
+Processing: _Ce7G35GIqA:frame_001137
+
+Processing: _Ce7G35GIqA:frame_001138
+
+Processing: _Ce7G35GIqA:frame_001139
+
+Processing: _Ce7G35GIqA:frame_001140
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001141
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001142
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001143
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001144
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001145
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001146
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001147
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001148
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001149
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001150
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001151
+
+Processing: _Ce7G35GIqA:frame_001152
+
+Processing: _Ce7G35GIqA:frame_001153
+
+Processing: _Ce7G35GIqA:frame_001154
+
+Processing: _Ce7G35GIqA:frame_001155
+
+Processing: _Ce7G35GIqA:frame_001156
+
+Processing: _Ce7G35GIqA:frame_001157
+
+Processing: _Ce7G35GIqA:frame_001158
+
+Processing: _Ce7G35GIqA:frame_001159
+
+Processing: _Ce7G35GIqA:frame_001160
+
+Processing: _Ce7G35GIqA:frame_001161
+
+Processing: _Ce7G35GIqA:frame_001162
+
+Processing: _Ce7G35GIqA:frame_001163
+
+Processing: _Ce7G35GIqA:frame_001164
+
+Processing: _Ce7G35GIqA:frame_001165
+
+Processing: _Ce7G35GIqA:frame_001166
+
+Processing: _Ce7G35GIqA:frame_001167
+
+Processing: _Ce7G35GIqA:frame_001168
+
+Processing: _Ce7G35GIqA:frame_001169
+
+Processing: _Ce7G35GIqA:frame_001170
+
+Processing: _Ce7G35GIqA:frame_001171
+
+Processing: _Ce7G35GIqA:frame_001172
+
+Processing: _Ce7G35GIqA:frame_001173
+
+Processing: _Ce7G35GIqA:frame_001174
+
+Processing: _Ce7G35GIqA:frame_001175
+
+Processing: _Ce7G35GIqA:frame_001176
+
+Processing: _Ce7G35GIqA:frame_001177
+
+Processing: _Ce7G35GIqA:frame_001178
+
+Processing: _Ce7G35GIqA:frame_001179
+
+Processing: _Ce7G35GIqA:frame_001180
+
+Processing: _Ce7G35GIqA:frame_001181
+
+Processing: _Ce7G35GIqA:frame_001182
+
+Processing: _Ce7G35GIqA:frame_001183
+
+Processing: _Ce7G35GIqA:frame_001184
+
+Processing: _Ce7G35GIqA:frame_001185
+
+Processing: _Ce7G35GIqA:frame_001186
+
+Processing: _Ce7G35GIqA:frame_001187
+
+Processing: _Ce7G35GIqA:frame_001188
+
+Processing: _Ce7G35GIqA:frame_001189
+
+Processing: _Ce7G35GIqA:frame_001190
+
+Processing: _Ce7G35GIqA:frame_001191
+
+Processing: _Ce7G35GIqA:frame_001192
+
+Processing: _Ce7G35GIqA:frame_001193
+
+Processing: _Ce7G35GIqA:frame_001194
+
+Processing: _Ce7G35GIqA:frame_001195
+
+Processing: _Ce7G35GIqA:frame_001196
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001197
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001198
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001199
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001200
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001201
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001202
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001203
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001204
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001205
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001206
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001207
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001208
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001209
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001210
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001211
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001212
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001213
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001214
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001215
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001216
+
+Processing: _Ce7G35GIqA:frame_001217
+
+Processing: _Ce7G35GIqA:frame_001218
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001219
+
+Processing: _Ce7G35GIqA:frame_001220
+
+Processing: _Ce7G35GIqA:frame_001221
+
+Processing: _Ce7G35GIqA:frame_001222
+
+Processing: _Ce7G35GIqA:frame_001223
+
+Processing: _Ce7G35GIqA:frame_001224
+
+Processing: _Ce7G35GIqA:frame_001225
+
+Processing: _Ce7G35GIqA:frame_001226
+
+Processing: _Ce7G35GIqA:frame_001227
+
+Processing: _Ce7G35GIqA:frame_001228
+
+Processing: _Ce7G35GIqA:frame_001229
+
+Processing: _Ce7G35GIqA:frame_001230
+
+Processing: _Ce7G35GIqA:frame_001231
+
+Processing: _Ce7G35GIqA:frame_001232
+
+Processing: _Ce7G35GIqA:frame_001233
+
+Processing: _Ce7G35GIqA:frame_001234
+
+Processing: _Ce7G35GIqA:frame_001235
+
+Processing: _Ce7G35GIqA:frame_001236
+
+Processing: _Ce7G35GIqA:frame_001237
+
+Processing: _Ce7G35GIqA:frame_001238
+
+Processing: _Ce7G35GIqA:frame_001239
+
+Processing: _Ce7G35GIqA:frame_001240
+
+Processing: _Ce7G35GIqA:frame_001241
+
+Processing: _Ce7G35GIqA:frame_001242
+
+Processing: _Ce7G35GIqA:frame_001243
+
+Processing: _Ce7G35GIqA:frame_001244
+
+Processing: _Ce7G35GIqA:frame_001245
+
+Processing: _Ce7G35GIqA:frame_001246
+
+Processing: _Ce7G35GIqA:frame_001247
+
+Processing: _Ce7G35GIqA:frame_001248
+
+Processing: _Ce7G35GIqA:frame_001249
+
+Processing: _Ce7G35GIqA:frame_001250
+
+Processing: _Ce7G35GIqA:frame_001251
+
+Processing: _Ce7G35GIqA:frame_001252
+
+Processing: _Ce7G35GIqA:frame_001253
+
+Processing: _Ce7G35GIqA:frame_001254
+
+Processing: _Ce7G35GIqA:frame_001255
+
+Processing: _Ce7G35GIqA:frame_001256
+
+Processing: _Ce7G35GIqA:frame_001257
+
+Processing: _Ce7G35GIqA:frame_001258
+
+Processing: _Ce7G35GIqA:frame_001259
+
+Processing: _Ce7G35GIqA:frame_001260
+
+Processing: _Ce7G35GIqA:frame_001261
+
+Processing: _Ce7G35GIqA:frame_001262
+
+Processing: _Ce7G35GIqA:frame_001263
+
+Processing: _Ce7G35GIqA:frame_001264
+
+Processing: _Ce7G35GIqA:frame_001265
+
+Processing: _Ce7G35GIqA:frame_001266
+
+Processing: _Ce7G35GIqA:frame_001267
+
+Processing: _Ce7G35GIqA:frame_001268
+
+Processing: _Ce7G35GIqA:frame_001269
+
+Processing: _Ce7G35GIqA:frame_001270
+
+Processing: _Ce7G35GIqA:frame_001271
+
+Processing: _Ce7G35GIqA:frame_001272
+
+Processing: _Ce7G35GIqA:frame_001273
+
+Processing: _Ce7G35GIqA:frame_001274
+
+Processing: _Ce7G35GIqA:frame_001275
+
+Processing: _Ce7G35GIqA:frame_001276
+
+Processing: _Ce7G35GIqA:frame_001277
+
+Processing: _Ce7G35GIqA:frame_001278
+
+Processing: _Ce7G35GIqA:frame_001279
+
+Processing: _Ce7G35GIqA:frame_001280
+
+Processing: _Ce7G35GIqA:frame_001281
+
+Processing: _Ce7G35GIqA:frame_001282
+
+Processing: _Ce7G35GIqA:frame_001283
+
+Processing: _Ce7G35GIqA:frame_001284
+
+Processing: _Ce7G35GIqA:frame_001285
+
+Processing: _Ce7G35GIqA:frame_001286
+
+Processing: _Ce7G35GIqA:frame_001287
+
+Processing: _Ce7G35GIqA:frame_001288
+
+Processing: _Ce7G35GIqA:frame_001289
+
+Processing: _Ce7G35GIqA:frame_001290
+
+Processing: _Ce7G35GIqA:frame_001291
+
+Processing: _Ce7G35GIqA:frame_001292
+
+Processing: _Ce7G35GIqA:frame_001293
+
+Processing: _Ce7G35GIqA:frame_001294
+
+Processing: _Ce7G35GIqA:frame_001295
+
+Processing: _Ce7G35GIqA:frame_001296
+
+Processing: _Ce7G35GIqA:frame_001297
+
+Processing: _Ce7G35GIqA:frame_001298
+
+Processing: _Ce7G35GIqA:frame_001299
+
+Processing: _Ce7G35GIqA:frame_001300
+
+Processing: _Ce7G35GIqA:frame_001301
+
+Processing: _Ce7G35GIqA:frame_001302
+
+Processing: _Ce7G35GIqA:frame_001303
+
+Processing: _Ce7G35GIqA:frame_001304
+
+Processing: _Ce7G35GIqA:frame_001305
+
+Processing: _Ce7G35GIqA:frame_001306
+
+Processing: _Ce7G35GIqA:frame_001307
+
+Processing: _Ce7G35GIqA:frame_001308
+
+Processing: _Ce7G35GIqA:frame_001309
+
+Processing: _Ce7G35GIqA:frame_001310
+
+Processing: _Ce7G35GIqA:frame_001311
+
+Processing: _Ce7G35GIqA:frame_001312
+
+Processing: _Ce7G35GIqA:frame_001313
+
+Processing: _Ce7G35GIqA:frame_001314
+
+Processing: _Ce7G35GIqA:frame_001315
+
+Processing: _Ce7G35GIqA:frame_001316
+
+Processing: _Ce7G35GIqA:frame_001317
+
+Processing: _Ce7G35GIqA:frame_001318
+
+Processing: _Ce7G35GIqA:frame_001319
+
+Processing: _Ce7G35GIqA:frame_001320
+
+Processing: _Ce7G35GIqA:frame_001321
+
+Processing: _Ce7G35GIqA:frame_001322
+
+Processing: _Ce7G35GIqA:frame_001323
+
+Processing: _Ce7G35GIqA:frame_001324
+
+Processing: _Ce7G35GIqA:frame_001325
+
+Processing: _Ce7G35GIqA:frame_001326
+
+Processing: _Ce7G35GIqA:frame_001327
+
+Processing: _Ce7G35GIqA:frame_001328
+
+Processing: _Ce7G35GIqA:frame_001329
+
+Processing: _Ce7G35GIqA:frame_001330
+
+Processing: _Ce7G35GIqA:frame_001331
+
+Processing: _Ce7G35GIqA:frame_001332
+
+Processing: _Ce7G35GIqA:frame_001333
+
+Processing: _Ce7G35GIqA:frame_001334
+
+Processing: _Ce7G35GIqA:frame_001335
+
+Processing: _Ce7G35GIqA:frame_001336
+
+Processing: _Ce7G35GIqA:frame_001337
+
+Processing: _Ce7G35GIqA:frame_001338
+
+Processing: _Ce7G35GIqA:frame_001339
+
+Processing: _Ce7G35GIqA:frame_001340
+
+Processing: _Ce7G35GIqA:frame_001341
+
+Processing: _Ce7G35GIqA:frame_001342
+
+Processing: _Ce7G35GIqA:frame_001343
+
+Processing: _Ce7G35GIqA:frame_001344
+
+Processing: _Ce7G35GIqA:frame_001345
+
+Processing: _Ce7G35GIqA:frame_001346
+
+Processing: _Ce7G35GIqA:frame_001347
+
+Processing: _Ce7G35GIqA:frame_001348
+
+Processing: _Ce7G35GIqA:frame_001349
+
+Processing: _Ce7G35GIqA:frame_001350
+
+Processing: _Ce7G35GIqA:frame_001351
+
+Processing: _Ce7G35GIqA:frame_001352
+
+Processing: _Ce7G35GIqA:frame_001353
+
+Processing: _Ce7G35GIqA:frame_001354
+
+Processing: _Ce7G35GIqA:frame_001355
+
+Processing: _Ce7G35GIqA:frame_001356
+
+Processing: _Ce7G35GIqA:frame_001357
+
+Processing: _Ce7G35GIqA:frame_001358
+
+Processing: _Ce7G35GIqA:frame_001359
+
+Processing: _Ce7G35GIqA:frame_001360
+
+Processing: _Ce7G35GIqA:frame_001361
+
+Processing: _Ce7G35GIqA:frame_001362
+
+Processing: _Ce7G35GIqA:frame_001363
+
+Processing: _Ce7G35GIqA:frame_001364
+
+Processing: _Ce7G35GIqA:frame_001365
+
+Processing: _Ce7G35GIqA:frame_001366
+
+Processing: _Ce7G35GIqA:frame_001367
+
+Processing: _Ce7G35GIqA:frame_001368
+
+Processing: _Ce7G35GIqA:frame_001369
+
+Processing: _Ce7G35GIqA:frame_001370
+
+Processing: _Ce7G35GIqA:frame_001371
+
+Processing: _Ce7G35GIqA:frame_001372
+
+Processing: _Ce7G35GIqA:frame_001373
+
+Processing: _Ce7G35GIqA:frame_001374
+
+Processing: _Ce7G35GIqA:frame_001375
+
+Processing: _Ce7G35GIqA:frame_001376
+
+Processing: _Ce7G35GIqA:frame_001377
+
+Processing: _Ce7G35GIqA:frame_001378
+
+Processing: _Ce7G35GIqA:frame_001379
+
+Processing: _Ce7G35GIqA:frame_001380
+
+Processing: _Ce7G35GIqA:frame_001381
+
+Processing: _Ce7G35GIqA:frame_001382
+
+Processing: _Ce7G35GIqA:frame_001383
+
+Processing: _Ce7G35GIqA:frame_001384
+
+Processing: _Ce7G35GIqA:frame_001385
+
+Processing: _Ce7G35GIqA:frame_001386
+
+Processing: _Ce7G35GIqA:frame_001387
+
+Processing: _Ce7G35GIqA:frame_001388
+
+Processing: _Ce7G35GIqA:frame_001389
+
+Processing: _Ce7G35GIqA:frame_001390
+
+Processing: _Ce7G35GIqA:frame_001391
+
+Processing: _Ce7G35GIqA:frame_001392
+
+Processing: _Ce7G35GIqA:frame_001393
+
+Processing: _Ce7G35GIqA:frame_001394
+
+Processing: _Ce7G35GIqA:frame_001395
+
+Processing: _Ce7G35GIqA:frame_001396
+
+Processing: _Ce7G35GIqA:frame_001397
+
+Processing: _Ce7G35GIqA:frame_001398
+
+Processing: _Ce7G35GIqA:frame_001399
+
+Processing: _Ce7G35GIqA:frame_001400
+
+Processing: _Ce7G35GIqA:frame_001401
+
+Processing: _Ce7G35GIqA:frame_001402
+
+Processing: _Ce7G35GIqA:frame_001403
+
+Processing: _Ce7G35GIqA:frame_001404
+
+Processing: _Ce7G35GIqA:frame_001405
+
+Processing: _Ce7G35GIqA:frame_001406
+
+Processing: _Ce7G35GIqA:frame_001407
+
+Processing: _Ce7G35GIqA:frame_001408
+
+Processing: _Ce7G35GIqA:frame_001409
+
+Processing: _Ce7G35GIqA:frame_001410
+
+Processing: _Ce7G35GIqA:frame_001411
+
+Processing: _Ce7G35GIqA:frame_001412
+
+Processing: _Ce7G35GIqA:frame_001413
+
+Processing: _Ce7G35GIqA:frame_001414
+
+Processing: _Ce7G35GIqA:frame_001415
+
+Processing: _Ce7G35GIqA:frame_001416
+
+Processing: _Ce7G35GIqA:frame_001417
+
+Processing: _Ce7G35GIqA:frame_001418
+
+Processing: _Ce7G35GIqA:frame_001419
+
+Processing: _Ce7G35GIqA:frame_001420
+
+Processing: _Ce7G35GIqA:frame_001421
+
+Processing: _Ce7G35GIqA:frame_001422
+
+Processing: _Ce7G35GIqA:frame_001423
+
+Processing: _Ce7G35GIqA:frame_001424
+
+Processing: _Ce7G35GIqA:frame_001425
+
+Processing: _Ce7G35GIqA:frame_001426
+
+Processing: _Ce7G35GIqA:frame_001427
+
+Processing: _Ce7G35GIqA:frame_001428
+
+Processing: _Ce7G35GIqA:frame_001429
+
+Processing: _Ce7G35GIqA:frame_001430
+
+Processing: _Ce7G35GIqA:frame_001431
+
+Processing: _Ce7G35GIqA:frame_001432
+
+Processing: _Ce7G35GIqA:frame_001433
+
+Processing: _Ce7G35GIqA:frame_001434
+
+Processing: _Ce7G35GIqA:frame_001435
+
+Processing: _Ce7G35GIqA:frame_001436
+
+Processing: _Ce7G35GIqA:frame_001437
+
+Processing: _Ce7G35GIqA:frame_001438
+
+Processing: _Ce7G35GIqA:frame_001439
+
+Processing: _Ce7G35GIqA:frame_001440
+
+Processing: _Ce7G35GIqA:frame_001441
+
+Processing: _Ce7G35GIqA:frame_001442
+
+Processing: _Ce7G35GIqA:frame_001443
+
+Processing: _Ce7G35GIqA:frame_001444
+
+Processing: _Ce7G35GIqA:frame_001445
+
+Processing: _Ce7G35GIqA:frame_001446
+
+Processing: _Ce7G35GIqA:frame_001447
+
+Processing: _Ce7G35GIqA:frame_001448
+
+Processing: _Ce7G35GIqA:frame_001449
+
+Processing: _Ce7G35GIqA:frame_001450
+
+Processing: _Ce7G35GIqA:frame_001451
+
+Processing: _Ce7G35GIqA:frame_001452
+
+Processing: _Ce7G35GIqA:frame_001453
+
+Processing: _Ce7G35GIqA:frame_001454
+
+Processing: _Ce7G35GIqA:frame_001455
+
+Processing: _Ce7G35GIqA:frame_001456
+
+Processing: _Ce7G35GIqA:frame_001457
+
+Processing: _Ce7G35GIqA:frame_001458
+
+Processing: _Ce7G35GIqA:frame_001459
+
+Processing: _Ce7G35GIqA:frame_001460
+
+Processing: _Ce7G35GIqA:frame_001461
+
+Processing: _Ce7G35GIqA:frame_001462
+
+Processing: _Ce7G35GIqA:frame_001463
+
+Processing: _Ce7G35GIqA:frame_001464
+
+Processing: _Ce7G35GIqA:frame_001465
+
+Processing: _Ce7G35GIqA:frame_001466
+
+Processing: _Ce7G35GIqA:frame_001467
+
+Processing: _Ce7G35GIqA:frame_001468
+
+Processing: _Ce7G35GIqA:frame_001469
+
+Processing: _Ce7G35GIqA:frame_001470
+
+Processing: _Ce7G35GIqA:frame_001471
+
+Processing: _Ce7G35GIqA:frame_001472
+
+Processing: _Ce7G35GIqA:frame_001473
+
+Processing: _Ce7G35GIqA:frame_001474
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001475
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001476
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001477
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001478
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001479
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001480
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001481
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001482
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001483
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001484
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001485
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001486
+
+Processing: _Ce7G35GIqA:frame_001487
+
+Processing: _Ce7G35GIqA:frame_001488
+
+Processing: _Ce7G35GIqA:frame_001489
+
+Processing: _Ce7G35GIqA:frame_001490
+
+Processing: _Ce7G35GIqA:frame_001491
+
+Processing: _Ce7G35GIqA:frame_001492
+
+Processing: _Ce7G35GIqA:frame_001493
+
+Processing: _Ce7G35GIqA:frame_001494
+
+Processing: _Ce7G35GIqA:frame_001495
+
+Processing: _Ce7G35GIqA:frame_001496
+
+Processing: _Ce7G35GIqA:frame_001497
+
+Processing: _Ce7G35GIqA:frame_001498
+
+Processing: _Ce7G35GIqA:frame_001499
+
+Processing: _Ce7G35GIqA:frame_001500
+
+Processing: _Ce7G35GIqA:frame_001501
+
+Processing: _Ce7G35GIqA:frame_001502
+
+Processing: _Ce7G35GIqA:frame_001503
+
+Processing: _Ce7G35GIqA:frame_001504
+
+Processing: _Ce7G35GIqA:frame_001505
+
+Processing: _Ce7G35GIqA:frame_001506
+
+Processing: _Ce7G35GIqA:frame_001507
+
+Processing: _Ce7G35GIqA:frame_001508
+
+Processing: _Ce7G35GIqA:frame_001509
+
+Processing: _Ce7G35GIqA:frame_001510
+
+Processing: _Ce7G35GIqA:frame_001511
+
+Processing: _Ce7G35GIqA:frame_001512
+
+Processing: _Ce7G35GIqA:frame_001513
+
+Processing: _Ce7G35GIqA:frame_001514
+
+Processing: _Ce7G35GIqA:frame_001515
+
+Processing: _Ce7G35GIqA:frame_001516
+
+Processing: _Ce7G35GIqA:frame_001517
+
+Processing: _Ce7G35GIqA:frame_001518
+
+Processing: _Ce7G35GIqA:frame_001519
+
+Processing: _Ce7G35GIqA:frame_001520
+
+Processing: _Ce7G35GIqA:frame_001521
+
+Processing: _Ce7G35GIqA:frame_001522
+
+Processing: _Ce7G35GIqA:frame_001523
+
+Processing: _Ce7G35GIqA:frame_001524
+
+Processing: _Ce7G35GIqA:frame_001525
+
+Processing: _Ce7G35GIqA:frame_001526
+
+Processing: _Ce7G35GIqA:frame_001527
+
+Processing: _Ce7G35GIqA:frame_001528
+
+Processing: _Ce7G35GIqA:frame_001529
+
+Processing: _Ce7G35GIqA:frame_001530
+
+Processing: _Ce7G35GIqA:frame_001531
+
+Processing: _Ce7G35GIqA:frame_001532
+
+Processing: _Ce7G35GIqA:frame_001533
+
+Processing: _Ce7G35GIqA:frame_001534
+
+Processing: _Ce7G35GIqA:frame_001535
+
+Processing: _Ce7G35GIqA:frame_001536
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001537
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001538
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001539
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001540
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001541
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001542
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001543
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001544
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001545
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001546
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001547
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001548
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001549
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001550
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001551
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001552
+
+Processing: _Ce7G35GIqA:frame_001553
+
+Processing: _Ce7G35GIqA:frame_001554
+
+Processing: _Ce7G35GIqA:frame_001555
+
+Processing: _Ce7G35GIqA:frame_001556
+
+Processing: _Ce7G35GIqA:frame_001557
+
+Processing: _Ce7G35GIqA:frame_001558
+
+Processing: _Ce7G35GIqA:frame_001559
+
+Processing: _Ce7G35GIqA:frame_001560
+
+Processing: _Ce7G35GIqA:frame_001561
+
+Processing: _Ce7G35GIqA:frame_001562
+
+Processing: _Ce7G35GIqA:frame_001563
+
+Processing: _Ce7G35GIqA:frame_001564
+
+Processing: _Ce7G35GIqA:frame_001565
+
+Processing: _Ce7G35GIqA:frame_001566
+
+Processing: _Ce7G35GIqA:frame_001567
+
+Processing: _Ce7G35GIqA:frame_001568
+
+Processing: _Ce7G35GIqA:frame_001569
+
+Processing: _Ce7G35GIqA:frame_001570
+
+Processing: _Ce7G35GIqA:frame_001571
+
+Processing: _Ce7G35GIqA:frame_001572
+
+Processing: _Ce7G35GIqA:frame_001573
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001574
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001575
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001576
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001577
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001578
+
+Processing: _Ce7G35GIqA:frame_001579
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001580
+
+Processing: _Ce7G35GIqA:frame_001581
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001582
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001583
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001584
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001585
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001586
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001587
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001588
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001589
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001590
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001591
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001592
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001593
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001594
+
+Processing: _Ce7G35GIqA:frame_001595
+
+Processing: _Ce7G35GIqA:frame_001596
+
+Processing: _Ce7G35GIqA:frame_001597
+
+Processing: _Ce7G35GIqA:frame_001598
+
+Processing: _Ce7G35GIqA:frame_001599
+
+Processing: _Ce7G35GIqA:frame_001600
+
+Processing: _Ce7G35GIqA:frame_001601
+
+Processing: _Ce7G35GIqA:frame_001602
+
+Processing: _Ce7G35GIqA:frame_001603
+
+Processing: _Ce7G35GIqA:frame_001604
+
+Processing: _Ce7G35GIqA:frame_001605
+
+Processing: _Ce7G35GIqA:frame_001606
+
+Processing: _Ce7G35GIqA:frame_001607
+
+Processing: _Ce7G35GIqA:frame_001608
+
+Processing: _Ce7G35GIqA:frame_001609
+
+Processing: _Ce7G35GIqA:frame_001610
+
+Processing: _Ce7G35GIqA:frame_001611
+
+Processing: _Ce7G35GIqA:frame_001612
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001613
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001614
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001615
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001616
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001617
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001618
+No detections, skipping.
+
+Processing: _Ce7G35GIqA:frame_001619
+No detections, skipping.
+
+All images processed.
+===============================================
+Job finished at: Wed May 27 14:12:25 CEST 2026
+Execution took 0.17 hours
+Writing output to SLURM_logs/wilor-inference_523.out
+Retained WiLoR outputs: /scratch/mthakur/manifold/outputs/wilor_finetune/main_learnable_finetnuing/_Ce7G35GIqA/meshes
+===============================================

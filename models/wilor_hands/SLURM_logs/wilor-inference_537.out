@@ -1,0 +1,621 @@
+
+The following have been reloaded with a version change:
+  1) python/3.10.12 => python/3.10.13
+
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) python/3.10.13
+  2) DefaultModules   4) 2024r1       6) cuda/11.7
+
+ 
+
+Wed May 27 15:13:27 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   61C    P0            151W /  300W |     882MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    7   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9985528
+Job Name:       wilor-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Wed May 27 15:13:27 CEST 2026
+===============================================
+WiLoR finetune experiment: main_static_finetuning
+WiLoR checkpoint: /scratch/mthakur/manifold/outputs/wilor_finetune/main_static_finetuning/best.ckpt
+WiLoR config: /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/model_config.yaml
+WiLoR video: /scratch/mthakur/manifold/data/test/120-2_clip_6.mp4
+WiLoR output root: /scratch/mthakur/manifold/outputs/wilor_finetune/main_static_finetuning
+WiLoR completion marker: /scratch/mthakur/manifold/outputs/wilor_finetune/main_static_finetuning/_completed/120-2_clip_6.json
+WiLoR frame cache root: /scratch/mthakur/manifold/data/test
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[progress] Loading WiLoR checkpoint: /scratch/mthakur/manifold/outputs/wilor_finetune/main_static_finetuning/best.ckpt
+Loading  /scratch/mthakur/manifold/outputs/wilor_finetune/main_static_finetuning/best.ckpt
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+[progress] Loading detector: ./pretrained_models/detector.pt
+
+Processing: 120-2_clip_6:frame_000000
+
+Processing: 120-2_clip_6:frame_000001
+No detections, skipping.
+
+Processing: 120-2_clip_6:frame_000002
+No detections, skipping.
+
+Processing: 120-2_clip_6:frame_000003
+
+Processing: 120-2_clip_6:frame_000004
+
+Processing: 120-2_clip_6:frame_000005
+
+Processing: 120-2_clip_6:frame_000006
+
+Processing: 120-2_clip_6:frame_000007
+
+Processing: 120-2_clip_6:frame_000008
+
+Processing: 120-2_clip_6:frame_000009
+
+Processing: 120-2_clip_6:frame_000010
+
+Processing: 120-2_clip_6:frame_000011
+
+Processing: 120-2_clip_6:frame_000012
+
+Processing: 120-2_clip_6:frame_000013
+
+Processing: 120-2_clip_6:frame_000014
+
+Processing: 120-2_clip_6:frame_000015
+
+Processing: 120-2_clip_6:frame_000016
+
+Processing: 120-2_clip_6:frame_000017
+
+Processing: 120-2_clip_6:frame_000018
+
+Processing: 120-2_clip_6:frame_000019
+
+Processing: 120-2_clip_6:frame_000020
+
+Processing: 120-2_clip_6:frame_000021
+
+Processing: 120-2_clip_6:frame_000022
+
+Processing: 120-2_clip_6:frame_000023
+
+Processing: 120-2_clip_6:frame_000024
+
+Processing: 120-2_clip_6:frame_000025
+
+Processing: 120-2_clip_6:frame_000026
+
+Processing: 120-2_clip_6:frame_000027
+
+Processing: 120-2_clip_6:frame_000028
+
+Processing: 120-2_clip_6:frame_000029
+
+Processing: 120-2_clip_6:frame_000030
+
+Processing: 120-2_clip_6:frame_000031
+
+Processing: 120-2_clip_6:frame_000032
+
+Processing: 120-2_clip_6:frame_000033
+
+Processing: 120-2_clip_6:frame_000034
+No detections, skipping.
+
+Processing: 120-2_clip_6:frame_000035
+No detections, skipping.
+
+Processing: 120-2_clip_6:frame_000036
+
+Processing: 120-2_clip_6:frame_000037
+
+Processing: 120-2_clip_6:frame_000038
+
+Processing: 120-2_clip_6:frame_000039
+
+Processing: 120-2_clip_6:frame_000040
+
+Processing: 120-2_clip_6:frame_000041
+
+Processing: 120-2_clip_6:frame_000042
+
+Processing: 120-2_clip_6:frame_000043
+No detections, skipping.
+
+Processing: 120-2_clip_6:frame_000044
+
+Processing: 120-2_clip_6:frame_000045
+
+Processing: 120-2_clip_6:frame_000046
+
+Processing: 120-2_clip_6:frame_000047
+
+Processing: 120-2_clip_6:frame_000048
+
+Processing: 120-2_clip_6:frame_000049
+
+Processing: 120-2_clip_6:frame_000050
+
+Processing: 120-2_clip_6:frame_000051
+
+Processing: 120-2_clip_6:frame_000052
+
+Processing: 120-2_clip_6:frame_000053
+
+Processing: 120-2_clip_6:frame_000054
+
+Processing: 120-2_clip_6:frame_000055
+
+Processing: 120-2_clip_6:frame_000056
+
+Processing: 120-2_clip_6:frame_000057
+
+Processing: 120-2_clip_6:frame_000058
+
+Processing: 120-2_clip_6:frame_000059
+
+Processing: 120-2_clip_6:frame_000060
+
+Processing: 120-2_clip_6:frame_000061
+
+Processing: 120-2_clip_6:frame_000062
+
+Processing: 120-2_clip_6:frame_000063
+
+Processing: 120-2_clip_6:frame_000064
+
+Processing: 120-2_clip_6:frame_000065
+
+Processing: 120-2_clip_6:frame_000066
+
+Processing: 120-2_clip_6:frame_000067
+
+Processing: 120-2_clip_6:frame_000068
+
+Processing: 120-2_clip_6:frame_000069
+
+Processing: 120-2_clip_6:frame_000070
+
+Processing: 120-2_clip_6:frame_000071
+
+Processing: 120-2_clip_6:frame_000072
+
+Processing: 120-2_clip_6:frame_000073
+
+Processing: 120-2_clip_6:frame_000074
+
+Processing: 120-2_clip_6:frame_000075
+
+Processing: 120-2_clip_6:frame_000076
+
+Processing: 120-2_clip_6:frame_000077
+
+Processing: 120-2_clip_6:frame_000078
+
+Processing: 120-2_clip_6:frame_000079
+
+Processing: 120-2_clip_6:frame_000080
+
+Processing: 120-2_clip_6:frame_000081
+
+Processing: 120-2_clip_6:frame_000082
+
+Processing: 120-2_clip_6:frame_000083
+
+Processing: 120-2_clip_6:frame_000084
+
+Processing: 120-2_clip_6:frame_000085
+
+Processing: 120-2_clip_6:frame_000086
+
+Processing: 120-2_clip_6:frame_000087
+
+Processing: 120-2_clip_6:frame_000088
+
+Processing: 120-2_clip_6:frame_000089
+
+Processing: 120-2_clip_6:frame_000090
+
+Processing: 120-2_clip_6:frame_000091
+
+Processing: 120-2_clip_6:frame_000092
+
+Processing: 120-2_clip_6:frame_000093
+
+Processing: 120-2_clip_6:frame_000094
+
+Processing: 120-2_clip_6:frame_000095
+
+Processing: 120-2_clip_6:frame_000096
+
+Processing: 120-2_clip_6:frame_000097
+
+Processing: 120-2_clip_6:frame_000098
+
+Processing: 120-2_clip_6:frame_000099
+
+Processing: 120-2_clip_6:frame_000100
+
+Processing: 120-2_clip_6:frame_000101
+
+Processing: 120-2_clip_6:frame_000102
+
+Processing: 120-2_clip_6:frame_000103
+
+Processing: 120-2_clip_6:frame_000104
+
+Processing: 120-2_clip_6:frame_000105
+
+Processing: 120-2_clip_6:frame_000106
+
+Processing: 120-2_clip_6:frame_000107
+
+Processing: 120-2_clip_6:frame_000108
+
+Processing: 120-2_clip_6:frame_000109
+
+Processing: 120-2_clip_6:frame_000110
+
+Processing: 120-2_clip_6:frame_000111
+
+Processing: 120-2_clip_6:frame_000112
+
+Processing: 120-2_clip_6:frame_000113
+
+Processing: 120-2_clip_6:frame_000114
+
+Processing: 120-2_clip_6:frame_000115
+
+Processing: 120-2_clip_6:frame_000116
+
+Processing: 120-2_clip_6:frame_000117
+
+Processing: 120-2_clip_6:frame_000118
+
+Processing: 120-2_clip_6:frame_000119
+
+Processing: 120-2_clip_6:frame_000120
+
+Processing: 120-2_clip_6:frame_000121
+
+Processing: 120-2_clip_6:frame_000122
+
+Processing: 120-2_clip_6:frame_000123
+
+Processing: 120-2_clip_6:frame_000124
+
+Processing: 120-2_clip_6:frame_000125
+
+Processing: 120-2_clip_6:frame_000126
+
+Processing: 120-2_clip_6:frame_000127
+
+Processing: 120-2_clip_6:frame_000128
+
+Processing: 120-2_clip_6:frame_000129
+
+Processing: 120-2_clip_6:frame_000130
+
+Processing: 120-2_clip_6:frame_000131
+
+Processing: 120-2_clip_6:frame_000132
+
+Processing: 120-2_clip_6:frame_000133
+
+Processing: 120-2_clip_6:frame_000134
+
+Processing: 120-2_clip_6:frame_000135
+
+Processing: 120-2_clip_6:frame_000136
+
+Processing: 120-2_clip_6:frame_000137
+
+Processing: 120-2_clip_6:frame_000138
+
+Processing: 120-2_clip_6:frame_000139
+
+Processing: 120-2_clip_6:frame_000140
+
+Processing: 120-2_clip_6:frame_000141
+
+Processing: 120-2_clip_6:frame_000142
+
+Processing: 120-2_clip_6:frame_000143
+
+Processing: 120-2_clip_6:frame_000144
+
+Processing: 120-2_clip_6:frame_000145
+
+Processing: 120-2_clip_6:frame_000146
+
+Processing: 120-2_clip_6:frame_000147
+
+Processing: 120-2_clip_6:frame_000148
+
+Processing: 120-2_clip_6:frame_000149
+
+Processing: 120-2_clip_6:frame_000150
+
+Processing: 120-2_clip_6:frame_000151
+
+Processing: 120-2_clip_6:frame_000152
+
+Processing: 120-2_clip_6:frame_000153
+
+Processing: 120-2_clip_6:frame_000154
+
+Processing: 120-2_clip_6:frame_000155
+
+Processing: 120-2_clip_6:frame_000156
+
+Processing: 120-2_clip_6:frame_000157
+
+Processing: 120-2_clip_6:frame_000158
+
+Processing: 120-2_clip_6:frame_000159
+
+Processing: 120-2_clip_6:frame_000160
+
+Processing: 120-2_clip_6:frame_000161
+
+Processing: 120-2_clip_6:frame_000162
+
+Processing: 120-2_clip_6:frame_000163
+
+Processing: 120-2_clip_6:frame_000164
+
+Processing: 120-2_clip_6:frame_000165
+
+Processing: 120-2_clip_6:frame_000166
+
+Processing: 120-2_clip_6:frame_000167
+
+Processing: 120-2_clip_6:frame_000168
+
+Processing: 120-2_clip_6:frame_000169
+
+Processing: 120-2_clip_6:frame_000170
+
+Processing: 120-2_clip_6:frame_000171
+
+Processing: 120-2_clip_6:frame_000172
+
+Processing: 120-2_clip_6:frame_000173
+
+Processing: 120-2_clip_6:frame_000174
+
+Processing: 120-2_clip_6:frame_000175
+
+Processing: 120-2_clip_6:frame_000176
+
+Processing: 120-2_clip_6:frame_000177
+
+Processing: 120-2_clip_6:frame_000178
+
+Processing: 120-2_clip_6:frame_000179
+
+Processing: 120-2_clip_6:frame_000180
+
+Processing: 120-2_clip_6:frame_000181
+
+Processing: 120-2_clip_6:frame_000182
+
+Processing: 120-2_clip_6:frame_000183
+
+Processing: 120-2_clip_6:frame_000184
+
+Processing: 120-2_clip_6:frame_000185
+
+Processing: 120-2_clip_6:frame_000186
+
+Processing: 120-2_clip_6:frame_000187
+
+Processing: 120-2_clip_6:frame_000188
+
+Processing: 120-2_clip_6:frame_000189
+
+Processing: 120-2_clip_6:frame_000190
+
+Processing: 120-2_clip_6:frame_000191
+
+Processing: 120-2_clip_6:frame_000192
+
+Processing: 120-2_clip_6:frame_000193
+
+Processing: 120-2_clip_6:frame_000194
+
+Processing: 120-2_clip_6:frame_000195
+
+Processing: 120-2_clip_6:frame_000196
+
+Processing: 120-2_clip_6:frame_000197
+
+Processing: 120-2_clip_6:frame_000198
+
+Processing: 120-2_clip_6:frame_000199
+
+Processing: 120-2_clip_6:frame_000200
+
+Processing: 120-2_clip_6:frame_000201
+
+Processing: 120-2_clip_6:frame_000202
+
+Processing: 120-2_clip_6:frame_000203
+
+Processing: 120-2_clip_6:frame_000204
+
+Processing: 120-2_clip_6:frame_000205
+
+Processing: 120-2_clip_6:frame_000206
+
+Processing: 120-2_clip_6:frame_000207
+
+Processing: 120-2_clip_6:frame_000208
+
+Processing: 120-2_clip_6:frame_000209
+
+Processing: 120-2_clip_6:frame_000210
+
+Processing: 120-2_clip_6:frame_000211
+
+Processing: 120-2_clip_6:frame_000212
+
+Processing: 120-2_clip_6:frame_000213
+
+Processing: 120-2_clip_6:frame_000214
+
+Processing: 120-2_clip_6:frame_000215
+
+Processing: 120-2_clip_6:frame_000216
+
+Processing: 120-2_clip_6:frame_000217
+
+Processing: 120-2_clip_6:frame_000218
+
+Processing: 120-2_clip_6:frame_000219
+
+Processing: 120-2_clip_6:frame_000220
+
+Processing: 120-2_clip_6:frame_000221
+
+Processing: 120-2_clip_6:frame_000222
+
+Processing: 120-2_clip_6:frame_000223
+
+Processing: 120-2_clip_6:frame_000224
+
+Processing: 120-2_clip_6:frame_000225
+
+Processing: 120-2_clip_6:frame_000226
+
+Processing: 120-2_clip_6:frame_000227
+
+Processing: 120-2_clip_6:frame_000228
+
+Processing: 120-2_clip_6:frame_000229
+
+Processing: 120-2_clip_6:frame_000230
+
+Processing: 120-2_clip_6:frame_000231
+
+Processing: 120-2_clip_6:frame_000232
+
+Processing: 120-2_clip_6:frame_000233
+
+Processing: 120-2_clip_6:frame_000234
+
+Processing: 120-2_clip_6:frame_000235
+
+Processing: 120-2_clip_6:frame_000236
+
+Processing: 120-2_clip_6:frame_000237
+
+Processing: 120-2_clip_6:frame_000238
+
+Processing: 120-2_clip_6:frame_000239
+
+Processing: 120-2_clip_6:frame_000240
+
+Processing: 120-2_clip_6:frame_000241
+
+Processing: 120-2_clip_6:frame_000242
+
+Processing: 120-2_clip_6:frame_000243
+
+Processing: 120-2_clip_6:frame_000244
+
+Processing: 120-2_clip_6:frame_000245
+
+Processing: 120-2_clip_6:frame_000246
+
+Processing: 120-2_clip_6:frame_000247
+
+Processing: 120-2_clip_6:frame_000248
+
+Processing: 120-2_clip_6:frame_000249
+
+Processing: 120-2_clip_6:frame_000250
+
+Processing: 120-2_clip_6:frame_000251
+
+Processing: 120-2_clip_6:frame_000252
+
+Processing: 120-2_clip_6:frame_000253
+
+Processing: 120-2_clip_6:frame_000254
+
+Processing: 120-2_clip_6:frame_000255
+
+Processing: 120-2_clip_6:frame_000256
+
+Processing: 120-2_clip_6:frame_000257
+
+Processing: 120-2_clip_6:frame_000258
+
+Processing: 120-2_clip_6:frame_000259
+
+Processing: 120-2_clip_6:frame_000260
+
+Processing: 120-2_clip_6:frame_000261
+
+Processing: 120-2_clip_6:frame_000262
+
+Processing: 120-2_clip_6:frame_000263
+
+Processing: 120-2_clip_6:frame_000264
+
+Processing: 120-2_clip_6:frame_000265
+
+Processing: 120-2_clip_6:frame_000266
+
+Processing: 120-2_clip_6:frame_000267
+
+Processing: 120-2_clip_6:frame_000268
+
+Processing: 120-2_clip_6:frame_000269
+
+All images processed.
+===============================================
+Job finished at: Wed May 27 15:16:45 CEST 2026
+Execution took 0.05 hours
+Writing output to SLURM_logs/wilor-inference_537.out
+Retained WiLoR outputs: /scratch/mthakur/manifold/outputs/wilor_finetune/main_static_finetuning/120-2_clip_6/meshes
+===============================================
