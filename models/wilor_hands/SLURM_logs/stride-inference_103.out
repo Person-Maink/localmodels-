@@ -1,0 +1,69 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Fri May 29 13:09:58 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:2C:00.0 Off |                    0 |
+| N/A   39C    P0             45W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9993920
+Job Name:       stride-inference
+Partition:      gpu-a100
+Node List:      gpu018
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 24576
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Fri May 29 13:09:58 CEST 2026
+===============================================
+STRIDE video: /scratch/mthakur/manifold/data/test/clip_1_amplified.avi
+WiLoR cache root: /scratch/mthakur/manifold/outputs/wilor
+STRIDE output root: /scratch/mthakur/manifold/outputs/stride
+STRIDE completion marker: /scratch/mthakur/manifold/outputs/stride/_completed/clip_1_amplified.json
+STRIDE frame cache root: /scratch/mthakur/manifold/data/test
+STRIDE backend: hmp
+STRIDE config: /scratch/mthakur/manifold/models/wilor_hands/stride_configs/hmp.yaml
+Apptainer image: /scratch/mthakur/manifold/models/wilor_hands/apptainer/template-hmp.sif
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+[INFO] Running STRIDE refinement for clip_1_amplified
+2
+[0, 1]
+mean: ['rotmat', 'pos', 'trans', 'root_vel', 'height', 'rot6d', 'angular', 'global_xform', 'velocity', 'root_orient']
+std: ['rotmat', 'pos', 'trans', 'root_vel', 'height', 'rot6d', 'angular', 'global_xform', 'velocity', 'root_orient']
+Loading from /scratch/mthakur/manifold/models/wilor_hands/_DATA/hmp_model/results/model
+Load succeeded
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+
+Refined 1 video(s) into /scratch/mthakur/manifold/outputs/stride.
+===============================================
+Job finished at: Fri May 29 13:10:55 CEST 2026
+Execution took 0.02 hours
+Writing output to SLURM_logs/stride-inference_103.out
+Retained STRIDE outputs: /scratch/mthakur/manifold/outputs/stride/clip_1_amplified
+===============================================

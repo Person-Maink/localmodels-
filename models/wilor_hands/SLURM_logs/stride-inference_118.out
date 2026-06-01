@@ -1,0 +1,68 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Fri May 29 13:16:13 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:2C:00.0 Off |                    0 |
+| N/A   35C    P0             45W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         9993928
+Job Name:       stride-inference
+Partition:      gpu-a100
+Node List:      gpu019
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 24576
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Fri May 29 13:16:13 CEST 2026
+===============================================
+STRIDE video: /scratch/mthakur/manifold/data/test/124-6 DBS uit.MTS
+WiLoR cache root: /scratch/mthakur/manifold/outputs/wilor
+STRIDE output root: /scratch/mthakur/manifold/outputs/stride
+STRIDE completion marker: /scratch/mthakur/manifold/outputs/stride/_completed/124-6 DBS uit.json
+STRIDE frame cache root: /scratch/mthakur/manifold/data/test
+STRIDE backend: hmp
+STRIDE config: /scratch/mthakur/manifold/models/wilor_hands/stride_configs/hmp.yaml
+Apptainer image: /scratch/mthakur/manifold/models/wilor_hands/apptainer/template-hmp.sif
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+[INFO] Running STRIDE refinement for 124-6 DBS uit
+Traceback (most recent call last):
+  File "/scratch/mthakur/manifold/models/wilor_hands/main.py", line 297, in <module>
+    main(make_argparser().parse_args())
+  File "/scratch/mthakur/manifold/models/wilor_hands/main.py", line 233, in main
+    _run_stride_pass(args)
+  File "/scratch/mthakur/manifold/models/wilor_hands/main.py", line 186, in _run_stride_pass
+    run_stride_hmp(
+  File "/scratch/mthakur/manifold/models/wilor_hands/stride_hmp.py", line 579, in run_stride_hmp
+    selected_records = _pick_track(records_by_frame, target_hand=_parse_target_hand(target_hand))
+  File "/scratch/mthakur/manifold/models/wilor_hands/stride_refine.py", line 80, in _pick_track
+    chosen_hand = _dominant_handedness(records_by_frame) if target_hand == "auto" else int(target_hand)
+  File "/scratch/mthakur/manifold/models/wilor_hands/stride_refine.py", line 75, in _dominant_handedness
+    raise RuntimeError("No WiLoR detections found for STRIDE refinement.")
+RuntimeError: No WiLoR detections found for STRIDE refinement.
+srun: error: gpu019: task 0: Exited with exit code 1
+srun: launch/slurm: _step_signal: Terminating StepId=9993928.0

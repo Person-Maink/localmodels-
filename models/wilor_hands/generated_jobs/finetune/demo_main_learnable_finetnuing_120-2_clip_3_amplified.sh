@@ -10,8 +10,8 @@
 #   visual                 : Visualization jobs
 
 #SBATCH --job-name=wilor-inference
-#SBATCH --partition=gpu-a100-small
-#SBATCH --time=01:39:00
+#SBATCH --partition=gpu-a100
+#SBATCH --time=01:37:48
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1

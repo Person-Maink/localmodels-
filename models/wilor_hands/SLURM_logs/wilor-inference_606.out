@@ -1,0 +1,1403 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Sat May 30 22:45:36 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:98:00.0 Off |                    0 |
+| N/A   36C    P0             42W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         10011540
+Job Name:       wilor-inference
+Partition:      gpu-a100
+Node List:      gpu017
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Sat May 30 22:45:36 CEST 2026
+===============================================
+WiLoR finetune experiment: lora_finetuning
+WiLoR checkpoint: /scratch/mthakur/manifold/outputs/wilor_finetune/lora_finetuning/best.ckpt
+WiLoR config: /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/model_config.yaml
+WiLoR video: /scratch/mthakur/manifold/data/test/demo1.mp4
+WiLoR output root: /scratch/mthakur/manifold/outputs/wilor_finetune/lora_finetuning
+WiLoR completion marker: /scratch/mthakur/manifold/outputs/wilor_finetune/lora_finetuning/_completed/demo1.json
+WiLoR frame cache root: /scratch/mthakur/manifold/data/test
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[progress] Loading WiLoR checkpoint: /scratch/mthakur/manifold/outputs/wilor_finetune/lora_finetuning/best.ckpt
+Loading  /scratch/mthakur/manifold/outputs/wilor_finetune/lora_finetuning/best.ckpt
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+[progress] Loading detector: ./pretrained_models/detector.pt
+
+Processing: demo1:frame_000000
+
+Processing: demo1:frame_000001
+
+Processing: demo1:frame_000002
+
+Processing: demo1:frame_000003
+
+Processing: demo1:frame_000004
+
+Processing: demo1:frame_000005
+
+Processing: demo1:frame_000006
+
+Processing: demo1:frame_000007
+
+Processing: demo1:frame_000008
+
+Processing: demo1:frame_000009
+
+Processing: demo1:frame_000010
+
+Processing: demo1:frame_000011
+
+Processing: demo1:frame_000012
+
+Processing: demo1:frame_000013
+
+Processing: demo1:frame_000014
+
+Processing: demo1:frame_000015
+
+Processing: demo1:frame_000016
+
+Processing: demo1:frame_000017
+
+Processing: demo1:frame_000018
+
+Processing: demo1:frame_000019
+
+Processing: demo1:frame_000020
+
+Processing: demo1:frame_000021
+
+Processing: demo1:frame_000022
+
+Processing: demo1:frame_000023
+
+Processing: demo1:frame_000024
+
+Processing: demo1:frame_000025
+
+Processing: demo1:frame_000026
+
+Processing: demo1:frame_000027
+
+Processing: demo1:frame_000028
+
+Processing: demo1:frame_000029
+
+Processing: demo1:frame_000030
+
+Processing: demo1:frame_000031
+
+Processing: demo1:frame_000032
+
+Processing: demo1:frame_000033
+
+Processing: demo1:frame_000034
+
+Processing: demo1:frame_000035
+
+Processing: demo1:frame_000036
+
+Processing: demo1:frame_000037
+
+Processing: demo1:frame_000038
+
+Processing: demo1:frame_000039
+
+Processing: demo1:frame_000040
+
+Processing: demo1:frame_000041
+
+Processing: demo1:frame_000042
+
+Processing: demo1:frame_000043
+
+Processing: demo1:frame_000044
+
+Processing: demo1:frame_000045
+
+Processing: demo1:frame_000046
+
+Processing: demo1:frame_000047
+
+Processing: demo1:frame_000048
+
+Processing: demo1:frame_000049
+
+Processing: demo1:frame_000050
+
+Processing: demo1:frame_000051
+
+Processing: demo1:frame_000052
+
+Processing: demo1:frame_000053
+
+Processing: demo1:frame_000054
+
+Processing: demo1:frame_000055
+
+Processing: demo1:frame_000056
+
+Processing: demo1:frame_000057
+
+Processing: demo1:frame_000058
+
+Processing: demo1:frame_000059
+
+Processing: demo1:frame_000060
+
+Processing: demo1:frame_000061
+
+Processing: demo1:frame_000062
+
+Processing: demo1:frame_000063
+
+Processing: demo1:frame_000064
+
+Processing: demo1:frame_000065
+
+Processing: demo1:frame_000066
+
+Processing: demo1:frame_000067
+
+Processing: demo1:frame_000068
+
+Processing: demo1:frame_000069
+
+Processing: demo1:frame_000070
+
+Processing: demo1:frame_000071
+
+Processing: demo1:frame_000072
+
+Processing: demo1:frame_000073
+
+Processing: demo1:frame_000074
+
+Processing: demo1:frame_000075
+
+Processing: demo1:frame_000076
+
+Processing: demo1:frame_000077
+
+Processing: demo1:frame_000078
+
+Processing: demo1:frame_000079
+
+Processing: demo1:frame_000080
+
+Processing: demo1:frame_000081
+
+Processing: demo1:frame_000082
+
+Processing: demo1:frame_000083
+
+Processing: demo1:frame_000084
+
+Processing: demo1:frame_000085
+
+Processing: demo1:frame_000086
+
+Processing: demo1:frame_000087
+
+Processing: demo1:frame_000088
+
+Processing: demo1:frame_000089
+
+Processing: demo1:frame_000090
+
+Processing: demo1:frame_000091
+
+Processing: demo1:frame_000092
+
+Processing: demo1:frame_000093
+
+Processing: demo1:frame_000094
+
+Processing: demo1:frame_000095
+
+Processing: demo1:frame_000096
+
+Processing: demo1:frame_000097
+
+Processing: demo1:frame_000098
+
+Processing: demo1:frame_000099
+
+Processing: demo1:frame_000100
+
+Processing: demo1:frame_000101
+
+Processing: demo1:frame_000102
+
+Processing: demo1:frame_000103
+
+Processing: demo1:frame_000104
+
+Processing: demo1:frame_000105
+
+Processing: demo1:frame_000106
+
+Processing: demo1:frame_000107
+
+Processing: demo1:frame_000108
+
+Processing: demo1:frame_000109
+
+Processing: demo1:frame_000110
+
+Processing: demo1:frame_000111
+
+Processing: demo1:frame_000112
+
+Processing: demo1:frame_000113
+
+Processing: demo1:frame_000114
+
+Processing: demo1:frame_000115
+
+Processing: demo1:frame_000116
+
+Processing: demo1:frame_000117
+
+Processing: demo1:frame_000118
+
+Processing: demo1:frame_000119
+
+Processing: demo1:frame_000120
+
+Processing: demo1:frame_000121
+
+Processing: demo1:frame_000122
+
+Processing: demo1:frame_000123
+
+Processing: demo1:frame_000124
+
+Processing: demo1:frame_000125
+
+Processing: demo1:frame_000126
+
+Processing: demo1:frame_000127
+
+Processing: demo1:frame_000128
+
+Processing: demo1:frame_000129
+
+Processing: demo1:frame_000130
+
+Processing: demo1:frame_000131
+
+Processing: demo1:frame_000132
+
+Processing: demo1:frame_000133
+
+Processing: demo1:frame_000134
+
+Processing: demo1:frame_000135
+
+Processing: demo1:frame_000136
+
+Processing: demo1:frame_000137
+
+Processing: demo1:frame_000138
+
+Processing: demo1:frame_000139
+
+Processing: demo1:frame_000140
+
+Processing: demo1:frame_000141
+
+Processing: demo1:frame_000142
+
+Processing: demo1:frame_000143
+
+Processing: demo1:frame_000144
+
+Processing: demo1:frame_000145
+
+Processing: demo1:frame_000146
+
+Processing: demo1:frame_000147
+
+Processing: demo1:frame_000148
+
+Processing: demo1:frame_000149
+
+Processing: demo1:frame_000150
+
+Processing: demo1:frame_000151
+
+Processing: demo1:frame_000152
+
+Processing: demo1:frame_000153
+
+Processing: demo1:frame_000154
+
+Processing: demo1:frame_000155
+
+Processing: demo1:frame_000156
+
+Processing: demo1:frame_000157
+
+Processing: demo1:frame_000158
+
+Processing: demo1:frame_000159
+
+Processing: demo1:frame_000160
+
+Processing: demo1:frame_000161
+
+Processing: demo1:frame_000162
+
+Processing: demo1:frame_000163
+
+Processing: demo1:frame_000164
+
+Processing: demo1:frame_000165
+
+Processing: demo1:frame_000166
+
+Processing: demo1:frame_000167
+
+Processing: demo1:frame_000168
+
+Processing: demo1:frame_000169
+
+Processing: demo1:frame_000170
+
+Processing: demo1:frame_000171
+
+Processing: demo1:frame_000172
+
+Processing: demo1:frame_000173
+
+Processing: demo1:frame_000174
+
+Processing: demo1:frame_000175
+
+Processing: demo1:frame_000176
+
+Processing: demo1:frame_000177
+
+Processing: demo1:frame_000178
+
+Processing: demo1:frame_000179
+
+Processing: demo1:frame_000180
+
+Processing: demo1:frame_000181
+
+Processing: demo1:frame_000182
+
+Processing: demo1:frame_000183
+
+Processing: demo1:frame_000184
+
+Processing: demo1:frame_000185
+
+Processing: demo1:frame_000186
+
+Processing: demo1:frame_000187
+
+Processing: demo1:frame_000188
+
+Processing: demo1:frame_000189
+
+Processing: demo1:frame_000190
+
+Processing: demo1:frame_000191
+
+Processing: demo1:frame_000192
+
+Processing: demo1:frame_000193
+
+Processing: demo1:frame_000194
+
+Processing: demo1:frame_000195
+
+Processing: demo1:frame_000196
+
+Processing: demo1:frame_000197
+
+Processing: demo1:frame_000198
+
+Processing: demo1:frame_000199
+
+Processing: demo1:frame_000200
+
+Processing: demo1:frame_000201
+
+Processing: demo1:frame_000202
+
+Processing: demo1:frame_000203
+
+Processing: demo1:frame_000204
+
+Processing: demo1:frame_000205
+
+Processing: demo1:frame_000206
+
+Processing: demo1:frame_000207
+
+Processing: demo1:frame_000208
+
+Processing: demo1:frame_000209
+
+Processing: demo1:frame_000210
+
+Processing: demo1:frame_000211
+
+Processing: demo1:frame_000212
+
+Processing: demo1:frame_000213
+
+Processing: demo1:frame_000214
+
+Processing: demo1:frame_000215
+
+Processing: demo1:frame_000216
+
+Processing: demo1:frame_000217
+
+Processing: demo1:frame_000218
+
+Processing: demo1:frame_000219
+
+Processing: demo1:frame_000220
+
+Processing: demo1:frame_000221
+
+Processing: demo1:frame_000222
+
+Processing: demo1:frame_000223
+
+Processing: demo1:frame_000224
+
+Processing: demo1:frame_000225
+
+Processing: demo1:frame_000226
+
+Processing: demo1:frame_000227
+
+Processing: demo1:frame_000228
+
+Processing: demo1:frame_000229
+
+Processing: demo1:frame_000230
+
+Processing: demo1:frame_000231
+
+Processing: demo1:frame_000232
+
+Processing: demo1:frame_000233
+
+Processing: demo1:frame_000234
+
+Processing: demo1:frame_000235
+
+Processing: demo1:frame_000236
+
+Processing: demo1:frame_000237
+
+Processing: demo1:frame_000238
+
+Processing: demo1:frame_000239
+
+Processing: demo1:frame_000240
+
+Processing: demo1:frame_000241
+
+Processing: demo1:frame_000242
+
+Processing: demo1:frame_000243
+
+Processing: demo1:frame_000244
+
+Processing: demo1:frame_000245
+
+Processing: demo1:frame_000246
+
+Processing: demo1:frame_000247
+
+Processing: demo1:frame_000248
+
+Processing: demo1:frame_000249
+
+Processing: demo1:frame_000250
+
+Processing: demo1:frame_000251
+
+Processing: demo1:frame_000252
+
+Processing: demo1:frame_000253
+
+Processing: demo1:frame_000254
+
+Processing: demo1:frame_000255
+
+Processing: demo1:frame_000256
+
+Processing: demo1:frame_000257
+
+Processing: demo1:frame_000258
+
+Processing: demo1:frame_000259
+
+Processing: demo1:frame_000260
+
+Processing: demo1:frame_000261
+
+Processing: demo1:frame_000262
+
+Processing: demo1:frame_000263
+
+Processing: demo1:frame_000264
+
+Processing: demo1:frame_000265
+
+Processing: demo1:frame_000266
+
+Processing: demo1:frame_000267
+
+Processing: demo1:frame_000268
+
+Processing: demo1:frame_000269
+
+Processing: demo1:frame_000270
+
+Processing: demo1:frame_000271
+
+Processing: demo1:frame_000272
+
+Processing: demo1:frame_000273
+
+Processing: demo1:frame_000274
+
+Processing: demo1:frame_000275
+
+Processing: demo1:frame_000276
+
+Processing: demo1:frame_000277
+
+Processing: demo1:frame_000278
+
+Processing: demo1:frame_000279
+
+Processing: demo1:frame_000280
+
+Processing: demo1:frame_000281
+
+Processing: demo1:frame_000282
+
+Processing: demo1:frame_000283
+
+Processing: demo1:frame_000284
+
+Processing: demo1:frame_000285
+
+Processing: demo1:frame_000286
+
+Processing: demo1:frame_000287
+
+Processing: demo1:frame_000288
+
+Processing: demo1:frame_000289
+
+Processing: demo1:frame_000290
+
+Processing: demo1:frame_000291
+
+Processing: demo1:frame_000292
+
+Processing: demo1:frame_000293
+
+Processing: demo1:frame_000294
+
+Processing: demo1:frame_000295
+
+Processing: demo1:frame_000296
+
+Processing: demo1:frame_000297
+
+Processing: demo1:frame_000298
+
+Processing: demo1:frame_000299
+
+Processing: demo1:frame_000300
+
+Processing: demo1:frame_000301
+
+Processing: demo1:frame_000302
+
+Processing: demo1:frame_000303
+
+Processing: demo1:frame_000304
+
+Processing: demo1:frame_000305
+
+Processing: demo1:frame_000306
+
+Processing: demo1:frame_000307
+
+Processing: demo1:frame_000308
+
+Processing: demo1:frame_000309
+
+Processing: demo1:frame_000310
+
+Processing: demo1:frame_000311
+
+Processing: demo1:frame_000312
+
+Processing: demo1:frame_000313
+
+Processing: demo1:frame_000314
+
+Processing: demo1:frame_000315
+
+Processing: demo1:frame_000316
+
+Processing: demo1:frame_000317
+
+Processing: demo1:frame_000318
+
+Processing: demo1:frame_000319
+
+Processing: demo1:frame_000320
+
+Processing: demo1:frame_000321
+
+Processing: demo1:frame_000322
+
+Processing: demo1:frame_000323
+
+Processing: demo1:frame_000324
+
+Processing: demo1:frame_000325
+
+Processing: demo1:frame_000326
+
+Processing: demo1:frame_000327
+
+Processing: demo1:frame_000328
+
+Processing: demo1:frame_000329
+
+Processing: demo1:frame_000330
+
+Processing: demo1:frame_000331
+
+Processing: demo1:frame_000332
+
+Processing: demo1:frame_000333
+
+Processing: demo1:frame_000334
+
+Processing: demo1:frame_000335
+
+Processing: demo1:frame_000336
+
+Processing: demo1:frame_000337
+
+Processing: demo1:frame_000338
+
+Processing: demo1:frame_000339
+
+Processing: demo1:frame_000340
+
+Processing: demo1:frame_000341
+
+Processing: demo1:frame_000342
+
+Processing: demo1:frame_000343
+
+Processing: demo1:frame_000344
+
+Processing: demo1:frame_000345
+
+Processing: demo1:frame_000346
+
+Processing: demo1:frame_000347
+
+Processing: demo1:frame_000348
+
+Processing: demo1:frame_000349
+
+Processing: demo1:frame_000350
+
+Processing: demo1:frame_000351
+
+Processing: demo1:frame_000352
+
+Processing: demo1:frame_000353
+
+Processing: demo1:frame_000354
+
+Processing: demo1:frame_000355
+
+Processing: demo1:frame_000356
+
+Processing: demo1:frame_000357
+
+Processing: demo1:frame_000358
+
+Processing: demo1:frame_000359
+
+Processing: demo1:frame_000360
+
+Processing: demo1:frame_000361
+
+Processing: demo1:frame_000362
+
+Processing: demo1:frame_000363
+
+Processing: demo1:frame_000364
+
+Processing: demo1:frame_000365
+
+Processing: demo1:frame_000366
+
+Processing: demo1:frame_000367
+
+Processing: demo1:frame_000368
+
+Processing: demo1:frame_000369
+
+Processing: demo1:frame_000370
+
+Processing: demo1:frame_000371
+
+Processing: demo1:frame_000372
+
+Processing: demo1:frame_000373
+
+Processing: demo1:frame_000374
+
+Processing: demo1:frame_000375
+
+Processing: demo1:frame_000376
+
+Processing: demo1:frame_000377
+
+Processing: demo1:frame_000378
+
+Processing: demo1:frame_000379
+
+Processing: demo1:frame_000380
+
+Processing: demo1:frame_000381
+
+Processing: demo1:frame_000382
+
+Processing: demo1:frame_000383
+
+Processing: demo1:frame_000384
+
+Processing: demo1:frame_000385
+
+Processing: demo1:frame_000386
+
+Processing: demo1:frame_000387
+
+Processing: demo1:frame_000388
+
+Processing: demo1:frame_000389
+
+Processing: demo1:frame_000390
+
+Processing: demo1:frame_000391
+
+Processing: demo1:frame_000392
+
+Processing: demo1:frame_000393
+
+Processing: demo1:frame_000394
+
+Processing: demo1:frame_000395
+
+Processing: demo1:frame_000396
+
+Processing: demo1:frame_000397
+
+Processing: demo1:frame_000398
+
+Processing: demo1:frame_000399
+
+Processing: demo1:frame_000400
+
+Processing: demo1:frame_000401
+
+Processing: demo1:frame_000402
+
+Processing: demo1:frame_000403
+
+Processing: demo1:frame_000404
+
+Processing: demo1:frame_000405
+
+Processing: demo1:frame_000406
+
+Processing: demo1:frame_000407
+
+Processing: demo1:frame_000408
+
+Processing: demo1:frame_000409
+
+Processing: demo1:frame_000410
+
+Processing: demo1:frame_000411
+
+Processing: demo1:frame_000412
+
+Processing: demo1:frame_000413
+
+Processing: demo1:frame_000414
+
+Processing: demo1:frame_000415
+
+Processing: demo1:frame_000416
+
+Processing: demo1:frame_000417
+
+Processing: demo1:frame_000418
+
+Processing: demo1:frame_000419
+
+Processing: demo1:frame_000420
+
+Processing: demo1:frame_000421
+
+Processing: demo1:frame_000422
+
+Processing: demo1:frame_000423
+
+Processing: demo1:frame_000424
+
+Processing: demo1:frame_000425
+
+Processing: demo1:frame_000426
+
+Processing: demo1:frame_000427
+
+Processing: demo1:frame_000428
+
+Processing: demo1:frame_000429
+
+Processing: demo1:frame_000430
+
+Processing: demo1:frame_000431
+
+Processing: demo1:frame_000432
+
+Processing: demo1:frame_000433
+
+Processing: demo1:frame_000434
+
+Processing: demo1:frame_000435
+
+Processing: demo1:frame_000436
+
+Processing: demo1:frame_000437
+
+Processing: demo1:frame_000438
+
+Processing: demo1:frame_000439
+
+Processing: demo1:frame_000440
+
+Processing: demo1:frame_000441
+
+Processing: demo1:frame_000442
+
+Processing: demo1:frame_000443
+
+Processing: demo1:frame_000444
+
+Processing: demo1:frame_000445
+
+Processing: demo1:frame_000446
+
+Processing: demo1:frame_000447
+
+Processing: demo1:frame_000448
+
+Processing: demo1:frame_000449
+
+Processing: demo1:frame_000450
+
+Processing: demo1:frame_000451
+
+Processing: demo1:frame_000452
+
+Processing: demo1:frame_000453
+
+Processing: demo1:frame_000454
+
+Processing: demo1:frame_000455
+
+Processing: demo1:frame_000456
+
+Processing: demo1:frame_000457
+
+Processing: demo1:frame_000458
+
+Processing: demo1:frame_000459
+
+Processing: demo1:frame_000460
+
+Processing: demo1:frame_000461
+
+Processing: demo1:frame_000462
+
+Processing: demo1:frame_000463
+
+Processing: demo1:frame_000464
+
+Processing: demo1:frame_000465
+
+Processing: demo1:frame_000466
+
+Processing: demo1:frame_000467
+
+Processing: demo1:frame_000468
+
+Processing: demo1:frame_000469
+
+Processing: demo1:frame_000470
+
+Processing: demo1:frame_000471
+
+Processing: demo1:frame_000472
+
+Processing: demo1:frame_000473
+
+Processing: demo1:frame_000474
+
+Processing: demo1:frame_000475
+
+Processing: demo1:frame_000476
+
+Processing: demo1:frame_000477
+
+Processing: demo1:frame_000478
+
+Processing: demo1:frame_000479
+
+Processing: demo1:frame_000480
+
+Processing: demo1:frame_000481
+
+Processing: demo1:frame_000482
+
+Processing: demo1:frame_000483
+
+Processing: demo1:frame_000484
+
+Processing: demo1:frame_000485
+
+Processing: demo1:frame_000486
+
+Processing: demo1:frame_000487
+
+Processing: demo1:frame_000488
+
+Processing: demo1:frame_000489
+
+Processing: demo1:frame_000490
+
+Processing: demo1:frame_000491
+
+Processing: demo1:frame_000492
+
+Processing: demo1:frame_000493
+
+Processing: demo1:frame_000494
+
+Processing: demo1:frame_000495
+
+Processing: demo1:frame_000496
+
+Processing: demo1:frame_000497
+
+Processing: demo1:frame_000498
+
+Processing: demo1:frame_000499
+
+Processing: demo1:frame_000500
+
+Processing: demo1:frame_000501
+
+Processing: demo1:frame_000502
+
+Processing: demo1:frame_000503
+
+Processing: demo1:frame_000504
+
+Processing: demo1:frame_000505
+
+Processing: demo1:frame_000506
+
+Processing: demo1:frame_000507
+
+Processing: demo1:frame_000508
+
+Processing: demo1:frame_000509
+
+Processing: demo1:frame_000510
+
+Processing: demo1:frame_000511
+
+Processing: demo1:frame_000512
+
+Processing: demo1:frame_000513
+
+Processing: demo1:frame_000514
+
+Processing: demo1:frame_000515
+
+Processing: demo1:frame_000516
+
+Processing: demo1:frame_000517
+
+Processing: demo1:frame_000518
+
+Processing: demo1:frame_000519
+
+Processing: demo1:frame_000520
+
+Processing: demo1:frame_000521
+
+Processing: demo1:frame_000522
+
+Processing: demo1:frame_000523
+
+Processing: demo1:frame_000524
+
+Processing: demo1:frame_000525
+
+Processing: demo1:frame_000526
+
+Processing: demo1:frame_000527
+
+Processing: demo1:frame_000528
+
+Processing: demo1:frame_000529
+
+Processing: demo1:frame_000530
+
+Processing: demo1:frame_000531
+
+Processing: demo1:frame_000532
+
+Processing: demo1:frame_000533
+
+Processing: demo1:frame_000534
+
+Processing: demo1:frame_000535
+
+Processing: demo1:frame_000536
+
+Processing: demo1:frame_000537
+
+Processing: demo1:frame_000538
+
+Processing: demo1:frame_000539
+
+Processing: demo1:frame_000540
+
+Processing: demo1:frame_000541
+
+Processing: demo1:frame_000542
+
+Processing: demo1:frame_000543
+
+Processing: demo1:frame_000544
+
+Processing: demo1:frame_000545
+
+Processing: demo1:frame_000546
+
+Processing: demo1:frame_000547
+
+Processing: demo1:frame_000548
+
+Processing: demo1:frame_000549
+
+Processing: demo1:frame_000550
+
+Processing: demo1:frame_000551
+
+Processing: demo1:frame_000552
+
+Processing: demo1:frame_000553
+
+Processing: demo1:frame_000554
+
+Processing: demo1:frame_000555
+
+Processing: demo1:frame_000556
+
+Processing: demo1:frame_000557
+
+Processing: demo1:frame_000558
+
+Processing: demo1:frame_000559
+
+Processing: demo1:frame_000560
+
+Processing: demo1:frame_000561
+
+Processing: demo1:frame_000562
+
+Processing: demo1:frame_000563
+
+Processing: demo1:frame_000564
+
+Processing: demo1:frame_000565
+
+Processing: demo1:frame_000566
+
+Processing: demo1:frame_000567
+
+Processing: demo1:frame_000568
+
+Processing: demo1:frame_000569
+
+Processing: demo1:frame_000570
+
+Processing: demo1:frame_000571
+
+Processing: demo1:frame_000572
+
+Processing: demo1:frame_000573
+
+Processing: demo1:frame_000574
+
+Processing: demo1:frame_000575
+
+Processing: demo1:frame_000576
+
+Processing: demo1:frame_000577
+
+Processing: demo1:frame_000578
+
+Processing: demo1:frame_000579
+
+Processing: demo1:frame_000580
+
+Processing: demo1:frame_000581
+
+Processing: demo1:frame_000582
+
+Processing: demo1:frame_000583
+
+Processing: demo1:frame_000584
+
+Processing: demo1:frame_000585
+
+Processing: demo1:frame_000586
+
+Processing: demo1:frame_000587
+
+Processing: demo1:frame_000588
+
+Processing: demo1:frame_000589
+
+Processing: demo1:frame_000590
+
+Processing: demo1:frame_000591
+
+Processing: demo1:frame_000592
+
+Processing: demo1:frame_000593
+
+Processing: demo1:frame_000594
+
+Processing: demo1:frame_000595
+
+Processing: demo1:frame_000596
+
+Processing: demo1:frame_000597
+
+Processing: demo1:frame_000598
+
+Processing: demo1:frame_000599
+
+Processing: demo1:frame_000600
+
+Processing: demo1:frame_000601
+
+Processing: demo1:frame_000602
+
+Processing: demo1:frame_000603
+
+Processing: demo1:frame_000604
+
+Processing: demo1:frame_000605
+
+Processing: demo1:frame_000606
+
+Processing: demo1:frame_000607
+
+Processing: demo1:frame_000608
+
+Processing: demo1:frame_000609
+
+Processing: demo1:frame_000610
+
+Processing: demo1:frame_000611
+
+Processing: demo1:frame_000612
+
+Processing: demo1:frame_000613
+
+Processing: demo1:frame_000614
+
+Processing: demo1:frame_000615
+
+Processing: demo1:frame_000616
+
+Processing: demo1:frame_000617
+
+Processing: demo1:frame_000618
+
+Processing: demo1:frame_000619
+
+Processing: demo1:frame_000620
+
+Processing: demo1:frame_000621
+
+Processing: demo1:frame_000622
+
+Processing: demo1:frame_000623
+
+Processing: demo1:frame_000624
+
+Processing: demo1:frame_000625
+
+Processing: demo1:frame_000626
+
+Processing: demo1:frame_000627
+
+Processing: demo1:frame_000628
+
+Processing: demo1:frame_000629
+
+Processing: demo1:frame_000630
+
+Processing: demo1:frame_000631
+
+Processing: demo1:frame_000632
+
+Processing: demo1:frame_000633
+
+Processing: demo1:frame_000634
+
+Processing: demo1:frame_000635
+
+Processing: demo1:frame_000636
+
+Processing: demo1:frame_000637
+
+Processing: demo1:frame_000638
+
+Processing: demo1:frame_000639
+
+Processing: demo1:frame_000640
+
+Processing: demo1:frame_000641
+
+Processing: demo1:frame_000642
+
+Processing: demo1:frame_000643
+
+Processing: demo1:frame_000644
+
+Processing: demo1:frame_000645
+
+Processing: demo1:frame_000646
+
+Processing: demo1:frame_000647
+
+Processing: demo1:frame_000648
+
+Processing: demo1:frame_000649
+
+Processing: demo1:frame_000650
+
+Processing: demo1:frame_000651
+
+Processing: demo1:frame_000652
+
+Processing: demo1:frame_000653
+
+Processing: demo1:frame_000654
+
+Processing: demo1:frame_000655
+
+Processing: demo1:frame_000656
+
+Processing: demo1:frame_000657
+
+Processing: demo1:frame_000658
+
+Processing: demo1:frame_000659
+
+Processing: demo1:frame_000660
+
+Processing: demo1:frame_000661
+
+Processing: demo1:frame_000662
+
+Processing: demo1:frame_000663
+
+Processing: demo1:frame_000664
+
+Processing: demo1:frame_000665
+
+Processing: demo1:frame_000666
+
+Processing: demo1:frame_000667
+
+Processing: demo1:frame_000668
+
+Processing: demo1:frame_000669
+
+Processing: demo1:frame_000670
+
+All images processed.
+===============================================
+Job finished at: Sat May 30 22:49:41 CEST 2026
+Execution took 0.07 hours
+Writing output to SLURM_logs/wilor-inference_606.out
+Retained WiLoR outputs: /scratch/mthakur/manifold/outputs/wilor_finetune/lora_finetuning/demo1/meshes
+===============================================

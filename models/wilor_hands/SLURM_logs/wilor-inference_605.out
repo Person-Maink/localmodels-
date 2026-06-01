@@ -1,0 +1,175 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Sat May 30 22:43:27 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:98:00.0 Off |                    0 |
+| N/A   36C    P0             42W /  300W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         10011539
+Job Name:       wilor-inference
+Partition:      gpu-a100
+Node List:      gpu017
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Sat May 30 22:43:27 CEST 2026
+===============================================
+WiLoR finetune experiment: lora_finetuning
+WiLoR checkpoint: /scratch/mthakur/manifold/outputs/wilor_finetune/lora_finetuning/best.ckpt
+WiLoR config: /scratch/mthakur/manifold/models/wilor_hands/pretrained_models/model_config.yaml
+WiLoR video: /scratch/mthakur/manifold/data/test/clip_4.mp4
+WiLoR output root: /scratch/mthakur/manifold/outputs/wilor_finetune/lora_finetuning
+WiLoR completion marker: /scratch/mthakur/manifold/outputs/wilor_finetune/lora_finetuning/_completed/clip_4.json
+WiLoR frame cache root: /scratch/mthakur/manifold/data/test
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[progress] Loading WiLoR checkpoint: /scratch/mthakur/manifold/outputs/wilor_finetune/lora_finetuning/best.ckpt
+Loading  /scratch/mthakur/manifold/outputs/wilor_finetune/lora_finetuning/best.ckpt
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+[progress] Loading detector: ./pretrained_models/detector.pt
+
+Processing: clip_4:frame_000000
+
+Processing: clip_4:frame_000001
+
+Processing: clip_4:frame_000002
+
+Processing: clip_4:frame_000003
+
+Processing: clip_4:frame_000004
+
+Processing: clip_4:frame_000005
+
+Processing: clip_4:frame_000006
+
+Processing: clip_4:frame_000007
+
+Processing: clip_4:frame_000008
+
+Processing: clip_4:frame_000009
+
+Processing: clip_4:frame_000010
+
+Processing: clip_4:frame_000011
+
+Processing: clip_4:frame_000012
+
+Processing: clip_4:frame_000013
+
+Processing: clip_4:frame_000014
+
+Processing: clip_4:frame_000015
+
+Processing: clip_4:frame_000016
+
+Processing: clip_4:frame_000017
+
+Processing: clip_4:frame_000018
+
+Processing: clip_4:frame_000019
+
+Processing: clip_4:frame_000020
+
+Processing: clip_4:frame_000021
+
+Processing: clip_4:frame_000022
+
+Processing: clip_4:frame_000023
+
+Processing: clip_4:frame_000024
+
+Processing: clip_4:frame_000025
+
+Processing: clip_4:frame_000026
+
+Processing: clip_4:frame_000027
+
+Processing: clip_4:frame_000028
+
+Processing: clip_4:frame_000029
+
+Processing: clip_4:frame_000030
+
+Processing: clip_4:frame_000031
+
+Processing: clip_4:frame_000032
+
+Processing: clip_4:frame_000033
+
+Processing: clip_4:frame_000034
+
+Processing: clip_4:frame_000035
+
+Processing: clip_4:frame_000036
+
+Processing: clip_4:frame_000037
+
+Processing: clip_4:frame_000038
+
+Processing: clip_4:frame_000039
+
+Processing: clip_4:frame_000040
+
+Processing: clip_4:frame_000041
+
+Processing: clip_4:frame_000042
+
+Processing: clip_4:frame_000043
+
+Processing: clip_4:frame_000044
+
+Processing: clip_4:frame_000045
+
+Processing: clip_4:frame_000046
+
+Processing: clip_4:frame_000047
+
+Processing: clip_4:frame_000048
+
+Processing: clip_4:frame_000049
+
+Processing: clip_4:frame_000050
+
+Processing: clip_4:frame_000051
+
+Processing: clip_4:frame_000052
+
+Processing: clip_4:frame_000053
+
+Processing: clip_4:frame_000054
+
+Processing: clip_4:frame_000055
+
+Processing: clip_4:frame_000056
+
+All images processed.
+===============================================
+Job finished at: Sat May 30 22:45:16 CEST 2026
+Execution took 0.03 hours
+Writing output to SLURM_logs/wilor-inference_605.out
+Retained WiLoR outputs: /scratch/mthakur/manifold/outputs/wilor_finetune/lora_finetuning/clip_4/meshes
+===============================================

@@ -10,8 +10,8 @@
 #   visual                 : Visualization jobs
 
 #SBATCH --job-name=wilor-inference
-#SBATCH --partition=gpu-a100-small
-#SBATCH --time=01:43:12
+#SBATCH --partition=gpu-a100
+#SBATCH --time=01:37:48
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
@@ -57,7 +57,7 @@ echo "Job started at: $(date)"
 start_time=$(date +%s)
 echo "==============================================="
 
-VIDEO_DIR="${VIDEO_DIR:-${PROJECT_ROOT}/data/test/me}"
+VIDEO_DIR="${VIDEO_DIR:-${PROJECT_ROOT}/data/test}"
 VIDEO_NAME="${VIDEO_NAME:-me 1}"
 VIDEO_FILE="${VIDEO_FILE:-}"
 EXPERIMENT_NAME="${EXPERIMENT_NAME:-main_static_finetuning}"
