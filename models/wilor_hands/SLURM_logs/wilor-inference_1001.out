@@ -1,0 +1,441 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Wed Jun 10 11:22:14 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   60C    P0            150W /  300W |   23587MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    8   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         10143413
+Job Name:       wilor-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Wed Jun 10 11:22:14 CEST 2026
+===============================================
+WiLoR video: /scratch/mthakur/manifold/data/test/tremor_simulation_line_normal_BE_meenakshi.mp4
+WiLoR output root: /scratch/mthakur/manifold/outputs/wilor
+WiLoR completion marker: /scratch/mthakur/manifold/outputs/wilor/_completed/tremor_simulation_line_normal_BE_meenakshi.json
+WiLoR frame cache root: /scratch/mthakur/manifold/data/test
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[progress] Loading WiLoR checkpoint: ./pretrained_models/wilor_final.ckpt
+Loading  ./pretrained_models/wilor_final.ckpt
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+[progress] Loading detector: ./pretrained_models/detector.pt
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000000
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000001
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000002
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000003
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000004
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000005
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000006
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000007
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000008
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000009
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000010
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000011
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000012
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000013
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000014
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000015
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000016
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000017
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000018
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000019
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000020
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000021
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000022
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000023
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000024
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000025
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000026
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000027
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000028
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000029
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000030
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000031
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000032
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000033
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000034
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000035
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000036
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000037
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000038
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000039
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000040
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000041
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000042
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000043
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000044
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000045
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000046
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000047
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000048
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000049
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000050
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000051
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000052
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000053
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000054
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000055
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000056
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000057
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000058
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000059
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000060
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000061
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000062
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000063
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000064
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000065
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000066
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000067
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000068
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000069
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000070
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000071
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000072
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000073
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000074
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000075
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000076
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000077
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000078
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000079
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000080
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000081
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000082
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000083
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000084
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000085
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000086
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000087
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000088
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000089
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000090
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000091
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000092
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000093
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000094
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000095
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000096
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000097
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000098
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000099
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000100
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000101
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000102
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000103
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000104
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000105
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000106
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000107
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000108
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000109
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000110
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000111
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000112
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000113
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000114
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000115
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000116
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000117
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000118
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000119
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000120
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000121
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000122
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000123
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000124
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000125
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000126
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000127
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000128
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000129
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000130
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000131
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000132
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000133
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000134
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000135
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000136
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000137
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000138
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000139
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000140
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000141
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000142
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000143
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000144
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000145
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000146
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000147
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000148
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000149
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000150
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000151
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000152
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000153
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000154
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000155
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000156
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000157
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000158
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000159
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000160
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000161
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000162
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000163
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000164
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000165
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000166
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000167
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000168
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000169
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000170
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000171
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000172
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000173
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000174
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000175
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000176
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000177
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000178
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000179
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000180
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000181
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000182
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000183
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000184
+
+Processing: tremor_simulation_line_normal_BE_meenakshi:frame_000185
+
+All images processed.
+===============================================
+Job finished at: Wed Jun 10 11:23:31 CEST 2026
+Execution took 0.02 hours
+Writing output to SLURM_logs/wilor-inference_1001.out
+Retained WiLoR outputs: /scratch/mthakur/manifold/outputs/wilor/tremor_simulation_line_normal_BE_meenakshi/meshes
+===============================================

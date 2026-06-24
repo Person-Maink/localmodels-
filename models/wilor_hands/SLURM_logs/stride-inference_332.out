@@ -1,0 +1,80 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Thu Jun 11 10:14:39 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   60C    P0            143W /  300W |   10318MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    7   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         10143727
+Job Name:       stride-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 24576
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Thu Jun 11 10:14:39 CEST 2026
+===============================================
+STRIDE video: /scratch/mthakur/manifold/data/test/edge_cases_still_135_hari.mp4
+WiLoR cache root: /scratch/mthakur/manifold/outputs/wilor
+STRIDE output root: /scratch/mthakur/manifold/outputs/stride
+STRIDE completion marker: /scratch/mthakur/manifold/outputs/stride/_completed/edge_cases_still_135_hari.json
+STRIDE frame cache root: /scratch/mthakur/manifold/data/test
+STRIDE backend: hmp
+STRIDE config: /scratch/mthakur/manifold/models/wilor_hands/stride_configs/hmp.yaml
+Apptainer image: /scratch/mthakur/manifold/models/wilor_hands/apptainer/template-hmp.sif
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+[INFO] Running STRIDE refinement for edge_cases_still_135_hari
+2
+[0, 1]
+mean: ['rotmat', 'pos', 'trans', 'root_vel', 'height', 'rot6d', 'angular', 'global_xform', 'velocity', 'root_orient']
+std: ['rotmat', 'pos', 'trans', 'root_vel', 'height', 'rot6d', 'angular', 'global_xform', 'velocity', 'root_orient']
+Loading from /scratch/mthakur/manifold/models/wilor_hands/_DATA/hmp_model/results/model
+Load succeeded
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+
+Refined 1 video(s) into /scratch/mthakur/manifold/outputs/stride.
+===============================================
+Job finished at: Thu Jun 11 10:19:56 CEST 2026
+Execution took 0.09 hours
+Writing output to SLURM_logs/stride-inference_332.out
+Retained STRIDE outputs: /scratch/mthakur/manifold/outputs/stride/edge_cases_still_135_hari
+===============================================

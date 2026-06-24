@@ -1,0 +1,1535 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Fri Jun 12 13:36:07 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   61C    P0            145W /  300W |    4934MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    7   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         10158530
+Job Name:       wilor-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Fri Jun 12 13:36:08 CEST 2026
+===============================================
+WiLoR video: /scratch/mthakur/manifold/data/test/tremor_simulation_small_spiral_tremor_180_niti.mp4
+WiLoR output root: /scratch/mthakur/manifold/outputs/wilor
+WiLoR completion marker: /scratch/mthakur/manifold/outputs/wilor/_completed/tremor_simulation_small_spiral_tremor_180_niti.json
+WiLoR frame cache root: /scratch/mthakur/manifold/data/test
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[progress] Loading WiLoR checkpoint: ./pretrained_models/wilor_final.ckpt
+Loading  ./pretrained_models/wilor_final.ckpt
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+[progress] Loading detector: ./pretrained_models/detector.pt
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000000
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000001
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000002
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000003
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000004
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000005
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000006
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000007
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000008
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000009
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000010
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000011
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000012
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000013
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000014
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000015
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000016
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000017
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000018
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000019
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000020
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000021
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000022
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000023
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000024
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000025
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000026
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000027
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000028
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000029
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000030
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000031
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000032
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000033
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000034
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000035
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000036
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000037
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000038
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000039
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000040
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000041
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000042
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000043
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000044
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000045
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000046
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000047
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000048
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000049
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000050
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000051
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000052
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000053
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000054
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000055
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000056
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000057
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000058
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000059
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000060
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000061
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000062
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000063
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000064
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000065
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000066
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000067
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000068
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000069
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000070
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000071
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000072
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000073
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000074
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000075
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000076
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000077
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000078
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000079
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000080
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000081
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000082
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000083
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000084
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000085
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000086
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000087
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000088
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000089
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000090
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000091
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000092
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000093
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000094
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000095
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000096
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000097
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000098
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000099
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000100
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000101
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000102
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000103
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000104
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000105
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000106
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000107
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000108
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000109
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000110
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000111
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000112
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000113
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000114
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000115
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000116
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000117
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000118
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000119
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000120
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000121
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000122
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000123
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000124
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000125
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000126
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000127
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000128
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000129
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000130
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000131
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000132
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000133
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000134
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000135
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000136
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000137
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000138
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000139
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000140
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000141
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000142
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000143
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000144
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000145
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000146
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000147
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000148
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000149
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000150
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000151
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000152
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000153
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000154
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000155
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000156
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000157
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000158
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000159
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000160
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000161
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000162
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000163
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000164
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000165
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000166
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000167
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000168
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000169
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000170
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000171
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000172
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000173
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000174
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000175
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000176
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000177
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000178
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000179
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000180
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000181
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000182
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000183
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000184
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000185
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000186
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000187
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000188
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000189
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000190
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000191
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000192
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000193
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000194
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000195
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000196
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000197
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000198
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000199
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000200
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000201
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000202
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000203
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000204
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000205
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000206
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000207
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000208
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000209
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000210
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000211
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000212
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000213
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000214
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000215
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000216
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000217
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000218
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000219
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000220
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000221
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000222
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000223
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000224
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000225
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000226
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000227
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000228
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000229
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000230
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000231
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000232
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000233
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000234
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000235
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000236
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000237
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000238
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000239
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000240
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000241
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000242
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000243
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000244
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000245
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000246
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000247
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000248
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000249
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000250
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000251
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000252
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000253
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000254
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000255
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000256
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000257
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000258
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000259
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000260
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000261
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000262
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000263
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000264
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000265
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000266
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000267
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000268
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000269
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000270
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000271
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000272
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000273
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000274
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000275
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000276
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000277
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000278
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000279
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000280
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000281
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000282
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000283
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000284
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000285
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000286
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000287
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000288
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000289
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000290
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000291
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000292
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000293
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000294
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000295
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000296
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000297
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000298
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000299
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000300
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000301
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000302
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000303
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000304
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000305
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000306
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000307
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000308
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000309
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000310
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000311
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000312
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000313
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000314
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000315
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000316
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000317
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000318
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000319
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000320
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000321
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000322
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000323
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000324
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000325
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000326
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000327
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000328
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000329
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000330
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000331
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000332
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000333
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000334
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000335
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000336
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000337
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000338
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000339
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000340
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000341
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000342
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000343
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000344
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000345
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000346
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000347
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000348
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000349
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000350
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000351
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000352
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000353
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000354
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000355
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000356
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000357
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000358
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000359
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000360
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000361
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000362
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000363
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000364
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000365
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000366
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000367
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000368
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000369
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000370
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000371
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000372
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000373
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000374
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000375
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000376
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000377
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000378
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000379
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000380
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000381
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000382
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000383
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000384
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000385
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000386
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000387
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000388
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000389
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000390
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000391
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000392
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000393
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000394
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000395
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000396
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000397
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000398
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000399
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000400
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000401
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000402
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000403
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000404
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000405
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000406
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000407
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000408
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000409
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000410
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000411
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000412
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000413
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000414
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000415
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000416
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000417
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000418
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000419
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000420
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000421
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000422
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000423
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000424
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000425
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000426
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000427
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000428
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000429
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000430
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000431
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000432
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000433
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000434
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000435
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000436
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000437
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000438
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000439
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000440
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000441
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000442
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000443
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000444
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000445
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000446
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000447
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000448
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000449
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000450
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000451
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000452
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000453
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000454
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000455
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000456
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000457
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000458
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000459
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000460
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000461
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000462
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000463
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000464
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000465
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000466
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000467
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000468
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000469
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000470
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000471
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000472
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000473
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000474
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000475
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000476
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000477
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000478
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000479
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000480
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000481
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000482
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000483
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000484
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000485
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000486
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000487
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000488
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000489
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000490
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000491
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000492
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000493
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000494
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000495
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000496
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000497
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000498
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000499
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000500
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000501
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000502
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000503
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000504
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000505
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000506
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000507
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000508
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000509
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000510
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000511
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000512
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000513
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000514
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000515
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000516
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000517
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000518
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000519
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000520
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000521
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000522
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000523
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000524
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000525
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000526
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000527
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000528
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000529
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000530
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000531
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000532
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000533
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000534
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000535
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000536
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000537
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000538
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000539
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000540
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000541
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000542
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000543
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000544
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000545
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000546
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000547
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000548
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000549
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000550
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000551
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000552
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000553
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000554
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000555
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000556
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000557
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000558
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000559
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000560
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000561
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000562
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000563
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000564
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000565
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000566
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000567
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000568
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000569
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000570
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000571
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000572
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000573
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000574
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000575
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000576
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000577
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000578
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000579
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000580
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000581
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000582
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000583
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000584
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000585
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000586
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000587
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000588
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000589
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000590
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000591
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000592
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000593
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000594
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000595
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000596
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000597
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000598
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000599
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000600
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000601
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000602
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000603
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000604
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000605
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000606
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000607
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000608
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000609
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000610
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000611
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000612
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000613
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000614
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000615
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000616
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000617
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000618
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000619
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000620
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000621
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000622
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000623
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000624
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000625
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000626
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000627
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000628
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000629
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000630
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000631
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000632
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000633
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000634
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000635
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000636
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000637
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000638
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000639
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000640
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000641
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000642
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000643
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000644
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000645
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000646
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000647
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000648
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000649
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000650
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000651
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000652
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000653
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000654
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000655
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000656
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000657
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000658
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000659
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000660
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000661
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000662
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000663
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000664
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000665
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000666
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000667
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000668
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000669
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000670
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000671
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000672
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000673
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000674
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000675
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000676
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000677
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000678
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000679
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000680
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000681
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000682
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000683
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000684
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000685
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000686
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000687
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000688
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000689
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000690
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000691
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000692
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000693
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000694
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000695
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000696
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000697
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000698
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000699
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000700
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000701
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000702
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000703
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000704
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000705
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000706
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000707
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000708
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000709
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000710
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000711
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000712
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000713
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000714
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000715
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000716
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000717
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000718
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000719
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000720
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000721
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000722
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000723
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000724
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000725
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000726
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000727
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000728
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000729
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000730
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000731
+
+Processing: tremor_simulation_small_spiral_tremor_180_niti:frame_000732
+
+All images processed.
+===============================================
+Job finished at: Fri Jun 12 13:42:25 CEST 2026
+Execution took 0.10 hours
+Writing output to SLURM_logs/wilor-inference_1078.out
+Retained WiLoR outputs: /scratch/mthakur/manifold/outputs/wilor/tremor_simulation_small_spiral_tremor_180_niti/meshes
+===============================================

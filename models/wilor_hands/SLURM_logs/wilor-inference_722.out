@@ -1,0 +1,718 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Tue Jun  9 13:48:52 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   62C    P0            176W /  300W |   16619MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    7   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         10143119
+Job Name:       wilor-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Tue Jun  9 13:48:52 CEST 2026
+===============================================
+WiLoR video: /scratch/mthakur/manifold/data/test/clean_fast_wrist_45_niti.mp4
+WiLoR output root: /scratch/mthakur/manifold/outputs/wilor
+WiLoR completion marker: /scratch/mthakur/manifold/outputs/wilor/_completed/clean_fast_wrist_45_niti.json
+WiLoR frame cache root: /scratch/mthakur/manifold/data/test
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[progress] Loading WiLoR checkpoint: ./pretrained_models/wilor_final.ckpt
+Loading  ./pretrained_models/wilor_final.ckpt
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+[progress] Loading detector: ./pretrained_models/detector.pt
+
+Processing: clean_fast_wrist_45_niti:frame_000000
+
+Processing: clean_fast_wrist_45_niti:frame_000001
+
+Processing: clean_fast_wrist_45_niti:frame_000002
+
+Processing: clean_fast_wrist_45_niti:frame_000003
+
+Processing: clean_fast_wrist_45_niti:frame_000004
+
+Processing: clean_fast_wrist_45_niti:frame_000005
+
+Processing: clean_fast_wrist_45_niti:frame_000006
+
+Processing: clean_fast_wrist_45_niti:frame_000007
+
+Processing: clean_fast_wrist_45_niti:frame_000008
+
+Processing: clean_fast_wrist_45_niti:frame_000009
+
+Processing: clean_fast_wrist_45_niti:frame_000010
+
+Processing: clean_fast_wrist_45_niti:frame_000011
+
+Processing: clean_fast_wrist_45_niti:frame_000012
+
+Processing: clean_fast_wrist_45_niti:frame_000013
+
+Processing: clean_fast_wrist_45_niti:frame_000014
+
+Processing: clean_fast_wrist_45_niti:frame_000015
+
+Processing: clean_fast_wrist_45_niti:frame_000016
+
+Processing: clean_fast_wrist_45_niti:frame_000017
+
+Processing: clean_fast_wrist_45_niti:frame_000018
+
+Processing: clean_fast_wrist_45_niti:frame_000019
+
+Processing: clean_fast_wrist_45_niti:frame_000020
+
+Processing: clean_fast_wrist_45_niti:frame_000021
+
+Processing: clean_fast_wrist_45_niti:frame_000022
+
+Processing: clean_fast_wrist_45_niti:frame_000023
+
+Processing: clean_fast_wrist_45_niti:frame_000024
+
+Processing: clean_fast_wrist_45_niti:frame_000025
+
+Processing: clean_fast_wrist_45_niti:frame_000026
+
+Processing: clean_fast_wrist_45_niti:frame_000027
+
+Processing: clean_fast_wrist_45_niti:frame_000028
+
+Processing: clean_fast_wrist_45_niti:frame_000029
+
+Processing: clean_fast_wrist_45_niti:frame_000030
+No detections, skipping.
+
+Processing: clean_fast_wrist_45_niti:frame_000031
+
+Processing: clean_fast_wrist_45_niti:frame_000032
+
+Processing: clean_fast_wrist_45_niti:frame_000033
+
+Processing: clean_fast_wrist_45_niti:frame_000034
+
+Processing: clean_fast_wrist_45_niti:frame_000035
+
+Processing: clean_fast_wrist_45_niti:frame_000036
+
+Processing: clean_fast_wrist_45_niti:frame_000037
+
+Processing: clean_fast_wrist_45_niti:frame_000038
+
+Processing: clean_fast_wrist_45_niti:frame_000039
+
+Processing: clean_fast_wrist_45_niti:frame_000040
+
+Processing: clean_fast_wrist_45_niti:frame_000041
+
+Processing: clean_fast_wrist_45_niti:frame_000042
+
+Processing: clean_fast_wrist_45_niti:frame_000043
+
+Processing: clean_fast_wrist_45_niti:frame_000044
+
+Processing: clean_fast_wrist_45_niti:frame_000045
+
+Processing: clean_fast_wrist_45_niti:frame_000046
+
+Processing: clean_fast_wrist_45_niti:frame_000047
+
+Processing: clean_fast_wrist_45_niti:frame_000048
+
+Processing: clean_fast_wrist_45_niti:frame_000049
+
+Processing: clean_fast_wrist_45_niti:frame_000050
+
+Processing: clean_fast_wrist_45_niti:frame_000051
+
+Processing: clean_fast_wrist_45_niti:frame_000052
+
+Processing: clean_fast_wrist_45_niti:frame_000053
+
+Processing: clean_fast_wrist_45_niti:frame_000054
+
+Processing: clean_fast_wrist_45_niti:frame_000055
+
+Processing: clean_fast_wrist_45_niti:frame_000056
+
+Processing: clean_fast_wrist_45_niti:frame_000057
+
+Processing: clean_fast_wrist_45_niti:frame_000058
+
+Processing: clean_fast_wrist_45_niti:frame_000059
+
+Processing: clean_fast_wrist_45_niti:frame_000060
+
+Processing: clean_fast_wrist_45_niti:frame_000061
+
+Processing: clean_fast_wrist_45_niti:frame_000062
+
+Processing: clean_fast_wrist_45_niti:frame_000063
+
+Processing: clean_fast_wrist_45_niti:frame_000064
+
+Processing: clean_fast_wrist_45_niti:frame_000065
+
+Processing: clean_fast_wrist_45_niti:frame_000066
+
+Processing: clean_fast_wrist_45_niti:frame_000067
+
+Processing: clean_fast_wrist_45_niti:frame_000068
+
+Processing: clean_fast_wrist_45_niti:frame_000069
+
+Processing: clean_fast_wrist_45_niti:frame_000070
+
+Processing: clean_fast_wrist_45_niti:frame_000071
+
+Processing: clean_fast_wrist_45_niti:frame_000072
+
+Processing: clean_fast_wrist_45_niti:frame_000073
+
+Processing: clean_fast_wrist_45_niti:frame_000074
+
+Processing: clean_fast_wrist_45_niti:frame_000075
+
+Processing: clean_fast_wrist_45_niti:frame_000076
+
+Processing: clean_fast_wrist_45_niti:frame_000077
+
+Processing: clean_fast_wrist_45_niti:frame_000078
+
+Processing: clean_fast_wrist_45_niti:frame_000079
+
+Processing: clean_fast_wrist_45_niti:frame_000080
+
+Processing: clean_fast_wrist_45_niti:frame_000081
+
+Processing: clean_fast_wrist_45_niti:frame_000082
+
+Processing: clean_fast_wrist_45_niti:frame_000083
+
+Processing: clean_fast_wrist_45_niti:frame_000084
+
+Processing: clean_fast_wrist_45_niti:frame_000085
+
+Processing: clean_fast_wrist_45_niti:frame_000086
+
+Processing: clean_fast_wrist_45_niti:frame_000087
+No detections, skipping.
+
+Processing: clean_fast_wrist_45_niti:frame_000088
+
+Processing: clean_fast_wrist_45_niti:frame_000089
+
+Processing: clean_fast_wrist_45_niti:frame_000090
+
+Processing: clean_fast_wrist_45_niti:frame_000091
+
+Processing: clean_fast_wrist_45_niti:frame_000092
+
+Processing: clean_fast_wrist_45_niti:frame_000093
+No detections, skipping.
+
+Processing: clean_fast_wrist_45_niti:frame_000094
+
+Processing: clean_fast_wrist_45_niti:frame_000095
+No detections, skipping.
+
+Processing: clean_fast_wrist_45_niti:frame_000096
+
+Processing: clean_fast_wrist_45_niti:frame_000097
+
+Processing: clean_fast_wrist_45_niti:frame_000098
+
+Processing: clean_fast_wrist_45_niti:frame_000099
+
+Processing: clean_fast_wrist_45_niti:frame_000100
+
+Processing: clean_fast_wrist_45_niti:frame_000101
+
+Processing: clean_fast_wrist_45_niti:frame_000102
+
+Processing: clean_fast_wrist_45_niti:frame_000103
+
+Processing: clean_fast_wrist_45_niti:frame_000104
+
+Processing: clean_fast_wrist_45_niti:frame_000105
+
+Processing: clean_fast_wrist_45_niti:frame_000106
+
+Processing: clean_fast_wrist_45_niti:frame_000107
+
+Processing: clean_fast_wrist_45_niti:frame_000108
+
+Processing: clean_fast_wrist_45_niti:frame_000109
+
+Processing: clean_fast_wrist_45_niti:frame_000110
+
+Processing: clean_fast_wrist_45_niti:frame_000111
+
+Processing: clean_fast_wrist_45_niti:frame_000112
+
+Processing: clean_fast_wrist_45_niti:frame_000113
+
+Processing: clean_fast_wrist_45_niti:frame_000114
+
+Processing: clean_fast_wrist_45_niti:frame_000115
+
+Processing: clean_fast_wrist_45_niti:frame_000116
+
+Processing: clean_fast_wrist_45_niti:frame_000117
+
+Processing: clean_fast_wrist_45_niti:frame_000118
+No detections, skipping.
+
+Processing: clean_fast_wrist_45_niti:frame_000119
+
+Processing: clean_fast_wrist_45_niti:frame_000120
+
+Processing: clean_fast_wrist_45_niti:frame_000121
+No detections, skipping.
+
+Processing: clean_fast_wrist_45_niti:frame_000122
+
+Processing: clean_fast_wrist_45_niti:frame_000123
+
+Processing: clean_fast_wrist_45_niti:frame_000124
+
+Processing: clean_fast_wrist_45_niti:frame_000125
+
+Processing: clean_fast_wrist_45_niti:frame_000126
+
+Processing: clean_fast_wrist_45_niti:frame_000127
+
+Processing: clean_fast_wrist_45_niti:frame_000128
+
+Processing: clean_fast_wrist_45_niti:frame_000129
+
+Processing: clean_fast_wrist_45_niti:frame_000130
+
+Processing: clean_fast_wrist_45_niti:frame_000131
+
+Processing: clean_fast_wrist_45_niti:frame_000132
+
+Processing: clean_fast_wrist_45_niti:frame_000133
+
+Processing: clean_fast_wrist_45_niti:frame_000134
+
+Processing: clean_fast_wrist_45_niti:frame_000135
+No detections, skipping.
+
+Processing: clean_fast_wrist_45_niti:frame_000136
+
+Processing: clean_fast_wrist_45_niti:frame_000137
+
+Processing: clean_fast_wrist_45_niti:frame_000138
+
+Processing: clean_fast_wrist_45_niti:frame_000139
+
+Processing: clean_fast_wrist_45_niti:frame_000140
+No detections, skipping.
+
+Processing: clean_fast_wrist_45_niti:frame_000141
+
+Processing: clean_fast_wrist_45_niti:frame_000142
+
+Processing: clean_fast_wrist_45_niti:frame_000143
+
+Processing: clean_fast_wrist_45_niti:frame_000144
+
+Processing: clean_fast_wrist_45_niti:frame_000145
+
+Processing: clean_fast_wrist_45_niti:frame_000146
+No detections, skipping.
+
+Processing: clean_fast_wrist_45_niti:frame_000147
+
+Processing: clean_fast_wrist_45_niti:frame_000148
+
+Processing: clean_fast_wrist_45_niti:frame_000149
+
+Processing: clean_fast_wrist_45_niti:frame_000150
+
+Processing: clean_fast_wrist_45_niti:frame_000151
+
+Processing: clean_fast_wrist_45_niti:frame_000152
+
+Processing: clean_fast_wrist_45_niti:frame_000153
+
+Processing: clean_fast_wrist_45_niti:frame_000154
+
+Processing: clean_fast_wrist_45_niti:frame_000155
+
+Processing: clean_fast_wrist_45_niti:frame_000156
+
+Processing: clean_fast_wrist_45_niti:frame_000157
+
+Processing: clean_fast_wrist_45_niti:frame_000158
+
+Processing: clean_fast_wrist_45_niti:frame_000159
+
+Processing: clean_fast_wrist_45_niti:frame_000160
+
+Processing: clean_fast_wrist_45_niti:frame_000161
+
+Processing: clean_fast_wrist_45_niti:frame_000162
+
+Processing: clean_fast_wrist_45_niti:frame_000163
+
+Processing: clean_fast_wrist_45_niti:frame_000164
+
+Processing: clean_fast_wrist_45_niti:frame_000165
+
+Processing: clean_fast_wrist_45_niti:frame_000166
+
+Processing: clean_fast_wrist_45_niti:frame_000167
+
+Processing: clean_fast_wrist_45_niti:frame_000168
+
+Processing: clean_fast_wrist_45_niti:frame_000169
+No detections, skipping.
+
+Processing: clean_fast_wrist_45_niti:frame_000170
+
+Processing: clean_fast_wrist_45_niti:frame_000171
+
+Processing: clean_fast_wrist_45_niti:frame_000172
+
+Processing: clean_fast_wrist_45_niti:frame_000173
+
+Processing: clean_fast_wrist_45_niti:frame_000174
+
+Processing: clean_fast_wrist_45_niti:frame_000175
+
+Processing: clean_fast_wrist_45_niti:frame_000176
+
+Processing: clean_fast_wrist_45_niti:frame_000177
+
+Processing: clean_fast_wrist_45_niti:frame_000178
+
+Processing: clean_fast_wrist_45_niti:frame_000179
+
+Processing: clean_fast_wrist_45_niti:frame_000180
+
+Processing: clean_fast_wrist_45_niti:frame_000181
+
+Processing: clean_fast_wrist_45_niti:frame_000182
+
+Processing: clean_fast_wrist_45_niti:frame_000183
+No detections, skipping.
+
+Processing: clean_fast_wrist_45_niti:frame_000184
+
+Processing: clean_fast_wrist_45_niti:frame_000185
+
+Processing: clean_fast_wrist_45_niti:frame_000186
+
+Processing: clean_fast_wrist_45_niti:frame_000187
+
+Processing: clean_fast_wrist_45_niti:frame_000188
+
+Processing: clean_fast_wrist_45_niti:frame_000189
+
+Processing: clean_fast_wrist_45_niti:frame_000190
+
+Processing: clean_fast_wrist_45_niti:frame_000191
+
+Processing: clean_fast_wrist_45_niti:frame_000192
+
+Processing: clean_fast_wrist_45_niti:frame_000193
+
+Processing: clean_fast_wrist_45_niti:frame_000194
+No detections, skipping.
+
+Processing: clean_fast_wrist_45_niti:frame_000195
+
+Processing: clean_fast_wrist_45_niti:frame_000196
+
+Processing: clean_fast_wrist_45_niti:frame_000197
+No detections, skipping.
+
+Processing: clean_fast_wrist_45_niti:frame_000198
+
+Processing: clean_fast_wrist_45_niti:frame_000199
+No detections, skipping.
+
+Processing: clean_fast_wrist_45_niti:frame_000200
+
+Processing: clean_fast_wrist_45_niti:frame_000201
+
+Processing: clean_fast_wrist_45_niti:frame_000202
+
+Processing: clean_fast_wrist_45_niti:frame_000203
+
+Processing: clean_fast_wrist_45_niti:frame_000204
+
+Processing: clean_fast_wrist_45_niti:frame_000205
+
+Processing: clean_fast_wrist_45_niti:frame_000206
+
+Processing: clean_fast_wrist_45_niti:frame_000207
+
+Processing: clean_fast_wrist_45_niti:frame_000208
+
+Processing: clean_fast_wrist_45_niti:frame_000209
+
+Processing: clean_fast_wrist_45_niti:frame_000210
+
+Processing: clean_fast_wrist_45_niti:frame_000211
+
+Processing: clean_fast_wrist_45_niti:frame_000212
+
+Processing: clean_fast_wrist_45_niti:frame_000213
+
+Processing: clean_fast_wrist_45_niti:frame_000214
+
+Processing: clean_fast_wrist_45_niti:frame_000215
+
+Processing: clean_fast_wrist_45_niti:frame_000216
+
+Processing: clean_fast_wrist_45_niti:frame_000217
+
+Processing: clean_fast_wrist_45_niti:frame_000218
+
+Processing: clean_fast_wrist_45_niti:frame_000219
+
+Processing: clean_fast_wrist_45_niti:frame_000220
+
+Processing: clean_fast_wrist_45_niti:frame_000221
+
+Processing: clean_fast_wrist_45_niti:frame_000222
+
+Processing: clean_fast_wrist_45_niti:frame_000223
+
+Processing: clean_fast_wrist_45_niti:frame_000224
+
+Processing: clean_fast_wrist_45_niti:frame_000225
+
+Processing: clean_fast_wrist_45_niti:frame_000226
+
+Processing: clean_fast_wrist_45_niti:frame_000227
+
+Processing: clean_fast_wrist_45_niti:frame_000228
+
+Processing: clean_fast_wrist_45_niti:frame_000229
+
+Processing: clean_fast_wrist_45_niti:frame_000230
+
+Processing: clean_fast_wrist_45_niti:frame_000231
+
+Processing: clean_fast_wrist_45_niti:frame_000232
+
+Processing: clean_fast_wrist_45_niti:frame_000233
+
+Processing: clean_fast_wrist_45_niti:frame_000234
+
+Processing: clean_fast_wrist_45_niti:frame_000235
+
+Processing: clean_fast_wrist_45_niti:frame_000236
+
+Processing: clean_fast_wrist_45_niti:frame_000237
+
+Processing: clean_fast_wrist_45_niti:frame_000238
+
+Processing: clean_fast_wrist_45_niti:frame_000239
+
+Processing: clean_fast_wrist_45_niti:frame_000240
+
+Processing: clean_fast_wrist_45_niti:frame_000241
+
+Processing: clean_fast_wrist_45_niti:frame_000242
+
+Processing: clean_fast_wrist_45_niti:frame_000243
+
+Processing: clean_fast_wrist_45_niti:frame_000244
+
+Processing: clean_fast_wrist_45_niti:frame_000245
+
+Processing: clean_fast_wrist_45_niti:frame_000246
+
+Processing: clean_fast_wrist_45_niti:frame_000247
+
+Processing: clean_fast_wrist_45_niti:frame_000248
+
+Processing: clean_fast_wrist_45_niti:frame_000249
+
+Processing: clean_fast_wrist_45_niti:frame_000250
+
+Processing: clean_fast_wrist_45_niti:frame_000251
+
+Processing: clean_fast_wrist_45_niti:frame_000252
+
+Processing: clean_fast_wrist_45_niti:frame_000253
+
+Processing: clean_fast_wrist_45_niti:frame_000254
+
+Processing: clean_fast_wrist_45_niti:frame_000255
+
+Processing: clean_fast_wrist_45_niti:frame_000256
+
+Processing: clean_fast_wrist_45_niti:frame_000257
+
+Processing: clean_fast_wrist_45_niti:frame_000258
+
+Processing: clean_fast_wrist_45_niti:frame_000259
+
+Processing: clean_fast_wrist_45_niti:frame_000260
+
+Processing: clean_fast_wrist_45_niti:frame_000261
+
+Processing: clean_fast_wrist_45_niti:frame_000262
+
+Processing: clean_fast_wrist_45_niti:frame_000263
+
+Processing: clean_fast_wrist_45_niti:frame_000264
+
+Processing: clean_fast_wrist_45_niti:frame_000265
+
+Processing: clean_fast_wrist_45_niti:frame_000266
+
+Processing: clean_fast_wrist_45_niti:frame_000267
+
+Processing: clean_fast_wrist_45_niti:frame_000268
+
+Processing: clean_fast_wrist_45_niti:frame_000269
+
+Processing: clean_fast_wrist_45_niti:frame_000270
+
+Processing: clean_fast_wrist_45_niti:frame_000271
+
+Processing: clean_fast_wrist_45_niti:frame_000272
+
+Processing: clean_fast_wrist_45_niti:frame_000273
+
+Processing: clean_fast_wrist_45_niti:frame_000274
+
+Processing: clean_fast_wrist_45_niti:frame_000275
+
+Processing: clean_fast_wrist_45_niti:frame_000276
+
+Processing: clean_fast_wrist_45_niti:frame_000277
+
+Processing: clean_fast_wrist_45_niti:frame_000278
+
+Processing: clean_fast_wrist_45_niti:frame_000279
+
+Processing: clean_fast_wrist_45_niti:frame_000280
+
+Processing: clean_fast_wrist_45_niti:frame_000281
+
+Processing: clean_fast_wrist_45_niti:frame_000282
+
+Processing: clean_fast_wrist_45_niti:frame_000283
+
+Processing: clean_fast_wrist_45_niti:frame_000284
+
+Processing: clean_fast_wrist_45_niti:frame_000285
+
+Processing: clean_fast_wrist_45_niti:frame_000286
+
+Processing: clean_fast_wrist_45_niti:frame_000287
+
+Processing: clean_fast_wrist_45_niti:frame_000288
+
+Processing: clean_fast_wrist_45_niti:frame_000289
+
+Processing: clean_fast_wrist_45_niti:frame_000290
+
+Processing: clean_fast_wrist_45_niti:frame_000291
+
+Processing: clean_fast_wrist_45_niti:frame_000292
+
+Processing: clean_fast_wrist_45_niti:frame_000293
+
+Processing: clean_fast_wrist_45_niti:frame_000294
+
+Processing: clean_fast_wrist_45_niti:frame_000295
+
+Processing: clean_fast_wrist_45_niti:frame_000296
+
+Processing: clean_fast_wrist_45_niti:frame_000297
+
+Processing: clean_fast_wrist_45_niti:frame_000298
+
+Processing: clean_fast_wrist_45_niti:frame_000299
+
+Processing: clean_fast_wrist_45_niti:frame_000300
+
+Processing: clean_fast_wrist_45_niti:frame_000301
+
+Processing: clean_fast_wrist_45_niti:frame_000302
+
+Processing: clean_fast_wrist_45_niti:frame_000303
+
+Processing: clean_fast_wrist_45_niti:frame_000304
+
+Processing: clean_fast_wrist_45_niti:frame_000305
+
+Processing: clean_fast_wrist_45_niti:frame_000306
+
+Processing: clean_fast_wrist_45_niti:frame_000307
+
+Processing: clean_fast_wrist_45_niti:frame_000308
+
+Processing: clean_fast_wrist_45_niti:frame_000309
+
+Processing: clean_fast_wrist_45_niti:frame_000310
+
+Processing: clean_fast_wrist_45_niti:frame_000311
+
+Processing: clean_fast_wrist_45_niti:frame_000312
+
+Processing: clean_fast_wrist_45_niti:frame_000313
+No detections, skipping.
+
+Processing: clean_fast_wrist_45_niti:frame_000314
+
+Processing: clean_fast_wrist_45_niti:frame_000315
+
+Processing: clean_fast_wrist_45_niti:frame_000316
+
+All images processed.
+===============================================
+Job finished at: Tue Jun  9 13:56:47 CEST 2026
+Execution took 0.13 hours
+Writing output to SLURM_logs/wilor-inference_722.out
+Retained WiLoR outputs: /scratch/mthakur/manifold/outputs/wilor/clean_fast_wrist_45_niti/meshes
+===============================================

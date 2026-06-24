@@ -13,14 +13,14 @@ refinement:
     iters: 120
     lr: 0.03
     weights:
-      rot: 0.35
-      pos: 0.05
-      root: 0.12
-      latent: 0.05
+      rot: 0.01
+      pos: 0.01
+      root: 1
+      latent: 0.01
   beta:
     optimize: true
     iters: 120
     lr: 0.03
     weights:
-      joint: 0.6
-      prior: 0.4
+      joint: 1
+      prior: 0.01
