@@ -1,7 +1,7 @@
 from pathlib import Path
 
 # Internal Path objects (single source of truth)
-_OUTPUTS_ROOT = Path("/scratch/mayank/manifold/outputs")
+_OUTPUTS_ROOT = Path("/scratch/mayank/manifold/output")
 _ANALYSIS_ROOT = Path("/scratch/mayank/manifold/analysis")
 
 # Hamba root clip (comment in/out one line)
