@@ -27,9 +27,9 @@ WILOR_FINETUNE_EXPERIMENT_ALIASES = {
     "lora": "lora_finetuning",
 }
 SELECTED_WILOR_FINETUNE_ALIASES = (
-    "main_static",
-    "main_learnable",
-    "lora",
+    # "main_static",
+    # "main_learnable",
+    # "lora",
 )
 
 
