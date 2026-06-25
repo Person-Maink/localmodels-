@@ -1,8 +1,8 @@
 from pathlib import Path
 
 # Internal Path objects (single source of truth)
-_OUTPUTS_ROOT = Path("/scratch/mayank/manifold/output")
-_ANALYSIS_ROOT = Path("/scratch/mayank/manifold/analysis")
+_OUTPUTS_ROOT = Path("/scratch/mthakur/manifold/outputs")
+_ANALYSIS_ROOT = Path("/scratch/mthakur/manifold/analysis")
 
 # Hamba root clip (comment in/out one line)
 # _HAMBA_CLIP = "163 (2) FU"
