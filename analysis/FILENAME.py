@@ -1,8 +1,8 @@
 from pathlib import Path
 
 # Internal Path objects (single source of truth)
-_OUTPUTS_ROOT = Path("/home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/outputs")
-_ANALYSIS_ROOT = Path("/home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/analysis")
+_OUTPUTS_ROOT = Path("/scratch/mayank/manifold/outputs")
+_ANALYSIS_ROOT = Path("/scratch/mayank/manifold/analysis")
 
 # Hamba root clip (comment in/out one line)
 # _HAMBA_CLIP = "163 (2) FU"
@@ -426,4 +426,5 @@ WRIST_GROUNDING_SOURCE = MODEL_ROOT
 ANALYSIS_IMAGE_WIDTH_PX = 1920
 ANALYSIS_IMAGE_HEIGHT_PX = 1080
 ANALYSIS_IMAGE_DPI = 100
-ANALYSIS_OUTPUT_DIR = "/home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/analysis/analysis_images"
+# ANALYSIS_OUTPUT_DIR = "/home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/analysis/analysis_images"
+ANALYSIS_OUTPUT_DIR = "/scratch/mthakur/manifold/analysis/analysis_images"

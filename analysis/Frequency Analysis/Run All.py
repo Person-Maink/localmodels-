@@ -253,8 +253,7 @@ def _parse_args():
     parser.add_argument("--width-px", type=int, default=_int_config("ANALYSIS_IMAGE_WIDTH_PX", 1920))
     parser.add_argument("--height-px", type=int, default=_int_config("ANALYSIS_IMAGE_HEIGHT_PX", 1080))
     parser.add_argument("--dpi", type=int, default=_int_config("ANALYSIS_IMAGE_DPI", 100))
-    # parser.add_argument("--output-dir", type=Path, default=_default_output_dir())
-    parser.add_argument("--output-dir", type=Path, default="/scratch/mthakur/analysis/images/")
+    parser.add_argument("--output-dir", type=Path, default=_default_output_dir())
     parser.add_argument("--dry-run", action="store_true", help="Build and report the job matrix without running analyses.")
     parser.add_argument(
         "--only-missing",
