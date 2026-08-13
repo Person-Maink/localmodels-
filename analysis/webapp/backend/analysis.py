@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from analysis_metrics import finish_motion_analysis, subset_neighbor_pairs
-from analysis_plotting import build_time_psd_metrics_figure
+from analysis_plotting import build_time_psd_metrics_figure, plot_frequency_overlay
 from .loaders import extract_beta_average_records, figure_to_svg, load_source_frames
 from .mano import load_mano_assets
 from .settings import AppSettings, hand_label_to_value, hand_value_to_label, parse_number_list, parse_pair_text
@@ -117,7 +117,6 @@ def _analyze_centroid(source: dict, frames: List[dict], hand_value: int, wrist_j
         filter_order=3,
         band_low_hz=2.0,
         band_high_hz=12.0,
-        psd_nperseg=512,
         coherence_positions=np.stack(coherence_frames, axis=0) if coherence_frames else None,
         coherence_pairs=None if source["family"] == "mediapipe" else _full_mesh_neighbor_pairs(_analyze_centroid.settings),
     )
@@ -149,7 +148,6 @@ def _analyze_point_to_point(source: dict, frames: List[dict], hand_value: int, w
             filter_kind="lowpass",
             filter_order=3,
             lowpass_cutoff_hz=6.0,
-            psd_nperseg=256,
         )
 
     region_a, region_b, region_vertices, coherence_pairs = _build_region_metadata(
@@ -180,7 +178,6 @@ def _analyze_point_to_point(source: dict, frames: List[dict], hand_value: int, w
         filter_kind="lowpass",
         filter_order=3,
         lowpass_cutoff_hz=6.0,
-        psd_nperseg=256,
         coherence_positions=np.stack(coherence_frames, axis=0),
         coherence_pairs=coherence_pairs,
     )
@@ -260,7 +257,6 @@ def _analyze_camera_space(source: dict, frames: List[dict], hand_value: int, fps
             filter_kind="lowpass",
             filter_order=3,
             lowpass_cutoff_hz=6.0,
-            psd_nperseg=256,
             coherence_positions=np.stack(coherence_frames, axis=0),
             coherence_pairs=coherence_pairs,
         )
@@ -302,7 +298,6 @@ def _beta_variant_entries(source: dict, settings: AppSettings, hand_value: int, 
                     filter_kind="lowpass",
                     filter_order=3,
                     lowpass_cutoff_hz=6.0,
-                    psd_nperseg=256,
                     coherence_positions=np.stack(coherence_frames, axis=0),
                     coherence_pairs=coherence_pairs,
                 ),
@@ -315,6 +310,7 @@ def _serialize_result(result: dict, fps: float) -> dict:
     t = np.arange(len(result["magnitude"]), dtype=np.float32) / float(fps)
     return {
         "dominant_hz": float(result["dominant"]),
+        "fft_peak_hz": float(result.get("fft_peak_hz", 0.0)),
         "peak_ratio": float(result["peak_ratio"]),
         "peak_sharpness": float(result["peak_sharpness"]),
         "temporal_noise": float(result["temporal_noise"]),
@@ -326,6 +322,12 @@ def _serialize_result(result: dict, fps: float) -> dict:
             "magnitude": np.asarray(result["magnitude"], dtype=np.float32).tolist(),
             "freqs_hz": np.asarray(result["freqs"], dtype=np.float32).tolist(),
             "psd": np.asarray(result["psd"], dtype=np.float32).tolist(),
+            "fft_freqs_hz": np.asarray(result.get("fft_freqs", []), dtype=np.float32).tolist(),
+            "fft_spectrum": np.asarray(result.get("fft_spectrum", []), dtype=np.float32).tolist(),
+            "welch_peak_hz": float(result["dominant"]),
+            "welch_peak_value": float(result.get("peak_value", result.get("welch_peak_value", 0.0))),
+            "fft_peak_hz": float(result.get("fft_peak_hz", 0.0)),
+            "fft_peak_value": float(result.get("fft_peak_value", 0.0)),
             "filtered_xyz": np.asarray(result["filtered"], dtype=np.float32).tolist(),
         },
     }
@@ -336,7 +338,7 @@ def _compare_figure(title: str, entries: List[dict], fps: float, style_resolver=
         entries,
         fps=fps,
         title_time=title,
-        title_psd="Power spectral density",
+        title_psd="Welch PSD and FFT spectrum",
         figsize_inches=(12, 10),
         dpi=100,
         style_resolver=style_resolver,
@@ -351,13 +353,18 @@ def _multi_pair_figure(title: str, entries: List[dict], fps: float):
         color = f"C{index % 10}"
         label = f"{entry['label']} ({result['dominant']:.2f} Hz)"
         axes[0].plot(t, result["magnitude"], color=color, lw=1.5, label=label)
-        axes[1].semilogy(result["freqs"], result["psd"], color=color, lw=1.5, label=label)
-        axes[1].axvline(result["dominant"], color=color, ls=":", alpha=0.35)
+        plot_frequency_overlay(
+            axes[1],
+            result=result,
+            label=entry["label"],
+            color=color,
+            linewidth=1.5,
+        )
     axes[0].set_title(title)
     axes[0].set_ylabel("Magnitude")
     axes[0].grid(True)
     axes[0].legend(loc="upper left", bbox_to_anchor=(1.01, 1.0), fontsize="small")
-    axes[1].set_title("Power spectral density")
+    axes[1].set_title("Welch PSD and FFT spectrum")
     axes[1].set_xlabel("Frequency (Hz)")
     axes[1].set_ylabel("Power")
     axes[1].grid(True)
@@ -584,6 +591,7 @@ class AnalysisService:
                         {
                             "point_count": int(point_count),
                             "dominant_hz": float(result["dominant"]),
+                            "fft_peak_hz": float(result.get("fft_peak_hz", 0.0)),
                             "peak_ratio": float(result["peak_ratio"]),
                             "peak_sharpness": float(result["peak_sharpness"]),
                             "temporal_noise": float(result["temporal_noise"]),

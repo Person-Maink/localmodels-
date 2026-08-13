@@ -138,6 +138,7 @@ export type AnalysisResultEntry = {
   pair_label?: string;
   hand_used?: string;
   dominant_hz?: number;
+  fft_peak_hz?: number;
   peak_ratio?: number;
   peak_sharpness?: number;
   temporal_noise?: number;
@@ -149,11 +150,18 @@ export type AnalysisResultEntry = {
     magnitude: number[];
     freqs_hz: number[];
     psd: number[];
+    fft_freqs_hz: number[];
+    fft_spectrum: number[];
+    welch_peak_hz: number;
+    welch_peak_value: number;
+    fft_peak_hz: number;
+    fft_peak_value: number;
     filtered_xyz: number[][];
   };
   series?: {
     point_count: number;
     dominant_hz: number;
+    fft_peak_hz?: number;
     peak_ratio?: number;
     peak_sharpness?: number;
     temporal_noise?: number;

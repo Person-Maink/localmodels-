@@ -23,7 +23,7 @@ THIS_DIR = Path(__file__).resolve().parent
 COMP_SUFFIXES = ("_amplified_modified", "_amplified", "_modified")
 WILOR_FINETUNE_EXPERIMENT_ALIASES = {
     "main_static": "main_static_finetuning",
-    "main_learnable": "main_learnable_finetnuing",
+    "main_learnable": "main_learnable_finetuning",
     "lora": "lora_finetuning",
 }
 SELECTED_WILOR_FINETUNE_ALIASES = (
@@ -830,6 +830,7 @@ def _save_metrics_csv(path, rows):
         "source",
         "kind",
         "dominant_hz",
+        "fft_peak_hz",
         "peak_ratio",
         "peak_sharpness",
         "temporal_noise",
@@ -857,6 +858,7 @@ def _make_metric_row(job, slot, label, source, kind, result):
         "source": source,
         "kind": kind,
         "dominant_hz": f"{float(result['dominant']):.8f}",
+        "fft_peak_hz": f"{float(result.get('fft_peak_hz', 0.0)):.8f}",
         "peak_ratio": f"{float(result['peak_ratio']):.12f}",
         "peak_sharpness": f"{float(result['peak_sharpness']):.12f}",
         "temporal_noise": f"{float(result['temporal_noise']):.12f}",
@@ -877,6 +879,7 @@ def _summarize_result_entry(slot, label, source, kind, result):
         "source": source,
         "kind": kind,
         "dominant_hz": float(result["dominant"]),
+        "fft_peak_hz": float(result.get("fft_peak_hz", 0.0)),
         "peak_ratio": float(result["peak_ratio"]),
         "peak_sharpness": float(result["peak_sharpness"]),
         "temporal_noise": float(result["temporal_noise"]),
@@ -919,6 +922,7 @@ def _make_neighbor_sweep_metric_rows(job, entries):
                     "source": entry.get("source", ""),
                     "kind": entry.get("kind", "model"),
                     "dominant_hz": f"{float(series_row['dominant']):.8f}",
+                    "fft_peak_hz": f"{float(series_row.get('fft_peak_hz', 0.0)):.8f}",
                     "peak_ratio": f"{float(series_row['peak_ratio']):.12f}",
                     "peak_sharpness": f"{float(series_row['peak_sharpness']):.12f}",
                     "temporal_noise": f"{float(series_row['temporal_noise']):.12f}",
@@ -947,6 +951,7 @@ def _summarize_neighbor_sweep_entries(entries):
                     "point_count": int(series_row["point_count"]),
                     "n_neighbors": int(series_row["n_neighbors"]),
                     "dominant_hz": float(series_row["dominant"]),
+                    "fft_peak_hz": float(series_row.get("fft_peak_hz", 0.0)),
                     "peak_ratio": float(series_row["peak_ratio"]),
                     "peak_sharpness": float(series_row["peak_sharpness"]),
                     "temporal_noise": float(series_row["temporal_noise"]),

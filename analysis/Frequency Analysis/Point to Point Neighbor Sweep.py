@@ -138,7 +138,6 @@ def _analyze_model_frames(
         filter_kind="lowpass",
         filter_order=point_module.FILTER_ORDER,
         lowpass_cutoff_hz=point_module.LOWPASS_CUTOFF,
-        psd_nperseg=256,
         coherence_positions=np.stack(coherence_frames, axis=0),
         coherence_pairs=coherence_pairs,
     )
@@ -229,6 +228,7 @@ def run_point_to_point_neighbor_sweep_analysis(config_overrides=None):
                     "point_count": point_count,
                     "n_neighbors": n_neighbors,
                     "dominant": float(result["dominant"]),
+                    "fft_peak_hz": float(result.get("fft_peak_hz", 0.0)),
                     "rms": float(result["rms"]),
                     "peak_ratio": float(result["peak_ratio"]),
                     "peak_sharpness": float(result["peak_sharpness"]),

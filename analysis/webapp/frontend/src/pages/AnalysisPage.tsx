@@ -236,7 +236,8 @@ export function AnalysisPage({ modes, selectedSources }: AnalysisPageProps) {
                     <tr>
                       <th>Label</th>
                       <th>Hand Used</th>
-                      <th>Dominant Hz</th>
+                      <th>Welch Peak Hz</th>
+                      <th>FFT Peak Hz</th>
                       <th>Peak Ratio</th>
                       <th>Peak Sharpness</th>
                       <th>Temporal Noise</th>
@@ -251,6 +252,7 @@ export function AnalysisPage({ modes, selectedSources }: AnalysisPageProps) {
                         <td>{entry.label}</td>
                         <td>{entry.hand_used ?? "-"}</td>
                         <td>{entry.dominant_hz?.toFixed(3) ?? "-"}</td>
+                        <td>{entry.fft_peak_hz?.toFixed(3) ?? "-"}</td>
                         <td>{entry.peak_ratio?.toExponential(3) ?? "-"}</td>
                         <td>{entry.peak_sharpness?.toExponential(3) ?? "-"}</td>
                         <td>{entry.temporal_noise?.toExponential(3) ?? "-"}</td>

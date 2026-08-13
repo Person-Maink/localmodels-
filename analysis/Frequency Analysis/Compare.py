@@ -155,7 +155,6 @@ def _analyze_model(root_dir, hand_idx, wrist_joint_idx, j_reg, coherence_pairs):
         filter_order=FILTER_ORDER,
         band_low_hz=HIGHPASS_CUTOFF,
         band_high_hz=LOWPASS_CUTOFF,
-        psd_nperseg=512,
         coherence_positions=np.stack(coherence_frames, axis=0),
         coherence_pairs=coherence_pairs,
     )
@@ -185,7 +184,6 @@ def _analyze_mediapipe(csv_path, hand_idx):
         filter_order=FILTER_ORDER,
         band_low_hz=HIGHPASS_CUTOFF,
         band_high_hz=LOWPASS_CUTOFF,
-        psd_nperseg=512,
     )
 
 
@@ -295,7 +293,7 @@ def build_compare_figure(analysis_data, figsize_inches=(13, 11), dpi=100):
         analysis_data["entries"],
         fps=FPS,
         title_time="Hand displacement over time",
-        title_psd="Frequency spectrum (PSD)",
+        title_psd="Welch PSD and FFT spectrum",
         figsize_inches=figsize_inches,
         dpi=dpi,
         style_resolver=lambda index, _entry: {

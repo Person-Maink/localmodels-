@@ -10,6 +10,7 @@ import numpy as np
 from _path_setup import PROJECT_ROOT  # ensures root imports work
 import FILENAME as CONFIG
 from analysis_metrics import finish_motion_analysis, subset_neighbor_pairs
+from analysis_plotting import plot_frequency_overlay
 from mano_pickle import load_mano_pickle
 from npy_io import discover_frame_files, resolve_model_record_root
 
@@ -285,7 +286,6 @@ def _analyze_frames(frames, hand_idx, region_a, region_b, region_vertices, coher
         filter_kind="lowpass",
         filter_order=FILTER_ORDER,
         lowpass_cutoff_hz=LOWPASS_CUTOFF,
-        psd_nperseg=256,
         coherence_positions=np.stack(coherence_frames, axis=0),
         coherence_pairs=coherence_pairs,
     )
@@ -308,14 +308,13 @@ def build_camera_space_figure(entries, source_label, figsize_inches=(14, 9), dpi
             label=label_with_peak,
         )
 
-        axes[1].semilogy(
-            result["freqs"],
-            result["psd"],
+        plot_frequency_overlay(
+            axes[1],
+            result=result,
+            label=f"{source_label} {entry['pair_label']}",
             color=color,
-            lw=1.5,
-            label=label_with_peak,
+            linewidth=1.5,
         )
-        axes[1].axvline(result["dominant"], color=color, ls=":", alpha=0.35)
 
     axes[0].set_title("Filtered camera-space point-to-point displacement magnitude")
     axes[0].set_xlabel("Time (s)")
@@ -323,7 +322,7 @@ def build_camera_space_figure(entries, source_label, figsize_inches=(14, 9), dpi
     axes[0].legend(loc="upper left", bbox_to_anchor=(1.01, 1.0), ncol=2, fontsize="small", frameon=True)
     axes[0].grid(True)
 
-    axes[1].set_title("Frequency spectrum of camera-space point-to-point motion")
+    axes[1].set_title("Welch PSD and FFT spectrum of camera-space point-to-point motion")
     axes[1].set_xlabel("Frequency (Hz)")
     axes[1].set_ylabel("Power spectral density")
     axes[1].legend(loc="upper left", bbox_to_anchor=(1.01, 1.0), ncol=2, fontsize="small", frameon=True)

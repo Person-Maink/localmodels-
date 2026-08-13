@@ -9,6 +9,10 @@ from scipy.signal import butter, filtfilt, welch
 TREMOR_BAND_LOW_HZ = 4.0
 TREMOR_BAND_HIGH_HZ = 12.0
 PEAK_SHARPNESS_RADIUS_BINS = 2
+DEFAULT_WELCH_WINDOW_SECONDS = 2.0
+DEFAULT_WELCH_WINDOW = "hann"
+DEFAULT_WELCH_DETREND = "constant"
+DEFAULT_WELCH_SCALING = "density"
 
 
 def lowpass_filter(
@@ -45,7 +49,6 @@ def finish_motion_analysis(
     lowpass_cutoff_hz: float | None = None,
     band_low_hz: float | None = None,
     band_high_hz: float | None = None,
-    psd_nperseg: int = 256,
     coherence_positions: np.ndarray | None = None,
     coherence_pairs: Iterable[tuple[int, int]] | None = None,
 ) -> dict:
@@ -77,9 +80,10 @@ def finish_motion_analysis(
 
     magnitude = np.linalg.norm(filtered, axis=1).astype(np.float32, copy=False)
     magnitude = magnitude - magnitude.mean()
-    freqs, psd = welch(magnitude, fs=float(fps), nperseg=min(int(psd_nperseg), len(magnitude)))
-
-    dominant_hz, peak_ratio, peak_sharpness = dominant_frequency_metrics(magnitude, fps=fps)
+    freqs, psd, _ = welch_psd(magnitude, fps=float(fps))
+    welch_peak = band_peak_summary(freqs, psd)
+    fft_freqs, fft_spectrum = fft_periodogram(magnitude, fps=float(fps))
+    fft_peak = band_peak_summary(fft_freqs, fft_spectrum)
     rms_amplitude = float(np.sqrt(np.mean(np.square(magnitude, dtype=np.float64))))
     temporal_noise = frame_to_frame_variance(trajectory_array)
     spatial_coherence = spatial_coherence_from_positions(coherence_positions, coherence_pairs)
@@ -90,10 +94,19 @@ def finish_motion_analysis(
         "magnitude": magnitude,
         "freqs": np.asarray(freqs, dtype=np.float32),
         "psd": np.asarray(psd, dtype=np.float32),
-        "dominant": float(dominant_hz),
+        "dominant": float(welch_peak["peak_hz"]),
+        "peak_value": float(welch_peak["peak_value"]),
+        "welch_peak_hz": float(welch_peak["peak_hz"]),
+        "welch_peak_value": float(welch_peak["peak_value"]),
+        "fft_freqs": np.asarray(fft_freqs, dtype=np.float32),
+        "fft_spectrum": np.asarray(fft_spectrum, dtype=np.float32),
+        "fft_peak_hz": float(fft_peak["peak_hz"]),
+        "fft_peak_value": float(fft_peak["peak_value"]),
+        "fft_peak_ratio": float(fft_peak["peak_ratio"]),
+        "fft_peak_sharpness": float(fft_peak["peak_sharpness"]),
         "rms": float(rms_amplitude),
-        "peak_ratio": float(peak_ratio),
-        "peak_sharpness": float(peak_sharpness),
+        "peak_ratio": float(welch_peak["peak_ratio"]),
+        "peak_sharpness": float(welch_peak["peak_sharpness"]),
         "temporal_noise": float(temporal_noise),
         "spatial_coherence": None if spatial_coherence is None else float(spatial_coherence),
     }
@@ -110,21 +123,71 @@ def dominant_frequency_metrics(
     if values.size == 0:
         return 0.0, 0.0, 0.0
 
-    spectrum = np.abs(np.fft.rfft(values))
-    freqs = np.fft.rfftfreq(values.size, d=1.0 / float(fps))
+    freqs, psd, _ = welch_psd(values, fps=float(fps))
+    return band_peak_metrics(
+        freqs,
+        psd,
+        band_low_hz=band_low_hz,
+        band_high_hz=band_high_hz,
+        sharpness_radius_bins=sharpness_radius_bins,
+    )
 
-    band_mask = (freqs >= float(band_low_hz)) & (freqs <= float(band_high_hz))
+
+def band_peak_metrics(
+    freqs: np.ndarray,
+    psd: np.ndarray,
+    band_low_hz: float = TREMOR_BAND_LOW_HZ,
+    band_high_hz: float = TREMOR_BAND_HIGH_HZ,
+    sharpness_radius_bins: int = PEAK_SHARPNESS_RADIUS_BINS,
+) -> tuple[float, float, float]:
+    summary = band_peak_summary(
+        freqs,
+        psd,
+        band_low_hz=band_low_hz,
+        band_high_hz=band_high_hz,
+        sharpness_radius_bins=sharpness_radius_bins,
+    )
+    return (
+        float(summary["peak_hz"]),
+        float(summary["peak_ratio"]),
+        float(summary["peak_sharpness"]),
+    )
+
+
+def band_peak_summary(
+    freqs: np.ndarray,
+    spectrum: np.ndarray,
+    band_low_hz: float = TREMOR_BAND_LOW_HZ,
+    band_high_hz: float = TREMOR_BAND_HIGH_HZ,
+    sharpness_radius_bins: int = PEAK_SHARPNESS_RADIUS_BINS,
+) -> dict:
+    freq_values = np.asarray(freqs, dtype=np.float32).reshape(-1)
+    spectrum_values = np.asarray(spectrum, dtype=np.float32).reshape(-1)
+    if freq_values.size == 0 or spectrum_values.size == 0:
+        return {
+            "peak_hz": 0.0,
+            "peak_ratio": 0.0,
+            "peak_sharpness": 0.0,
+            "peak_value": 0.0,
+        }
+
+    band_mask = (freq_values >= float(band_low_hz)) & (freq_values <= float(band_high_hz))
     band_indices = np.flatnonzero(band_mask)
     if band_indices.size == 0:
-        nonzero = np.flatnonzero(freqs > 0.0)
+        nonzero = np.flatnonzero(freq_values > 0.0)
         if nonzero.size == 0:
-            return 0.0, 0.0, 0.0
+            return {
+                "peak_hz": 0.0,
+                "peak_ratio": 0.0,
+                "peak_sharpness": 0.0,
+                "peak_value": 0.0,
+            }
         band_indices = nonzero
 
-    band_spectrum = spectrum[band_indices]
+    band_spectrum = spectrum_values[band_indices]
     peak_offset = int(np.argmax(band_spectrum))
     peak_index = int(band_indices[peak_offset])
-    peak_value = float(spectrum[peak_index])
+    peak_value = float(spectrum_values[peak_index])
 
     band_sum = float(np.sum(band_spectrum))
     peak_ratio = peak_value / band_sum if band_sum > 0.0 else 0.0
@@ -135,7 +198,65 @@ def dominant_frequency_metrics(
     neighborhood_mean = float(np.mean(neighborhood)) if neighborhood.size else 0.0
     peak_sharpness = peak_value / neighborhood_mean if neighborhood_mean > 0.0 else 0.0
 
-    return float(freqs[peak_index]), float(peak_ratio), float(peak_sharpness)
+    return {
+        "peak_hz": float(freq_values[peak_index]),
+        "peak_ratio": float(peak_ratio),
+        "peak_sharpness": float(peak_sharpness),
+        "peak_value": float(peak_value),
+    }
+
+
+def resolve_welch_config(signal_length: int, fps: float) -> dict:
+    nperseg = min(max(int(DEFAULT_WELCH_WINDOW_SECONDS * float(fps)), 1), int(signal_length))
+    noverlap = nperseg // 2 if nperseg > 1 else 0
+    return {
+        "nperseg": int(nperseg),
+        "noverlap": int(noverlap),
+        "window": DEFAULT_WELCH_WINDOW,
+        "detrend": DEFAULT_WELCH_DETREND,
+        "scaling": DEFAULT_WELCH_SCALING,
+    }
+
+
+def welch_psd(signal: np.ndarray, fps: float) -> tuple[np.ndarray, np.ndarray, dict]:
+    values = np.asarray(signal, dtype=np.float32).reshape(-1)
+    if values.size == 0:
+        config = resolve_welch_config(0, fps)
+        return (
+            np.asarray([], dtype=np.float32),
+            np.asarray([], dtype=np.float32),
+            config,
+        )
+
+    config = resolve_welch_config(values.size, fps)
+    freqs, psd = welch(
+        values,
+        fs=float(fps),
+        window=config["window"],
+        nperseg=config["nperseg"],
+        noverlap=config["noverlap"],
+        detrend=config["detrend"],
+        scaling=config["scaling"],
+    )
+    return np.asarray(freqs, dtype=np.float32), np.asarray(psd, dtype=np.float32), config
+
+
+def fft_periodogram(signal: np.ndarray, fps: float) -> tuple[np.ndarray, np.ndarray]:
+    values = np.asarray(signal, dtype=np.float32).reshape(-1)
+    if values.size == 0:
+        return np.asarray([], dtype=np.float32), np.asarray([], dtype=np.float32)
+
+    demeaned = values - float(np.nanmean(values))
+    sample_count = int(demeaned.size)
+    freqs = np.fft.rfftfreq(sample_count, d=1.0 / float(fps))
+    spectrum = np.abs(np.fft.rfft(demeaned)) ** 2
+    spectrum = spectrum / (float(fps) * float(sample_count))
+    if sample_count > 1:
+        if sample_count % 2 == 0:
+            spectrum[1:-1] *= 2.0
+        else:
+            spectrum[1:] *= 2.0
+    return np.asarray(freqs, dtype=np.float32), np.asarray(spectrum, dtype=np.float32)
 
 
 def frame_to_frame_variance(trajectory: np.ndarray) -> float:

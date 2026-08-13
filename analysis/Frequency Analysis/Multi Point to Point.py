@@ -10,6 +10,7 @@ import pandas as pd
 from _path_setup import PROJECT_ROOT  # ensures root imports work
 import FILENAME as CONFIG
 from analysis_metrics import finish_motion_analysis, subset_neighbor_pairs
+from analysis_plotting import plot_frequency_overlay
 from mano_pickle import load_mano_pickle
 from npy_io import iter_model_frame_records
 
@@ -282,7 +283,6 @@ def _analyze_model_pair(
         filter_kind="lowpass",
         filter_order=FILTER_ORDER,
         lowpass_cutoff_hz=LOWPASS_CUTOFF,
-        psd_nperseg=256,
         coherence_positions=np.stack(coherence_frames, axis=0),
         coherence_pairs=coherence_pairs,
     )
@@ -330,7 +330,6 @@ def _analyze_mediapipe_pair(df, hand_idx, pair, source_path):
         filter_kind="lowpass",
         filter_order=FILTER_ORDER,
         lowpass_cutoff_hz=LOWPASS_CUTOFF,
-        psd_nperseg=256,
     )
 
 
@@ -464,15 +463,14 @@ def build_multi_point_figure(analysis_data, figsize_inches=(14, 9), dpi=100):
             label=label_with_peak,
         )
 
-        axes[1].semilogy(
-            result["freqs"],
-            result["psd"],
+        plot_frequency_overlay(
+            axes[1],
+            result=result,
+            label=f"{source_label} {entry['pair_label']}",
             color=color,
             linestyle=style,
-            lw=1.5,
-            label=label_with_peak,
+            linewidth=1.5,
         )
-        axes[1].axvline(result["dominant"], color=color, ls=":", alpha=0.35)
 
     axes[0].set_title("Filtered point-to-point displacement magnitude")
     axes[0].set_xlabel("Time (s)")
@@ -480,7 +478,7 @@ def build_multi_point_figure(analysis_data, figsize_inches=(14, 9), dpi=100):
     axes[0].legend(loc="upper left", bbox_to_anchor=(1.01, 1.0), ncol=2, fontsize="small", frameon=True)
     axes[0].grid(True)
 
-    axes[1].set_title("Frequency spectrum of point-to-point motion")
+    axes[1].set_title("Welch PSD and FFT spectrum of point-to-point motion")
     axes[1].set_xlabel("Frequency (Hz)")
     axes[1].set_ylabel("Power spectral density")
     axes[1].legend(loc="upper left", bbox_to_anchor=(1.01, 1.0), ncol=2, fontsize="small", frameon=True)

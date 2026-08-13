@@ -304,7 +304,6 @@ def _analyze_variant_frames(
         filter_kind="lowpass",
         filter_order=FILTER_ORDER,
         lowpass_cutoff_hz=LOWPASS_CUTOFF,
-        psd_nperseg=256,
         coherence_positions=(
             np.stack(coherence_frames, axis=0)
             if region_vertices is not None and coherence_frames
@@ -392,13 +391,13 @@ def build_beta_comparison_figure(analysis_data, figsize_inches=(12, 10), dpi=100
     color_map = {slot: f"C{index % 10}" for index, slot in enumerate(source_slots)}
 
     title_time = "Raw vs beta-average comparison"
-    title_psd = "Frequency spectrum of beta comparison"
+    title_psd = "Welch PSD and FFT spectrum of beta comparison"
     if analysis_data.get("variant_mode") == "beta_only":
         title_time = "Beta-average comparison across model sources"
-        title_psd = "Frequency spectrum of beta-average model comparison"
+        title_psd = "Welch PSD and FFT spectrum of beta-average model comparison"
     elif analysis_data.get("variant_mode") == "raw_plus_beta":
         title_time = "Raw and beta-average comparison across model sources"
-        title_psd = "Frequency spectrum of raw and beta-average model comparison"
+        title_psd = "Welch PSD and FFT spectrum of raw and beta-average model comparison"
 
     return build_time_psd_metrics_figure(
         analysis_data["entries"],

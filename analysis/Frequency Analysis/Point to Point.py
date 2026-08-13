@@ -233,7 +233,6 @@ def _analyze_model(
         filter_kind="lowpass",
         filter_order=FILTER_ORDER,
         lowpass_cutoff_hz=LOWPASS_CUTOFF,
-        psd_nperseg=256,
         coherence_positions=np.stack(coherence_frames, axis=0),
         coherence_pairs=coherence_pairs,
     )
@@ -286,7 +285,6 @@ def _analyze_mediapipe(csv_path, point_a, point_b, hand_idx):
         filter_kind="lowpass",
         filter_order=FILTER_ORDER,
         lowpass_cutoff_hz=LOWPASS_CUTOFF,
-        psd_nperseg=256,
     )
 
 
@@ -462,7 +460,7 @@ def build_point_to_point_figure(analysis_data, figsize_inches=(12, 10), dpi=100)
         analysis_data["entries"],
         fps=FPS,
         title_time="Filtered region-difference displacement over time",
-        title_psd="Frequency spectrum of region-difference motion",
+        title_psd="Welch PSD and FFT spectrum of region-difference motion",
         figsize_inches=figsize_inches,
         dpi=dpi,
         style_resolver=lambda index, _entry: {
