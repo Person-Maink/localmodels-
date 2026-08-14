@@ -1,0 +1,993 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Wed Jun 10 00:33:55 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:2C:00.0 Off |                   On |
+| N/A   59C    P0            153W /  300W |   19787MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    7   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         10143233
+Job Name:       wilor-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Wed Jun 10 00:33:56 CEST 2026
+===============================================
+WiLoR video: /scratch/mthakur/manifold/data/test/edge_cases_leaving_180_hari.mp4
+WiLoR output root: /scratch/mthakur/manifold/outputs/wilor
+WiLoR completion marker: /scratch/mthakur/manifold/outputs/wilor/_completed/edge_cases_leaving_180_hari.json
+WiLoR frame cache root: /scratch/mthakur/manifold/data/test
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[progress] Loading WiLoR checkpoint: ./pretrained_models/wilor_final.ckpt
+Loading  ./pretrained_models/wilor_final.ckpt
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+[progress] Loading detector: ./pretrained_models/detector.pt
+
+Processing: edge_cases_leaving_180_hari:frame_000000
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000001
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000002
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000003
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000004
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000005
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000006
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000007
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000008
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000009
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000010
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000011
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000012
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000013
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000014
+
+Processing: edge_cases_leaving_180_hari:frame_000015
+
+Processing: edge_cases_leaving_180_hari:frame_000016
+
+Processing: edge_cases_leaving_180_hari:frame_000017
+
+Processing: edge_cases_leaving_180_hari:frame_000018
+
+Processing: edge_cases_leaving_180_hari:frame_000019
+
+Processing: edge_cases_leaving_180_hari:frame_000020
+
+Processing: edge_cases_leaving_180_hari:frame_000021
+
+Processing: edge_cases_leaving_180_hari:frame_000022
+
+Processing: edge_cases_leaving_180_hari:frame_000023
+
+Processing: edge_cases_leaving_180_hari:frame_000024
+
+Processing: edge_cases_leaving_180_hari:frame_000025
+
+Processing: edge_cases_leaving_180_hari:frame_000026
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000027
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000028
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000029
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000030
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000031
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000032
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000033
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000034
+
+Processing: edge_cases_leaving_180_hari:frame_000035
+
+Processing: edge_cases_leaving_180_hari:frame_000036
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000037
+
+Processing: edge_cases_leaving_180_hari:frame_000038
+
+Processing: edge_cases_leaving_180_hari:frame_000039
+
+Processing: edge_cases_leaving_180_hari:frame_000040
+
+Processing: edge_cases_leaving_180_hari:frame_000041
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000042
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000043
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000044
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000045
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000046
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000047
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000048
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000049
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000050
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000051
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000052
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000053
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000054
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000055
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000056
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000057
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000058
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000059
+
+Processing: edge_cases_leaving_180_hari:frame_000060
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000061
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000062
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000063
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000064
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000065
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000066
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000067
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000068
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000069
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000070
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000071
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000072
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000073
+
+Processing: edge_cases_leaving_180_hari:frame_000074
+
+Processing: edge_cases_leaving_180_hari:frame_000075
+
+Processing: edge_cases_leaving_180_hari:frame_000076
+
+Processing: edge_cases_leaving_180_hari:frame_000077
+
+Processing: edge_cases_leaving_180_hari:frame_000078
+
+Processing: edge_cases_leaving_180_hari:frame_000079
+
+Processing: edge_cases_leaving_180_hari:frame_000080
+
+Processing: edge_cases_leaving_180_hari:frame_000081
+
+Processing: edge_cases_leaving_180_hari:frame_000082
+
+Processing: edge_cases_leaving_180_hari:frame_000083
+
+Processing: edge_cases_leaving_180_hari:frame_000084
+
+Processing: edge_cases_leaving_180_hari:frame_000085
+
+Processing: edge_cases_leaving_180_hari:frame_000086
+
+Processing: edge_cases_leaving_180_hari:frame_000087
+
+Processing: edge_cases_leaving_180_hari:frame_000088
+
+Processing: edge_cases_leaving_180_hari:frame_000089
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000090
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000091
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000092
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000093
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000094
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000095
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000096
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000097
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000098
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000099
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000100
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000101
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000102
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000103
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000104
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000105
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000106
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000107
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000108
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000109
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000110
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000111
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000112
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000113
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000114
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000115
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000116
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000117
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000118
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000119
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000120
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000121
+
+Processing: edge_cases_leaving_180_hari:frame_000122
+
+Processing: edge_cases_leaving_180_hari:frame_000123
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000124
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000125
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000126
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000127
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000128
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000129
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000130
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000131
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000132
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000133
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000134
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000135
+
+Processing: edge_cases_leaving_180_hari:frame_000136
+
+Processing: edge_cases_leaving_180_hari:frame_000137
+
+Processing: edge_cases_leaving_180_hari:frame_000138
+
+Processing: edge_cases_leaving_180_hari:frame_000139
+
+Processing: edge_cases_leaving_180_hari:frame_000140
+
+Processing: edge_cases_leaving_180_hari:frame_000141
+
+Processing: edge_cases_leaving_180_hari:frame_000142
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000143
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000144
+
+Processing: edge_cases_leaving_180_hari:frame_000145
+
+Processing: edge_cases_leaving_180_hari:frame_000146
+
+Processing: edge_cases_leaving_180_hari:frame_000147
+
+Processing: edge_cases_leaving_180_hari:frame_000148
+
+Processing: edge_cases_leaving_180_hari:frame_000149
+
+Processing: edge_cases_leaving_180_hari:frame_000150
+
+Processing: edge_cases_leaving_180_hari:frame_000151
+
+Processing: edge_cases_leaving_180_hari:frame_000152
+
+Processing: edge_cases_leaving_180_hari:frame_000153
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000154
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000155
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000156
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000157
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000158
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000159
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000160
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000161
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000162
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000163
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000164
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000165
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000166
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000167
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000168
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000169
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000170
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000171
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000172
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000173
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000174
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000175
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000176
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000177
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000178
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000179
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000180
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000181
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000182
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000183
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000184
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000185
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000186
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000187
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000188
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000189
+
+Processing: edge_cases_leaving_180_hari:frame_000190
+
+Processing: edge_cases_leaving_180_hari:frame_000191
+
+Processing: edge_cases_leaving_180_hari:frame_000192
+
+Processing: edge_cases_leaving_180_hari:frame_000193
+
+Processing: edge_cases_leaving_180_hari:frame_000194
+
+Processing: edge_cases_leaving_180_hari:frame_000195
+
+Processing: edge_cases_leaving_180_hari:frame_000196
+
+Processing: edge_cases_leaving_180_hari:frame_000197
+
+Processing: edge_cases_leaving_180_hari:frame_000198
+
+Processing: edge_cases_leaving_180_hari:frame_000199
+
+Processing: edge_cases_leaving_180_hari:frame_000200
+
+Processing: edge_cases_leaving_180_hari:frame_000201
+
+Processing: edge_cases_leaving_180_hari:frame_000202
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000203
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000204
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000205
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000206
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000207
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000208
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000209
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000210
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000211
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000212
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000213
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000214
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000215
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000216
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000217
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000218
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000219
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000220
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000221
+
+Processing: edge_cases_leaving_180_hari:frame_000222
+
+Processing: edge_cases_leaving_180_hari:frame_000223
+
+Processing: edge_cases_leaving_180_hari:frame_000224
+
+Processing: edge_cases_leaving_180_hari:frame_000225
+
+Processing: edge_cases_leaving_180_hari:frame_000226
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000227
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000228
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000229
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000230
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000231
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000232
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000233
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000234
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000235
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000236
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000237
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000238
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000239
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000240
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000241
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000242
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000243
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000244
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000245
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000246
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000247
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000248
+
+Processing: edge_cases_leaving_180_hari:frame_000249
+
+Processing: edge_cases_leaving_180_hari:frame_000250
+
+Processing: edge_cases_leaving_180_hari:frame_000251
+
+Processing: edge_cases_leaving_180_hari:frame_000252
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000253
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000254
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000255
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000256
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000257
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000258
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000259
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000260
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000261
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000262
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000263
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000264
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000265
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000266
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000267
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000268
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000269
+
+Processing: edge_cases_leaving_180_hari:frame_000270
+
+Processing: edge_cases_leaving_180_hari:frame_000271
+
+Processing: edge_cases_leaving_180_hari:frame_000272
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000273
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000274
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000275
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000276
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000277
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000278
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000279
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000280
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000281
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000282
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000283
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000284
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000285
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000286
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000287
+
+Processing: edge_cases_leaving_180_hari:frame_000288
+
+Processing: edge_cases_leaving_180_hari:frame_000289
+
+Processing: edge_cases_leaving_180_hari:frame_000290
+
+Processing: edge_cases_leaving_180_hari:frame_000291
+
+Processing: edge_cases_leaving_180_hari:frame_000292
+
+Processing: edge_cases_leaving_180_hari:frame_000293
+
+Processing: edge_cases_leaving_180_hari:frame_000294
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000295
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000296
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000297
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000298
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000299
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000300
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000301
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000302
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000303
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000304
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000305
+
+Processing: edge_cases_leaving_180_hari:frame_000306
+
+Processing: edge_cases_leaving_180_hari:frame_000307
+
+Processing: edge_cases_leaving_180_hari:frame_000308
+
+Processing: edge_cases_leaving_180_hari:frame_000309
+
+Processing: edge_cases_leaving_180_hari:frame_000310
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000311
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000312
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000313
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000314
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000315
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000316
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000317
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000318
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000319
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000320
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000321
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000322
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000323
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000324
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000325
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000326
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000327
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000328
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000329
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000330
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000331
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000332
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000333
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000334
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000335
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000336
+No detections, skipping.
+
+Processing: edge_cases_leaving_180_hari:frame_000337
+No detections, skipping.
+
+All images processed.
+===============================================
+Job finished at: Wed Jun 10 00:36:11 CEST 2026
+Execution took 0.04 hours
+Writing output to SLURM_logs/wilor-inference_834.out
+Retained WiLoR outputs: /scratch/mthakur/manifold/outputs/wilor/edge_cases_leaving_180_hari/meshes
+===============================================

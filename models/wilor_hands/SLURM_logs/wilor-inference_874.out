@@ -1,0 +1,469 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Wed Jun 10 02:36:04 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   51C    P0            133W /  300W |   11615MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    7   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         10143273
+Job Name:       wilor-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Wed Jun 10 02:36:04 CEST 2026
+===============================================
+WiLoR video: /scratch/mthakur/manifold/data/test/edge_cases_still_90_hari.mp4
+WiLoR output root: /scratch/mthakur/manifold/outputs/wilor
+WiLoR completion marker: /scratch/mthakur/manifold/outputs/wilor/_completed/edge_cases_still_90_hari.json
+WiLoR frame cache root: /scratch/mthakur/manifold/data/test
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[progress] Loading WiLoR checkpoint: ./pretrained_models/wilor_final.ckpt
+Loading  ./pretrained_models/wilor_final.ckpt
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+[progress] Loading detector: ./pretrained_models/detector.pt
+
+Processing: edge_cases_still_90_hari:frame_000000
+
+Processing: edge_cases_still_90_hari:frame_000001
+
+Processing: edge_cases_still_90_hari:frame_000002
+
+Processing: edge_cases_still_90_hari:frame_000003
+
+Processing: edge_cases_still_90_hari:frame_000004
+
+Processing: edge_cases_still_90_hari:frame_000005
+
+Processing: edge_cases_still_90_hari:frame_000006
+
+Processing: edge_cases_still_90_hari:frame_000007
+
+Processing: edge_cases_still_90_hari:frame_000008
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000009
+
+Processing: edge_cases_still_90_hari:frame_000010
+
+Processing: edge_cases_still_90_hari:frame_000011
+
+Processing: edge_cases_still_90_hari:frame_000012
+
+Processing: edge_cases_still_90_hari:frame_000013
+
+Processing: edge_cases_still_90_hari:frame_000014
+
+Processing: edge_cases_still_90_hari:frame_000015
+
+Processing: edge_cases_still_90_hari:frame_000016
+
+Processing: edge_cases_still_90_hari:frame_000017
+
+Processing: edge_cases_still_90_hari:frame_000018
+
+Processing: edge_cases_still_90_hari:frame_000019
+
+Processing: edge_cases_still_90_hari:frame_000020
+
+Processing: edge_cases_still_90_hari:frame_000021
+
+Processing: edge_cases_still_90_hari:frame_000022
+
+Processing: edge_cases_still_90_hari:frame_000023
+
+Processing: edge_cases_still_90_hari:frame_000024
+
+Processing: edge_cases_still_90_hari:frame_000025
+
+Processing: edge_cases_still_90_hari:frame_000026
+
+Processing: edge_cases_still_90_hari:frame_000027
+
+Processing: edge_cases_still_90_hari:frame_000028
+
+Processing: edge_cases_still_90_hari:frame_000029
+
+Processing: edge_cases_still_90_hari:frame_000030
+
+Processing: edge_cases_still_90_hari:frame_000031
+
+Processing: edge_cases_still_90_hari:frame_000032
+
+Processing: edge_cases_still_90_hari:frame_000033
+
+Processing: edge_cases_still_90_hari:frame_000034
+
+Processing: edge_cases_still_90_hari:frame_000035
+
+Processing: edge_cases_still_90_hari:frame_000036
+
+Processing: edge_cases_still_90_hari:frame_000037
+
+Processing: edge_cases_still_90_hari:frame_000038
+
+Processing: edge_cases_still_90_hari:frame_000039
+
+Processing: edge_cases_still_90_hari:frame_000040
+
+Processing: edge_cases_still_90_hari:frame_000041
+
+Processing: edge_cases_still_90_hari:frame_000042
+
+Processing: edge_cases_still_90_hari:frame_000043
+
+Processing: edge_cases_still_90_hari:frame_000044
+
+Processing: edge_cases_still_90_hari:frame_000045
+
+Processing: edge_cases_still_90_hari:frame_000046
+
+Processing: edge_cases_still_90_hari:frame_000047
+
+Processing: edge_cases_still_90_hari:frame_000048
+
+Processing: edge_cases_still_90_hari:frame_000049
+
+Processing: edge_cases_still_90_hari:frame_000050
+
+Processing: edge_cases_still_90_hari:frame_000051
+
+Processing: edge_cases_still_90_hari:frame_000052
+
+Processing: edge_cases_still_90_hari:frame_000053
+
+Processing: edge_cases_still_90_hari:frame_000054
+
+Processing: edge_cases_still_90_hari:frame_000055
+
+Processing: edge_cases_still_90_hari:frame_000056
+
+Processing: edge_cases_still_90_hari:frame_000057
+
+Processing: edge_cases_still_90_hari:frame_000058
+
+Processing: edge_cases_still_90_hari:frame_000059
+
+Processing: edge_cases_still_90_hari:frame_000060
+
+Processing: edge_cases_still_90_hari:frame_000061
+
+Processing: edge_cases_still_90_hari:frame_000062
+
+Processing: edge_cases_still_90_hari:frame_000063
+
+Processing: edge_cases_still_90_hari:frame_000064
+
+Processing: edge_cases_still_90_hari:frame_000065
+
+Processing: edge_cases_still_90_hari:frame_000066
+
+Processing: edge_cases_still_90_hari:frame_000067
+
+Processing: edge_cases_still_90_hari:frame_000068
+
+Processing: edge_cases_still_90_hari:frame_000069
+
+Processing: edge_cases_still_90_hari:frame_000070
+
+Processing: edge_cases_still_90_hari:frame_000071
+
+Processing: edge_cases_still_90_hari:frame_000072
+
+Processing: edge_cases_still_90_hari:frame_000073
+
+Processing: edge_cases_still_90_hari:frame_000074
+
+Processing: edge_cases_still_90_hari:frame_000075
+
+Processing: edge_cases_still_90_hari:frame_000076
+
+Processing: edge_cases_still_90_hari:frame_000077
+
+Processing: edge_cases_still_90_hari:frame_000078
+
+Processing: edge_cases_still_90_hari:frame_000079
+
+Processing: edge_cases_still_90_hari:frame_000080
+
+Processing: edge_cases_still_90_hari:frame_000081
+
+Processing: edge_cases_still_90_hari:frame_000082
+
+Processing: edge_cases_still_90_hari:frame_000083
+
+Processing: edge_cases_still_90_hari:frame_000084
+
+Processing: edge_cases_still_90_hari:frame_000085
+
+Processing: edge_cases_still_90_hari:frame_000086
+
+Processing: edge_cases_still_90_hari:frame_000087
+
+Processing: edge_cases_still_90_hari:frame_000088
+
+Processing: edge_cases_still_90_hari:frame_000089
+
+Processing: edge_cases_still_90_hari:frame_000090
+
+Processing: edge_cases_still_90_hari:frame_000091
+
+Processing: edge_cases_still_90_hari:frame_000092
+
+Processing: edge_cases_still_90_hari:frame_000093
+
+Processing: edge_cases_still_90_hari:frame_000094
+
+Processing: edge_cases_still_90_hari:frame_000095
+
+Processing: edge_cases_still_90_hari:frame_000096
+
+Processing: edge_cases_still_90_hari:frame_000097
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000098
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000099
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000100
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000101
+
+Processing: edge_cases_still_90_hari:frame_000102
+
+Processing: edge_cases_still_90_hari:frame_000103
+
+Processing: edge_cases_still_90_hari:frame_000104
+
+Processing: edge_cases_still_90_hari:frame_000105
+
+Processing: edge_cases_still_90_hari:frame_000106
+
+Processing: edge_cases_still_90_hari:frame_000107
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000108
+
+Processing: edge_cases_still_90_hari:frame_000109
+
+Processing: edge_cases_still_90_hari:frame_000110
+
+Processing: edge_cases_still_90_hari:frame_000111
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000112
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000113
+
+Processing: edge_cases_still_90_hari:frame_000114
+
+Processing: edge_cases_still_90_hari:frame_000115
+
+Processing: edge_cases_still_90_hari:frame_000116
+
+Processing: edge_cases_still_90_hari:frame_000117
+
+Processing: edge_cases_still_90_hari:frame_000118
+
+Processing: edge_cases_still_90_hari:frame_000119
+
+Processing: edge_cases_still_90_hari:frame_000120
+
+Processing: edge_cases_still_90_hari:frame_000121
+
+Processing: edge_cases_still_90_hari:frame_000122
+
+Processing: edge_cases_still_90_hari:frame_000123
+
+Processing: edge_cases_still_90_hari:frame_000124
+
+Processing: edge_cases_still_90_hari:frame_000125
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000126
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000127
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000128
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000129
+
+Processing: edge_cases_still_90_hari:frame_000130
+
+Processing: edge_cases_still_90_hari:frame_000131
+
+Processing: edge_cases_still_90_hari:frame_000132
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000133
+
+Processing: edge_cases_still_90_hari:frame_000134
+
+Processing: edge_cases_still_90_hari:frame_000135
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000136
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000137
+
+Processing: edge_cases_still_90_hari:frame_000138
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000139
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000140
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000141
+
+Processing: edge_cases_still_90_hari:frame_000142
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000143
+
+Processing: edge_cases_still_90_hari:frame_000144
+
+Processing: edge_cases_still_90_hari:frame_000145
+
+Processing: edge_cases_still_90_hari:frame_000146
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000147
+
+Processing: edge_cases_still_90_hari:frame_000148
+
+Processing: edge_cases_still_90_hari:frame_000149
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000150
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000151
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000152
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000153
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000154
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000155
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000156
+No detections, skipping.
+
+Processing: edge_cases_still_90_hari:frame_000157
+
+Processing: edge_cases_still_90_hari:frame_000158
+
+Processing: edge_cases_still_90_hari:frame_000159
+
+Processing: edge_cases_still_90_hari:frame_000160
+
+Processing: edge_cases_still_90_hari:frame_000161
+
+Processing: edge_cases_still_90_hari:frame_000162
+
+Processing: edge_cases_still_90_hari:frame_000163
+
+Processing: edge_cases_still_90_hari:frame_000164
+
+Processing: edge_cases_still_90_hari:frame_000165
+
+Processing: edge_cases_still_90_hari:frame_000166
+
+Processing: edge_cases_still_90_hari:frame_000167
+
+Processing: edge_cases_still_90_hari:frame_000168
+
+Processing: edge_cases_still_90_hari:frame_000169
+
+Processing: edge_cases_still_90_hari:frame_000170
+
+Processing: edge_cases_still_90_hari:frame_000171
+
+Processing: edge_cases_still_90_hari:frame_000172
+
+Processing: edge_cases_still_90_hari:frame_000173
+
+Processing: edge_cases_still_90_hari:frame_000174
+
+Processing: edge_cases_still_90_hari:frame_000175
+
+Processing: edge_cases_still_90_hari:frame_000176
+
+Processing: edge_cases_still_90_hari:frame_000177
+
+Processing: edge_cases_still_90_hari:frame_000178
+
+Processing: edge_cases_still_90_hari:frame_000179
+
+Processing: edge_cases_still_90_hari:frame_000180
+
+Processing: edge_cases_still_90_hari:frame_000181
+
+Processing: edge_cases_still_90_hari:frame_000182
+
+Processing: edge_cases_still_90_hari:frame_000183
+
+Processing: edge_cases_still_90_hari:frame_000184
+
+Processing: edge_cases_still_90_hari:frame_000185
+
+All images processed.
+===============================================
+Job finished at: Wed Jun 10 02:37:57 CEST 2026
+Execution took 0.03 hours
+Writing output to SLURM_logs/wilor-inference_874.out
+Retained WiLoR outputs: /scratch/mthakur/manifold/outputs/wilor/edge_cases_still_90_hari/meshes
+===============================================

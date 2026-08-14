@@ -1,0 +1,435 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Wed Jun 10 10:26:15 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:AE:00.0 Off |                   On |
+| N/A   39C    P0             45W /  300W |     249MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    7   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         10143389
+Job Name:       wilor-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Wed Jun 10 10:26:16 CEST 2026
+===============================================
+WiLoR video: /scratch/mthakur/manifold/data/test/tremor_simulation_line_normal_135_niti.mp4
+WiLoR output root: /scratch/mthakur/manifold/outputs/wilor
+WiLoR completion marker: /scratch/mthakur/manifold/outputs/wilor/_completed/tremor_simulation_line_normal_135_niti.json
+WiLoR frame cache root: /scratch/mthakur/manifold/data/test
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[progress] Loading WiLoR checkpoint: ./pretrained_models/wilor_final.ckpt
+Loading  ./pretrained_models/wilor_final.ckpt
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+[progress] Loading detector: ./pretrained_models/detector.pt
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000000
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000001
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000002
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000003
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000004
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000005
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000006
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000007
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000008
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000009
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000010
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000011
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000012
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000013
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000014
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000015
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000016
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000017
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000018
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000019
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000020
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000021
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000022
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000023
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000024
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000025
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000026
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000027
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000028
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000029
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000030
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000031
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000032
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000033
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000034
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000035
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000036
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000037
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000038
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000039
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000040
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000041
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000042
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000043
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000044
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000045
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000046
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000047
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000048
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000049
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000050
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000051
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000052
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000053
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000054
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000055
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000056
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000057
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000058
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000059
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000060
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000061
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000062
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000063
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000064
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000065
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000066
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000067
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000068
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000069
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000070
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000071
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000072
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000073
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000074
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000075
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000076
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000077
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000078
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000079
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000080
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000081
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000082
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000083
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000084
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000085
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000086
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000087
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000088
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000089
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000090
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000091
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000092
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000093
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000094
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000095
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000096
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000097
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000098
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000099
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000100
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000101
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000102
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000103
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000104
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000105
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000106
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000107
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000108
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000109
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000110
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000111
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000112
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000113
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000114
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000115
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000116
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000117
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000118
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000119
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000120
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000121
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000122
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000123
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000124
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000125
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000126
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000127
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000128
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000129
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000130
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000131
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000132
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000133
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000134
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000135
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000136
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000137
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000138
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000139
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000140
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000141
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000142
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000143
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000144
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000145
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000146
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000147
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000148
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000149
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000150
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000151
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000152
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000153
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000154
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000155
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000156
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000157
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000158
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000159
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000160
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000161
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000162
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000163
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000164
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000165
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000166
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000167
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000168
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000169
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000170
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000171
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000172
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000173
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000174
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000175
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000176
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000177
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000178
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000179
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000180
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000181
+
+Processing: tremor_simulation_line_normal_135_niti:frame_000182
+
+All images processed.
+===============================================
+Job finished at: Wed Jun 10 10:30:37 CEST 2026
+Execution took 0.07 hours
+Writing output to SLURM_logs/wilor-inference_982.out
+Retained WiLoR outputs: /scratch/mthakur/manifold/outputs/wilor/tremor_simulation_line_normal_135_niti/meshes
+===============================================

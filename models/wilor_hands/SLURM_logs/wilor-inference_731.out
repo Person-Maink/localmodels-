@@ -1,0 +1,719 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Tue Jun  9 15:04:53 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   61C    P0            143W /  300W |    9080MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    9   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         10143128
+Job Name:       wilor-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Tue Jun  9 15:04:53 CEST 2026
+===============================================
+WiLoR video: /scratch/mthakur/manifold/data/test/clean_fast_wrist_BE_meenakshi.mp4
+WiLoR output root: /scratch/mthakur/manifold/outputs/wilor
+WiLoR completion marker: /scratch/mthakur/manifold/outputs/wilor/_completed/clean_fast_wrist_BE_meenakshi.json
+WiLoR frame cache root: /scratch/mthakur/manifold/data/test
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[progress] Loading WiLoR checkpoint: ./pretrained_models/wilor_final.ckpt
+Loading  ./pretrained_models/wilor_final.ckpt
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+[progress] Loading detector: ./pretrained_models/detector.pt
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000000
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000001
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000002
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000003
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000004
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000005
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000006
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000007
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000008
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000009
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000010
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000011
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000012
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000013
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000014
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000015
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000016
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000017
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000018
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000019
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000020
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000021
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000022
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000023
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000024
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000025
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000026
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000027
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000028
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000029
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000030
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000031
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000032
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000033
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000034
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000035
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000036
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000037
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000038
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000039
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000040
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000041
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000042
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000043
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000044
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000045
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000046
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000047
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000048
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000049
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000050
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000051
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000052
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000053
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000054
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000055
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000056
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000057
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000058
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000059
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000060
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000061
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000062
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000063
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000064
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000065
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000066
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000067
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000068
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000069
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000070
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000071
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000072
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000073
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000074
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000075
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000076
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000077
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000078
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000079
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000080
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000081
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000082
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000083
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000084
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000085
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000086
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000087
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000088
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000089
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000090
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000091
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000092
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000093
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000094
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000095
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000096
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000097
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000098
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000099
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000100
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000101
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000102
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000103
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000104
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000105
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000106
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000107
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000108
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000109
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000110
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000111
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000112
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000113
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000114
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000115
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000116
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000117
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000118
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000119
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000120
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000121
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000122
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000123
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000124
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000125
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000126
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000127
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000128
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000129
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000130
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000131
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000132
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000133
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000134
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000135
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000136
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000137
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000138
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000139
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000140
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000141
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000142
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000143
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000144
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000145
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000146
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000147
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000148
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000149
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000150
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000151
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000152
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000153
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000154
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000155
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000156
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000157
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000158
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000159
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000160
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000161
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000162
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000163
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000164
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000165
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000166
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000167
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000168
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000169
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000170
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000171
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000172
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000173
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000174
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000175
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000176
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000177
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000178
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000179
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000180
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000181
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000182
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000183
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000184
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000185
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000186
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000187
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000188
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000189
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000190
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000191
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000192
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000193
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000194
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000195
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000196
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000197
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000198
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000199
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000200
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000201
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000202
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000203
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000204
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000205
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000206
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000207
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000208
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000209
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000210
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000211
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000212
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000213
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000214
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000215
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000216
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000217
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000218
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000219
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000220
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000221
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000222
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000223
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000224
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000225
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000226
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000227
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000228
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000229
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000230
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000231
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000232
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000233
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000234
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000235
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000236
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000237
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000238
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000239
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000240
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000241
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000242
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000243
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000244
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000245
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000246
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000247
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000248
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000249
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000250
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000251
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000252
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000253
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000254
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000255
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000256
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000257
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000258
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000259
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000260
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000261
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000262
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000263
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000264
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000265
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000266
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000267
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000268
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000269
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000270
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000271
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000272
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000273
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000274
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000275
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000276
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000277
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000278
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000279
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000280
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000281
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000282
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000283
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000284
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000285
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000286
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000287
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000288
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000289
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000290
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000291
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000292
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000293
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000294
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000295
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000296
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000297
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000298
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000299
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000300
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000301
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000302
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000303
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000304
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000305
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000306
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000307
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000308
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000309
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000310
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000311
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000312
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000313
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000314
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000315
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000316
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000317
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000318
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000319
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000320
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000321
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000322
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000323
+
+Processing: clean_fast_wrist_BE_meenakshi:frame_000324
+
+All images processed.
+===============================================
+Job finished at: Tue Jun  9 15:14:54 CEST 2026
+Execution took 0.17 hours
+Writing output to SLURM_logs/wilor-inference_731.out
+Retained WiLoR outputs: /scratch/mthakur/manifold/outputs/wilor/clean_fast_wrist_BE_meenakshi/meshes
+===============================================

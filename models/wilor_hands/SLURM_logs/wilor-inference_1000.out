@@ -1,0 +1,323 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) cuda/11.7
+  2) DefaultModules   4) 2024r1
+
+ 
+
+Wed Jun 10 11:20:14 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          On  |   00000000:16:00.0 Off |                   On |
+| N/A   61C    P0            160W /  300W |   23887MiB /  81920MiB |     N/A      Default |
+|                                         |                        |              Enabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| MIG devices:                                                                            |
++------------------+----------------------------------+-----------+-----------------------+
+| GPU  GI  CI  MIG |              Shared Memory-Usage |        Vol|        Shared         |
+|      ID  ID  Dev |                Shared BAR1-Usage | SM     Unc| CE ENC  DEC  OFA  JPG |
+|                  |                                  |        ECC|                       |
+|==================+==================================+===========+=======================|
+|  0    8   0   0  |              36MiB /  9728MiB    | 14      0 |  1   0    0    0    0 |
+|                  |               0MiB /  6135MiB    |           |                       |
++------------------+----------------------------------+-----------+-----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+================ SLURM JOB INFO ================
+Job ID:         10143412
+Job Name:       wilor-inference
+Partition:      gpu-a100-small
+Node List:      gpu020
+CPUs per task:  2
+GPUs per task:  1
+Memory per GPU: 10240
+Submit dir:     /scratch/mthakur/manifold/models/wilor_hands
+Work dir:       /scratch/mthakur/manifold/models/wilor_hands
+Job started at: Wed Jun 10 11:20:15 CEST 2026
+===============================================
+WiLoR video: /scratch/mthakur/manifold/data/test/tremor_simulation_line_normal_BE_mayank.mp4
+WiLoR output root: /scratch/mthakur/manifold/outputs/wilor
+WiLoR completion marker: /scratch/mthakur/manifold/outputs/wilor/_completed/tremor_simulation_line_normal_BE_mayank.json
+WiLoR frame cache root: /scratch/mthakur/manifold/data/test
+/.venv/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[progress] Loading WiLoR checkpoint: ./pretrained_models/wilor_final.ckpt
+Loading  ./pretrained_models/wilor_final.ckpt
+WARNING: You are using a MANO model, with only 10 shape coefficients.
+[progress] Loading detector: ./pretrained_models/detector.pt
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000000
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000001
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000002
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000003
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000004
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000005
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000006
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000007
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000008
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000009
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000010
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000011
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000012
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000013
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000014
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000015
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000016
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000017
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000018
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000019
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000020
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000021
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000022
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000023
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000024
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000025
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000026
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000027
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000028
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000029
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000030
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000031
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000032
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000033
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000034
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000035
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000036
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000037
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000038
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000039
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000040
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000041
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000042
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000043
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000044
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000045
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000046
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000047
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000048
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000049
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000050
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000051
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000052
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000053
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000054
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000055
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000056
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000057
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000058
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000059
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000060
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000061
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000062
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000063
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000064
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000065
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000066
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000067
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000068
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000069
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000070
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000071
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000072
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000073
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000074
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000075
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000076
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000077
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000078
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000079
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000080
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000081
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000082
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000083
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000084
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000085
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000086
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000087
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000088
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000089
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000090
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000091
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000092
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000093
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000094
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000095
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000096
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000097
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000098
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000099
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000100
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000101
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000102
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000103
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000104
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000105
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000106
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000107
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000108
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000109
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000110
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000111
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000112
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000113
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000114
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000115
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000116
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000117
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000118
+No detections, skipping.
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000119
+No detections, skipping.
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000120
+No detections, skipping.
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000121
+No detections, skipping.
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000122
+No detections, skipping.
+
+Processing: tremor_simulation_line_normal_BE_mayank:frame_000123
+No detections, skipping.
+
+All images processed.
+===============================================
+Job finished at: Wed Jun 10 11:21:16 CEST 2026
+Execution took 0.02 hours
+Writing output to SLURM_logs/wilor-inference_1000.out
+Retained WiLoR outputs: /scratch/mthakur/manifold/outputs/wilor/tremor_simulation_line_normal_BE_mayank/meshes
+===============================================
