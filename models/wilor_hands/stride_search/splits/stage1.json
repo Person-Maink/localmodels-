@@ -1,0 +1,47 @@
+{
+  "stage": "stage1",
+  "description": "18-video development screening subset; editable after generation.",
+  "seed": 20260813,
+  "video_ids": [
+    "clean_fast_finger_135_mayank",
+    "clean_fast_finger_45_hari",
+    "clean_fast_finger_90_hari",
+    "clean_fast_finger_BE_hari",
+    "clean_fast_wrist_0_hari",
+    "clean_fast_wrist_135_meenakshi",
+    "clean_fast_wrist_180_hari",
+    "clean_fast_wrist_90_meenakshi",
+    "clean_slow_finger_0_mayank",
+    "clean_slow_finger_135_soumen",
+    "clean_slow_finger_180_mayank",
+    "clean_slow_finger_45_mayank",
+    "clean_slow_finger_BE_mayank",
+    "clean_slow_wrist_0_meenakshi",
+    "clean_slow_wrist_180_meenakshi",
+    "clean_slow_wrist_45_soumen",
+    "clean_slow_wrist_90_soumen",
+    "clean_slow_wrist_BE_soumen"
+  ],
+  "stratification_counts": {
+    "condition": {
+      "clean_fast_finger": 4,
+      "clean_fast_wrist": 4,
+      "clean_slow_finger": 5,
+      "clean_slow_wrist": 5
+    },
+    "angle": {
+      "0": 3,
+      "135": 3,
+      "180": 3,
+      "45": 3,
+      "90": 3,
+      "BE": 3
+    },
+    "participant": {
+      "hari": 5,
+      "mayank": 5,
+      "meenakshi": 4,
+      "soumen": 4
+    }
+  }
+}

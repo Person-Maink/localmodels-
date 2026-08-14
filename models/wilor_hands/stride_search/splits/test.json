@@ -1,0 +1,50 @@
+{
+  "stage": "test",
+  "description": "Locked final test set: all Niti clips. Do not tune on these clips.",
+  "seed": 20260813,
+  "video_ids": [
+    "clean_fast_finger_0_niti",
+    "clean_fast_finger_135_niti",
+    "clean_fast_finger_180_niti",
+    "clean_fast_finger_45_niti",
+    "clean_fast_finger_90_niti",
+    "clean_fast_finger_BE_niti",
+    "clean_fast_wrist_0_niti",
+    "clean_fast_wrist_135_niti",
+    "clean_fast_wrist_180_niti",
+    "clean_fast_wrist_45_niti",
+    "clean_fast_wrist_90_niti",
+    "clean_fast_wrist_BE_niti",
+    "clean_slow_finger_0_niti",
+    "clean_slow_finger_135_niti",
+    "clean_slow_finger_180_niti",
+    "clean_slow_finger_45_niti",
+    "clean_slow_finger_90_niti",
+    "clean_slow_finger_BE_niti",
+    "clean_slow_wrist_0_niti",
+    "clean_slow_wrist_135_niti",
+    "clean_slow_wrist_180_niti",
+    "clean_slow_wrist_45_niti",
+    "clean_slow_wrist_90_niti",
+    "clean_slow_wrist_BE_niti"
+  ],
+  "stratification_counts": {
+    "condition": {
+      "clean_fast_finger": 6,
+      "clean_fast_wrist": 6,
+      "clean_slow_finger": 6,
+      "clean_slow_wrist": 6
+    },
+    "angle": {
+      "0": 4,
+      "135": 4,
+      "180": 4,
+      "45": 4,
+      "90": 4,
+      "BE": 4
+    },
+    "participant": {
+      "niti": 24
+    }
+  }
+}
