@@ -1,0 +1,86 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) python/3.10.12
+  2) DefaultModules   4) 2024r1
+
+ 
+
+================ SLURM JOB INFO ================
+Job ID:         10298422
+Job Name:       analysis_graphs
+Partition:      compute-p1
+Node List:      cmp204
+CPUs per task:  16
+Submit dir:     /scratch/mthakur/manifold/analysis/Frequency Analysis
+Work dir:       /scratch/mthakur/manifold/analysis/Frequency Analysis
+Job started at: Thu Jun 25 15:44:54 CEST 2026
+===============================================
+Discovery counts:
+  hamba: all=0, comp=0
+  wilor: all=485, comp=36
+  wilor_finetune: all=0, comp=0
+    selected aliases: none
+  dynhamr: all=0, comp=0
+  stride: all=189, comp=0
+  mediapipe: all=0, comp=0
+Scenario matrix:
+  hamba_vs_hamba_comp: hamba_all(0) x hamba_comp(0) -> 0 pairs [enabled]
+  wilor_vs_wilor_comp: wilor_all(485) x wilor_comp(36) -> 36 pairs [enabled]
+  wilor_finetune_vs_wilor_finetune: wilor_finetune_all(0) x wilor_finetune_all(0) -> 0 pairs [enabled]
+  wilor_finetune_vs_wilor_finetune_comp: wilor_finetune_all(0) x wilor_finetune_comp(0) -> 0 pairs [enabled]
+  stride_vs_stride_comp: stride_all(189) x stride_comp(0) -> 0 pairs [enabled]
+  mediapipe_vs_mediapipe_comp: mediapipe_all(0) x mediapipe_comp(0) -> 0 pairs [enabled]
+  wilor_finetune_vs_wilor: wilor_finetune_all(0) x wilor_all(485) -> 0 pairs [enabled]
+  wilor_finetune_vs_hamba: wilor_finetune_all(0) x hamba_all(0) -> 0 pairs [enabled]
+  wilor_finetune_vs_dynhamr: wilor_finetune_all(0) x dynhamr_all(0) -> 0 pairs [enabled]
+  wilor_finetune_vs_stride: wilor_finetune_all(0) x stride_all(189) -> 0 pairs [enabled]
+  wilor_finetune_vs_mediapipe: wilor_finetune_all(0) x mediapipe_all(0) -> 0 pairs [enabled]
+  wilor_vs_hamba: wilor_all(485) x hamba_all(0) -> 0 pairs [enabled]
+  dynhamr_vs_wilor: dynhamr_all(0) x wilor_all(485) -> 0 pairs [enabled]
+  dynhamr_vs_hamba: dynhamr_all(0) x hamba_all(0) -> 0 pairs [enabled]
+  dynhamr_vs_stride: dynhamr_all(0) x stride_all(189) -> 0 pairs [enabled]
+  dynhamr_vs_mediapipe: dynhamr_all(0) x mediapipe_all(0) -> 0 pairs [enabled]
+  wilor_vs_stride: wilor_all(485) x stride_all(189) -> 189 pairs [enabled]
+  wilor_vs_mediapipe: wilor_all(485) x mediapipe_all(0) -> 0 pairs [enabled]
+  stride_vs_hamba: stride_all(189) x hamba_all(0) -> 0 pairs [enabled]
+  stride_vs_mediapipe: stride_all(189) x mediapipe_all(0) -> 0 pairs [enabled]
+  mediapipe_vs_hamba: mediapipe_all(0) x hamba_all(0) -> 0 pairs [enabled]
+  wilor_vs_hamba_vs_dynhamr: wilor_all(485) x hamba_all(0) x dynhamr_all(0) -> 0 3-way groups [enabled]
+  wilor_vs_hamba_vs_stride: wilor_all(485) x hamba_all(0) x stride_all(189) -> 0 3-way groups [enabled]
+  wilor_vs_hamba_vs_mediapipe: wilor_all(485) x hamba_all(0) x mediapipe_all(0) -> 0 3-way groups [enabled]
+  wilor_vs_dynhamr_vs_stride: wilor_all(485) x dynhamr_all(0) x stride_all(189) -> 0 3-way groups [enabled]
+  wilor_vs_dynhamr_vs_mediapipe: wilor_all(485) x dynhamr_all(0) x mediapipe_all(0) -> 0 3-way groups [enabled]
+  wilor_vs_stride_vs_mediapipe: wilor_all(485) x stride_all(189) x mediapipe_all(0) -> 0 3-way groups [enabled]
+  hamba_vs_dynhamr_vs_mediapipe: hamba_all(0) x dynhamr_all(0) x mediapipe_all(0) -> 0 3-way groups [enabled]
+  hamba_vs_dynhamr_vs_stride: hamba_all(0) x dynhamr_all(0) x stride_all(189) -> 0 3-way groups [enabled]
+  hamba_vs_stride_vs_mediapipe: hamba_all(0) x stride_all(189) x mediapipe_all(0) -> 0 3-way groups [enabled]
+  dynhamr_vs_stride_vs_mediapipe: dynhamr_all(0) x stride_all(189) x mediapipe_all(0) -> 0 3-way groups [enabled]
+  wilor_vs_hamba_vs_dynhamr_vs_stride_vs_mediapipe: wilor_all(485) x hamba_all(0) x dynhamr_all(0) x stride_all(189) x mediapipe_all(0) -> 0 5-way groups [enabled]
+Selected pair items with pending jobs: 225
+Selected multi-model items with pending jobs: 0
+Selected single-source items with pending jobs: 674
+Selected jobs by analysis:
+  compare: selected=899, skipped_existing=0
+  point_to_point: selected=225, skipped_existing=0
+  point_to_point_neighbor_sweep: selected=225, skipped_existing=0
+  multi_point_to_point: selected=225, skipped_existing=0
+  wilor_camera_space: selected=674, skipped_existing=0
+  beta_comparison: selected=674, skipped_existing=0
+  beta_multi_point_to_point: selected=674, skipped_existing=0
+  beta_model_compare: selected=899, skipped_existing=0
+  beta_model_compare_raw_plus_beta: selected=899, skipped_existing=0
+/scratch/mthakur/manifold/analysis/.venv/lib/python3.9/site-packages/chumpy/ch_ops.py:85: SyntaxWarning: "is" with a literal. Did you mean "=="?
+  assert(order is 'C' or order is None)
+/scratch/mthakur/manifold/analysis/.venv/lib/python3.9/site-packages/chumpy/ch_ops.py:85: SyntaxWarning: "is" with a literal. Did you mean "=="?
+  assert(order is 'C' or order is None)
+/scratch/mthakur/manifold/analysis/.venv/lib/python3.9/site-packages/chumpy/ch_ops.py:85: SyntaxWarning: "is" with a literal. Did you mean "=="?
+  assert(order is 'C' or order is None)
+/scratch/mthakur/manifold/analysis/.venv/lib/python3.9/site-packages/chumpy/ch_ops.py:85: SyntaxWarning: "is" with a literal. Did you mean "=="?
+  assert(order is 'C' or order is None)
+/scratch/mthakur/manifold/analysis/.venv/lib/python3.9/site-packages/chumpy/ch_ops.py:85: SyntaxWarning: "is" with a literal. Did you mean "=="?
+  assert(order is 'C' or order is None)
+/scratch/mthakur/manifold/analysis/.venv/lib/python3.9/site-packages/chumpy/ch_ops.py:85: SyntaxWarning: "is" with a literal. Did you mean "=="?
+  assert(order is 'C' or order is None)
+/scratch/mthakur/manifold/analysis/.venv/lib/python3.9/site-packages/chumpy/ch_ops.py:85: SyntaxWarning: "is" with a literal. Did you mean "=="?
+  assert(order is 'C' or order is None)

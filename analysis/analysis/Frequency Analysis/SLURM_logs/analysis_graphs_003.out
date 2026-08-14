@@ -1,0 +1,28 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) python/3.10.12
+  2) DefaultModules   4) 2024r1
+
+ 
+
+================ SLURM JOB INFO ================
+Job ID:         10298379
+Job Name:       analysis_graphs
+Partition:      compute-p1
+Node List:      cmp008
+CPUs per task:  16
+Submit dir:     /scratch/mthakur/manifold/analysis/Frequency Analysis
+Work dir:       /scratch/mthakur/manifold/analysis/Frequency Analysis
+Job started at: Thu Jun 25 15:29:48 CEST 2026
+===============================================
+Traceback (most recent call last):
+  File "/scratch/mthakur/manifold/analysis/Frequency Analysis/Run All.py", line 1741, in <module>
+    raise SystemExit(main())
+  File "/scratch/mthakur/manifold/analysis/Frequency Analysis/Run All.py", line 1594, in main
+    pools, discovery, finetune_selections = _build_source_pools(CONFIG.OUTPUTS_ROOT)
+  File "/scratch/mthakur/manifold/analysis/Frequency Analysis/Run All.py", line 508, in _build_source_pools
+    finetune_selections = _resolve_selected_wilor_finetune_experiments(outputs_root, selected_wilor_finetune_aliases)
+  File "/scratch/mthakur/manifold/analysis/Frequency Analysis/Run All.py", line 415, in _resolve_selected_wilor_finetune_experiments
+    raise ValueError(
+ValueError: Selected WiLoR finetune alias 'main_static' maps to missing experiment folder: /scratch/mayank/manifold/outputs/wilor_finetune/main_static_finetuning

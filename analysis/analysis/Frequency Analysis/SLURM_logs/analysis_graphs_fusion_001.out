@@ -1,0 +1,22 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) python/3.10.12
+  2) DefaultModules   4) 2024r1
+
+ 
+
+================ SLURM JOB INFO ================
+Job ID:         10298520
+Job Name:       analysis_graphs_fusion
+Partition:      compute-p1
+Node List:      cmp204
+CPUs per task:  16
+Submit dir:     /scratch/mthakur/manifold/analysis/Frequency Analysis
+Work dir:       /scratch/mthakur/manifold/analysis/Frequency Analysis
+Job started at: Thu Jun 25 16:24:58 CEST 2026
+===============================================
+/scratch/mthakur/manifold/analysis/.venv/lib/python3.9/site-packages/chumpy/__init__.py:11: FutureWarning: In the future `np.object` will be defined as the corresponding NumPy scalar.
+  from numpy import bool, int, float, complex, object, unicode, str, nan, inf
+/scratch/mthakur/manifold/analysis/.venv/lib/python3.9/site-packages/chumpy/__init__.py:11: FutureWarning: In the future `np.str` will be defined as the corresponding NumPy scalar.
+  from numpy import bool, int, float, complex, object, unicode, str, nan, inf

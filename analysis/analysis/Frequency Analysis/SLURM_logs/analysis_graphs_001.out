@@ -1,0 +1,82 @@
+Loaded modules:
+
+Currently Loaded Modules:
+  1) slurm/current    3) gcc/11.3.0   5) python/3.10.12
+  2) DefaultModules   4) 2024r1
+
+ 
+
+================ SLURM JOB INFO ================
+Job ID:         10298274
+Job Name:       analysis_graphs
+Partition:      compute-p1
+Node List:      cmp032
+CPUs per task:  16
+Submit dir:     /scratch/mthakur/manifold/analysis/Frequency Analysis
+Work dir:       /scratch/mthakur/manifold/analysis/Frequency Analysis
+Job started at: Thu Jun 25 14:55:57 CEST 2026
+===============================================
+Traceback (most recent call last):
+  File "/home/mthakur/.local/share/uv/python/cpython-3.9.24-linux-x86_64-gnu/lib/python3.9/pathlib.py", line 1251, in mkdir
+    self._accessor.mkdir(self, mode)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/analysis/analysis_images'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/mthakur/.local/share/uv/python/cpython-3.9.24-linux-x86_64-gnu/lib/python3.9/pathlib.py", line 1251, in mkdir
+    self._accessor.mkdir(self, mode)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/analysis'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/mthakur/.local/share/uv/python/cpython-3.9.24-linux-x86_64-gnu/lib/python3.9/pathlib.py", line 1251, in mkdir
+    self._accessor.mkdir(self, mode)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/mthakur/.local/share/uv/python/cpython-3.9.24-linux-x86_64-gnu/lib/python3.9/pathlib.py", line 1251, in mkdir
+    self._accessor.mkdir(self, mode)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/mayank/Documents/Uni/TUD/Thesis Extra'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/mthakur/.local/share/uv/python/cpython-3.9.24-linux-x86_64-gnu/lib/python3.9/pathlib.py", line 1251, in mkdir
+    self._accessor.mkdir(self, mode)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/mayank/Documents/Uni/TUD'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/mthakur/.local/share/uv/python/cpython-3.9.24-linux-x86_64-gnu/lib/python3.9/pathlib.py", line 1251, in mkdir
+    self._accessor.mkdir(self, mode)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/mayank/Documents/Uni'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/mthakur/.local/share/uv/python/cpython-3.9.24-linux-x86_64-gnu/lib/python3.9/pathlib.py", line 1251, in mkdir
+    self._accessor.mkdir(self, mode)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/mayank/Documents'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/scratch/mthakur/manifold/analysis/Frequency Analysis/Run All.py", line 1741, in <module>
+    raise SystemExit(main())
+  File "/scratch/mthakur/manifold/analysis/Frequency Analysis/Run All.py", line 1591, in main
+    output_dir.mkdir(parents=True, exist_ok=True)
+  File "/home/mthakur/.local/share/uv/python/cpython-3.9.24-linux-x86_64-gnu/lib/python3.9/pathlib.py", line 1255, in mkdir
+    self.parent.mkdir(parents=True, exist_ok=True)
+  File "/home/mthakur/.local/share/uv/python/cpython-3.9.24-linux-x86_64-gnu/lib/python3.9/pathlib.py", line 1255, in mkdir
+    self.parent.mkdir(parents=True, exist_ok=True)
+  File "/home/mthakur/.local/share/uv/python/cpython-3.9.24-linux-x86_64-gnu/lib/python3.9/pathlib.py", line 1255, in mkdir
+    self.parent.mkdir(parents=True, exist_ok=True)
+  [Previous line repeated 4 more times]
+  File "/home/mthakur/.local/share/uv/python/cpython-3.9.24-linux-x86_64-gnu/lib/python3.9/pathlib.py", line 1251, in mkdir
+    self._accessor.mkdir(self, mode)
+PermissionError: [Errno 13] Permission denied: '/home/mayank'

@@ -1,3 +1,0 @@
-#!/usr/bin/env sh
-SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-exec /usr/bin/env distrobox enter ubuntu-nvidia -- "/home/mayank/Documents/Uni/TUD/Thesis Extra/comparative study/analysis/.venv/bin/python" "$SCRIPT_DIR/.wrist_grounding.py"
