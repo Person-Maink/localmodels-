@@ -14,7 +14,8 @@ SEARCH_ROOT = Path(__file__).resolve().parent
 MODEL_ROOT = SEARCH_ROOT.parent
 PROJECT_ROOT = MODEL_ROOT.parent.parent
 GROUND_TRUTH_CSV = PROJECT_ROOT / "data" / "new_dataset" / "ground_truth.csv"
-VIDEO_ROOT = PROJECT_ROOT / "data" / "new_dataset" / "processed"
+# STRIDE's cached WiLoR outputs are paired with the copied inference inputs here.
+VIDEO_ROOT = PROJECT_ROOT / "data" / "test"
 WILOR_ROOT = PROJECT_ROOT / "outputs" / "wilor"
 BASELINE_CONFIG = MODEL_ROOT / "stride_configs" / "hmp.yaml"
 SEED = 20260813

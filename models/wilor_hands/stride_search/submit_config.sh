@@ -6,7 +6,7 @@ MODEL_ROOT=$(cd "${SEARCH_ROOT}/.." && pwd)
 PROJECT_ROOT=$(cd "${MODEL_ROOT}/../.." && pwd)
 STAGE="${STAGE:-stage1}"
 CONFIG_ID="${CONFIG_ID:?Set CONFIG_ID to a YAML stem in configs/${STAGE}.}"
-VIDEO_DIR="${VIDEO_DIR:-${PROJECT_ROOT}/data/new_dataset/processed}"
+VIDEO_DIR="${VIDEO_DIR:-${PROJECT_ROOT}/data/test}"
 WILOR_CACHE_ROOT="${WILOR_CACHE_ROOT:-${PROJECT_ROOT}/outputs/wilor}"
 SWEEP_OUTPUT_ROOT="${SWEEP_OUTPUT_ROOT:-${PROJECT_ROOT}/outputs/stride_search}"
 FRAME_CACHE_ROOT="${FRAME_CACHE_ROOT:-${VIDEO_DIR}}"
@@ -19,7 +19,7 @@ OUTPUT_ROOT="${SWEEP_OUTPUT_ROOT}/${STAGE}/${CONFIG_ID}"
 [[ "${STAGE}" == "stage1" || "${STAGE}" == "stage2" ]] || { echo "STAGE must be stage1 or stage2" >&2; exit 2; }
 [[ -f "${SPLIT_PATH}" && -f "${CONFIG_PATH}" ]] || { echo "Missing split or config for ${STAGE}/${CONFIG_ID}" >&2; exit 2; }
 mkdir -p "${JOB_ROOT}" "${LOG_ROOT}" "${OUTPUT_ROOT}"
-mapfile -t VIDEOS < <(python3 - "${SPLIT_PATH}" "${VIDEO_DIR}" "${WILOR_CACHE_ROOT}" <<'PY'
+if ! VIDEO_TEXT=$(python3 - "${SPLIT_PATH}" "${VIDEO_DIR}" "${WILOR_CACHE_ROOT}" <<'PY'
 import json, sys
 from pathlib import Path
 split_path, video_root, wilor_root = map(Path, sys.argv[1:])
@@ -31,7 +31,11 @@ for video in videos:
     if not (wilor_root / video / "meshes").is_dir(): raise SystemExit(f"Missing cached WiLoR meshes: {video}")
 print("\n".join(videos))
 PY
-)
+); then
+    echo "Aborting ${STAGE}/${CONFIG_ID}: split input validation failed." >&2
+    exit 1
+fi
+mapfile -t VIDEOS <<< "${VIDEO_TEXT}"
 planned=0; skipped=0
 for video in "${VIDEOS[@]}"; do
     marker="${OUTPUT_ROOT}/_completed/${video}.json"
